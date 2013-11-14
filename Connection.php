@@ -1,4 +1,22 @@
 <?php
+/* ===========================================================================
+ * Opis Project
+ * http://opis.io
+ * ===========================================================================
+ * Copyright 2013 Marius Sarca
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================================ */
 
 namespace Opis\Database;
 
@@ -35,14 +53,15 @@ class Connection
     
     protected $properties = array();
     
-    public function __construct($name, $prefix)
+    public function __construct($prefix, $name)
     {
         $this->prefix = $prefix;
+        $this->name = $name;
     }
     
     public function name()
     {
-        return $name;
+        return $this->name;
     }
     
     public function enableLog($value = true)
@@ -77,7 +96,7 @@ class Connection
         return $this;
     }
     
-    public function property($name, $value)
+    public function set($name, $value)
     {
         $this->properties[$name] = $value;
         return $this;
@@ -104,7 +123,7 @@ class Connection
         return new PDO($this->prefix . ':' . implode(';', $this->properties), $this->username, $this->password, $this->options);
     }
     
-    protected function compiler()
+    public function compiler()
     {
         switch($this->prefix)
         {
@@ -155,7 +174,7 @@ class Connection
     
     public static function other($prefix, $name, $default = false)
     {
-        $connection = new Connection($prefix);
+        $connection = new Connection($prefix, $name);
         static::$connections[$name] = $connection;
         if($default === true)
         {

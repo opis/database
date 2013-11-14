@@ -25,6 +25,7 @@ use Closure;
 use PDOException;
 use RuntimeException;
 use Opis\Database\SQL\Query;
+use Opis\Database\Connection;
 
 class Database
 {
@@ -71,6 +72,12 @@ class Database
                 $this->pdo->exec($query);
             }
         }
+    }
+    
+    
+    public static function connection($name = null)
+    {
+        return new Database(Connection::get($name));
     }
 
     /**
