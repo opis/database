@@ -13,7 +13,7 @@ Connection::mysql('test', true)
 
 $db = Database::connection('test');
 
-$result = $db->table('t1')
-  ->where('user', '=', 'someuser')
-  ->all();
+$result =  $db->table('t1')
+              ->where('user', '=', 'someuser')
+              ->all();
 ```
