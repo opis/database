@@ -53,6 +53,10 @@ class Connection
     
     protected $properties = array();
     
+    protected $compiler = null;
+    
+    protected $pdo = null;
+    
     public function __construct($prefix, $name)
     {
         $this->prefix = $prefix;
@@ -64,12 +68,13 @@ class Connection
         return $this->name;
     }
     
-    public function enableLog($value = true)
+    public function logQueries($value = true)
     {
         $this->log = $value;
+        return $this;
     }
     
-    public function logQueries()
+    public function loggingEnabled()
     {
         return $this->log;
     }
@@ -77,11 +82,7 @@ class Connection
     public function query($query)
     {
         $this->queries[] = $query;
-    }
-    
-    public function queries()
-    {
-        return $this->queries;
+        return $this;
     }
     
     public function username($username)
@@ -108,7 +109,6 @@ class Connection
         {
             $this->option($name, $value);
         }
-        
         return $this;
     }
     
@@ -120,38 +120,68 @@ class Connection
     
     public function pdo()
     {
-        return new PDO($this->prefix . ':' . implode(';', $this->properties), $this->username, $this->password, $this->options);
+        if($this->pdo == null)
+        {
+            try
+            {
+                $this->pdo = new PDO($this->prefix . ':' . implode(';', $this->properties), $this->username, $this->password, $this->options);
+                
+            }catch(PDOException $e)
+            {
+                throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->name, $e->getMessage())));
+            }
+            if(!empty($this->queries))
+            {
+                foreach($this->queries as $query)
+                {
+                    $this->pdo->exec($query);
+                }
+            }
+        }
+        return $this->pdo;
     }
     
     public function compiler()
     {
-        switch($this->prefix)
+        if($this->compiler == null)
         {
-            case 'mysql':
-                return new \Opis\Database\Compiler\MySQL();
-            case 'dblib':
-            case 'mssql':
-            case 'sqlsrv':
-            case 'sybase':
-                return new \Opis\Database\Compiler\SQLServer();
-            case 'oci':
-            case 'oracle':
-                return new \Opis\Database\Compiler\Oracle();
-            case 'firebird':
-                return new \Opis\Database\Compiler\Firebird();
-            case 'db2':
-            case 'ibm':
-            case 'odbc':
-                return new \Opis\Database\Compiler\DB2();
-            case 'nuodb':
-                return new \Opis\Database\Compiler\NuoDB();
-            default:
-                if(isset(static::$compilers[$this->prefix]))
-                {
-                    return static::$compilers[$this->prefix]();
-                }
+            switch($this->prefix)
+            {
+                case 'mysql':
+                    $this->compiler = new \Opis\Database\Compiler\MySQL();
+                    break;
+                case 'dblib':
+                case 'mssql':
+                case 'sqlsrv':
+                case 'sybase':
+                    $this->compiler = new \Opis\Database\Compiler\SQLServer();
+                    break;
+                case 'oci':
+                case 'oracle':
+                    $this->compiler = new \Opis\Database\Compiler\Oracle();
+                    break;
+                case 'firebird':
+                    return new \Opis\Database\Compiler\Firebird();
+                case 'db2':
+                case 'ibm':
+                case 'odbc':
+                    $this->compiler = new \Opis\Database\Compiler\DB2();
+                    break;
+                case 'nuodb':
+                    $this->compiler = new \Opis\Database\Compiler\NuoDB();
+                    break;
+                default:
+                    if(isset(static::$compilers[$this->prefix]))
+                    {
+                        $this->compiler = static::$compilers[$this->prefix]();
+                    }
+                    else
+                    {
+                        $this->compiler = new \Opis\Database\SQL\Compiler();
+                    }
+            }
         }
-        return new \Opis\Database\SQL\Compiler();
+        return $this->compiler;
     }
     
     public static function registerCompiler($prefix, Closure $closure)
@@ -163,13 +193,21 @@ class Connection
     {
         if($name == null)
         {
-            if(static::$defaultConnection != null)
-            {
-                return static::$connections[static::$defaultConnection];
-            }
-            return reset(static::$connections);
+            $name = static::getDefaultName();
         }
         return static::$connections[$name];
+    }
+    
+    public static function getDefaultName()
+    {
+        if(static::$defaultConnection == null)
+        {
+            if(!empty(static::$connections))
+            {
+                static::$defaultConnection = reset(array_keys(static::$connections));
+            }
+        }
+        return static::$defaultConnection;
     }
     
     public static function other($prefix, $name, $default = false)

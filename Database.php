@@ -42,6 +42,8 @@ class Database
     /** @var    array   Query log. */
     protected $log = array();
     
+    protected static $instances = array();
+    
     /**
      * Constructor
      *
@@ -52,32 +54,23 @@ class Database
     
     public function __construct(Connection $connection)
     {
-        try
-        {
-            $this->pdo = $connection->pdo();
-        }
-        catch(PDOException $e)
-        {
-            throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $connection->name(), $e->getMessage())));
-        }
-        
+        $this->pdo = $connection->pdo();
         $this->compiler = $connection->compiler();
-        $this->enableLog = $connection->logQueries();
-        $queries = $connection->queries();
-        
-        if(!empty($queries))
-        {
-            foreach($queries as $query)
-            {
-                $this->pdo->exec($query);
-            }
-        }
+        $this->enableLog = $connection->loggingEnabled();
     }
     
     
     public static function connection($name = null)
     {
-        return new Database(Connection::get($name));
+        if($name === null)
+        {
+            $name = Connection::getDefaultName();
+        }
+        if(!isset(static::$instances[$name]))
+        {
+            static::$instances[$name] = new Database(Connection::get($name));
+        }
+        return static::$instances[$name];
     }
 
     /**
