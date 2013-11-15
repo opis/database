@@ -22,6 +22,7 @@ namespace Opis\Database;
 
 use Closure;
 use PDO;
+use Opis\Database\DSN\MySQL as MySQLConnection;
 
 class Connection
 {
@@ -221,6 +222,16 @@ class Connection
         return $connection;
     }
     
+    public static function setInstance($name, Connection $connection, $default = false)
+    {
+        static::$connections[$name] = $connection;
+        if($default === true)
+        {
+            static::$defaultConnection = $name;
+        }
+        return $connection;
+    }
+    
     
     public static function dblib($name, $default = false)
     {
@@ -249,7 +260,7 @@ class Connection
     
     public static function mysql($name, $default = false)
     {
-        return static::other('mysql', $name, $default);
+        return static::setInstance($name, new MySQLConnection($name), $default);
     }
     
     public static function sqlsrv($name, $default = false)
