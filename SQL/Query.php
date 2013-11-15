@@ -22,7 +22,7 @@ namespace Opis\Database\SQL;
 
 use PDO;
 use Closure;
-use Opis\Database\Connection;
+use Opis\Database\Database;
 use Opis\Database\SQL\Raw;
 use Opis\Database\SQL\Join;
 use Opis\Database\SQL\Subquery;
@@ -31,8 +31,8 @@ use Opis\Database\SQL\Subquery;
 class Query
 {
     
-    /** @var \Opis\Database\Connection Database connection. */
-    protected $connection;
+    /** @var \Opis\Database\Database Database instance. */
+    protected $database;
 
     /** @var \Opis\Database\Factory\Compiler Query compiler. */
     protected $compiler;
@@ -72,15 +72,15 @@ class Query
      * Constructor.
      *
      * @access  public
-     * @param   \Opis\Database\Conenction   $connection Database connection
+     * @param   \Opis\Database\Database   $database Database instance
      * @param   mixed                       $table      Database table or subquery
      */
     
-    public function __construct(Connection $connection, $table)
+    public function __construct(Database $database, $table)
     {
         $this->table = $table;
-        $this->connection = $connection;
-        $this->compiler = $connection->getCompiler();
+        $this->database = $database;
+        $this->compiler = $database->getCompiler();
     }
 
 
@@ -260,7 +260,7 @@ class Query
     {
         if($column instanceof Closure)
         {
-            $query = new self($this->connection, $this->table);
+            $query = new self($this->database, $this->table);
             $column($query);
             $this->wheres[] = array(
                 'type'      => 'nestedWhere',
@@ -742,7 +742,7 @@ class Query
     {
         $this->columns($columns);
         $query = $this->compiler->select($this);
-        return $this->connection->all($query['sql'], $query['params']);
+        return $this->database->all($query['sql'], $query['params']);
     }
 
     /**
@@ -757,7 +757,7 @@ class Query
     {
         $this->columns($columns);
         $query = $this->compiler->select($this);
-        return $this->connection->first($query['sql'], $query['params']);
+        return $this->database->first($query['sql'], $query['params']);
     }
 
     /**
@@ -772,7 +772,7 @@ class Query
     {
         $this->columns(array($column));
         $query = $this->compiler->select($this);
-        return $this->connection->column($query['sql'], $query['params']);
+        return $this->database->column($query['sql'], $query['params']);
     }
 
     /**
@@ -865,7 +865,7 @@ class Query
     public function insert(array $values)
     {
         $query = $this->compiler->insert($this, $values);
-        return $this->connection->insert($query['sql'], $query['params']);
+        return $this->database->insert($query['sql'], $query['params']);
     }
 
     /**
@@ -879,7 +879,7 @@ class Query
     public function update(array $values)
     {
         $query = $this->compiler->update($this, $values);
-        return $this->connection->update($query['sql'], $query['params']);
+        return $this->database->update($query['sql'], $query['params']);
     }
 
     /**
@@ -920,6 +920,6 @@ class Query
     public function delete()
     {
         $query = $this->compiler->delete($this);
-        return $this->connection->delete($query['sql'], $query['params']);
+        return $this->database->delete($query['sql'], $query['params']);
     }
 }
