@@ -18,39 +18,29 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL;
 
-use Opis\Database\SQL\Compiler;
+use Opis\Database\Database;
 
-class NuoDB extends Compiler
+class Insert extends InsertStatement
 {
-
-    /** @var string Wrapper used to escape table and column names. */
-    protected $wrapper = '"%s"';
-
-    /**
-     * Compiles LIMIT clauses.
-     *
-     * @access  protected
-     * @param   int        $limit  Limit
-     * @return  string
-     */
-
-    protected function handleLimit($limit)
+    
+    protected $database;
+    
+    public function __construct(Database $database)
     {
-        return ($limit === null) ? '' : ' FETCH ' . $limit;
+        parent::__construct($database->getCompiler());
+        $this->database = $database;
     }
-
-    /**
-     * Compiles OFFSET clauses.
-     * 
-     * @access  protected
-     * @param   int        $offset  Limit
-     * @return  string
-     */
-
-    protected function handleOffset($offset)
+    
+    public static function factory(Database $database)
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $offset;
+        return new self($database);
     }
+    
+    public function execute()
+    {
+        return $this->database->cmdInsert((string) $this, $this->compiler->getParams());
+    }
+    
 }

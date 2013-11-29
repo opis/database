@@ -37,7 +37,7 @@ class MySQL extends Connection
     
     public function database($name)
     {
-        return $this->set('dbase', $name);
+        return $this->set('dbname', $name);
     }
     
     public function host($name)

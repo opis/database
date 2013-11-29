@@ -18,39 +18,37 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL;
 
-use Opis\Database\SQL\Compiler;
-
-class NuoDB extends Compiler
+class DeleteStatement extends WhereCondition
 {
-
-    /** @var string Wrapper used to escape table and column names. */
-    protected $wrapper = '"%s"';
-
-    /**
-     * Compiles LIMIT clauses.
-     *
-     * @access  protected
-     * @param   int        $limit  Limit
-     * @return  string
-     */
-
-    protected function handleLimit($limit)
+    protected $tables;
+    
+    protected $sql;
+    
+    public function __construct(Compiler $compiler)
     {
-        return ($limit === null) ? '' : ' FETCH ' . $limit;
+        parent::__construct($compiler);
     }
-
-    /**
-     * Compiles OFFSET clauses.
-     * 
-     * @access  protected
-     * @param   int        $offset  Limit
-     * @return  string
-     */
-
-    protected function handleOffset($offset)
+    
+    public function getTables()
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $offset;
+        return $this->tables;
     }
+    
+    public function from($table)
+    {
+        $this->tables = array((string) $table);
+        return $this;
+    }
+    
+    public function __toString()
+    {
+        if($this->sql === null)
+        {
+            $this->sql = $this->compiler->delete($this);
+        }
+        return $this->sql;
+    }
+    
 }

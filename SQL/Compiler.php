@@ -21,246 +21,177 @@
 namespace Opis\Database\SQL;
 
 use DateTime;
-use Opis\Database\SQL\Query;
-use Opis\Database\SQL\Raw;
-use Opis\Database\SQL\Subquery;
 
 
 class Compiler
 {
-    
     /** @var string Date format. */
     protected  $dateFormat = 'Y-m-d H:i:s';
 
     /** @var string Wrapper used to escape table and column names. */
     protected $wrapper = '"%s"';
-
-    /** @var \Opis\Database\Factory\Query Query builder. */
-    protected $query;
-
-    /** @var string Query parameters. */
+    
     protected $params = array();
-
-
-    /**
-     * Compiles subquery, merges parameters and returns subquery SQL.
-     *
-     * @access  protected
-     * @param   \Opis\Database\SQL\Subquery $query  Subquery container
-     * @return  string
-     */
-
-    protected function subquery(Subquery $query)
+    
+    protected function wrap($value)
     {
-        $query = $query->get();
-        $this->params = array_merge($this->params, $query['params']);
-        return $query['sql'];
-    }
-
-    /**
-     * Wraps table and column names with dialect specific escape characters.
-     *
-     * @access  public
-     * @param   mixed   $value  Value to wrap
-     * @return  string
-     */
-
-    public function wrap($value)
-    {
-        if($value instanceof Raw)
+        if($value instanceof Expression)
         {
-            return $value->get();
+            return $this->handleExpressions($value->getExpressions());
         }
-        elseif($value instanceof Subquery)
-        {
-            return $this->subquery($value);
-        }
-        else
-        {
-            if(stripos($value, ' as ') !== false)
-            {
-                $values = explode(' ', $value);
-                return sprintf('%s AS %s', $this->wrap($values[0]), $this->wrap($values[2]));
-            }
-            foreach(explode('.', $value) as $segment)
-            {
-                if($segment == '*')
-                {
-                    $wrapped[] = $segment;
-                }
-                else
-                {
-                    $wrapped[] = sprintf($this->wrapper, $segment);
-                }
-            }
-            return implode('.', $wrapped);
-        }
-    }
-
-    /**
-     * Returns a comma-separated list of columns.
-     *
-     * @access  protected
-     * @param   array   $columns    Array of columns
-     * @return  string
-     */
-
-    protected function columns(array $columns)
-    {
-        return implode(', ', array_map(array($this, 'wrap'), $columns));
-    }
-
-    /**
-     * Returns raw SQL or a paramter placeholder.
-     *
-     * @access  protected  
-     * @param   mixed   $param  Parameter
-     * @return  string
-     */
-
-    protected function param($param)
-    {
-        if($param instanceof Raw)
-        {
-            return $param->get();
-        }elseif($param instanceof Subquery)
-        {
-            return $this->subquery($param);
         
-        }elseif($param instanceof DateTime)
+        $wrapped = array();
+        
+        foreach(explode('.', $value) as $segment)
         {
-            $this->params[] = $param->format($this->dateFormat);
-            return '?';
+            if($segment == '*')
+            {
+                $wrapped[] = $segment;
+            }
+            else
+            {
+                $wrapped[] = sprintf($this->wrapper, $segment);
+            }
+        }
+        
+        return implode('.', $wrapped);
+    }
+    
+    protected function param($value)
+    {
+        if($value instanceof Expression)
+        {
+            return $this->handleExpressions($value->getExpressions());
+        }
+        elseif($value instanceof DateTime)
+        {
+            $this->params[] = $value->format($this->dateFormat);
         }
         else
         {
-            $this->params[] = $param;
-            return '?';
+            $this->params[] = $value;
         }
+        return '?';
     }
-
-    /**
-     * Returns a comma-separated list of parameters.
-     *
-     * @access  protected
-     * @param   mixed   $params Array of parameters or subquery
-     * @return  string
-     */
-
-    protected function params($params)
+    
+    public function params(array $params)
     {
         return implode(', ', array_map(array($this, 'param'), $params));
     }
-
-    /**
-     * Compiles WHERE clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Where clause
-     * @return  string
-     */
-
-    protected function where(array $where)
+    
+    public function columns(array $columns)
     {
-        return $this->wrap($where['column']) . ' ' . $where['operator'] . ' ' . $this->param($where['value']);
+        return implode(', ', array_map(array($this, 'wrap'), $columns));
     }
-
-    /**
-     * Compiles BETWEEN clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Where clause
-     * @return  string
-     */
-
-    protected function between(array $where)
+    
+    public function getParams()
     {
-        return $this->wrap($where['column']) . ($where['not'] ? ' NOT BETWEEN ' : ' BETWEEN ') . $this->param($where['value1']) . ' AND ' . $this->param($where['value2']);
+        return $this->params;
     }
-
-    /**
-     * Compiles IN clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Where clause
-     * @return  string
-     */
-
-    protected function in(array $where)
+    
+    protected function handleExpressions(array $expressions)
     {
-        return $this->wrap($where['column']) . ($where['not'] ? ' NOT IN ' : ' IN ') . '(' . $this->params($where['values']) . ')';
+        $sql = array();
+        //print_r($expressions); die('xx');
+        foreach($expressions as $expr)
+        {
+            switch($expr['type'])
+            {
+                case 'column':
+                    $sql[] = $this->wrap($expr['value']);
+                    break;
+                case 'op':
+                    $sql[] = $expr['value'];
+                    break;
+                case 'value':
+                    $sql[] = $this->param($expr['value']);
+                    break;
+                case 'group':
+                    $sql[] = '(' . $this->handleExpressions($expr['value']->getExpressions()) . ')';
+                    break;
+                case 'function':
+                    $sql[] = $this->handleSqlFunction($expr['value']);
+                    break;
+                case 'subquery':
+                    $sql[] = '(' . $expr['value'] . ')';
+                    break;
+            }
+        }
+        
+        return implode(' ', $sql);
     }
-
-    /**
-     * Compiles IS NULL clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Where clause
-     * @return  string
-     */
-
-    protected function isNull(array $where)
+    
+    protected function handleSqlFunction(array $func)
     {
-        return $this->wrap($where['column']) . ($where['not'] ? ' IS NOT NULL' : ' IS NULL');
+        $method = $func['type'] . $func['name'];
+        return $this->$method($func);
     }
-
-    /**
-     * Compiles EXISTS clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Exists clause
-     * @return  string
-     */
-
-    protected function exists($where)
+    
+    protected function handleTables(array $tables)
     {
-        return ($where['not'] ? 'NOT EXISTS ' : 'EXISTS ') . $this->subquery($where['query']);
+        $sql = array();
+        foreach($tables as $name => $alias)
+        {
+            if(is_string($name))
+            {
+                $sql[] = $this->wrap($name) . ' AS ' . $this->wrap($alias);
+            }
+            else
+            {
+                $sql[] = $this->wrap($alias);
+            }
+        }
+        return implode(', ', $sql);
     }
-
-    /**
-     * Compiles nested WHERE clauses.
-     *
-     * @access  protected
-     * @param   array   $where  Where clause
-     * @return  string
-     */
-
-    protected function nestedWhere(array $where)
+    
+    protected function handleColumns(array $columns)
     {
-        return '(' . substr($this->wheres($where['query']->getWheres()), 7) . ')'; // substr to remove " WHERE "
+        if(empty($columns))
+        {
+            return '*';
+        }
+        
+        $sql = array();
+
+        foreach($columns as $column)
+        {
+            if($column['alias'] !== null)
+            {
+                $sql[] = $this->wrap($column['name']) . ' AS ' .$this->wrap($column['alias']);
+            }
+            else
+            {
+                $sql[] = $this->wrap($column['name']);
+            }
+        }
+        return implode(', ', $sql);
     }
-
-    /**
-     * Compiles WHERE clauses.
-     *
-     * @access  protected
-     * @param   array   $wheres Array of where clauses
-     * @return  string
-     */
-
-    protected function wheres(array $wheres)
+    
+    protected function handleWheres(array $wheres, $prefix = true)
     {
         if(empty($wheres))
         {
             return '';
         }
-        $sql = array();
-        foreach($wheres as $where)
+        
+        $sql[] = $this->$wheres[0]['type']($wheres[0]);
+        
+        $count = count($wheres);
+        
+        for($i = 1; $i < $count; $i++)
         {
-            $sql[] = $where['separator'] . ' ' . $this->$where['type']($where);
+            $sql[] = $wheres[$i]['separator'] .' '. $this->$wheres[$i]['type']($wheres[$i]);
         }
-        return ' WHERE ' . substr(implode(' ', $sql), 4); // substr to remove "AND "
+        
+        return ($prefix ? ' WHERE ' : '') . implode(' ', $sql);
     }
-
-    /**
-     * Compiles JOIN clauses.
-     *
-     * @access  protected
-     * @param   array   $joins  Array of joins
-     * @return  string
-     */
-
-    protected function joins(array $joins)
+    
+    protected function handleGroupings(array $grouping)
+    {
+        return empty($groupings) ? '' : ' GROUP BY ' . $this->columns($groupings);
+    }
+    
+    protected function handleJoins(array $joins)
     {
         if(empty($joins))
         {
@@ -269,180 +200,283 @@ class Compiler
         $sql = array();
         foreach($joins as $join)
         {
-            $clauses = array();
-            foreach($join->getClauses() as $clause)
-            {
-                $clauses[] = $clause['separator'] . ' ' . $this->wrap($clause['column1']) . ' ' . $clause['operator'] . ' ' . $this->wrap($clause['column2']);
-            }
-            $sql[] = $join->getType() . ' JOIN ' . $this->wrap($join->getTable()) . ' ON ' . substr(implode(' ', $clauses), 4); // substr to remove "AND "
+            $sql[] = $join['type'] . ' JOIN '. $this->wrap($join['table']) . ' ON ' . $this->handleJoinCondtitions($join['join']->getJoinConditions());
         }
         return ' ' . implode(' ', $sql);
     }
-
-    /**
-     * Compiles GROUP BY clauses.
-     *
-     * @access  protected
-     * @param   array   $groupings  Array of column names
-     * @return  string
-     */
-
-    protected function groupings(array $groupings)
+    
+    protected function handleJoinCondtitions(array $conditions)
     {
-        return empty($groupings) ? '' : ' GROUP BY ' . $this->columns($groupings);
+        $sql[] = $this->$conditions[0]['type']($conditions[0]);
+        $count = count($conditions);
+        for($i = 1; $i < $count; $i++)
+        {
+            $sql[] = $conditions[$i]['separator'] . ' ' . $this->$conditions[$i]['type']($conditions[$i]);
+        }
+        return implode(' ', $sql);
     }
-
-    /**
-     * Compiles ORDER BY clauses.
-     *
-     * @access  protected
-     * @param   array   $orderings  Array of order by clauses
-     * @return  string
-     */
-
-    protected function orderings(array $orderings)
+    
+    protected function handleHavings(array $having)
     {
-        if(empty($orderings))
+        if(empty($having))
         {
             return '';
         }
-        $sql = array();
-        foreach($orderings as $order)
+        $sql[] = $this->wrap($having[0]['column']) . ' ' . $having[0]['operator'] . ' ' . $this->param($having[0]['value']);
+       
+        $count = count($having);
+        
+        for($i = 1; $i < $count; $i++)
         {
-            $sql[] = $this->columns($order['column']) . ' ' . strtoupper($order['order']);
+            $sql[] = $having[$i]['separator'] .' '. $this->wrap($having[$i]['column']) . ' ' . $having[$i]['operator'] . ' ' . $this->param($having[$i]['value']);
         }
+        
+        return ' HAVING ' . implode(' ', $sql);
+    }
+    
+    protected function handleOrderings(array $ordering)
+    {
+        if(empty($ordering))
+        {
+            return '';
+        }
+        
+        $sql = array();
+        
+        foreach($ordering as $order)
+        {
+            $sql[] = $this->columns($order['columns']) . ' ' . $this->$order['order'];
+        }
+        
         return ' ORDER BY ' . implode(', ', $sql);
     }
-
-    /**
-     * Compiles HAVING clauses.
-     *
-     * @access  protected
-     * @param   array   $havings    Array of having clauses
-     * @return  string
-     */
-
-    protected function havings(array $havings)
+    
+    protected function handleSetColumns(array $columns)
     {
-        if(empty($havings))
+        if(empty($columns))
         {
             return '';
         }
+        
         $sql = array();
-        foreach($havings as $having)
+        
+        foreach($columns as $column)
         {
-            $sql[] = $having['separator'] . ' ' . $this->wrap($having['column']) . ' ' . $having['operator'] . ' ' . $this->param($having['value']);; 
+            $sql[] = $this->wrap($column['column']) . ' = ' . $this->param($column['value']);
         }
-        return ' HAVING ' . substr(implode(' ', $sql), 4); // substr to remove "AND "
+        
+        return ' SET ' . implode(', ', $sql);
     }
-
-    /**
-     * Compiles LIMIT clauses.
-     *
-     * @access  protected
-     * @param   int     $limit  Limit
-     * @return  string
-     */
-
-    protected function limit($limit)
+    
+    protected function handleInsertValues(array $values)
     {
-        return ($limit === null) ? '' : ' LIMIT ' . $limit;
+        $sql = array();
+        
+        foreach($values as $insert)
+        {
+            $sql[] = '(' . $this->params($insert) . ')';
+        }
+        
+        return ' VALUES ' . implode(', ', $sql);
     }
-
-    /**
-     * Compiles OFFSET clauses.
-     *
-     * @access  protected
-     * @param   int     $offset  Limit
-     * @return  string
-     */
-
-    protected function offset($offset)
+    
+    protected function handleLimit($limit)
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $offset;
+        return ($limit === null) ? '' : ' LIMIT ' . $this->param($limit);
     }
-
-    /**
-     * Compiles a SELECT query.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
-     * @return  array
-     */
-
-    public function select(Query $query)
+    
+    protected function handleOffset($offset)
     {
-        $sql  = $query->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-        $sql .= $this->columns($query->getColumns());
+        return ($offset === null) ? '' : ' OFFSET ' . $this->param($offset);
+    }
+    
+    
+    protected function joinColumn(array $join)
+    {
+        return $this->wrap($join['column1']) . ' ' . $join['operator'] . ' ' . $this->wrap($join['column2']);
+    }
+    
+    protected function joinNested(array $join)
+    {
+        return '(' . $this->handleJoinCondtitions($join['join']->getJoinCOnditions()) . ')';
+    }
+    
+    protected function whereColumn(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' .$where['operator'] . ' ' .$this->param($where['value']);
+    }
+    
+    protected function whereIn(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ': 'IN ') . '(' . $this->params($where['value']) . ')';
+    }
+    
+    protected function whereInSelect(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ' : 'IN ') . '('.$where['subquery'].')';
+    }
+    
+    protected function whereNested(array $where)
+    {
+        return '(' . $this->handleWheres($where['clause']->getWhereClauses(), false) . ')';
+    }
+    
+    protected function whereExists(array $where)
+    {
+        return ($where['not'] ? 'NOT EXISTS ' : 'EXISTS ') . '(' . $where['subquery'] . ')';
+    }
+    
+    protected function whereNull(array $where)
+    {
+        return $this->wrap($where['column']) . ' '. ($where['not'] ? 'IS NOT NULL' : 'IS NULL');
+    }
+    
+    protected function whereBetween(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT BETWEEN' : 'BETWEEN') . ' ' . $this->param($where['value1']) . ' AND ' . $this->param($where['value2']);
+    }
+    
+    protected function whereSubquery(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' . $where['operator'] .' (' . $where['subquery'] . ')';
+    }
+    
+    protected function aggregateFunctionCOUNT(array $func)
+    {
+        return 'COUNT(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->columns($func['column']) . ')';
+    }
+    
+    protected function aggregateFunctionAVG(array $func)
+    {
+        return 'AVG(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function aggregateFunctionSUM(array $func)
+    {
+        return 'SUM(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function aggregateFunctionMIN(array $func)
+    {
+        return 'MIN(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function aggregateFunctionMAX(array $func)
+    {
+        return 'MAX(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function sqlFunctionUCASE(array $func)
+    {
+        return 'UCASE(' . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function sqlFunctionLCASE(array $func)
+    {
+        return 'LCASE(' . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function sqlFunctionMID(array $func)
+    {
+        return 'MID(' . $this->wrap($func['column']). ', ' . $this->param($func['start']) . ($func['lenght'] > 0 ? $this->param($func['lenght']) . ')' : ')');
+    }
+    
+    protected function sqlFunctionLEN(array $func)
+    {
+        return 'LEN(' . $this->wrap($func['column']) . ')';
+    }
+    
+    protected function sqlFunctionROUND(array $func)
+    {
+        return 'REOUND(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
+    }
+    
+    protected function sqlFunctionNOW(array $func)
+    {
+        return 'NOW()';
+    }
+    
+    protected function sqlFunctionFORMAT(array $func)
+    {
+        return 'FORMAT('. $this->wrap($func['column']). ', ' . $this->param($func['format']) . ')';
+    }
+    
+    public function createSelectStatement()
+    {
+        return new SelectStatement($this);
+    }
+    
+    public function createInsertStatement()
+    {
+        return new InsertStatement($this);
+    }
+    
+    public function createUpdateStatement()
+    {
+        return new UpdateStatement($this);
+    }
+    
+    public function createDeleteStatement()
+    {
+        return new DeleteStatement($this);
+    }
+    
+    public function subquery()
+    {
+        return new Subquery($this);
+    }
+    
+    public function expression()
+    {
+        return new Expression($this);
+    }
+    
+    public function select(SelectStatement $select)
+    {
+        $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql .= $this->handleColumns($select->getColumns());
         $sql .= ' FROM ';
-        $sql .= $this->wrap($query->getTable());
-        $sql .= $this->joins($query->getJoins());
-        $sql .= $this->wheres($query->getWheres());
-        $sql .= $this->groupings($query->getGroupings());
-        $sql .= $this->orderings($query->getOrderings());
-        $sql .= $this->havings($query->getHavings());
-        $sql .= $this->limit($query->getLimit());
-        $sql .= $this->offset($query->getOffset());
-        return array('sql' => $sql, 'params' => $this->params);
+        $sql .= $this->handleTables($select->getTables());
+        $sql .= $this->handleJoins($select->getJoinClauses());
+        $sql .= $this->handleWheres($select->getWhereClauses());
+        $sql .= $this->handleGroupings($select->getGroupClauses());
+        $sql .= $this->handleOrderings($select->getOrderClauses());
+        $sql .= $this->handleHavings($select->getHavingClauses());
+        $sql .= $this->handleOffset($select->getOffset());
+        $sql .= $this->handleLimit($select->getLimit());
+        
+        return $sql;
     }
-
-    /**
-     * Compiles a INSERT query.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
-     * @param   array                       $values Array of values
-     * @return  array
-     */
-
-    public function insert(Query $query, array $values)
+    
+    public function insert(InsertStatement $insert)
     {
+        $columns = $this->handleColumns($insert->getColumns());
+        
         $sql  = 'INSERT INTO ';
-        $sql .= $this->wrap($query->getTable());
-        $sql .= ' (' . $this->columns(array_keys($values)) . ')';
-        $sql .= ' VALUES';
-        $sql .= ' (' . $this->params($values) . ')';
-        return array('sql' => $sql, 'params' => $this->params);
+        $sql .= $this->handleTables($insert->getTables());
+        $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';
+        $sql .= $this->handleInsertValues($insert->getValues());
+        
+        return $sql;
     }
-
-    /**
-     * Compiles a UPDATE query.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
-     * @param   array                       $values Array of values
-     * @return  array
-     */
-
-    public function update(Query $query, array $values)
+    
+    public function update(UpdateStatement $update)
     {
-        $columns = array();
-        foreach($values as $column => $value)
-        {
-            $columns[] .= $this->wrap($column) . ' = ' . $this->param($value);
-        }
-        $columns = implode(', ', $columns);
         $sql  = 'UPDATE ';
-        $sql .= $this->wrap($query->getTable());
-        $sql .= ' SET ';
-        $sql .= $columns;
-        $sql .= $this->wheres($query->getWheres());
-        return array('sql' => $sql, 'params' => $this->params);
+        $sql .= $this->handleTables($update->getTables());
+        $sql .= $this->handleSetColumns($update->getColumns());
+        $sql .= $this->handleWheres($update->getWhereClauses());
+        
+        return $sql;
     }
-
-    /**
-     * Compiles a DELETE query.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
-     * @return  array
-     */
-
-    public function delete(Query $query)
+    
+    public function delete(DeleteStatement $delete)
     {
         $sql  = 'DELETE FROM ';
-        $sql .= $this->wrap($query->getTable());
-        $sql .= $this->wheres($query->getWheres());
-        return array('sql' => $sql, 'params' => $this->params);
+        $sql .= $this->handleTables($delete->getTables());
+        $sql .= $this->handleWheres($delete->getWhereClauses());
+        
+        return $sql;
     }
+    
 }

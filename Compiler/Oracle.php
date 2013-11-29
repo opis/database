@@ -21,7 +21,7 @@
 namespace Opis\Database\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\Query;
+use Opis\Database\SQL\SelectStatament;
 
 class Oracle extends Compiler
 {
@@ -30,41 +30,38 @@ class Oracle extends Compiler
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
+     * @param   \Opis\Database\SQL\SelectStatament    $select  Query object.
      * @return  array
      */
 
-    public function select(Query $query)
+    public function select(SelectStatament $select)
     {
-        if($query->getLimit() === null)
+        $limit = $select->getLimit();
+        $offset = $select->getOffset();
+        
+        if($limit === null && $offset === null)
         {
-            // No limit so we can just execute a normal query
-            return parent::select($query);
+            return parent::select($select);
         }
-        else
+        
+        $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql .= $this->handleColumns($select->getColumns());
+        $sql .= ' FROM ';
+        $sql .= $this->handleTables($select->getTables());
+        $sql .= $this->handleJoins($select->getJoinClauses());
+        $sql .= $this->handleWheres($select->getWhereClauses());
+        $sql .= $this->handleGroupings($select->getGroupClauses());
+        $sql .= $this->handleOrderings($select->getOrderClauses());
+        $sql .= $this->handleHavings($select->getHavingClauses());
+        
+        if($offset === null)
         {
-            $sql  = $query->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-            $sql .= $this->columns($query->getColumns());
-            $sql .= ' FROM ';
-            $sql .= $this->wrap($query->getTable());
-            $sql .= $this->joins($query->getJoins());
-            $sql .= $this->wheres($query->getWheres());
-            $sql .= $this->groupings($query->getGroupings());
-            $sql .= $this->orderings($query->getOrderings());
-            $sql .= $this->havings($query->getHavings());
-            if($query->getOffset() === null)
-            {
-                // No offset so we only need a simple subquery to emulate the LIMIT clause
-                $sql = 'SELECT m1.* FROM (' . $sql . ') m1 WHERE rownum <= ' . $query->getLimit();
-            }
-            else
-            {
-                // There is an offset so we need to make a bunch of subqueries to emulate the LIMIT and OFFSET clauses
-                $limit  = $query->getLimit() + $query->getOffset();
-                $offset = $query->getOffset() + 1;
-                $sql = 'SELECT * FROM (SELECT m1.*, rownum AS opis_rownum FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit . ') WHERE opis_rownum >= ' . $offset;
-            }
-            return array('sql' => $sql, 'params' => $this->params);
+            return 'SELECT m1.* FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit;
         }
+        
+        $limit += $offset;
+        $offset++;
+        
+        return 'SELECT * FROM (SELECT m1.*, rownum AS opis_rownum FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit . ') WHERE opis_rownum >= ' . $offset;
     }
 }

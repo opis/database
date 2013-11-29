@@ -20,48 +20,26 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\SQL\Query;
-
-
 class Subquery
 {
-    /** @var \Opis\Database\Factory\Query Query builder. */
-    protected $query;
-
-    /** @var string Alias. */
-    protected $alias = null;
-
     protected $compiler;
     
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\Factory\Query  $query  Query builder
-     * @param   string                      $alias  Subquery alias
-     */
-
-    public function __construct(Query $query, $alias = null)
+    protected $select;
+    
+    public function __construct(Compiler $compiler)
     {
-        $this->query = $query;
-        $this->alias = $alias;
+        $this->compiler = $compiler;
     }
-
-    /**
-     * Returns the compiled query.
-     *
-     * @access  public
-     * @return  array
-     */
-
-    public function get()
+    
+    public function select($tables, $distinct = false)
     {
-        $query = $this->query->getCompiler()->select($this->query);
-        $query['sql'] = '(' . $query['sql'] . ')';
-        if($this->alias !== null)
-        {
-            $query['sql'] .= ' AS ' . $this->query->getCompiler()->wrap($this->alias);
-        }
-        return $query;
+        $this->select = $this->compiler->createSelectStatement();
+        return $this->select->distinct($distinct)->from($tables);
     }
+    
+    public function __toString()
+    {
+        return (string) $this->select;
+    }
+    
 }

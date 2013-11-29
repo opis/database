@@ -20,34 +20,32 @@
 
 namespace Opis\Database\SQL;
 
-class Raw
+use Opis\Database\Database;
+
+class Select extends SelectStatement
 {
     
-    /** @var    string  Raw SQL */
-    protected $sql;
-
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @param   string  $sql  Raw SQL
-     */
-
-    public function __construct($sql)
+    protected $database;
+    
+    public function __construct(Database $database)
     {
-        $this->sql = $sql;
+        parent::__construct($database->getCompiler());
+        $this->database = $database;
     }
     
-    /**
-     * Returns the raw SQL.
-     *
-     * @access  public
-     * @return  string
-     */
-
-    public function get()
+    public static function factory(Database $database)
     {
-        return $this->sql;
+        return new self($database);
+    }
+    
+    public function execute($first = false)
+    {
+        if($first !== false)
+        {
+            return $this->database->cmdSelectFirst((string) $this, $this->compiler->getParams());
+        }
+        
+        return $this->database->cmdSelect((string) $this, $this->compiler->getParams());
     }
     
 }

@@ -1,7 +1,6 @@
 ##Opis Database##
 
 ```php
-use \PDO;
 use \Opis\Database\Database;
 use \Opis\Database\Connection;
 
@@ -13,7 +12,9 @@ Connection::mysql('test', true)
 
 $db = Database::connection('test');
 
-$result =  $db->table('t1')
-              ->where('user', '=', 'someuser')
-              ->all();
+$result =  $db->select('table')
+              ->columns(array('user', 'age'))
+              ->where('age', 18)
+              ->orWhere('age', 32, '>')
+              ->execute();
 ```

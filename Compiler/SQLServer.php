@@ -21,7 +21,7 @@
 namespace Opis\Database\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\Query;
+use Opis\Database\SQL\SelectStatement;
 
 class SQLServer extends Compiler
 {
@@ -37,55 +37,62 @@ class SQLServer extends Compiler
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\Query    $query  Query object.
+     * @param   \Opis\Database\SQL\SelectStatement    $select  Query object.
      * @return  array
      */
 
-    public function select(Query $query)
+    public function select(SelectStatement $select)
     {
-        if($query->getLimit() === null)
+        $limit = $select->getLimit();
+        $offset = $select->getOffset();
+        
+        if($limit === null && $offset === null)
         {
-            // No limit so we can just execute a normal query
-            return parent::select($query);
+            return parent::select($select);
         }
-        else
+        
+        if($offset === null)
         {
-            if($query->getOffset() === null)
-            {
-                // No offset so we can just use the TOP clause
-                $sql  = $query->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-                $sql .= 'TOP ' . $query->getLimit() . ' ';
-                $sql .= $this->columns($query->getColumns());
-                $sql .= ' FROM ';
-                $sql .= $this->wrap($query->getTable());
-                $sql .= $this->joins($query->getJoins());
-                $sql .= $this->wheres($query->getWheres());
-                $sql .= $this->groupings($query->getGroupings());
-                $sql .= $this->orderings($query->getOrderings());
-                $sql .= $this->havings($query->getHavings());
-            }
-            else
-            {
-                // There is an offset so we need to emulate the OFFSET clause with ANSI-SQL
-                $order = trim($this->orderings($query->getOrderings()));
-                if(empty($order))
-                {
-                    $order = 'ORDER BY (SELECT 0)';
-                }
-                $sql  = $query->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-                $sql .= $this->columns($query->getColumns());
-                $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
-                $sql .= ' FROM ';
-                $sql .= $this->wrap($query->getTable());
-                $sql .= $this->joins($query->getJoins());
-                $sql .= $this->wheres($query->getWheres());
-                $sql .= $this->groupings($query->getGroupings());
-                $sql .= $this->havings($query->getHavings());
-                $limit  = $query->getOffset() + $query->getLimit();
-                $offset = $query->getOffset() + 1;
-                $sql = 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' . $limit;
-            }
-            return array('sql' => $sql, 'params' => $this->params);
+            $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+            $sql .= 'TOP ' . $limit . ' ';
+            $sql .= $this->handleColumns($select->getColumns());
+            $sql .= ' FROM ';
+            $sql .= $this->handleTables($select->getTables());
+            $sql .= $this->handleJoins($select->getJoinClauses());
+            $sql .= $this->handleWheres($select->getWhereClauses());
+            $sql .= $this->handleGroupings($select->getGroupClauses());
+            $sql .= $this->handleOrderings($select->getOrderClauses());
+            $sql .= $this->handleHavings($select->getHavingClauses());
+            
+            return $sql;
         }
+        
+        $order = trim($this->handleOrderings($select->getOrderClauses()));
+        
+        if(empty($order))
+        {
+            $order = 'ORDER BY (SELECT 0)';
+        }
+        
+        $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql .= $this->handleColumns($select->getColumns());
+        $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
+        $sql .= ' FROM ';
+        $sql .= $this->handleTables($select->getTables());
+        $sql .= $this->handleJoins($select->getJoinClauses());
+        $sql .= $this->handleWheres($select->getWhereClauses());
+        $sql .= $this->handleGroupings($select->getGroupClauses());
+        $sql .= $this->handleHavings($select->getHavingClauses());
+        
+        if($offset === null)
+        {
+            $offset = 0;
+        }
+        
+        $limit += $offset;
+        $offset++;
+        
+        return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
+        
     }
 }

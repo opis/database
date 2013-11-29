@@ -20,101 +20,51 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
+
 class Join
 {
-    /** @var string Join type. */
-    protected $type;
-
-    /** @var string Table we are joining. */
-    protected $table;
-
-    /** @var array ON clauses. */
-    protected $clauses = array();
-
-
-    /**
-     * Constructor.
-     *
-     * @access  public
-     * @param   string  $type   Join type
-     * @param   string  $table  Table we are joining
-     */
-
-    public function __construct($type, $table)
+    protected $conditions = array();
+    
+    protected function addJoinCondition($column1, $column2, $operator, $separator)
     {
-        $this->type  = $type;
-        $this->table = $table;
-    }
-
-
-    /**
-     * Returns the join type.
-     * 
-     * @access  public
-     * @return  string
-     */
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Returns the table name
-     * 
-     * @access  public
-     * @return  string
-     */
-
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * Returns ON clauses.
-     * 
-     * @access  public
-     * @return  array
-     */
-
-    public function getClauses()
-    {
-        return $this->clauses;
-    }
-
-    /**
-     * Adds a ON clause to the join.
-     *
-     * @access  public
-     * @param   string  $column1    Column name
-     * @param   string  $operator   Operator
-     * @param   string  $column2    Column name
-     * @param   string  $separator  (optional) Clause separator
-     */
-
-    public function on($column1, $operator, $column2, $separator = 'AND')
-    {
-        $this->clauses[] = array(
-            'column1'   => $column1,
-            'operator'  => $operator,
-            'column2'   => $column2,
-            'separator' => $separator,
-        );
+        if($column1 instanceof Closure)
+        {
+            $join = new Join();
+            $column1($join);
+            $this->conditions[] = array(
+                'type' => 'joinNested',
+                'join' => $join,
+                'separator' => $separator,
+            );
+        }
+        else
+        {
+            $this->conditions[] = array(
+                'type' => 'joinColumn',
+                'column1' => $column1,
+                'column2' => $column2,
+                'operator' => $operator,
+                'separator' => $separator,
+            );
+        }
+        
         return $this;
     }
-
-    /**
-     * Adds a OR ON clause to the join.
-     *
-     * @access  public
-     * @param   string  $column1   Column name
-     * @param   string  $operator  Operator
-     * @param   string  $column2   Column name
-     */
-
-    public function orOn($column1, $operator, $column2)
+    
+    public function getJoinConditions()
     {
-        return $this->on($column1, $operator, $column2, 'OR');
+        return $this->conditions;
     }
+    
+    public function andOn($column1, $column2 = null, $operator = '=')
+    {
+        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
+    }
+    
+    public function orOn($column1, $column2 = null, $operator = '=')
+    {
+        return $this->addJoinCondition($column1, $column2, $operator, 'OR');
+    }
+    
 }

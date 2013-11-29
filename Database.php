@@ -24,17 +24,18 @@ use PDO;
 use Closure;
 use PDOException;
 use RuntimeException;
-use Opis\Database\SQL\Query;
 use Opis\Database\Connection;
+use Opis\Database\SQL\Select as SelectCommand;
+use Opis\Database\SQL\Insert as InsertCommand;
+use Opis\Database\SQL\Update as UpdateCommand;
+use Opis\Database\SQL\Delete as DeleteCommand;
 
 class Database
 {
-
-    /** @var    \PDO    PDO object. */
-    protected $pdo;
     
-    /** @var    \Opis\Database\SQL\Compiler  Compiler. */
-    protected $compiler;
+    protected $pdo;
+
+    protected $connection;
 
     /** @var    boolean Enable log. */
     protected $enableLog;
@@ -54,8 +55,8 @@ class Database
     
     public function __construct(Connection $connection)
     {
+        $this->connection = $connection;
         $this->pdo = $connection->pdo();
-        $this->compiler = $connection->compiler();
         $this->enableLog = $connection->loggingEnabled();
     }
     
@@ -74,18 +75,6 @@ class Database
     }
 
     /**
-     * Returns the PDO instance.
-     *
-     * @access public
-     * @return \PDO
-     */
-
-    public function getPDO()
-    {
-        return $this->pdo;
-    }
-
-    /**
      * Returns the compiler name.
      *
      * @access public
@@ -94,7 +83,7 @@ class Database
 
     public function getCompiler()
     {
-        return $this->compiler;
+        return $this->connection->compiler();
     }
 
     /**
@@ -120,7 +109,8 @@ class Database
 
     protected function replaceParams($query, array $params)
     {
-        $pdo = $this->pdo;
+        $pdo = $this->connection->pdo();
+        
         return preg_replace_callback('/\?/', function($matches) use (&$params, $pdo){
             $param = array_shift($params);
             return (is_int($param) || is_float($param)) ? $param : $pdo->quote(is_object($param) ? get_class($param) : $param);
@@ -138,7 +128,6 @@ class Database
 
     protected function log($query, array $params, $start)
     {
-        $pdo = $this->pdo;
         $time = microtime(true) - $start;
         $query = $this->replaceParams($query, $params);
         $this->log[] = compact('query', 'time');
@@ -167,25 +156,12 @@ class Database
 
     protected function prepare($query, array $params)
     {
-        // Replace IN clause placeholder with escaped values
-        replace:
-        if(strpos($query, '([?])') !== false)
-        {
-            foreach($params as $key => $value)
-            {
-                if(is_array($value))
-                {
-                    array_splice($params, $key, 1, $value);
-                    $query = preg_replace('/\(\[\?\]\)/', '(' . trim(str_repeat('?, ', count($value)), ', ') . ')', $query, 1);
-                    goto replace;
-                }
-            }
-        }
         // Prepare statement
         try
         {
             $statement = $this->pdo->prepare($query);
-        }catch(PDOException $e)
+        }
+        catch(PDOException $e)
         {
             throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
         }
@@ -214,140 +190,60 @@ class Database
         }
         return $result;
     }
-
-    /**
-     * Executes the query and returns TRUE on success or FALSE on failure.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return mixed
-     */
-
-    public function query($query, array $params = array())
+    
+    public function cmdSelect($sql, array $params)
     {
-        return $this->execute($this->prepare($query, $params));
-    }
-
-    /**
-     * Executes the query and returns TRUE on success or FALSE on failure.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return boolean
-     */
-
-    public function insert($query, array $params = array())
-    {
-        return $this->query($query, $params);
-    }
-
-    /**
-     * Returns an array containing all of the result set rows.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return array
-     */
-
-    public function all($query, array $params = array())
-    {
-        $prepared = $this->prepare($query, $params);
+        $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
         return $prepared['statement']->fetchAll();
     }
-
-    /**
-     * Returns the first row of the result set.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query params
-     * @return mixed
-     */
-
-    public function first($query, array $params = array())
+    
+    public function cmdSelectFirst($sql, array $params)
     {
-        $prepared = $this->prepare($query, $params);
+        $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
         return $prepared['statement']->fetch();
     }
-
-    /**
-     * Returns the value of the first column of the first row of the result set.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return mixed
-     */
-
-    public function column($query, array $params = array())
+    
+    public function cmdInsert($sql, array $params)
     {
-        $prepared = $this->prepare($query, $params);
-        $this->execute($prepared);
-        return $prepared['statement']->fetchColumn();
+        return $this->execute($this->prepare($sql, $params));
     }
-
-    /**
-     * Executes the query and return number of affected rows.
-     *
-     * @access protected
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return int
-     */
-
-    protected function executeAndCount($query, array $params)
+    
+    public function cmdUpdate($sql, array $params)
     {
-        $prepared = $this->prepare($query, $params);
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        return $prepared['statement']->rowCount();
+    }
+    
+    public function cmdDelete($sql, array $params)
+    {
+        $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
         return $prepared['statement']->rowCount();
     }
 
-    /**
-     * Executes the query and returns the number of updated records.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return int
-     */
-
-    public function update($query, array $params = array())
+    public function select($table, $distinct = false)
     {
-        return $this->executeAndCount($query, $params);
+        return SelectCommand::factory($this)->distinct($distinct)->from($table);
     }
-
-    /**
-     * Executes the query and returns the number of deleted records.
-     *
-     * @access public
-     * @param string $query SQL query
-     * @param array $params (optional) Query parameters
-     * @return int
-     */
-
-    public function delete($query, array $params = array())
+    
+    public function insert($table, $columns  = array())
     {
-        return $this->executeAndCount($query, $params);
+        return InsertCommand::factory($this)->into($table)->columns($columns);
     }
-
-    /**
-     * Returns a query builder instance.
-     *
-     * @access public
-     * @param mixed $table Table name or subquery
-     * @return \Opis\Database\SQL\Query
-     */
-
-    public function table($table)
+    
+    public function delete($table)
     {
-        return new Query($this, $table);
+        return DeleteCommand::factory($this)->from($table);
     }
-
+    
+    public function update($table)
+    {
+        return UpdateCommand::factory($this)->table($table);
+    }
+    
     /**
      * Executes queries and rolls back the transaction if any of them fail.
      *

@@ -22,6 +22,8 @@ namespace Opis\Database;
 
 use Closure;
 use PDO;
+use PDOException;
+use RuntimeException;
 use Opis\Database\DSN\MySQL as MySQLConnection;
 
 class Connection
@@ -57,6 +59,8 @@ class Connection
     protected $compiler = null;
     
     protected $pdo = null;
+    
+    protected $dsn = null;
     
     public function __construct($prefix, $name)
     {
@@ -119,15 +123,31 @@ class Connection
         return $this;
     }
     
+    public function dsn()
+    {
+        if($this->dsn === null)
+        {
+            $tmp = array();
+            foreach($this->properties as $key => $value)
+            {
+                $tmp[] = $key . '=' . $value;
+            }
+            $this->dsn = $this->prefix . ':' . implode(';', $tmp);
+        }
+        return $this->dsn;
+    }
+    
     public function pdo()
     {
         if($this->pdo == null)
         {
             try
             {
-                $this->pdo = new PDO($this->prefix . ':' . implode(';', $this->properties), $this->username, $this->password, $this->options);
                 
-            }catch(PDOException $e)
+                $this->pdo = new PDO($this->dsn(), $this->username, $this->password, $this->options);
+                
+            }
+            catch(PDOException $e)
             {
                 throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->name, $e->getMessage())));
             }
@@ -144,45 +164,33 @@ class Connection
     
     public function compiler()
     {
-        if($this->compiler == null)
+        if(isset(static::$compilers[$this->prefix]))
         {
-            switch($this->prefix)
-            {
-                case 'mysql':
-                    $this->compiler = new \Opis\Database\Compiler\MySQL();
-                    break;
-                case 'dblib':
-                case 'mssql':
-                case 'sqlsrv':
-                case 'sybase':
-                    $this->compiler = new \Opis\Database\Compiler\SQLServer();
-                    break;
-                case 'oci':
-                case 'oracle':
-                    $this->compiler = new \Opis\Database\Compiler\Oracle();
-                    break;
-                case 'firebird':
-                    return new \Opis\Database\Compiler\Firebird();
-                case 'db2':
-                case 'ibm':
-                case 'odbc':
-                    $this->compiler = new \Opis\Database\Compiler\DB2();
-                    break;
-                case 'nuodb':
-                    $this->compiler = new \Opis\Database\Compiler\NuoDB();
-                    break;
-                default:
-                    if(isset(static::$compilers[$this->prefix]))
-                    {
-                        $this->compiler = static::$compilers[$this->prefix]();
-                    }
-                    else
-                    {
-                        $this->compiler = new \Opis\Database\SQL\Compiler();
-                    }
-            }
+            return static::$compilers[$this->prefix]();
         }
-        return $this->compiler;
+        switch($this->prefix)
+        {
+            case 'mysql':
+                return new \Opis\Database\Compiler\MySQL();
+            case 'dblib':
+            case 'mssql':
+            case 'sqlsrv':
+            case 'sybase':
+                return new \Opis\Database\Compiler\SQLServer();
+            case 'oci':
+            case 'oracle':
+                return new \Opis\Database\Compiler\Oracle();
+            case 'firebird':
+                return new \Opis\Database\Compiler\Firebird();
+            case 'db2':
+            case 'ibm':
+            case 'odbc':
+                return new \Opis\Database\Compiler\DB2();
+            case 'nuodb':
+                return new \Opis\Database\Compiler\NuoDB();
+            default:
+                return new \Opis\Database\SQL\Compiler();
+        }
     }
     
     public static function registerCompiler($prefix, Closure $closure)
