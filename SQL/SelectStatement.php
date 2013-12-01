@@ -234,9 +234,9 @@ class SelectStatement extends WhereCondition
         return $this;
     }
     
-    public function count($column = '*', $alias = null)
+    public function count($column = '*', $alias = null, $distinct = false)
     {
-        return $this->column($this->compiler->expression()->count($column), $alias);
+        return $this->column($this->compiler->expression()->count($column, $distinct), $alias);
     }
     
     public function avg($column, $alias = null, $distinct = false)

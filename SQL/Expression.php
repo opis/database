@@ -93,13 +93,14 @@ class Expression
         return $subquery->select($tables, $distinct);
     }
     
-    public function count($column = '*')
+    public function count($column = '*', $distinct = false)
     {
         if(!is_array($column))
         {
             $column = array($column);
         }
-        return $this->addFunction('aggregateFunction', 'COUNT', $column, array('distinct' => count($column) > 1));
+        $distinct = $distinct || (count($column) > 1);
+        return $this->addFunction('aggregateFunction', 'COUNT', $column, array('distinct' => $distinct));
     }
     
     public function sum($column, $distinct = false)
