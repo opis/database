@@ -30,14 +30,14 @@ class MySQL extends Connection
         'port' => '3306',
     );
     
-    public function __construct($name)
+    public function __construct()
     {
-        parent::__construct('mysql', $name);
+        parent::__construct('mysql');
     }
     
     public function database($name)
     {
-        return $this->set('dbname', $name);
+        return $this->setDatabase('dbname', $name);
     }
     
     public function host($name)

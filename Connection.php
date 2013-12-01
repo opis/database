@@ -25,6 +25,7 @@ use PDO;
 use PDOException;
 use RuntimeException;
 use Opis\Database\DSN\MySQL as MySQLConnection;
+use Opis\Database\DSN\PostgreSQL as PostgreSQLConnection;
 
 class Connection
 {
@@ -52,7 +53,7 @@ class Connection
     
     protected $prefix;
     
-    protected $name;
+    protected $database;
     
     protected $properties = array();
     
@@ -62,15 +63,14 @@ class Connection
     
     protected $dsn = null;
     
-    public function __construct($prefix, $name)
+    public function __construct($prefix)
     {
         $this->prefix = $prefix;
-        $this->name = $name;
     }
     
-    public function name()
+    public function dbname()
     {
-        return $this->name;
+        return $this->database;
     }
     
     public function logQueries($value = true)
@@ -106,6 +106,12 @@ class Connection
     {
         $this->properties[$name] = $value;
         return $this;
+    }
+    
+    public function setDatabase($name, $value)
+    {
+        $this->database = $value;
+        return $this->set($name, $value);
     }
     
     public function options(array $options)
@@ -149,7 +155,7 @@ class Connection
             }
             catch(PDOException $e)
             {
-                throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->name, $e->getMessage())));
+                throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->database, $e->getMessage())));
             }
             if(!empty($this->queries))
             {
@@ -198,16 +204,7 @@ class Connection
         static::$compilers[$prefix] = $closure;
     }
     
-    public static function get($name = null)
-    {
-        if($name == null)
-        {
-            $name = static::getDefaultName();
-        }
-        return static::$connections[$name];
-    }
-    
-    public static function getDefaultName()
+    public static function getDefaultConnectionName()
     {
         if(static::$defaultConnection == null)
         {
@@ -216,23 +213,28 @@ class Connection
                 static::$defaultConnection = reset(array_keys(static::$connections));
             }
         }
+        
         return static::$defaultConnection;
     }
     
-    public static function other($prefix, $name, $default = false)
+    public static function get($name = null)
     {
-        $connection = new Connection($prefix, $name);
-        static::$connections[$name] = $connection;
-        if($default === true)
+        if($name == null)
         {
-            static::$defaultConnection = $name;
+            $name = static::getDefaultConnectionName();
         }
-        return $connection;
+        return static::$connections[$name];
     }
     
-    public static function setInstance($name, Connection $connection, $default = false)
+    public static function create($prefix, $name, $default = false)
+    {
+        return static::setConnectionInstance($name, new Connection($prefix), $default);
+    }
+    
+    public static function setConnectionInstance($name, Connection $connection, $default = false)
     {
         static::$connections[$name] = $connection;
+        
         if($default === true)
         {
             static::$defaultConnection = $name;
@@ -243,61 +245,61 @@ class Connection
     
     public static function dblib($name, $default = false)
     {
-        return static::other('dblib', $name, $default);
+        return static::create('dblib', $name, $default);
     }
     
     public static function sybase($name, $default = false)
     {
-        return static::other('sybase', $name, $default);
+        return static::create('sybase', $name, $default);
     }
     
     public static function mssql($name, $default = false)
     {
-        return static::other('mssql', $name, $default);
+        return static::create('mssql', $name, $default);
     }
     
     public static function firebird($name, $default = false)
     {
-        return static::other('firebird', $name, $default);
+        return static::create('firebird', $name, $default);
     }
     
     public static function ibm($name, $default = false)
     {
-        return static::other('ibm', $name, $default);
+        return static::create('ibm', $name, $default);
     }
     
     public static function mysql($name, $default = false)
     {
-        return static::setInstance($name, new MySQLConnection($name), $default);
+        return static::setInstance($name, new MySQLConnection, $default);
     }
     
     public static function sqlsrv($name, $default = false)
     {
-        return static::other('sqlsrv', $name, $default);
+        return static::create('sqlsrv', $name, $default);
     }
     
     public static function oci($name, $default = false)
     {
-        return static::other('oci', $name, $default);
+        return static::create('oci', $name, $default);
     }
     
     public static function odbc($name, $default = false)
     {
-        return static::other('odbc', $name, $default);
+        return static::create('odbc', $name, $default);
     }
     
-    public static function pgsql($name, $default = false)
+    public static function postgreSQL($name, $default = false)
     {
-        return static::other('pgsql', $name, $default);
+        return static::setConnectionInstance($name, new PostgreSQLConnection, $default);
     }
     
     public static function sqlite($name, $default = false)
     {
-        return static::other('sqlite', $name, $default);
+        return static::create('sqlite', $name, $default);
     }
     
     public static function nuodb($name, $default = false)
     {
-        return static::other('nuodb', $name, $default);
+        return static::create('nuodb', $name, $default);
     }
 }

@@ -29,14 +29,14 @@ class PostgreSQL extends Connection
         'port' => '5432',
     );
     
-    public function __construct($name)
+    public function __construct()
     {
-        parent::__construct('pgsql', $name);
+        parent::__construct('pgsql');
     }
     
     public function database($name)
     {
-        return $this->set('dbase', $name);
+        return $this->setDatabase('dbase', $name);
     }
     
     public function host($name)
