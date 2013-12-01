@@ -40,9 +40,27 @@ class Select extends SelectStatement
     
     public function execute($first = false)
     {
-        if($first !== false)
+        if($first === true)
         {
             return $this->database->cmdSelectFirst((string) $this, $this->compiler->getParams());
+        }
+        elseif(is_string($first))
+        {
+            $index = 0;
+            foreach($this->columns as $key => &$column)
+            {
+                if($column['alias'] == $first || $column['name'] == $first)
+                {
+                    $index = $key;
+                    break;
+                }
+            }
+            
+            return $this->database->cmdSelectColumn((string) $this, $this->compiler->getParams(), $index);
+        }
+        elseif(is_int($first))
+        {
+            return $this->database->cmdSelectColumn((string) $this, $this->compiler->getParams(), $first);
         }
         
         return $this->database->cmdSelect((string) $this, $this->compiler->getParams());

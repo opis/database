@@ -205,6 +205,13 @@ class Database
         return $prepared['statement']->fetch();
     }
     
+    public function cmdSelectColumn($sql, array $params, $column = 0)
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        return $prepared['statement']->fetchColumn($column);
+    }
+    
     public function cmdInsert($sql, array $params)
     {
         return $this->execute($this->prepare($sql, $params));
