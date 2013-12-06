@@ -29,10 +29,14 @@ class WhereCondition implements WhereInterface
     
     protected $compiler;
     
-    public function __construct(Compiler $compiler)
+    public function __construct(Compiler $compiler, Where $where = null)
     {
         $this->compiler = $compiler;
-        $this->where = new Where($compiler);
+        if($where === null)
+        {
+            $where = new Where($compiler);
+        }
+        $this->where = $where;
     }
     
     public function getWhereClauses()

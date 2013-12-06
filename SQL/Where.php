@@ -48,12 +48,12 @@ class Where implements WhereInterface
         }
         elseif($value instanceof Closure)
         {
-            $select = $this->compiler->subquery();
-            $value($select);
+            $expr = new Expression($this->compiler);
+            $value($expr);
             $this->clauses[] = array(
-                'type' => 'whereSubquery',
+                'type' => 'whereColumn',
                 'column' => $column,
-                'subquery' => $select,
+                'value' => $expr,
                 'operator' => $operator,
                 'separator' => $separator,
             );
@@ -88,7 +88,7 @@ class Where implements WhereInterface
     {
         if($value instanceof Closure)
         {
-            $select = $this->compiler->subquery();
+            $select = new Subquery($this->compiler);
             $value($select);
             $this->clauses[] = array(
                 'type' => 'whereInSelect',
@@ -124,7 +124,7 @@ class Where implements WhereInterface
     
     protected function addExistsClause($closure, $separator, $not)
     {
-        $select = $this->compiler->subquery();
+        $select = new Subquery($this->compiler);
         $closure($select);
         
         $this->clauses[] = array(

@@ -56,6 +56,7 @@ class SQLServer extends Compiler
             $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
             $sql .= 'TOP ' . $limit . ' ';
             $sql .= $this->handleColumns($select->getColumns());
+            $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
             $sql .= ' FROM ';
             $sql .= $this->handleTables($select->getTables());
             $sql .= $this->handleJoins($select->getJoinClauses());

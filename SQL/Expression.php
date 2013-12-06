@@ -86,11 +86,11 @@ class Expression
         return $this->addExpression('group', $expresion);
     }
     
-    public function select($tables, $distinct = false)
+    public function from($tables)
     {
         $subquery = new Subquery($this->compiler);
         $this->addExpression('subquery', $subquery);
-        return $subquery->select($tables, $distinct);
+        return $subquery->from($tables);
     }
     
     public function count($column = '*', $distinct = false)

@@ -30,9 +30,10 @@ class UpdateStatement extends WhereCondition
     
     protected $sql;
     
-    public function __construct(Compiler $compiler)
+    public function __construct(Compiler $compiler, $table, Where $where = null)
     {
-        parent::__construct($compiler);
+        parent::__construct($compiler, $where);
+        $this->tables = array((string) $table);
     }
     
     public function getTables()
@@ -45,17 +46,19 @@ class UpdateStatement extends WhereCondition
         return $this->columns;
     }
     
-    public function table($table)
-    {
-        $this->tables = array((string) $table);
-        return $this;
-    }
     
-    public function set($column, $value)
+    public function set($column, $value = null)
     {
-        if($value instanceof Closure)
+        if(is_array($column))
         {
-            $expr = $this->compiler->expression();
+            foreach($column as $key => $value)
+            {
+                $this->set($key, $value);
+            }
+        }
+        elseif($value instanceof Closure)
+        {
+            $expr = new Expression($this->compiler);
             $value($expr);
             
             $this->columns[] = array(
@@ -69,16 +72,6 @@ class UpdateStatement extends WhereCondition
                 'column' => $column,
                 'value' => $value,
             );
-        }
-        
-        return $this;
-    }
-    
-    public function columns(array $columns)
-    {
-        foreach($columns as $column => $value)
-        {
-            $this->set($column, $value);
         }
         return $this;
     }

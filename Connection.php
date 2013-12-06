@@ -270,7 +270,7 @@ class Connection
     
     public static function mysql($name, $default = false)
     {
-        return static::setInstance($name, new MySQLConnection, $default);
+        return static::setConnectionInstance($name, new MySQLConnection, $default);
     }
     
     public static function sqlsrv($name, $default = false)

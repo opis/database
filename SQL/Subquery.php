@@ -31,10 +31,10 @@ class Subquery
         $this->compiler = $compiler;
     }
     
-    public function select($tables, $distinct = false)
+    public function from($tables)
     {
-        $this->select = $this->compiler->createSelectStatement();
-        return $this->select->distinct($distinct)->from($tables);
+        $this->select = new SelectStatement($this->compiler, $tables);
+        return $this->select;
     }
     
     public function __toString()

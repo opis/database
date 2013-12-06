@@ -25,10 +25,9 @@ use Closure;
 use PDOException;
 use RuntimeException;
 use Opis\Database\Connection;
-use Opis\Database\SQL\Select as SelectCommand;
+use Opis\Database\SQL\Query as QueryCommand;
 use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\Update as UpdateCommand;
-use Opis\Database\SQL\Delete as DeleteCommand;
 
 class Database
 {
@@ -107,7 +106,7 @@ class Database
      * @return string
      */
 
-    protected function replaceParams($query, array $params)
+    public function replaceParams($query, array $params)
     {
         $pdo = $this->connection->pdo();
         
@@ -191,65 +190,54 @@ class Database
         return $result;
     }
     
-    public function cmdSelect($sql, array $params)
+    public function count($sql, array $params)
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        return $prepared['statement']->rowCount();
+    }
+    
+    public function query($sql, array $params)
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
         return $prepared['statement']->fetchAll();
     }
     
-    public function cmdSelectFirst($sql, array $params)
+    public function success($sql, array $params)
+    {
+        return $this->execute($this->prepare($sql, $params));
+    }
+    
+    public function first($sql, array $params)
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
         return $prepared['statement']->fetch();
     }
     
-    public function cmdSelectColumn($sql, array $params, $column = 0)
+    public function column($sql, array $params)
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
-        return $prepared['statement']->fetchColumn($column);
+        return $prepared['statement']->fetchColumn();
     }
     
-    public function cmdInsert($sql, array $params)
+    public function from($tables)
     {
-        return $this->execute($this->prepare($sql, $params));
+        return new QueryCommand($this, $tables);
     }
     
-    public function cmdUpdate($sql, array $params)
+    public function insert($table, $columns = array())
     {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return $prepared['statement']->rowCount();
-    }
-    
-    public function cmdDelete($sql, array $params)
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return $prepared['statement']->rowCount();
-    }
-
-    public function select($table, $distinct = false)
-    {
-        return SelectCommand::factory($this)->distinct($distinct)->from($table);
-    }
-    
-    public function insert($table, $columns  = array())
-    {
-        return InsertCommand::factory($this)->into($table)->columns($columns);
-    }
-    
-    public function delete($table)
-    {
-        return DeleteCommand::factory($this)->from($table);
+        return new InsertCommand($this, $table, $columns);
     }
     
     public function update($table)
     {
-        return UpdateCommand::factory($this)->table($table);
+        return new UpdateCommand($this, $table);
     }
+    
     
     /**
      * Executes queries and rolls back the transaction if any of them fail.
@@ -267,7 +255,8 @@ class Database
             $result = $queries($this);
             $this->pdo->commit();
             
-        }catch(PDOException $e)
+        }
+        catch(PDOException $e)
         {
             $this->pdo->rollBack();
             throw $e;

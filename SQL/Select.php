@@ -24,46 +24,62 @@ use Opis\Database\Database;
 
 class Select extends SelectStatement
 {
-    
     protected $database;
     
-    public function __construct(Database $database)
+    public function __construct(Database $database, Compiler $compiler, $tables, $joins, Where $where = null)
     {
-        parent::__construct($database->getCompiler());
+        parent::__construct($compiler, $tables, $where);
         $this->database = $database;
+        $this->joins = $joins;
     }
     
-    public static function factory(Database $database)
+    public function into($table, $database = null)
     {
-        return new self($database);
+        $this->intoTable = $table;
+        $this->intoDatabase = $database;
+        return $this;
     }
     
-    public function execute($first = false)
+    public function select($columns = array())
     {
-        if($first === true)
-        {
-            return $this->database->cmdSelectFirst((string) $this, $this->compiler->getParams());
-        }
-        elseif(is_string($first))
-        {
-            $index = 0;
-            foreach($this->columns as $key => &$column)
-            {
-                if($column['alias'] == $first || $column['name'] == $first)
-                {
-                    $index = $key;
-                    break;
-                }
-            }
-            
-            return $this->database->cmdSelectColumn((string) $this, $this->compiler->getParams(), $index);
-        }
-        elseif(is_int($first))
-        {
-            return $this->database->cmdSelectColumn((string) $this, $this->compiler->getParams(), $first);
-        }
-        
-        return $this->database->cmdSelect((string) $this, $this->compiler->getParams());
+        parent::select($columns);
+        return $this->database->query((string) $this, $this->compiler->getParams());
+    }
+    
+    public function first($columns = array())
+    {
+        parent::select($columns);
+        return $this->database->query((string) $this, $this->compiler->getParams());
+    }
+    
+    public function count($column = '*',  $distinct = false)
+    {
+        parent::count($column, $distinct);
+        return $this->database->column((string) $this, $this->compiler->getParams());
+    }
+    
+    public function avg($column, $distinct = false)
+    {
+        parent::avg($column, $distinct);
+        return $this->database->column((string) $this, $this->compiler->getParams());
+    }
+    
+    public function sum($column, $distinct  = false)
+    {
+        parent::sum($column, $distinct);
+        return $this->database->column((string) $this, $this->compiler->getParams());
+    }
+    
+    public function min($column, $distinct = false)
+    {
+        parent::min($column, $distinct);
+        return $this->database->column((string) $this, $this->compiler->getParams());
+    }
+    
+    public function max($column, $distinct = false)
+    {
+        parent::max($column, $distinct);
+        return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
 }

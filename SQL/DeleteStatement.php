@@ -20,15 +20,24 @@
 
 namespace Opis\Database\SQL;
 
-class DeleteStatement extends WhereCondition
+class DeleteStatement extends WhereJoinCondition
 {
     protected $tables;
     
+    protected $from;
+    
     protected $sql;
     
-    public function __construct(Compiler $compiler)
+    public function __construct(Compiler $compiler, $from, Where $where = null)
     {
-        parent::__construct($compiler);
+        parent::__construct($compiler, $where);
+        
+        if(!is_array($from))
+        {
+            $from = array($from);
+        }
+        
+        $this->from = $from;
     }
     
     public function getTables()
@@ -36,10 +45,18 @@ class DeleteStatement extends WhereCondition
         return $this->tables;
     }
     
-    public function from($table)
+    public function getFrom()
     {
-        $this->tables = array((string) $table);
-        return $this;
+        return $this->from;
+    }
+    
+    public function delete($tables = array())
+    {
+        if(!is_array($tables))
+        {
+            $tables = array($tables);
+        }
+        $this->tables = $tables;
     }
     
     public function __toString()

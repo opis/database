@@ -28,15 +28,27 @@ class InsertStatement
     
     protected $compiler;
     
-    protected $columns = array();
+    protected $columns;
     
     protected $values = array();
     
     protected $sql;
     
-    public function __construct(Compiler $compiler)
+    public function __construct(Compiler $compiler, $table, $columns = array())
     {
         $this->compiler = $compiler;
+        $this->tables = array((string) $table);
+        if(!is_array($columns))
+        {
+            $columns = array($columns);
+        }
+        foreach($columns as $column)
+        {
+            $this->columns[] = array(
+                'name' => $column,
+                'alias' => null,
+            );
+        }
     }
     
     public function getTables()
@@ -54,29 +66,6 @@ class InsertStatement
         return $this->columns;
     }
     
-    public function into($table)
-    {
-        $this->tables = array((string) $table);
-        return $this;
-    }
-    
-    public function columns($columns)
-    {
-        if(!is_array($columns))
-        {
-            $columns = array($columns);
-        }
-        
-        foreach($columns as $column)
-        {
-            $this->columns[] = array(
-                'name' => $column,
-                'alias' => null,
-            );
-        }
-        
-        return $this;
-    }
     
     public function values($values)
     {
@@ -91,7 +80,7 @@ class InsertStatement
         {
             if($value instanceof Closure)
             {
-                $expression = $this->compiler->expression();
+                $expression = new Expression($this->compiler);
                 $value($expression);
                 $result[] = $expression;
             }

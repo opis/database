@@ -22,10 +22,8 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class SelectStatement extends WhereCondition
+class SelectStatement extends WhereJoinCondition
 {
-    
-    protected $joins = array();
     
     protected $have = array();
     
@@ -43,17 +41,23 @@ class SelectStatement extends WhereCondition
     
     protected $distinct = false;
     
+    protected $intoTable = null;
+    
+    protected $intoDatabase = null;
+    
     protected $sql;
     
     
-    public function __construct(Compiler $compiler)
+    public function __construct(Compiler $compiler, $tables, Where $where = null)
     {
-        parent::__construct($compiler);
-    }
-    
-    public function getJoinClauses()
-    {
-        return $this->joins;
+        parent::__construct($compiler, $where);
+        
+        if(!is_array($tables))
+        {
+            $tables = array($tables);
+        }
+        
+        $this->tables = $tables;
     }
     
     public function getHavingClauses()
@@ -96,24 +100,14 @@ class SelectStatement extends WhereCondition
         return $this->columns;
     }
     
-    protected function addJoinClause($type, $table, $column1, $column2, $operator, $closure)
+    public function getIntoTable()
     {
-        $join = new Join();
-        
-        $join->andOn($column1, $column2, $operator);
-        
-        if($closure != null)
-        {
-            $closure($join);
-        }
-        
-        $this->joins[] = array(
-            'type' => $type,
-            'table' => $table,
-            'join' => $join,
-        );
-        
-        return $this;
+        return $this->intoTable;
+    }
+    
+    public function getIntoDatabase()
+    {
+        return $this->intoDatabase;
     }
     
     protected function addHavingClause($column, $value, $operator, $separator)
@@ -127,40 +121,15 @@ class SelectStatement extends WhereCondition
         return $this;
     }
     
-    public function from($tables)
+    protected function expression()
     {
-        if(!is_array($tables))
-        {
-            $tables = array($tables);
-        }
-        $this->tables = $tables;
-        return $this;
+        return new ColumnExpression($this->compiler);
     }
     
     public function distinct($value = true)
     {
         $this->distinct = $value;
         return $this;
-    }
-    
-    public function join($table, $column1, $column2, $operator = '=', Closure $closure = null)
-    {
-        return $this->addJoinClause('INNER', $table, $column1, $column2, $operator, $closure);
-    }
-    
-    public function leftJoin($table, $column1, $column2, $operator = '=', Closure $closure = null)
-    {
-        return $this->addJoinClause('LEFT', $table, $column1, $column2, $operator, $closure);
-    }
-    
-    public function rightJoin($table, $column1, $column2, $operator = '=', Closure $closure = null)
-    {
-        return $this->addJoinClause('RIGHT', $table, $column1, $column2, $operator, $closure);
-    }
-    
-    public function fullJoin($table, $column1, $column2, $operator = '=', Closure $closure = null)
-    {
-        return $this->addJoinClause('FULL', $table, $column1, $column2, $operator, $closure);
     }
     
     public function groupBy($columns)
@@ -209,90 +178,50 @@ class SelectStatement extends WhereCondition
         return $this;
     }
     
-    public function column($name, $alias = null)
+    public function select($columns = array())
     {
-        $this->columns[] = array(
-            'name' => $name,
-            'alias' => $alias,
-        );
-        return $this;
-    }
-    
-    public function columns(array $columns)
-    {
-        foreach($columns as $name => $alias)
+        $expr = $this->expression();
+        
+        if($columns instanceof Closure)
         {
-            if(is_string($name))
-            {
-                $this->column($name, $alias);
-            }
-            else
-            {
-                $this->column($alias, null);
-            }
+            $columns($colexpr);
         }
-        return $this;
+        else
+        {
+            if(!is_array($columns))
+            {
+                $columns = array($columns);
+            }
+            $expr->columns($columns);
+        }
+        $this->columns = $expr->getColumns();
     }
     
-    public function count($column = '*', $alias = null, $distinct = false)
+    public function count($column = '*',  $distinct = false)
     {
-        return $this->column($this->compiler->expression()->count($column, $distinct), $alias);
+        $this->columns = $this->expression()->count($column, null, $distinct)->getColumns();
     }
     
-    public function avg($column, $alias = null, $distinct = false)
+    public function avg($column, $distinct = false)
     {
-        return $this->column($this->compiler->expression()->avg($column, $distinct), $alias);
+        $this->columns = $this->expression()->avg($column, null, $distinct)->getColumns();
     }
     
-    public function sum($column, $alias = null, $distinct  = false)
+    public function sum($column, $distinct  = false)
     {
-        return $this->column($this->compiler->expression()->sum($column, $distinct), $alias);
+        $this->columns = $this->expression()->sum($column, null, $distinct)->getColumns();
     }
     
-    public function min($column, $alias = null, $distinct = false)
+    public function min($column, $distinct = false)
     {
-        return $this->column($this->compiler->expression()->min($column, $distinct), $alias);
+        $this->columns = $this->expression()->min($column, null, $distinct)->getColumns();
     }
     
-    public function max($column, $alias = null, $distinct = false)
+    public function max($column, $distinct = false)
     {
-        return $this->column($this->compiler->expression()->max($column, $distinct), $alias);
+        $this->columns = $this->expression()->max($column, null, $distinct)->getColumns();
     }
     
-    public function ucase($column, $alias = null)
-    {
-        return $this->column($this->compiler->expression()->ucase($column), $alias);
-    }
-    
-    public function lcase($column, $alias = null)
-    {
-        return $this->column($this->compiler->expression()->lcase($column), $alias);
-    }
-    
-    public function mid($column, $start = 1, $alias = null, $length = 0)
-    {
-        return $this->column($this->compiler->expression()->mid($column, $start, $length), $alias);
-    }
-    
-    public function len($column, $alias = null)
-    {
-        return $this->column($this->compiler->expression()->len($column), $alias);
-    }
-    
-    public function round($column, $decimals = 0, $alias = null)
-    {
-        return $this->column($this->compiler->expression()->round($column, $decimals), $alias);
-    }
-    
-    public function format($column, $format, $alias = null)
-    {
-        return $this->column($this->compiler->expression()->format($column, $format), $alias);
-    }
-    
-    public function now($alias = null)
-    {
-        return $this->column($this->compiler->expression()->now(), $alias);
-    }
     
     public function __toString()
     {

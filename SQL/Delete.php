@@ -24,23 +24,19 @@ use Opis\Database\Database;
 
 class Delete extends DeleteStatement
 {
-    
     protected $database;
     
-    public function __construct(Database $database)
+    public function __construct(Database $database, Compiler $compiler, $from, $joins, Where $where = null)
     {
-        parent::__construct($database->getCompiler());
+        parent::__construct($compiler, $from, $where);
         $this->database = $database;
+        $this->joins = $joins;
     }
     
-    public static function factory(Database $database)
+    public function delete($tables = array())
     {
-        return new self($database);
-    }
-    
-    public function execute()
-    {
-        return $this->database->cmdDelete((string) $this, $this->compiler->getParams());
+        parent::delete($tables);
+        return $database->count((string) $this, $this->compiler->getParams());
     }
     
 }

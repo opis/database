@@ -27,20 +27,16 @@ class Insert extends InsertStatement
     
     protected $database;
     
-    public function __construct(Database $database)
+    public function __construct(Database $database, $table, array $columns = array())
     {
-        parent::__construct($database->getCompiler());
+        parent::__construct($database->getCompiler(), $table, $columns);
         $this->database = $database;
     }
     
-    public static function factory(Database $database)
-    {
-        return new self($database);
-    }
     
     public function execute()
     {
-        return $this->database->cmdInsert((string) $this, $this->compiler->getParams());
+        return $this->database->success((string) $this, $this->compiler->getParams());
     }
     
 }

@@ -27,20 +27,16 @@ class Update extends UpdateStatement
     
     protected $database;
     
-    public function __construct(Database $database)
+    public function __construct(Database $database, $table)
     {
-        parent::__construct($database->getCompiler());
+        parent::__construct($database->getCompiler(), $table);
         $this->database = $database;
     }
     
-    public static function factory(Database $database)
-    {
-        return new self($database);
-    }
     
     public function execute()
     {
-        return $this->database->cmdUpdate((string) $this, $this->compiler->getParams());
+        return $this->database->count((string) $this, $this->compiler->getParams());
     }
     
 }

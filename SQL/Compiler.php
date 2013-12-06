@@ -129,7 +129,13 @@ class Compiler
     
     protected function handleTables(array $tables)
     {
+        if(empty($tables))
+        {
+            return '';
+        }
+        
         $sql = array();
+        
         foreach($tables as $name => $alias)
         {
             if(is_string($name))
@@ -143,6 +149,7 @@ class Compiler
         }
         return implode(', ', $sql);
     }
+    
     
     protected function handleColumns(array $columns)
     {
@@ -165,6 +172,15 @@ class Compiler
             }
         }
         return implode(', ', $sql);
+    }
+    
+    public function handleInto($table, $database)
+    {
+        if($table === null)
+        {
+            return '';
+        }
+        return ' INTO ' . $this->wrap($table) . ($database === null ? '' : ' IN ' . $this->wrap($database));
     }
     
     protected function handleWheres(array $wheres, $prefix = true)
@@ -245,7 +261,7 @@ class Compiler
         
         foreach($ordering as $order)
         {
-            $sql[] = $this->columns($order['columns']) . ' ' . $this->$order['order'];
+            $sql[] = $this->columns($order['columns']) . ' ' . $order['order'];
         }
         
         return ' ORDER BY ' . implode(', ', $sql);
@@ -401,40 +417,11 @@ class Compiler
         return 'FORMAT('. $this->wrap($func['column']). ', ' . $this->param($func['format']) . ')';
     }
     
-    public function createSelectStatement()
-    {
-        return new SelectStatement($this);
-    }
-    
-    public function createInsertStatement()
-    {
-        return new InsertStatement($this);
-    }
-    
-    public function createUpdateStatement()
-    {
-        return new UpdateStatement($this);
-    }
-    
-    public function createDeleteStatement()
-    {
-        return new DeleteStatement($this);
-    }
-    
-    public function subquery()
-    {
-        return new Subquery($this);
-    }
-    
-    public function expression()
-    {
-        return new Expression($this);
-    }
-    
     public function select(SelectStatement $select)
     {
         $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
+        $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
         $sql .= $this->handleJoins($select->getJoinClauses());
@@ -472,8 +459,10 @@ class Compiler
     
     public function delete(DeleteStatement $delete)
     {
-        $sql  = 'DELETE FROM ';
-        $sql .= $this->handleTables($delete->getTables());
+        $sql  = 'DELETE ' . $this->handleTables($delete->getTables());
+        $sql .= $sql === 'DELETE ' ? 'FROM ' : ' FROM ';
+        $sql .= $this->handleTables($delete->getFrom());
+        $sql .= $this->handleJoins($delete->getJoinClauses());
         $sql .= $this->handleWheres($delete->getWhereClauses());
         
         return $sql;
