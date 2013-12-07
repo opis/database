@@ -15,224 +15,317 @@ Connection::mysql('test', true)
 $db = Database::connection('test');
 ```
 
-###Select###
+###Fetching data###
 
-Select all
+Select all columns from a table
 
 ```sql
-SELECT * FROM `table1`
+SELECT * FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
+$result = $db->from('customers')
              ->select();
-             
-//Get only the first result
-
-$result = $db->from('table1')
-             ->first();
 ```
 
-Select with columns
+Select a single column from a table
 
 ```sql
-SELECT `column1`, `column2` FROM `table1`
+SELECT `id` FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->select(array('column1', 'column2'));
+$result = $db->from('customers')
+             ->select('id');
+```
 
-//Get only the first result
+Select multiple columns from a table
 
-$result = $db->from('table1')
-             ->first(array('column1', 'column2'));
+```sql
+SELECT `name`, `email` FROM `customers`
+```
+
+```php
+$result = $db->from('customers')
+             ->select(array('name', 'email'));
+```
+
+Processing the result set
+
+```php
+foreach($result as $row)
+{
+    print  $row->name . ' => ' . $row->email;
+}
+```
+
+To fetch as single row from the result-set use the **->first()** method
+
+```sql
+SELECT `name`, `email` FROM `customers`
+```
+
+```php
+$result = $db->from('customers')
+             ->first(array('name', 'email'));
+             
+print $result->name . ' => ' . $result->email;
+```
+
+To fetch a single column use the **->column()** method. 
+
+```sql
+SELECT `email` FROM `customers`
+```
+
+```php
+$email = $db->from('customers')
+             ->column('email');
+             
+print $email;
 ```
 
 Aliasing column names
 
 ```sql
-SELECT `column1` AS `c1`, `column2` AS `c2` FROM `table1`
+SELECT `phone_number` AS `phone`, `primary_email` AS `email` FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->select(array('column1' => 'c1', 'column2' => 'c2'));
+$result = $db->from('customers')
+             ->select(array('phone_number' => 'phone', 'primary_email' => 'email'));
 
-//Get only the first result
+//Processing the result set
 
-$result = $db->from('table1')
-             ->first(array('column1' => 'c1', 'column2' => 'c2'));
+foreach($result as $row)
+{
+    print $row->phone . ', ' . $row->email;
+}
 ```
 
 Selecting from multiple tables
 
 ```sql
-SELECT * FROM `table1`, `table2`
+SELECT * FROM `customers`, `products`
 ```
 
 ```php
-$result = $db->from(array('table1', 'table2'))
+$result = $db->from(array('customers', 'products'))
              ->select();
-             
-//Get only the first result
-
-$result = $db->from(array('table1', 'table2'))
-             ->first();
 ```
 
 Aliasing table names
 
 ```sql
-SELECT * FROM `table1` AS `t1`, `table2` AS `t2`
+SELECT * FROM `customers` AS `c`, `products` AS `p`
 ```
 
 ```php
-$result = $db->from(array('table1' => 't1', 'table2' => 't2'))
+$result = $db->from(array('customers' => 'c', 'products' => 'p'))
              ->select();
-             
-//Get only the first result
-
-$result = $db->from(array('table1' => 't1', 'table2' => 't2'))
-             ->first();
 ```
 
-WHERE conditions
+Selecting distinct values from a table
 
 ```sql
-SELECT * FROM `table1` WHERE `column1` = 1
+SELECT DISTINCT * FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->where('column1', 1)
+$result = $db->from('customers')
+             ->distinct()
              ->select();
-             
-//Get only the first result
-
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->first();
 ```
+
+###Aggregate functions###
+
+**Counting**
 
 ```sql
-SELECT * FROM `table1` WHERE `column1` = 1 AND `column2` > 2
+SELECT COUNT(*) FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->where('column2, 2, '>')
-             ->select();
-             
-//Get only the first result
-
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->where('column2, 2, '>')
-             ->first();
+$result = $db->from('customers')
+             ->count();
 ```
 
 ```sql
-SELECT * FROM `table1` WHERE `column1` = 1 OR `column2` > 2
+SELECT COUNT(`facebook_id`) FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->orWhere('column2, 2, '>')
-             ->select();
-             
-//Get only the first result
-
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->orWhere('column2, 2, '>')
-             ->first();
+$result = $db->from('customers')
+             ->count('facebook_id');
 ```
-
-Grouping WHERE conditions
 
 ```sql
-SELECT * FROM `table1` WHERE `column1` = 1 OR (`column2` = 2 AND `column3` < 3)
+SELECT COUNT(DISTINCT `city`) FROM `customers`
 ```
 
 ```php
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->orWhere(function($condition){
-                $condition->where('column2', 2)
-                          ->where('column3', 3, '<');
+$result = $db->from('customers')
+             ->count('city', true);
+```
+
+```sql
+SELECT COUNT(DISTINCT `city`, `street`) FROM `customers`
+```
+
+```php
+$result = $db->from('customers')
+             ->count(array('city', 'street'));
+```
+
+**Average**
+
+```sql
+SELECT AVG(`price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->avg('price');
+```
+
+```sql
+SELECT AVG(DISTINCT `price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->avg('price', true);
+```
+
+**Largest value**
+
+```sql
+SELECT MAX(`price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->max('price');
+```
+
+```sql
+SELECT MAX(DISTINCT `price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->max('price', true);
+```
+
+**Smallest value**
+
+```sql
+SELECT MIN(`price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->min('price');
+```
+
+```sql
+SELECT MIN(DISTINCT `price`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->min('price', true);
+```
+
+**Total**
+
+```sql
+SELECT SUM(`quantity`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->sum('quantity');
+```
+
+```sql
+SELECT SUM(DISTINCT `quantity`) FROM `products`
+```
+
+```php
+$result = $db->from('products')
+             ->sum('quantity', true);
+```
+
+###WHERE Clauses###
+
+Using **->where()**, **->andWhere()**, **orWhere()** methods
+
+```sql
+SELECT * FROM `products` WHERE `quantity` = 10
+```
+
+```php
+$result = $db->from('products')
+             ->where('quantity', 10)
+             ->select();
+```
+
+```sql
+SELECT * FROM `products` WHERE `quantity` > 10
+```
+
+```php
+$result = $db->from('products')
+             ->where('quantity', 10, '>')
+             ->select();
+```
+
+```sql
+SELECT * FROM `products` WHERE `quantity` > 10 AND `quantity` < 20
+```
+
+```php
+$result = $db->from('products')
+             ->where('quantity', 10, '>')
+             ->where('quantity', 20, '<')
+             ->select();
+
+//Alternative syntax
+
+$result = $db->from('products')
+             ->where('quantity', 10, '>')
+             ->andWhere('quantity', 20, '<')
+             ->select();
+```
+
+There is no difference between **->where()** and **->andWhere()** methods. The main purpose of the **->andWhere()** method is to improve code readability.
+
+```sql
+SELECT * FROM `products` WHERE `brand` = 'Toshiba' OR `brand` = 'Sony'
+```
+
+```php
+$result = $db->from('products')
+             ->where('brand', 'Toshiba')
+             ->orWhere('brand', 'Sony')
+             ->select();
+```
+
+Grouping conditions
+
+```sql
+SELECT * FROM `products` WHERE `category` = 'laptops' AND (`brand` = 'Toshiba' OR `brand` = 'Sony')
+```
+
+```php
+$result = $db->from('products')
+             ->where('category', 'laptops')
+             ->andWhere(function($group){
+                $group->where('brand', 'Toshiba')
+                      ->orWhere('brand', 'Sony');
              })
              ->select();
-
-//Get only the first result
-
-$result = $db->from('table1')
-             ->where('column1', 1)
-             ->orWhere(function($condition){
-                $condition->where('column2', 2)
-                          ->where('column3', 3, '<');
-             })
-             ->first();
 ```
 
-WHERE IN conditions
-
-```sql
-SELECT * FROM `table1` WHERE `column1` IN (1, 2, 3)
-```
-
-```php
-$result = $db->from('table1')
-             ->in('column1', array(1, 2, 3))
-             ->select();
-
-//Get only the first result
-
-$result = $db->from('table1')
-             ->in('column1', array(1, 2, 3))
-             ->first();
-```
-
-```sql
-SELECT * FROM `table1` WHERE `column1` IN (1, 2, 3) OR `column2` IN (4, 5, 6)
-```
-
-```php
-$result = $db->from('table1')
-             ->in('column1', array(1, 2, 3))
-             ->orIn('column2', array(4, 5, 6))
-             ->select();
-
-//Get only the first result
-
-$result = $db->from('table1')
-             ->in('column1', array(1, 2, 3))
-             ->orIn('column2', array(4, 5, 6))
-             ->first();
-```
-
-WHERE IN Subquery
-
-```sql
-SELECT * FROM `table1` WHERE `column1` IN (SELECT `id` FROM `table2`)
-```
-
-```php
-$result = $db->from('table1')
-             ->in('column1', function($subquery){
-                $subquery->from('table2')
-                         ->select('id');
-             })
-             ->select();
-
-//Get only the first result
-
-$result = $db->from('table1')
-             ->in('column1', function($subquery){
-                $subquery->from('table2')
-                         ->select('id');
-             })
-             ->first();
-```
+Using **->whereNull()**, **->andWhereNull()**, **->orNull()**.

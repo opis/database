@@ -44,7 +44,10 @@ class WhereJoinCondition extends WhereCondition
         {
             $closure($join);
         }
-        
+        if(!is_array($table))
+        {
+            $table = array($table);
+        }
         $this->joins[] = array(
             'type' => $type,
             'table' => $table,

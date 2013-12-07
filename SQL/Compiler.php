@@ -204,7 +204,7 @@ class Compiler
     
     protected function handleGroupings(array $grouping)
     {
-        return empty($groupings) ? '' : ' GROUP BY ' . $this->columns($groupings);
+        return empty($grouping) ? '' : ' GROUP BY ' . $this->columns($grouping);
     }
     
     protected function handleJoins(array $joins)
@@ -216,7 +216,7 @@ class Compiler
         $sql = array();
         foreach($joins as $join)
         {
-            $sql[] = $join['type'] . ' JOIN '. $this->wrap($join['table']) . ' ON ' . $this->handleJoinCondtitions($join['join']->getJoinConditions());
+            $sql[] = $join['type'] . ' JOIN '. $this->handleTables($join['table']) . ' ON ' . $this->handleJoinCondtitions($join['join']->getJoinConditions());
         }
         return ' ' . implode(' ', $sql);
     }

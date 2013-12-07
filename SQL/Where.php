@@ -149,87 +149,132 @@ class Where implements WhereInterface
         return $this->addWhereClause($column, $value, $operator, 'AND');
     }
     
+    public function andWhere($column, $value = null, $operator = '=')
+    {
+        return $this->where($column, $value, $operator);
+    }
+    
     public function orWhere($column, $value = null, $operator = '=')
     {
         return $this->addWhereClause($column, $value, $operator, 'OR');
     }
     
-    public function between($column, $value1, $value2)
+    public function whereBetween($column, $value1, $value2)
     {
         return $this->addBetweenClause($column, $value1, $value2, 'AND', false);
     }
     
-    public function orBetween($column, $value1, $value2)
+    public function andWhereBetween($column, $value1, $value2)
+    {
+        return $this->whereBetween($column, $value1, $value2);
+    }
+    
+    public function orWhereBetween($column, $value1, $value2)
     {
         return $this->addBetweenClause($column, $value1, $value2, 'OR', false);
     }
     
-    public function notBetween($column, $value1, $value2)
+    public function whereNotBetween($column, $value1, $value2)
     {
         return $this->addBetweenClause($column, $value1, $value2, 'AND', true);
     }
     
-    public function orNotBetween($column, $value1, $value2)
+    public function andWhereNotBetween($column, $value1, $value2)
+    {
+        return $this->whereNotBetween($column, $value1, $value2);
+    }
+    
+    public function orWhereNotBetween($column, $value1, $value2)
     {
         return $this->addBetweenClause($column, $value1, $value2, 'OR', true);
     }
     
-    public function in($column, $value)
+    public function whereIn($column, $value)
     {
         return $this->addInClause($column, $value, 'AND', false);
     }
     
-    public function orIn($column, $value)
+    public function andWhereIn($column, $value)
+    {
+        return $this->whereIn($column, $value);
+    }
+    
+    public function orWhereIn($column, $value)
     {
         return $this->addInClause($column, $value, 'OR', false);
     }
     
-    public function notIn($column, $value)
+    public function whereNotIn($column, $value)
     {
         return $this->addInClause($column, $value, 'AND', true);
     }
     
-    public function orNotIn($column, $value)
+    public function andWhereNotIn($column, $value)
+    {
+        return $this->whereNotIn($column, $value);
+    }
+    
+    public function orWhereNotIn($column, $value)
     {
         return $this->addInClause($column, $value, 'OR', true);
     }
     
-    public function isNull($column)
+    public function whereNull($column)
     {
         return $this->addNullClause($column, 'AND', false);
     }
     
-    public function orNull($column)
+    public function andWhereNull($column)
+    {
+        return $this->whereNull($column);
+    }
+    
+    public function orWhereNull($column)
     {
         return $this->addNullClause($column, 'OR', false);
     }
     
-    public function notNull($column)
+    public function whereNotNull($column)
     {
         return $this->addNullClause($column, 'AND', true);
     }
     
-    public function orNotNull($column)
+    public function andWhereNotNull($column)
+    {
+        return $this->whereNotNull($column);
+    }
+    
+    public function orWhereNotNull($column)
     {
         return $this->addNullClause($column, 'OR', true);
     }
     
-    public function exists(Closure $select)
+    public function whereExists(Closure $select)
     {
         return $this->addExistsClause($select, 'AND', false);
     }
     
-    public function orExists(Closure $select)
+    public function andWhereExists(Closure $select)
+    {
+        return $this->whereExists($select);
+    }
+    
+    public function orWhereExists(Closure $select)
     {
         return $this->addExistsClause($select, 'OR', false);
     }
     
-    public function notExists(Closure $select)
+    public function whereNotExists(Closure $select)
     {   
         return $this->addExistsClause($select, 'AND', true);
     }
     
-    public function orNotExists(Closure $select)
+    public function andWhereNotExists(Closure $select)
+    {   
+        return $this->whereNotExists($select);
+    }
+    
+    public function orWhereNotExists(Closure $select)
     {
         return $this->addExistsClause($select, 'OR', true);
     }

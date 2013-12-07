@@ -28,37 +28,55 @@ interface WhereInterface
     
     function where($column, $value = null, $operator = '=');
     
+    function andWhere($column, $value = null, $operator = '=');
+    
     function orWhere($column, $value = null, $operator = '=');
     
-    function between($column, $value1, $value2);
+    function whereBetween($column, $value1, $value2);
     
-    function orBetween($column, $value1, $value2);
+    function andWhereBetween($column, $value1, $value2);
     
-    function notBetween($column, $value1, $value2);
+    function orWhereBetween($column, $value1, $value2);
     
-    function orNotBetween($column, $value1, $value2);
+    function whereNotBetween($column, $value1, $value2);
     
-    function in($column, $value);
+    function andWhereNotBetween($column, $value1, $value2);
     
-    function orIn($column, $value);
+    function orWhereNotBetween($column, $value1, $value2);
     
-    function notIn($column, $value);
+    function whereIn($column, $value);
     
-    function orNotIn($column, $value);
+    function andWhereIn($column, $value);
     
-    function isNull($column);
+    function orWhereIn($column, $value);
     
-    function orNull($column);
+    function whereNotIn($column, $value);
     
-    function notNull($column);
+    function andWhereNotIn($column, $value);
     
-    function orNotNull($column);
+    function orWhereNotIn($column, $value);
     
-    function exists(Closure $select);
+    function whereNull($column);
     
-    function orExists(Closure $select);
+    function andWhereNull($column);
     
-    function notExists(Closure $select);
+    function orWhereNull($column);
     
-    function orNotExists(Closure $select);
+    function whereNotNull($column);
+    
+    function andWhereNotNull($column);
+    
+    function orWhereNotNull($column);
+    
+    function whereExists(Closure $select);
+    
+    function andWhereExists(Closure $select);
+    
+    function orWhereExists(Closure $select);
+    
+    function whereNotExists(Closure $select);
+    
+    function andWhereNotExists(Closure $select);
+    
+    function orWhereNotExists(Closure $select);
 }

@@ -95,6 +95,11 @@ class Query extends WhereJoinCondition
         return $this->buildSelect()->select($columns);
     }
     
+    public function column($name)
+    {
+        return $this->buildSelect()->column($name);
+    }
+    
     public function count($column = '*',  $distinct = false)
     {
         return $this->buildSelect()->count($column, $distinct);

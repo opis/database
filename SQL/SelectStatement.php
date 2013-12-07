@@ -110,10 +110,12 @@ class SelectStatement extends WhereJoinCondition
         return $this->intoDatabase;
     }
     
-    protected function addHavingClause($column, $value, $operator, $separator)
+    protected function addHavingClause($aggregate, $value, $operator, $separator)
     {
+        $column = new AggregateExpression($this->compiler);
+        $aggregate($column);
         $this->have[] = array(
-            'column' => $column,
+            'column' => $column->getExpression(),
             'value' => $value,
             'operator' => $operator,
             'separator' => $separator,
@@ -142,14 +144,14 @@ class SelectStatement extends WhereJoinCondition
         return $this;
     }
     
-    public function having($column, $value, $operator = '=')
+    public function having(Closure $aggregate, $value, $operator = '=')
     {
-        return $this->addHavingClause($column, $value, $operator, 'AND');
+        return $this->addHavingClause($aggregate, $value, $operator, 'AND');
     }
     
-    public function orHaving($column, $value, $operator = '=')
+    public function orHaving(Closure $aggregate, $value, $operator = '=')
     {
-        return $this->addHavingClause($column, $value, $operator, 'OR');
+        return $this->addHavingClause($aggregate, $value, $operator, 'OR');
     }
     
     public function orderBy($columns, $order = 'ASC')
@@ -184,7 +186,7 @@ class SelectStatement extends WhereJoinCondition
         
         if($columns instanceof Closure)
         {
-            $columns($colexpr);
+            $columns($expr);
         }
         else
         {
@@ -195,6 +197,11 @@ class SelectStatement extends WhereJoinCondition
             $expr->columns($columns);
         }
         $this->columns = $expr->getColumns();
+    }
+    
+    public function column($name)
+    {
+        $this->columns = $this->expression()->column($name)->getColumns();
     }
     
     public function count($column = '*',  $distinct = false)
@@ -221,7 +228,6 @@ class SelectStatement extends WhereJoinCondition
     {
         $this->columns = $this->expression()->max($column, null, $distinct)->getColumns();
     }
-    
     
     public function __toString()
     {

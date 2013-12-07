@@ -43,42 +43,56 @@ class Select extends SelectStatement
     public function select($columns = array())
     {
         parent::select($columns);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->query((string) $this, $this->compiler->getParams());
     }
     
     public function first($columns = array())
     {
         parent::select($columns);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->query((string) $this, $this->compiler->getParams());
+    }
+    
+    public function column($name)
+    {
+        parent::column($name);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
+        return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
     public function count($column = '*',  $distinct = false)
     {
         parent::count($column, $distinct);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
     public function avg($column, $distinct = false)
     {
         parent::avg($column, $distinct);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
     public function sum($column, $distinct  = false)
     {
         parent::sum($column, $distinct);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
     public function min($column, $distinct = false)
     {
         parent::min($column, $distinct);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->column((string) $this, $this->compiler->getParams());
     }
     
     public function max($column, $distinct = false)
     {
         parent::max($column, $distinct);
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->column((string) $this, $this->compiler->getParams());
     }
     

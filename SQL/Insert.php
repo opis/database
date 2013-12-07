@@ -36,6 +36,7 @@ class Insert extends InsertStatement
     
     public function execute()
     {
+        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->success((string) $this, $this->compiler->getParams());
     }
     

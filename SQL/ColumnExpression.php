@@ -41,7 +41,7 @@ class ColumnExpression
         return $this->columns;
     }
     
-    public function column($name, $alias)
+    public function column($name, $alias = null)
     {
         $this->columns[] = array(
             'name' => $name,
