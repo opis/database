@@ -36,7 +36,6 @@ class Update extends UpdateStatement
     
     public function execute()
     {
-        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $this->database->count((string) $this, $this->compiler->getParams());
     }
     

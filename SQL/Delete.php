@@ -36,7 +36,6 @@ class Delete extends DeleteStatement
     public function delete($tables = array())
     {
         parent::delete($tables);
-        die('<pre>'.$this->database->replaceParams((string) $this, $this->compiler->getParams()));
         return $database->count((string) $this, $this->compiler->getParams());
     }
     
