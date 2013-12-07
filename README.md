@@ -5,8 +5,8 @@ Opis Database is an advanced Database Abstraction Layer with support for MySQL, 
 ###Documentation###
 
 * [Fetching records](https://github.com/opis/database/blob/master/doc/fetching.md)
-..* [Aggregate functions](https://github.com/opis/database/blob/master/doc/aggregate.md)
-..* [WHERE clauses](https://github.com/opis/database/blob/master/doc/where.md)
+** [Aggregate functions](https://github.com/opis/database/blob/master/doc/aggregate.md)
+** [WHERE clauses](https://github.com/opis/database/blob/master/doc/where.md)
 
 ###Examples###
 
