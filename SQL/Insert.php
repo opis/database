@@ -27,7 +27,7 @@ class Insert extends InsertStatement
     
     protected $database;
     
-    public function __construct(Database $database, $table, array $columns = array())
+    public function __construct(Database $database, $table, $columns = array())
     {
         parent::__construct($database->getCompiler(), $table, $columns);
         $this->database = $database;

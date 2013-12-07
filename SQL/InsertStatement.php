@@ -28,7 +28,7 @@ class InsertStatement
     
     protected $compiler;
     
-    protected $columns;
+    protected $columns = array();
     
     protected $values = array();
     

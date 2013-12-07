@@ -95,6 +95,42 @@ class WhereCondition implements WhereInterface
         return $this;
     }
     
+    public function whereLike($column, $value)
+    {
+        $this->where->whereLike($column, $value);
+        return $this;
+    }
+    
+    public function andWhereLike($column, $value)
+    {
+        $this->where->andWhereLike($column, $value);
+        return $this;
+    }
+    
+    public function orWhereLike($column, $value)
+    {
+        $this->where->orWhereLike($column, $value);
+        return $this;
+    }
+    
+    public function whereNotLike($column, $value)
+    {
+        $this->where->whereNotLike($column, $value);
+        return $this;
+    }
+    
+    public function andWhereNotLike($column, $value)
+    {
+        $this->where->andWhereNotLike($column, $value);
+        return $this;
+    }
+    
+    public function orWhereNotLike($column, $value)
+    {
+        $this->where->orWhereNotLike($column, $value);
+        return $this;
+    }
+    
     public function whereIn($column, $value)
     {
         $this->where->in($column, $value);

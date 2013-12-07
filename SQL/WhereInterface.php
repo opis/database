@@ -44,6 +44,18 @@ interface WhereInterface
     
     function orWhereNotBetween($column, $value1, $value2);
     
+    function whereLike($column, $value);
+    
+    function andWhereLike($column, $value);
+    
+    function orWhereLike($column, $value);
+    
+    function whereNotLike($column, $value);
+    
+    function andWhereNotLike($column, $value);
+    
+    function orWhereNotLike($column, $value);
+    
     function whereIn($column, $value);
     
     function andWhereIn($column, $value);

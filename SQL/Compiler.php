@@ -352,6 +352,11 @@ class Compiler
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT BETWEEN' : 'BETWEEN') . ' ' . $this->param($where['value1']) . ' AND ' . $this->param($where['value2']);
     }
     
+    protected function whereLike(array $where)
+    {
+        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT LIKE' : 'LIKE') . ' ' . $this->param($where['pattern']);
+    }
+    
     protected function whereSubquery(array $where)
     {
         return $this->wrap($where['column']) . ' ' . $where['operator'] .' (' . $where['subquery'] . ')';

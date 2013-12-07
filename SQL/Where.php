@@ -71,6 +71,18 @@ class Where implements WhereInterface
         return $this;
     }
     
+    protected function addLikeClause($column, $pattern, $separator, $not)
+    {
+        $this->clauses[] = array(
+            'type' => 'whereLike',
+            'column' => $column,
+            'pattern' => $pattern,
+            'separator' => $separator,
+            'not' => $not,
+        );
+        return $this;
+    }
+    
     protected function addBetweenClause($column, $value1, $value2, $separator, $not)
     {
         $this->clauses[] = array(
@@ -187,6 +199,36 @@ class Where implements WhereInterface
     public function orWhereNotBetween($column, $value1, $value2)
     {
         return $this->addBetweenClause($column, $value1, $value2, 'OR', true);
+    }
+    
+    public function whereLike($column, $value)
+    {
+        return $this->addLikeClause($column, $value, 'AND', false);
+    }
+    
+    public function andWhereLike($column, $value)
+    {
+        return $this->whereLike($column, $value);
+    }
+    
+    public function orWhereLike($column, $value)
+    {
+        return $this->addLikeClause($column, $value, 'OR', false);
+    }
+    
+    public function whereNotLike($column, $value)
+    {
+        return $this->addLikeClause($column, $value, 'AND', true);
+    }
+    
+    public function andWhereNotLike($column, $value)
+    {
+        return $this->whereNotLike($column, $value);
+    }
+    
+    public function orWhereNotLike($column, $value)
+    {
+        return $this->addLikeClause($column, $value, 'OR', false);
     }
     
     public function whereIn($column, $value)
