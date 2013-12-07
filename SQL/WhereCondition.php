@@ -63,24 +63,24 @@ class WhereCondition implements WhereInterface
     
     public function whereBetween($column, $value1, $value2)
     {
-        $this->where->between($column, $value1, $value2);
+        $this->where->whereBetween($column, $value1, $value2);
         return $this;
     }
     
     public function andWhereBetween($column, $value1, $value2)
     {
-        return $this->whereBetween($column, $value1, $value2);
+        return $this->andWhereBetween($column, $value1, $value2);
     }
     
     public function orWhereBetween($column, $value1, $value2)
     {
-        $this->where->orBetween($column, $value1, $value2);
+        $this->where->orWhereBetween($column, $value1, $value2);
         return $this;
     }
     
     public function whereNotBetween($column, $value1, $value2)
     {
-        $this->where->notBetween($column, $value1, $value2);
+        $this->where->whereNotBetween($column, $value1, $value2);
         return $this;
     }
     
@@ -91,7 +91,7 @@ class WhereCondition implements WhereInterface
     
     public function orWhereNotBetween($column, $value1, $value2)
     {
-        $this->where->orNotBetween($column, $value1, $value2);
+        $this->where->orWhereNotBetween($column, $value1, $value2);
         return $this;
     }
     
@@ -133,7 +133,7 @@ class WhereCondition implements WhereInterface
     
     public function whereIn($column, $value)
     {
-        $this->where->in($column, $value);
+        $this->where->whereIn($column, $value);
         return $this;
     }
     
@@ -144,13 +144,13 @@ class WhereCondition implements WhereInterface
     
     public function orWhereIn($column, $value)
     {
-        $this->where->orIn($column, $value);
+        $this->where->orWhereIn($column, $value);
         return $this;
     }
     
     public function whereNotIn($column, $value)
     {
-        $this->where->notIn($column, $value);
+        $this->where->whereNotIn($column, $value);
         return $this;
     }
     
@@ -161,13 +161,13 @@ class WhereCondition implements WhereInterface
     
     public function orWhereNotIn($column, $value)
     {
-        $this->where->orNotIn($column, $value);
+        $this->where->orWhereNotIn($column, $value);
         return $this;
     }
     
     public function whereNull($column)
     {
-        $this->where->isNull($column);
+        $this->where->whereNull($column);
         return $this;
     }
     
@@ -178,13 +178,13 @@ class WhereCondition implements WhereInterface
     
     public function orWhereNull($column)
     {
-        $this->where->orNull($column);
+        $this->where->orWhereNull($column);
         return $this;
     }
     
     public function whereNotNull($column)
     {
-        $this->where->notNull($column);
+        $this->where->whereNotNull($column);
         return $this;
     }
     
@@ -195,12 +195,12 @@ class WhereCondition implements WhereInterface
     
     public function orWhereNotNull($column)
     {
-        $this->where->orNotNull($column);
+        $this->where->orWhereNotNull($column);
     }
     
     public function whereExists(Closure $select)
     {
-        $this->where->exists($select);
+        $this->where->whereExists($select);
         return $this;
     }
     
@@ -211,13 +211,13 @@ class WhereCondition implements WhereInterface
     
     public function orWhereExists(Closure $select)
     {
-        $this->where->orExists($select);
+        $this->where->orWhereExists($select);
         return $this;
     }
     
     public function whereNotExists(Closure $select)
     {
-        $this->where->notExists($select);
+        $this->where->whereNotExists($select);
         return $this;
     }
     
@@ -228,7 +228,7 @@ class WhereCondition implements WhereInterface
     
     public function orWhereNotExists(Closure $select)
     {
-        $this->where->orNotExists($select);
+        $this->where->orWhereNotExists($select);
         return $this;
     }
     

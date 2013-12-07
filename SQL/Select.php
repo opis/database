@@ -49,7 +49,7 @@ class Select extends SelectStatement
     public function first($columns = array())
     {
         parent::select($columns);
-        return $this->database->query((string) $this, $this->compiler->getParams());
+        return $this->database->first((string) $this, $this->compiler->getParams());
     }
     
     public function column($name)
