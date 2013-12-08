@@ -2,12 +2,6 @@
 
 Opis Database is an advanced Database Abstraction Layer with support for MySQL, PostgreSQL, DB2, Firebird, Oracle
 
-###Documentation###
-
-* [Fetching records](https://github.com/opis/database/blob/master/doc/fetching.md)
-    * [Aggregate functions](https://github.com/opis/database/blob/master/doc/aggregate.md)
-    * [WHERE clauses](https://github.com/opis/database/blob/master/doc/where.md)
-
 ###Examples###
 
 Connecting to a database
@@ -16,13 +10,11 @@ Connecting to a database
 use \Opis\Database\Database;
 use \Opis\Database\Connection;
 
-Connection::mysql('test', true)
-  ->database('db1')
-  ->username('user')
-  ->password('pass')
-  ->charset('utf8');
+$connection = Connection::mysql('user', 'password')
+                        ->database('db1')
+                        ->charset('utf8');
 
-$db = Database::connection('test');
+$db = new Database($connection);
 ```
 
 ####Selecting records####
