@@ -20,6 +20,8 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
+
 class ColumnExpression
 {
     protected $compiler;
@@ -43,6 +45,13 @@ class ColumnExpression
     
     public function column($name, $alias = null)
     {
+        if($name instanceof Closure)
+        {
+            $expression = $this->expression();
+            $name($expression);
+            $name = $expression;
+        }
+        
         $this->columns[] = array(
             'name' => $name,
             'alias' => $alias,
