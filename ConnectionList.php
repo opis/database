@@ -24,7 +24,16 @@ class ConnectionList
 {
     protected $connections = array();
     
+    protected $databases = array();
+    
+    protected $compiler;
+    
     protected $defaultConnection;
+    
+    public function __construct(Closure $compiler = null)
+    {
+        $this->compiler = $compiler;
+    }
     
     public function add($name, Connection $connection, $default = false)
     {
@@ -32,6 +41,10 @@ class ConnectionList
         if($default || $this->defaultConnection === null)
         {
             $this->defaultConnection = $name;
+        }
+        if($this->compiler !== null && !$connection->hasCompiler())
+        {
+            $connection->setCompiler($this->compiler);
         }
         return $this;
     }
@@ -44,5 +57,18 @@ class ConnectionList
         }
         
         return isset($this->connections[$name]) ? $this->connections[$name] : null;
+    }
+    
+    public function connect($name = null)
+    {
+        if($name === null)
+        {
+            $name = $this->defaultConnection;
+        }
+        if(!isset($this->databases[$name]))
+        {
+            $this->databases[$name] = new Database($this->get($name));
+        }
+        return $this->databases[$name];
     }
 }

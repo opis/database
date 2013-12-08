@@ -114,6 +114,11 @@ class Connection
         $this->compiler = $compiler;
     }
     
+    public function hasCompiler()
+    {
+        return $this->compiler !== null;
+    }
+    
     public function options(array $options)
     {
         foreach($options as $name => $value)
