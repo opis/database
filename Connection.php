@@ -29,13 +29,6 @@ use Opis\Database\DSN\PostgreSQL as PostgreSQLConnection;
 
 class Connection
 {
-    
-    protected static $connections = array();
-    
-    protected static $compilers = array();
-    
-    protected static $defaultConnection = null;
-    
     protected $username = null;
     
     protected $password = null;
@@ -170,10 +163,6 @@ class Connection
     
     public function compiler()
     {
-        if(isset(static::$compilers[$this->prefix]))
-        {
-            return static::$compilers[$this->prefix]();
-        }
         switch($this->prefix)
         {
             case 'mysql':
@@ -199,107 +188,68 @@ class Connection
         }
     }
     
-    public static function registerCompiler($prefix, Closure $closure)
+    public static function create($prefix, $username = null, $password = null)
     {
-        static::$compilers[$prefix] = $closure;
+        return (new Connection($prefix))->username($username)->password($password);
     }
     
-    public static function getDefaultConnectionName()
+    public static function dblib($username, $password)
     {
-        if(static::$defaultConnection == null)
-        {
-            if(!empty(static::$connections))
-            {
-                static::$defaultConnection = reset(array_keys(static::$connections));
-            }
-        }
-        
-        return static::$defaultConnection;
+        return static::create('dblib', $username, $password);
     }
     
-    public static function get($name = null)
+    public static function sybase($username, $password)
     {
-        if($name == null)
-        {
-            $name = static::getDefaultConnectionName();
-        }
-        return static::$connections[$name];
+        return static::create('sybase', $username, $password);
     }
     
-    public static function create($prefix, $name, $default = false)
+    public static function mssql($username, $password)
     {
-        return static::setConnectionInstance($name, new Connection($prefix), $default);
+        return static::create('mssql', $username, $password);
     }
     
-    public static function setConnectionInstance($name, Connection $connection, $default = false)
+    public static function firebird($username, $password)
     {
-        static::$connections[$name] = $connection;
-        
-        if($default === true)
-        {
-            static::$defaultConnection = $name;
-        }
-        return $connection;
+        return static::create('firebird', $username, $password);
     }
     
-    
-    public static function dblib($name, $default = false)
+    public static function ibm($username, $password)
     {
-        return static::create('dblib', $name, $default);
+        return static::create('ibm', $username, $password);
     }
     
-    public static function sybase($name, $default = false)
+    public static function mysql($username, $password)
     {
-        return static::create('sybase', $name, $default);
+        return (new MySQLConnection())->username($username)->password($password);
     }
     
-    public static function mssql($name, $default = false)
-    {
-        return static::create('mssql', $name, $default);
-    }
-    
-    public static function firebird($name, $default = false)
-    {
-        return static::create('firebird', $name, $default);
-    }
-    
-    public static function ibm($name, $default = false)
-    {
-        return static::create('ibm', $name, $default);
-    }
-    
-    public static function mysql($name, $default = false)
-    {
-        return static::setConnectionInstance($name, new MySQLConnection, $default);
-    }
-    
-    public static function sqlsrv($name, $default = false)
+    public static function sqlsrv($username, $password)
     {
         return static::create('sqlsrv', $name, $default);
     }
     
-    public static function oci($name, $default = false)
+    public static function oci($username, $password)
     {
-        return static::create('oci', $name, $default);
+        return static::create('oci', $username, $password);
     }
     
-    public static function odbc($name, $default = false)
+    public static function odbc($username, $password)
     {
-        return static::create('odbc', $name, $default);
+        return static::create('odbc', $username, $password);
     }
     
-    public static function postgreSQL($name, $default = false)
+    public static function postgreSQL($username, $password)
     {
-        return static::setConnectionInstance($name, new PostgreSQLConnection, $default);
+        return (new PostgreSQLConnection())->username($username)->password($password);
     }
     
-    public static function sqlite($name, $default = false)
+    public static function sqlite($username = null, $password = null)
     {
-        return static::create('sqlite', $name, $default);
+        return static::create('sqlite', $username, $password);
     }
     
-    public static function nuodb($name, $default = false)
+    public static function nuodb($username, $password)
     {
-        return static::create('nuodb', $name, $default);
+        return static::create('nuodb', $username, $password);
     }
 }

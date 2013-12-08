@@ -42,8 +42,6 @@ class Database
     /** @var    array   Query log. */
     protected $log = array();
     
-    protected static $instances = array();
-    
     /**
      * Constructor
      *
@@ -57,20 +55,6 @@ class Database
         $this->connection = $connection;
         $this->pdo = $connection->pdo();
         $this->enableLog = $connection->loggingEnabled();
-    }
-    
-    
-    public static function connection($name = null)
-    {
-        if($name === null)
-        {
-            $name = Connection::getDefaultName();
-        }
-        if(!isset(static::$instances[$name]))
-        {
-            static::$instances[$name] = new Database(Connection::get($name));
-        }
-        return static::$instances[$name];
     }
 
     /**
