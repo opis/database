@@ -434,9 +434,8 @@ class Compiler
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
         $sql .= $this->handleHavings($select->getHavingClauses());
-        $sql .= $this->handleOffset($select->getOffset());
         $sql .= $this->handleLimit($select->getLimit());
-        
+        $sql .= $this->handleOffset($select->getOffset());
         return $sql;
     }
     
