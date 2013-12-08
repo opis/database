@@ -201,7 +201,7 @@ class Database
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
-        return $prepared['statement']->fetchAll();
+        return new ResultSet($prepared['statement']);
     }
     
     public function success($sql, array $params)
@@ -209,18 +209,13 @@ class Database
         return $this->execute($this->prepare($sql, $params));
     }
     
-    public function first($sql, array $params)
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return $prepared['statement']->fetch();
-    }
-    
     public function column($sql, array $params)
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
-        return $prepared['statement']->fetchColumn();
+        $result = $prepared['statement']->fetchColumn();
+        $prepared['statement']->closeCursor();
+        return $result;
     }
     
     public function from($tables)

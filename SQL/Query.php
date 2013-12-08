@@ -90,11 +90,6 @@ class Query extends WhereJoinCondition
         return $this->buildSelect()->select($columns);
     }
     
-    public function first($columns = array())
-    {
-        return $this->buildSelect()->select($columns);
-    }
-    
     public function column($name)
     {
         return $this->buildSelect()->column($name);
