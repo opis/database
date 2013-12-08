@@ -30,9 +30,9 @@ class MySQL extends Connection
         'port' => '3306',
     );
     
-    public function __construct()
+    public function __construct($username = null, $password = null)
     {
-        parent::__construct('mysql');
+        parent::__construct('mysql', $username, $password);
     }
     
     public function database($name)

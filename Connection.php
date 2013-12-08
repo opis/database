@@ -56,9 +56,11 @@ class Connection
     
     protected $dsn = null;
     
-    public function __construct($prefix)
+    public function __construct($prefix, $username = null, $password = null)
     {
         $this->prefix = $prefix;
+        $this->username = $username;
+        $this->password = $password;
     }
     
     public function dbname()
@@ -105,6 +107,11 @@ class Connection
     {
         $this->database = $value;
         return $this->set($name, $value);
+    }
+    
+    public function setCompiler(Colsure $compiler)
+    {
+        $this->compiler = $compiler;
     }
     
     public function options(array $options)
@@ -163,6 +170,11 @@ class Connection
     
     public function compiler()
     {
+        if($this->compiler !== null)
+        {
+            return $this->compiler($this->prefix);
+        }
+        
         switch($this->prefix)
         {
             case 'mysql':
@@ -190,7 +202,7 @@ class Connection
     
     public static function create($prefix, $username = null, $password = null)
     {
-        return (new Connection($prefix))->username($username)->password($password);
+        return new Connection($prefix, $username, $password);
     }
     
     public static function dblib($username, $password)
@@ -220,7 +232,7 @@ class Connection
     
     public static function mysql($username, $password)
     {
-        return (new MySQLConnection())->username($username)->password($password);
+        return new MySQLConnection($username, $password);
     }
     
     public static function sqlsrv($username, $password)
@@ -240,7 +252,7 @@ class Connection
     
     public static function postgreSQL($username, $password)
     {
-        return (new PostgreSQLConnection())->username($username)->password($password);
+        return new PostgreSQLConnection($username, $password);
     }
     
     public static function sqlite($username = null, $password = null)

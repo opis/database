@@ -29,9 +29,9 @@ class PostgreSQL extends Connection
         'port' => '5432',
     );
     
-    public function __construct()
+    public function __construct($username = null, $password = null)
     {
-        parent::__construct('pgsql');
+        parent::__construct('pgsql', $username, $password);
     }
     
     public function database($name)
