@@ -38,9 +38,28 @@ class ResultSet
         $this->statement->closeCursor();
     }
     
-    public function all()
+    public function count()
     {
-        return $this->statement->fetchAll();
+        return $this->statement->rowCount();
+    }
+    
+    public function all($fetchStyle = 0, $callable = null)
+    {
+        if ($callable === null)
+        {
+            return $this->statement->fetchAll($fetchStyle);
+        }
+        return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
+    }
+    
+    public function allGroup($uniq = false, $callable = null)
+    {
+        $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
+        if ($callable === null)
+        {
+            return $this->statement->fetchAll($fetchStyle);
+        }
+        return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
     
     public function first()
@@ -88,6 +107,24 @@ class ResultSet
     {
         $this->statement->setFetchMode(PDO::FETCH_BOTH);
         return $this;
+    }
+    
+    public function fetchKeyPair()
+    {
+        $this->statement->setFetchMode(PDO::FETCH_KEY_PAIR);
+        return $this;
+    }
+    
+    public function fetchClass($class, array $ctorargs = array())
+    {
+        $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
+        return $this;
+    }
+  
+    public function fetchCustom(\Closure $func)
+    {
+      $func($this->statement);
+      return $this;
     }
     
 }
