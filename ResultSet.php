@@ -22,6 +22,7 @@ namespace Opis\Database;
 
 use PDO;
 use PDOStatement;
+use Closure;
 
 class ResultSet
 {
@@ -43,7 +44,7 @@ class ResultSet
         return $this->statement->rowCount();
     }
     
-    public function all($fetchStyle = 0, $callable = null)
+    public function all($callable = null, $fetchStyle = 0)
     {
         if ($callable === null)
         {
@@ -62,10 +63,20 @@ class ResultSet
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
     
-    public function first()
+    public function first($callable = null)
     {
-        $result = $this->statement->fetch();
-        $this->statement->closeCursor();
+        if($callable !== null)
+        {
+            $result = $this->statement->fetch(PDO::FETCH_ASSOC);
+            $this->statement->closeCursor();
+            $result = call_user_func_array($callable, $result);
+        }
+        else
+        {
+            $result = $this->statement->fetch(PDO::FETCH_ASSOC);
+            $this->statement->closeCursor();
+        }
+        
         return $result;
     }
     
