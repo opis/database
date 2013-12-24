@@ -26,17 +26,24 @@ use PDOException;
 use RuntimeException;
 use Opis\Database\DSN\MySQL as MySQLConnection;
 use Opis\Database\DSN\PostgreSQL as PostgreSQLConnection;
+use Opis\Database\DSN\Firebird as FirebirdConnection;
+use Opis\Database\DSN\SQLite as SQLiteConnection;
 
 class Connection
 {
+    /** @var    string  Username */
     protected $username = null;
     
+    /** @var    string  Password */
     protected $password = null;
     
+    /** @var    bool    Log queries flag */
     protected $log = false;
     
+    /** @var    array   Queries */
     protected $queries = array();
     
+    /** @var    array   PDO connection options */
     protected $options = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
@@ -44,17 +51,33 @@ class Connection
         PDO::ATTR_EMULATE_PREPARES => false,
     );
     
+    /** @var    string  DSN prefix */
     protected $prefix;
     
+    /** @var    string  Database */
     protected $database;
     
+    /** @var    array   DSN properties */
     protected $properties = array();
     
+    /** @var    \Opis\Database\SQL\Compiler The compiler associated with this connection */
     protected $compiler = null;
     
+    /** @var    \PDO    The PDO object associated with this connection */
     protected $pdo = null;
     
+    /** @var    string  The DSN assocatied with this connection */
     protected $dsn = null;
+    
+    /**
+     * Constructor
+     * 
+     * @access public
+     *
+     * @param string $prefix    DSN prefix
+     * @param string $username  (optional) Username
+     * @param string $password  (optional) Password
+     */
     
     public function __construct($prefix, $username = null, $password = null)
     {
@@ -63,10 +86,24 @@ class Connection
         $this->password = $password;
     }
     
+    /**
+     * Returns the database name for this connection
+     *
+     * @return string
+     */
+    
     public function dbname()
     {
         return $this->database;
     }
+    
+    /**
+     * Enable or disable query logging
+     *
+     * @param   bool    $value  (optional) Value
+     *
+     * @return  \Opis\Database\Connection
+     */
     
     public function logQueries($value = true)
     {
@@ -74,10 +111,24 @@ class Connection
         return $this;
     }
     
+    /**
+     * Check if query logging is enabled
+     *
+     * @return  bool
+     */
+    
     public function loggingEnabled()
     {
         return $this->log;
     }
+    
+    /**
+     * Add a query
+     *
+     * @param   string  $query Query
+     *
+     * @return \Opis\Database\Connection
+     */
     
     public function query($query)
     {
@@ -85,11 +136,27 @@ class Connection
         return $this;
     }
     
+    /**
+     * Set the username
+     *
+     * @param   string  $username   Username
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
     public function username($username)
     {
         $this->username = $username;
         return $this;
     }
+    
+    /**
+     * Set the password
+     *
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\Connection
+     */
     
     public function password($password)
     {
@@ -97,11 +164,29 @@ class Connection
         return $this;
     }
     
+    /**
+     * Set a DSN property
+     *
+     * @param   string  $name   Property name
+     * @param   string  $value  Property value
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
     public function set($name, $value)
     {
         $this->properties[$name] = $value;
         return $this;
     }
+    
+    /**
+     * Set the database DSN property
+     *
+     * @param   string  $name   DSN property
+     * @param   string  $value  Database name
+     *
+     * @return  \Opis\Database\Connection
+     */
     
     public function setDatabase($name, $value)
     {
@@ -109,15 +194,35 @@ class Connection
         return $this->set($name, $value);
     }
     
+    /**
+     * Set a custom compiler for this connection
+     *
+     * @param   \Closure    $compiler   Compiler constructor
+     */
+    
     public function setCompiler(Colsure $compiler)
     {
         $this->compiler = $compiler;
     }
     
+    /**
+     * Check if this conneaction has an associated custom compiler
+     * 
+     * @return  bool
+     */
+    
     public function hasCompiler()
     {
         return $this->compiler !== null;
     }
+    
+    /**
+     * Set PDO connection options
+     *
+     * @param   array   $options    PDO options
+     *
+     * @return  \Opis\Database\Compiler
+     */
     
     public function options(array $options)
     {
@@ -128,11 +233,26 @@ class Connection
         return $this;
     }
     
+    /**
+     * Set a connection option
+     *
+     * @param   string  $name   Option
+     * @param   int     $value  Value
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
     public function option($name, $value)
     {
         $this->options[$name] = $value;
         return $this;
     }
+    
+    /**
+     * Genarate the DSN associated with this connection
+     *
+     * @return  string
+     */
     
     public function dsn()
     {
@@ -147,6 +267,12 @@ class Connection
         }
         return $this->dsn;
     }
+    
+    /**
+     * Construct the PDO object associated with this connection
+     *
+     * @return \PDO
+     */
     
     public function pdo()
     {
@@ -172,6 +298,12 @@ class Connection
         }
         return $this->pdo;
     }
+    
+    /**
+     * Returns an instance of the compiler associated with this connection
+     *
+     * @return \Opis\Database\SQL\Compiler
+     */
     
     public function compiler()
     {
@@ -205,68 +337,90 @@ class Connection
         }
     }
     
+    /**
+     * Creates a generic connection
+     *
+     * @param   string  $prefix     DSN prefix
+     * @param   string  $username   (optional) Username
+     * @param   string  $password   (optional)  Password
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
     public static function create($prefix, $username = null, $password = null)
     {
         return new Connection($prefix, $username, $password);
     }
     
-    public static function dblib($username, $password)
-    {
-        return static::create('dblib', $username, $password);
-    }
-    
-    public static function sybase($username, $password)
-    {
-        return static::create('sybase', $username, $password);
-    }
-    
-    public static function mssql($username, $password)
-    {
-        return static::create('mssql', $username, $password);
-    }
+    /**
+     * Creates a firebird specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\Firebird
+     */
     
     public static function firebird($username, $password)
     {
-        return static::create('firebird', $username, $password);
+        return new FirebirdConnection($username, $password);
     }
     
-    public static function ibm($username, $password)
-    {
-        return static::create('ibm', $username, $password);
-    }
+    /**
+     * Creates a mysql specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\MySQL
+     */
     
     public static function mysql($username, $password)
     {
         return new MySQLConnection($username, $password);
     }
     
-    public static function sqlsrv($username, $password)
-    {
-        return static::create('sqlsrv', $name, $default);
-    }
-    
-    public static function oci($username, $password)
-    {
-        return static::create('oci', $username, $password);
-    }
-    
-    public static function odbc($username, $password)
-    {
-        return static::create('odbc', $username, $password);
-    }
+    /**
+     * Creates a PostgreSQL specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\PostgreSQL
+     */
     
     public static function postgreSQL($username, $password)
     {
         return new PostgreSQLConnection($username, $password);
     }
     
-    public static function sqlite($username = null, $password = null)
+    /**
+     * Creates a SQLite specific connection
+     *
+     * If the $path parameter is omitted, an in-memory database will be created
+     * 
+     * @param   string  $path   (optional) Username
+     *
+     * @return  \Opis\Database\DSN\SQLite
+     */
+    
+    public static function sqlite($path = null)
     {
-        return static::create('sqlite', $username, $password);
+        return new SQLiteConnection($path);
     }
     
-    public static function nuodb($username, $password)
+    /**
+     * Creates a SQLite2 specific connection
+     *
+     * If the $path parameter is omitted, an in-memory database will be created
+     * 
+     * @param   string  $path   (optional) Username
+     *
+     * @return  \Opis\Database\DSN\SQLite
+     */
+    
+    public static function sqlite2($path = null)
     {
-        return static::create('nuodb', $username, $password);
+        return new SQLiteConnection($path, '2');
     }
 }
