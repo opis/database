@@ -69,7 +69,10 @@ class ResultSet
         {
             $result = $this->statement->fetch(PDO::FETCH_ASSOC);
             $this->statement->closeCursor();
-            $result = call_user_func_array($callable, $result);
+            if(is_array($result))
+            {
+                $result = call_user_func_array($callable, $result);
+            }
         }
         else
         {
