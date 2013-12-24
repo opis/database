@@ -1,0 +1,59 @@
+<?php
+/* ===========================================================================
+ * Opis Project
+ * http://opis.io
+ * ===========================================================================
+ * Copyright 2013 Marius Sarca
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================================ */
+
+namespace Opis\Database\DSN;
+
+use Opis\Database\Connection;
+
+class SQLite extends Connection
+{
+    protected $path;
+    
+    public function __construct($path = null, $suffix = '')
+    {
+        parent::__construct('sqlite' . $suffix);
+        
+        if($path === null)
+        {
+            $path = ':memory:';
+        }
+        
+        $this->path = $path;
+    }
+    
+    public function dsn()
+    {
+        if($this->dsn === null)
+        {
+            $this->dsn = $this->prefix . ':' . $this->path;
+        }
+        
+        return $this->dsn;
+    }
+    
+    public function persistent()
+    {
+        if($this->path === ':memory:')
+        {
+            $this->option(PDO::ATTR_PERSISTENT, true);
+        }
+    }
+    
+}
