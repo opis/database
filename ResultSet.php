@@ -73,7 +73,7 @@ class ResultSet
         }
         else
         {
-            $result = $this->statement->fetch(PDO::FETCH_ASSOC);
+            $result = $this->statement->fetch();
             $this->statement->closeCursor();
         }
         
