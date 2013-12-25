@@ -31,12 +31,13 @@ use Opis\Database\SQL\Update as UpdateCommand;
 
 class Database
 {
-    
+    /** @var    \PDO    PDO instance. */
     protected $pdo;
 
+    /** @var    \Opis\Database\Connection   Connection instance. */
     protected $connection;
 
-    /** @var    boolean Enable log. */
+    /** @var    boolean Enable log flag. */
     protected $enableLog;
 
     /** @var    array   Query log. */
@@ -46,8 +47,8 @@ class Database
      * Constructor
      *
      * @access  public
-     * @param   string  $name   Connection name.
-     * @param   array   $config Connection configuration.
+     * 
+     * @param   \Opis\Database\Connection   $connection Connection instance.
      */
     
     public function __construct(Connection $connection)
@@ -58,10 +59,11 @@ class Database
     }
 
     /**
-     * Returns the compiler name.
+     * Returns a new instance of the compiler associated with this database
      *
-     * @access public
-     * @return string
+     * @access  public
+     *
+     * @return  \Opis\Database\SQL\Compiler;
      */
 
     public function getCompiler()
@@ -84,9 +86,11 @@ class Database
     /**
      * Replace placeholders with parameteters.
      *
-     * @access protected
-     * @param string $query SQL query
-     * @param array $params Query paramaters
+     * @access  public
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query paramaters
+     * 
      * @return string
      */
 
@@ -101,12 +105,13 @@ class Database
     }
 
     /**
-     * Adds a query to the query log.
+     * Log a query.
      *
-     * @access protected
-     * @param string $query SQL query
-     * @param array $params Query parameters
-     * @param int $start Start time in microseconds
+     * @access  protected
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query parameters
+     * @param   int     $start  Start time in microseconds
      */
 
     protected function log($query, array $params, $start)
@@ -117,9 +122,10 @@ class Database
     }
 
     /**
-     * Returns the query log for the connection.
+     * Returns the query log for this database.
      *
      * @access public
+     * 
      * @return array
      */
 
@@ -131,10 +137,12 @@ class Database
     /**
      * Prepares a query.
      *
-     * @access protected
-     * @param string $query SQL query
-     * @param array $params Query parameters
-     * @return array
+     * @access  protected
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query parameters
+     * 
+     * @return  array
      */
 
     protected function prepare($query, array $params)
@@ -155,9 +163,11 @@ class Database
     /**
      * Executes the prepared query and returns TRUE on success or FALSE on failure.
      *
-     * @access protected
-     * @param array $prepared Prepared query
-     * @return boolean
+     * @access  protected
+     *
+     * @param   array   $prepared   Prepared query
+     *
+     * @return  boolean
      */
 
     protected function execute(array $prepared)

@@ -353,7 +353,7 @@ class Connection
     }
     
     /**
-     * Creates a firebird specific connection
+     * Creates a Firebird specific connection
      *
      * @param   string  $username   Username
      * @param   string  $password   Password
@@ -367,7 +367,7 @@ class Connection
     }
     
     /**
-     * Creates a mysql specific connection
+     * Creates a MySQL specific connection
      *
      * @param   string  $username   Username
      * @param   string  $password   Password
@@ -376,6 +376,20 @@ class Connection
      */
     
     public static function mysql($username, $password)
+    {
+        return new MySQLConnection($username, $password);
+    }
+    
+    /**
+     * Creates a MariaDB specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\MySQL
+     */
+    
+    public static function mariaDB($username, $password)
     {
         return new MySQLConnection($username, $password);
     }
