@@ -70,6 +70,15 @@ class Database
     {
         return $this->connection->compiler();
     }
+    
+    /**
+    * Get connection
+    */
+    
+    public function getConnection()
+    {
+        return $this->connection;
+    }
 
     /**
      * Enables or disable the query log.
