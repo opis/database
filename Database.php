@@ -247,18 +247,6 @@ class Database
 
     public function transaction(Closure $queries)
     {
-        try
-        {
-            $this->pdo->beginTransaction();
-            $result = $queries($this);
-            $this->pdo->commit();
-            
-        }
-        catch(PDOException $e)
-        {
-            $this->pdo->rollBack();
-            throw $e;
-        }
-        return $result;
+        return new Transaction($this, $queries);
     }
 }
