@@ -241,7 +241,9 @@ class Database
      * Executes queries and rolls back the transaction if any of them fail.
      *
      * @access public
+     * 
      * @param \Closure $queries Queries
+     * 
      * @return mixed
      */
 
