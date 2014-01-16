@@ -70,6 +70,8 @@ class Transaction
         }
         catch(PDOException $e)
         {
+            $pdo->rollBack();
+            
             if($this->errorCallback !== null)
             {
                 $this->errorCallback($e, $this->database);
