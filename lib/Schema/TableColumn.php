@@ -11,8 +11,11 @@ class TableColumn
     
     protected $type;
     
-    public function __construct($type, $name)
+    protected $table;
+    
+    public function __construct(CreateTable $table, $type, $name)
     {
+        $this->table = $table;
         $this->type = $type;
         $this->name = $name;
     }
@@ -48,6 +51,24 @@ class TableColumn
         return isset($this->properties[$key]);
     }
     
+    public function primary()
+    {
+        $this->table->primary($this->name);
+        return $this;
+    }
+    
+    public function unique()
+    {
+        $this->table->unique($this->name);
+        return $this;
+    }
+    
+    public function index()
+    {
+        $this->table->index($this->name);
+        return $this;
+    }
+    
     public function nullable()
     {
         return $this->set('nullable', true);
@@ -58,7 +79,7 @@ class TableColumn
         return $this->set('description', $comment);
     }
     
-    public function defaultValue($value)
+    public function implicit($value)
     {
         return $this->set('default', $value);
     }
