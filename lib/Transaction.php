@@ -34,47 +34,92 @@ class Transaction
     
     protected $errorCallback;
     
+    protected $pdo;
+    
     public function __construct(Database $database, Closure $transaction)
     {
         $this->database = $database;
         $this->transaction = $transaction;
     }
     
-    public function success(Closure $callback)
+    public function onSuccess(Closure $callback)
     {
         $this->successCallback = $callback;
         return $this;
     }
     
-    public function error(Closure $callback)
+    public function onError(Closure $callback)
     {
         $this->errorCallback = $error;
         return $this;
     }
     
-    public function execute()
+    public function getOnSuccessCallback()
     {
+        return $this->successCallback;
+    }
+    
+    public function getOnErrorCallback()
+    {
+        return $this->errorCallback;
+    }
+    
+    public function database()
+    {
+        return $this->database;
+    }
+    
+    public function pdo()
+    {
+        if($this->pdo === null)
+        {
+            $this->pdo = $this->database->getConnection()->pdo();
+        }
+        return $this->pdo;
+    }
+    
+    public function begin()
+    {
+        $this->pdo()->beginTransaction();
+    }
+    
+    public function commit()
+    {
+        $this->pdo()->commit();
+    }
+    
+    public function rollBack()
+    {
+        $this->pdo()->rollBack();
+    }
+    
+    public function execute(Closure $execute = null)
+    {
+        if($execute !== null)
+        {
+            return $execute($this, $this->transaction);
+        }
+        
         try
         {
-            $pdo = $this->database->getConnection()->pdo();
-            $pdo->beginTransaction();
+            $this->begin();
             $result = $this->transaction($this->database);
             $pdo->commit();
             
             if($this->successCallback !== null)
             {
-                $this->successCallback($this->database);
+                $this->successCallback($this);
             }
             
             return $result;
         }
         catch(PDOException $e)
         {
-            $pdo->rollBack();
+            $this->rollBack();
             
             if($this->errorCallback !== null)
             {
-                $this->errorCallback($e, $this->database);
+                $this->errorCallback($e, $this);
             }
         }
     }
