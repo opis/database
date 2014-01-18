@@ -22,31 +22,54 @@ namespace Opis\Database\DSN;
 
 use Opis\Database\Connection;
 
-class Firebird extends Connection
+class SQLServer extends Connection
 {
+    
+    protected $server;
+    
+    protected $port;
     
     public function __construct($username = null, $password = null)
     {
-        parent::__construct('firebird', $username, $password);
+        parent::__construct('sqlsrv', $username, $password);
     }
     
     public function compiler()
     {
-        new \Opis\Database\Compiler\Firebird();
+        return new \Opis\Database\Compiler\SQLServer();
     }
     
     public function database($name)
     {
-        return $this->setDatabase('dbname', $name);
+        return $this->setDatabase('Database', $name);
     }
     
-    public function charset($value)
+    public function app($name)
     {
-        return $this->set('charset', $value);
+        return $this->set('App', $name);
     }
     
-    public function role($value)
+    public function server($name)
     {
-        return $this->set('role', $value);
+        $this->server = $name;
+        return $this->set('Server', $name);
     }
+    
+    public function port($value)
+    {
+        $this->port = $value;
+        $value = ($this->server === null ? 'localhost' : $this->server) . ',' . $this->port;
+        return $this->set('Server', $value);
+    }
+    
+    public function connectionPooling($value = true)
+    {
+        return $this->set('ConnectionPooling', $value ? 1 : 0);
+    }
+    
+    public function encrypt($value = true)
+    {
+        return $this->set('Encrypt', $value ? 1 : 0);
+    }
+    
 }

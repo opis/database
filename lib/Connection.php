@@ -24,10 +24,15 @@ use Closure;
 use PDO;
 use PDOException;
 use RuntimeException;
+use Opis\Database\DSN\Generic as GenericConnection;
 use Opis\Database\DSN\MySQL as MySQLConnection;
+use Opis\Database\DSN\IBM as IBMConnection;
+use Opis\Database\DSN\Oracle as OracleConnection;
 use Opis\Database\DSN\PostgreSQL as PostgreSQLConnection;
 use Opis\Database\DSN\Firebird as FirebirdConnection;
 use Opis\Database\DSN\SQLite as SQLiteConnection;
+use Opis\Database\DSN\SQLServer as SQLServerConnection;
+use Opis\Database\DSN\DBLib as DBLibConnection;
 
 class Connection
 {
@@ -59,9 +64,6 @@ class Connection
     
     /** @var    array   DSN properties */
     protected $properties = array();
-    
-    /** @var    \Opis\Database\SQL\Compiler The compiler associated with this connection */
-    protected $compiler = null;
     
     /** @var    \PDO    The PDO object associated with this connection */
     protected $pdo = null;
@@ -95,6 +97,17 @@ class Connection
     public function dbname()
     {
         return $this->database;
+    }
+    
+    /**
+     * Returns the DSN prefix
+     *
+     * @return string
+     */
+    
+    public function prefix()
+    {
+        return $this->prefix;
     }
     
     /**
@@ -195,28 +208,6 @@ class Connection
     }
     
     /**
-     * Set a custom compiler for this connection
-     *
-     * @param   \Closure    $compiler   Compiler constructor
-     */
-    
-    public function setCompiler(Colsure $compiler)
-    {
-        $this->compiler = $compiler;
-    }
-    
-    /**
-     * Check if this conneaction has an associated custom compiler
-     * 
-     * @return  bool
-     */
-    
-    public function hasCompiler()
-    {
-        return $this->compiler !== null;
-    }
-    
-    /**
      * Set PDO connection options
      *
      * @param   array   $options    PDO options
@@ -263,7 +254,7 @@ class Connection
             {
                 $tmp[] = $key . '=' . $value;
             }
-            $this->dsn = $this->prefix . ':' . implode(';', $tmp);
+            $this->dsn = $this->prefix() . ':' . implode(';', $tmp);
         }
         return $this->dsn;
     }
@@ -286,7 +277,7 @@ class Connection
             }
             catch(PDOException $e)
             {
-                throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->database, $e->getMessage())));
+                throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->dbname(), $e->getMessage())));
             }
             if(!empty($this->queries))
             {
@@ -307,49 +298,22 @@ class Connection
     
     public function compiler()
     {
-        if($this->compiler !== null)
-        {
-            return $this->compiler($this->prefix);
-        }
-        
-        switch($this->prefix)
-        {
-            case 'mysql':
-                return new \Opis\Database\Compiler\MySQL();
-            case 'dblib':
-            case 'mssql':
-            case 'sqlsrv':
-            case 'sybase':
-                return new \Opis\Database\Compiler\SQLServer();
-            case 'oci':
-            case 'oracle':
-                return new \Opis\Database\Compiler\Oracle();
-            case 'firebird':
-                return new \Opis\Database\Compiler\Firebird();
-            case 'db2':
-            case 'ibm':
-            case 'odbc':
-                return new \Opis\Database\Compiler\DB2();
-            case 'nuodb':
-                return new \Opis\Database\Compiler\NuoDB();
-            default:
-                return new \Opis\Database\SQL\Compiler();
-        }
+        return new \Opis\Database\SQL\Compiler();
     }
     
     /**
      * Creates a generic connection
      *
-     * @param   string  $prefix     DSN prefix
+     * @param   string  $dsn        DSN connection string
      * @param   string  $username   (optional) Username
      * @param   string  $password   (optional)  Password
      *
      * @return  \Opis\Database\Connection
      */
     
-    public static function create($prefix, $username = null, $password = null)
+    public static function generic($dsn, $username = null, $password = null)
     {
-        return new Connection($prefix, $username, $password);
+        return new GenericConnection($dsn, $username, $password);
     }
     
     /**
@@ -364,6 +328,34 @@ class Connection
     public static function firebird($username, $password)
     {
         return new FirebirdConnection($username, $password);
+    }
+    
+    /**
+     * Creates an IBM specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\IBM
+     */
+    
+    public static function ibm($username, $password)
+    {
+        return new IBMConnection($username, $password);
+    }
+    
+    /**
+     * Creates an Oracle specific connection
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis\Database\DSN\Oracle
+     */
+    
+    public static function oracle($username, $password)
+    {
+        return new OracleConnection($username, $password);
     }
     
     /**
@@ -406,6 +398,35 @@ class Connection
     public static function postgreSQL($username, $password)
     {
         return new PostgreSQLConnection($username, $password);
+    }
+    
+    /**
+     * Connecting to an Microsoft SQL Server and SQL Azure database
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     *
+     * @return  \Opis|Database\DSN\SQLServer
+     */
+    
+    public static function sqlServer($username, $password)
+    {
+        return new SQLServerConnection($username, $password);
+    }
+    
+    /**
+     * Connecting to an Microsoft SQL Server or Sybase database
+     *
+     * @param   string  $username   Username
+     * @param   string  $password   Password
+     * @param   string  $driver     (optional) Driver
+     * 
+     * @return  \Opis|Database\DSN\DBLib
+     */
+    
+    public static function mssql($username, $password, $driver = 'dblib')
+    {
+        return new DBLibConnection($driver, $username, $password);
     }
     
     /**

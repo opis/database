@@ -35,6 +35,11 @@ class MySQL extends Connection
         parent::__construct('mysql', $username, $password);
     }
     
+    public function compiler()
+    {
+        return new \Opis\Database\Compiler\MySQL();
+    }
+    
     public function database($name)
     {
         return $this->setDatabase('dbname', $name);

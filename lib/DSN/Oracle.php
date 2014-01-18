@@ -22,31 +22,67 @@ namespace Opis\Database\DSN;
 
 use Opis\Database\Connection;
 
-class Firebird extends Connection
+class Oracle extends Connection
 {
+    
+    protected $port;
+    
+    protected $host;
     
     public function __construct($username = null, $password = null)
     {
-        parent::__construct('firebird', $username, $password);
+        parent::__construct('oci', $username, $password);
+    }
+    
+    public function dsn()
+    {
+        if($this->dsn !== null)
+        {
+            $value = $this->database;
+            
+            if($this->host != null)
+            {
+                if($this->port != null)
+                {
+                    $value = '//' . $this->host . ':' . $this->port . '/' . $value;
+                }
+                else
+                {
+                    $value = '//' . $this->host . '/' . $value;
+                }
+            }
+            
+            $this->set('dbname', $value);
+        }
+        
+        return parent::dsn();
     }
     
     public function compiler()
     {
-        new \Opis\Database\Compiler\Firebird();
+        return new \Opis\Database\Compiler\Oracle();
     }
     
     public function database($name)
     {
-        return $this->setDatabase('dbname', $name);
+        $this->database = $name;
+        return $this;
+    }
+    
+    public function port($value)
+    {
+        $this->port = $value;
+        return $this;
+    }
+    
+    public function host($value)
+    {
+        $this->host = $value;
+        return $this;
     }
     
     public function charset($value)
     {
         return $this->set('charset', $value);
-    }
-    
-    public function role($value)
-    {
-        return $this->set('role', $value);
     }
 }

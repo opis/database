@@ -22,31 +22,37 @@ namespace Opis\Database\DSN;
 
 use Opis\Database\Connection;
 
-class Firebird extends Connection
+class IBM extends Connection
 {
+    
+    protected $properties = array(
+        'DIRIVER' => '{IBM DB2 ODBC DRIVER}',
+        'PROTOCOL' => 'TCPIP',
+    );
     
     public function __construct($username = null, $password = null)
     {
-        parent::__construct('firebird', $username, $password);
+        parent::__construct('ibm', $username, $password);
     }
     
     public function compiler()
     {
-        new \Opis\Database\Compiler\Firebird();
+        return new \Opis\Database\Compiler\DB2();
     }
     
     public function database($name)
     {
-        return $this->setDatabase('dbname', $name);
+        return $this->setDatabase('DATABASE', $name);
     }
     
-    public function charset($value)
+    public function host($name)
     {
-        return $this->set('charset', $value);
+        return $this->set('HOSTNAME', $name);
     }
     
-    public function role($value)
+    public function port($value)
     {
-        return $this->set('role', $value);
+        return $this->set('PORT', $value);
     }
+    
 }
