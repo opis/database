@@ -48,12 +48,4 @@ class SQLite extends Connection
         return $this->dsn;
     }
     
-    public function persistent()
-    {
-        if($this->path === ':memory:')
-        {
-            $this->option(PDO::ATTR_PERSISTENT, true);
-        }
-    }
-    
 }

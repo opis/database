@@ -291,6 +291,15 @@ class Connection
     }
     
     /**
+     * Use persistent connections
+     */
+    
+    public function persistent()
+    {
+        return $this->option(PDO::ATTR_PERSISTENT, true);
+    }
+    
+    /**
      * Returns an instance of the compiler associated with this connection
      *
      * @return \Opis\Database\SQL\Compiler
