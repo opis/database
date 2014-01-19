@@ -69,7 +69,7 @@ class WhereCondition implements WhereInterface
     
     public function andWhereBetween($column, $value1, $value2)
     {
-        return $this->andWhereBetween($column, $value1, $value2);
+        return $this->whereBetween($column, $value1, $value2);
     }
     
     public function orWhereBetween($column, $value1, $value2)
