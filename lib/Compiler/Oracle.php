@@ -80,12 +80,12 @@ class Oracle extends Compiler
         
         if($offset === null)
         {
-            return 'SELECT * FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit;
+            return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
         }
         
         $limit += $offset;
         $offset++;
         
-        return 'SELECT * FROM (SELECT m1.*, rownum AS opis_rownum FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit . ') WHERE opis_rownum >= ' . $offset;
+        return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
     }
 }
