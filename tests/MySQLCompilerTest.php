@@ -8,7 +8,7 @@ class MySQLCompilerTest extends CompilerTest
         return new FakeDB(new FakeConnection('MySQL'));
     }
     
-    protected function wrap($text)
+    protected function wrap($text, $a = '"', $b = '"')
     {
         return parent::wrap($text, '`', '`');
     }
