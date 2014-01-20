@@ -4,13 +4,13 @@
 Opis Database is a fully decoupled component that handles differences between various SQL database implementations, allowing developers to focus on productivity.
 
 Currently supported databases:
-    - MySQL
-    - PostgreSQL
-    - Oracle
-    - DB2
-    - MS SQL Server
-    - SQLite
-    - NuoDB
+    * MySQL
+    * PostgreSQL
+    * Oracle
+    * DB2
+    * MS SQL Server
+    * SQLite
+    * NuoDB
 
 ###Installation###
 
