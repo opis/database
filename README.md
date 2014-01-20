@@ -1,5 +1,5 @@
 ##Opis Database##
-[![Build Status](https://travis-ci.org/opis/database.png?branch=nightly)](https://travis-ci.org/opis/database)
+[![Build Status](https://travis-ci.org/opis/database.png?branch=master)](https://travis-ci.org/opis/database)
 
 Opis Database is a fully decoupled component that handles differences between various SQL database implementations, allowing developers to focus on productivity.
 
