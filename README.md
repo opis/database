@@ -1,8 +1,21 @@
 ##Opis Database##
 [![Build Status](https://travis-ci.org/opis/database.png?branch=nightly)](https://travis-ci.org/opis/database)
 
-Opis Database is an advanced Database Abstraction Layer with support for MySQL, PostgreSQL, IBM DB2, Firebird, Oracle, Microsoft SQL, SQLite
+Opis Database is a fully decoupled component that handles differences between various SQL database implementations, allowing developers to focus on productivity.
 
+Currently supported databases:
+    - MySQL
+    - PostgreSQL
+    - Oracle
+    - DB2
+    - MS SQL Server
+    - SQLite
+    - NuoDB
+
+###Installation###
+
+The component is available on [Packagist](http://packagist.org/packages/opis/database) and can be installed using [Composer](http://packagist.org/about-composer).
+    
 ###Examples###
 
 Connecting to a database
