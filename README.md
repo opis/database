@@ -1,6 +1,7 @@
 ##Opis Database##
+[![Build Status](https://travis-ci.org/opis/database.png?branch=nightly)](https://travis-ci.org/opis/database)
 
-Opis Database is an advanced Database Abstraction Layer with support for MySQL, PostgreSQL, DB2, Firebird, Oracle
+Opis Database is an advanced Database Abstraction Layer with support for MySQL, PostgreSQL, IBM DB2, Firebird, Oracle, Microsoft SQL, SQLite
 
 ###Examples###
 
