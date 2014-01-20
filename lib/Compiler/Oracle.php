@@ -34,7 +34,7 @@ class Oracle extends Compiler
      * @return  array
      */
 
-    public function select(SelectStatament $select)
+    public function select(SelectStatement $select)
     {
         $limit = $select->getLimit();
         $offset = $select->getOffset();
