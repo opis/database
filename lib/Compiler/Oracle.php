@@ -25,7 +25,31 @@ use Opis\Database\SQL\SelectStatement;
 
 class Oracle extends Compiler
 {
-
+    
+    protected function wrap($value)
+    {
+        if($value instanceof Expression)
+        {
+            return $this->handleExpressions($value->getExpressions());
+        }
+        
+        $wrapped = array();
+        
+        foreach(explode('.', $value) as $segment)
+        {
+            if($segment == '*')
+            {
+                $wrapped[] = $segment;
+            }
+            else
+            {
+                $wrapped[] = sprintf($this->wrapper, strtoupper($segment));
+            }
+        }
+        
+        return implode('.', $wrapped);
+    }
+    
     /**
      * Compiles a SELECT query.
      *
@@ -44,7 +68,7 @@ class Oracle extends Compiler
             return parent::select($select);
         }
         
-        $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
@@ -56,7 +80,7 @@ class Oracle extends Compiler
         
         if($offset === null)
         {
-            return 'SELECT m1.* FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit;
+            return 'SELECT * FROM (' . $sql . ') m1 WHERE rownum <= ' . $limit;
         }
         
         $limit += $offset;
