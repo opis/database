@@ -229,7 +229,277 @@ class CompilerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->wrap($expect), $query, $query);
     }
     
+    public function testSelectExpressionColumns()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT {id}, {name} FROM {users}';
+        $query = $db->from('users')->select(function($expr){
+            $expr->columns(array('id', 'name'));
+        });
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
     
+    public function testSelectExpressionColumnsAliased()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT {id} AS {uid}, {name} AS {username} FROM {users}';
+        $query = $db->from('users')->select(function($expr){
+            $expr->columns(array('id' => 'uid', 'name' => 'username'));
+        });
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectExpressionColumnsMixed()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT {id} AS {uid}, {name} FROM {users}';
+        $query = $db->from('users')->select(function($expr){
+            $expr->columns(array('id' => 'uid', 'name'));
+        });
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectExpressionCountAliased()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT COUNT(*) AS {cnt} FROM {users}';
+        $query = $db->from('users')->select(function($expr){
+            $expr->count('*', 'cnt');
+        });
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectExpressionMultipleAliased()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT COUNT(*) AS {cnt}, SUM({points}) AS {total}, AVG({points}) AS {average}, {email} FROM {users}';
+        $query = $db->from('users')->select(function($expr){
+            $expr->count('*', 'cnt');
+            $expr->sum('points', 'total');
+            $expr->avg('points', 'average');
+            $expr->column('email');
+        });
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhere()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} = ? AND {email} = ? OR {points} >= ?';
+        $query = $db->from('users')
+                    ->where('name', 'test')
+                    ->andWhere('email', 'test')
+                    ->orWhere('points', 0, '>=')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    
+    public function testSelectAllWhereAndGroup()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} = ? AND ({email} = ? OR {points} > ?)';
+        $query = $db->from('users')
+                    ->where('name', 'test')
+                    ->andWhere(function($group){
+                        $group->where('email', 'test')
+                              ->orWhere('points', 100, '>');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereOrGroup()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} = ? OR ({email} = ? AND {points} > ?)';
+        $query = $db->from('users')
+                    ->where('name', 'test')
+                    ->orWhere(function($group){
+                        $group->where('email', 'test')
+                              ->andWhere('points', 100, '>');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereGroup()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE ({name} = ? OR {email} = ?) AND {points} > ?';
+        $query = $db->from('users')
+                    ->where(function($group){
+                        $group->where('name', 'test')
+                              ->orWhere('email', 'test');
+                    })
+                    ->andWhere('points', 100, '>')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereBetween()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {points} BETWEEN ? AND ? AND {position} BETWEEN ? AND ? OR {age} BETWEEN ? AND ?';
+        $query = $db->from('users')
+                    ->whereBetween('points', 1, 2)
+                    ->andWhereBetween('position', 2, 4)
+                    ->orWhereBetween('age', 20, 21)
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotBetween()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {points} NOT BETWEEN ? AND ? AND {position} NOT BETWEEN ? AND ? OR {age} NOT BETWEEN ? AND ?';
+        $query = $db->from('users')
+                    ->whereNotBetween('points', 1, 2)
+                    ->andWhereNotBetween('position', 2, 4)
+                    ->orWhereNotBetween('age', 20, 21)
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNull()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} IS NULL AND {points} IS NULL OR {user} IS NULL';
+        $query = $db->from('users')
+                    ->whereNull('name')
+                    ->andWhereNull('points')
+                    ->orWhereNull('user')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotNull()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} IS NOT NULL AND {points} IS NOT NULL OR {user} IS NOT NULL';
+        $query = $db->from('users')
+                    ->whereNotNull('name')
+                    ->andWhereNotNull('points')
+                    ->orWhereNotNull('user')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereLike()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} LIKE ? AND {points} LIKE ? OR {user} LIKE ?';
+        $query = $db->from('users')
+                    ->whereLike('name', '%')
+                    ->andWhereLike('points', '%')
+                    ->orWhereLike('user', '%')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotLike()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} NOT LIKE ? AND {points} NOT LIKE ? OR {user} NOT LIKE ?';
+        $query = $db->from('users')
+                    ->whereNotLike('name', '%')
+                    ->andWhereNotLike('points', '%')
+                    ->orWhereNotLike('user', '%')
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereIn()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} IN (?) AND {points} IN (?, ?) OR {user} IN (?, ?, ?)';
+        $query = $db->from('users')
+                    ->whereIn('name', array(1))
+                    ->andWhereIn('points', array(1, 2))
+                    ->orWhereIn('user', array(1, 2, 3))
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotIn()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} NOT IN (?) AND {points} NOT IN (?, ?) OR {user} NOT IN (?, ?, ?)';
+        $query = $db->from('users')
+                    ->whereNotIn('name', array(1))
+                    ->andWhereNotIn('points', array(1, 2))
+                    ->orWhereNotIn('user', array(1, 2, 3))
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereInSubquery()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} IN (SELECT {name} FROM {names})';
+        $query = $db->from('users')
+                    ->whereIn('name', function($query){
+                        $query->from('names')->select('name');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotInSubquery()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} NOT IN (SELECT {name} FROM {names})';
+        $query = $db->from('users')
+                    ->whereNotIn('name', function($query){
+                        $query->from('names')->select('name');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereExists()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE EXISTS (SELECT {name} FROM {names} WHERE {id} = ?)';
+        $query = $db->from('users')
+                    ->whereExists(function($query){
+                        $query->from('names')->where('id', 1)->select('name');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllWhereNotExists()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE NOT EXISTS (SELECT {name} FROM {names} WHERE {id} = ?)';
+        $query = $db->from('users')
+                    ->whereNotExists(function($query){
+                        $query->from('names')->where('id', 1)->select('name');
+                    })
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
+    
+    public function testSelectAllHaving()
+    {
+        $db = $this->getDatabase();
+        $expect = 'SELECT * FROM {users} WHERE {name} = ? GROUP BY {name} HAVING COUNT({points}) < ? AND SUM(DISTINCT {points}) > ? OR AVG({points}) = ?';
+        $query = $db->from('users')
+                    ->where('name', 'test')
+                    ->groupBy('name')
+                    ->having(function($aggregate){
+                        $aggregate->count('points');
+                    }, 20, '<')
+                    ->andHaving(function($aggregate){
+                        $aggregate->sum('points', true);
+                    }, 40, '>')
+                    ->orHaving(function($aggregate){
+                        $aggregate->avg('points');
+                    }, 10)
+                    ->select();
+        $this->assertEquals($this->wrap($expect), $query, $query);
+    }
 }
 
 class FakeDB extends Database

@@ -149,6 +149,11 @@ class SelectStatement extends WhereJoinCondition
         return $this->addHavingClause($aggregate, $value, $operator, 'AND');
     }
     
+    public function andHaving(Closure $aggregate, $value, $operator = '=')
+    {
+        return $this->having($aggregate, $value, $operator);
+    }
+    
     public function orHaving(Closure $aggregate, $value, $operator = '=')
     {
         return $this->addHavingClause($aggregate, $value, $operator, 'OR');

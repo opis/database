@@ -228,7 +228,7 @@ class Where implements WhereInterface
     
     public function orWhereNotLike($column, $value)
     {
-        return $this->addLikeClause($column, $value, 'OR', false);
+        return $this->addLikeClause($column, $value, 'OR', true);
     }
     
     public function whereIn($column, $value)
