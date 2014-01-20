@@ -196,6 +196,7 @@ class WhereCondition implements WhereInterface
     public function orWhereNotNull($column)
     {
         $this->where->orWhereNotNull($column);
+        return $this;
     }
     
     public function whereExists(Closure $select)
