@@ -22,6 +22,7 @@ namespace Opis\Database\Compiler;
 
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
+use Opis\Database\SQL\Expression;
 
 class Oracle extends Compiler
 {
