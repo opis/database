@@ -24,7 +24,6 @@ use Opis\Database\Connection;
 
 class SQLite extends Connection
 {
-    protected $path;
     
     public function __construct($path = null, $suffix = '')
     {
@@ -32,17 +31,17 @@ class SQLite extends Connection
         
         if($path === null)
         {
-            $path = ':memory:';
+            $this->database = ':memory:';
         }
         
-        $this->path = $path;
+        $this->databse = $path;
     }
     
     public function dsn()
     {
         if($this->dsn === null)
         {
-            $this->dsn = $this->prefix . ':' . $this->path;
+            $this->dsn = $this->prefix . ':' . $this->database;
         }
         
         return $this->dsn;

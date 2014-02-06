@@ -24,6 +24,7 @@ use Closure;
 use PDO;
 use PDOException;
 use RuntimeException;
+use Serializable;
 use Opis\Database\DSN\Generic as GenericConnection;
 use Opis\Database\DSN\MySQL as MySQLConnection;
 use Opis\Database\DSN\IBM as IBMConnection;
@@ -34,7 +35,7 @@ use Opis\Database\DSN\SQLite as SQLiteConnection;
 use Opis\Database\DSN\SQLServer as SQLServerConnection;
 use Opis\Database\DSN\DBLib as DBLibConnection;
 
-class Connection
+class Connection implements Serializable
 {
     /** @var    string  Username */
     protected $username = null;
@@ -308,6 +309,30 @@ class Connection
     public function compiler()
     {
         return new \Opis\Database\SQL\Compiler();
+    }
+    
+    public function serialize()
+    {
+        return serialize(array(
+            'username' => $this->username,
+            'password' => $this->password,
+            'log' => $this->log,
+            'options' => $this->options,
+            'queries' => $this->queries,
+            'properties' => $this->properties,
+            'prefix' => $this->prefix,
+            'database' => $this->database,
+            'dsn' => $this->dsn(),
+        ));
+    }
+    
+    public function unserialize($data)
+    {
+        $object = unserialize($data);
+        foreach($object as $key => $value)
+        {
+            $this->{$key} = $value;
+        }
     }
     
     /**
