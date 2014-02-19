@@ -1,6 +1,6 @@
 Opis Database
 =============
-[![Build Status](https://travis-ci.org/opis/database.png?branch=master)](https://travis-ci.org/opis/database)
+[![Build Status](https://travis-ci.org/opis/database.png)](https://travis-ci.org/opis/database)
 [![Latest Stable Version](https://poser.pugx.org/opis/database/version.png)](https://packagist.org/packages/opis/database)
 [![Latest Unstable Version](https://poser.pugx.org/opis/database/v/unstable.png)](//packagist.org/packages/opis/database)
 [![License](https://poser.pugx.org/opis/database/license.png)](https://packagist.org/packages/opis/database)
