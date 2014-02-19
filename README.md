@@ -1,22 +1,35 @@
-##Opis Database##
+Opis Database
+=============
 [![Build Status](https://travis-ci.org/opis/database.png?branch=master)](https://travis-ci.org/opis/database)
+[![Latest Stable Version](https://poser.pugx.org/opis/database/version.png)](https://packagist.org/packages/opis/database)
+[![Latest Unstable Version](https://poser.pugx.org/opis/database/v/unstable.png)](//packagist.org/packages/opis/database)
+[![License](https://poser.pugx.org/opis/database/license.png)](https://packagist.org/packages/opis/database)
 
-Opis Database is a fully decoupled component that handles differences between various SQL database implementations, allowing developers to focus on productivity.
-
+Database abstraction layer
+-------------------------
 Currently supported databases:
-- MySQL
-- PostgreSQL
-- Oracle
-- DB2
-- MS SQL Server
-- SQLite
-- NuoDB
+* MySQL
+* PostgreSQL
+* Oracle
+* DB2
+* MS SQL Server
+* SQLite
+* NuoDB
 
-###Installation###
+###Installation
 
-The component is available on [Packagist](http://packagist.org/packages/opis/database) and can be installed using [Composer](http://packagist.org/about-composer).
-    
-###Examples###
+This library is available on [Packagist](https://packagist.org/packages/opis/database) and can be installed using [Composer](http://getcomposer.org)
+
+```json
+{
+    "require": {
+        "opis/database": "1.1.*"
+    }
+}
+```
+###Documentation
+
+###Examples
 
 Connecting to a database
 
@@ -31,7 +44,7 @@ $connection = Connection::mysql('user', 'password')
 $db = new Database($connection);
 ```
 
-####Selecting records####
+####Selecting records
 
 ```sql
 SELECT * FROM `products` WHERE `category` = 'laptops' AND `quantity` > 10
@@ -65,7 +78,7 @@ $result = $db->from('orders')
              ->select(array('orders.id', 'cutsomers.name', 'orders.date'));
 ```
 
-####Creating records####
+####Creating records
 
 ```sql
 INSERT INTO `laptops` VALUES ('Toshiba', 'white')
@@ -98,7 +111,7 @@ $result = $db->insert('laptops', array('brand', 'color'))
              ->execute();
 ```
 
-####Updating records###
+####Updating records
 
 ```sql
 UPDATE `orders` SET `product` = 'Toshiba', `color` = 'white' WHERE `id` = 2013
@@ -139,7 +152,7 @@ $result = $db->update('orders')
              ->execute();
 ```
 
-####Deleting records####
+####Deleting records
 
 ```sql
 DELETE FROM `orders` WHERE `id` = 2013
@@ -166,7 +179,7 @@ $result = $db->from('customers')
              ->delete(array('customers', 'orders'));
 ```
 
-####Select into###
+####Select into
 
 ```sql
 SELECT * INTO `copy` FROM `customers`
