@@ -1,7 +1,7 @@
 {
     "name": "opis/database",
-    "description": "A fully decoupled component that handles differences between various SQL database implementations, allowing developers to focus on productivity.",
-    "keywords": ["opis", "database", "mysql", "postgre", "sql", "sqlite",
+    "description": "Database abstraction layer",
+    "keywords": ["database", "query", "abstraction", "mysql", "postgre", "sql", "sqlite",
                  "firebird", "nuodb", "db2", "oracle","sql server"],
     "homepage": "http://opis.io",
     "license": "Apache-2.0",
