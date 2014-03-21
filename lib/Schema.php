@@ -31,6 +31,8 @@ class Schema
     /** @var    \Opis\Database\Connection   Connection. */
     protected $connection;
     
+    protected $pdo;
+    
     /**
      * Constructor
      *
@@ -42,6 +44,7 @@ class Schema
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->pdo = $connection->pdo();
     }
     
     public function replaceParams($query, array $params)
