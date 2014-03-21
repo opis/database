@@ -40,6 +40,11 @@ class MySQL extends Connection
         return new \Opis\Database\Compiler\MySQL();
     }
     
+    public function schemaCompiler()
+    {
+        return new \Opis\Database\Schema\Compiler\MySQL();
+    }
+    
     public function database($name)
     {
         return $this->setDatabase('dbname', $name);

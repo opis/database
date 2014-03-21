@@ -311,6 +311,11 @@ class Connection implements Serializable
         return new \Opis\Database\SQL\Compiler();
     }
     
+    public function schemaCompiler()
+    {
+        throw new \Exception('Schema not supported');
+    }
+    
     public function serialize()
     {
         return serialize(array(
