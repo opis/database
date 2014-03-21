@@ -17,13 +17,13 @@ class Create
     
     public function __construct($table)
     {
-        $this->table;
+        $this->table = $table;
     }
     
     protected function addColumn($name, $type)
     {
         $column = new Column($this, $type, $name);
-        $columns[] = $column;
+        $this->columns[$name] = $column;
         return $column;
     }
     

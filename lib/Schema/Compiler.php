@@ -7,7 +7,7 @@ class Compiler
     
     protected $separator = ';';
     
-    protected $wrapper = '"%s"';
+    protected $wrapper = '`%s`';
     
     protected $params = array();
     
@@ -31,12 +31,12 @@ class Compiler
     {
         $sql = array();
         
-        foreach($columns as $column)
+        foreach($columns as $name => $column)
         {
-            $line  = $this->wrap($column->getName());
+            $line  = $this->wrap($name);
             $line .= $this->handleColumnType($column);
-            $line .= $column->get('unsigned', false) ? '' : ' UNSIGNED ';
-            $line .= $column->get('nullable', false) ? ' NOT NULL ' : ' NULL ';
+            $line .= $column->get('unsigned', false) ? ' UNSIGNED ' : '';
+            $line .= $column->get('nullable', false) ? ' NULL ' : ' NOT NULL ';
             $default = $column->get('default');
             $line .= $default === null ? '' : ' DEFAULT ' . $this->value($default);
             $sql[] = $line;
@@ -77,7 +77,7 @@ class Compiler
             return '';
         }
         
-        return 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . implode(', ', $this->wrapArray($pk['columns'])) . ')';
+        return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . implode(', ', $this->wrapArray($pk['columns'])) . ')';
     }
     
     protected function handleUniqueKeys(Create $schema)
@@ -127,13 +127,13 @@ class Compiler
     
     public function create(Create $schema)
     {
-        $sql .= 'CREATE TABLE ' . $this->wrap($schema->getTableName());
+        $sql  = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
         $sql .= "(\n";
         $sql .= $this->handleColumns($schema->getColumns());
         $sql .= $this->handlePrimaryKey($schema);
         $sql .= $this->handleUniqueKeys($schema);
         $sql .= "\n)" . $this->handleEngine($schema);
-        $sql .= $this->handleIndexes($schema);
+        $sql .= $this->handleIndexKeys($schema);
         
         return $sql;
     }
