@@ -37,6 +37,8 @@ class Create
     
     protected $engine;
     
+    protected $autoincrement;
+    
     public function __construct($table)
     {
         $this->table = $table;
@@ -82,6 +84,11 @@ class Create
     public function getEngine()
     {
         return $this->engine;
+    }
+    
+    public function getAutoincrement()
+    {
+        return $this->autoincrement;
     }
     
     public function engine($name)
@@ -159,39 +166,26 @@ class Create
         return $foreign;
     }
     
+    public function autoincrement(Column $column)
+    {
+        if($column->getType() !== 'integer')
+        {
+           return $this; 
+        }
+        
+        $this->autoincrement = $column;
+        return $this->primary($column->getName());
+    }
+    
     public function integer($name)
     {
         return $this->addColumn($name, 'integer');
     }
     
-    public function bigInteger($name)
-    {
-        return $this->addColumn($name, 'bigInteger');
-    }
     
-    public function smallInteger($name)
+    public function float($name, $size = 8, $precision = 2)
     {
-        return $this->addColumn($name, 'smallInteger');
-    }
-    
-    public function mediumInteger($name)
-    {
-        return $this->addColumn($name, 'mediumInteger');
-    }
-    
-    public function serial($name)
-    {
-        $this->addColumn($name, 'serial')->primary();
-    }
-    
-    public function bigSerial($name)
-    {
-        return $this->addColumn($name, 'bigSerial')->primary();
-    }
-    
-    public function float($name)
-    {
-        return $this->addColumn($name, 'float');
+        return $this->addColumn($name, 'float')->set('digits', (int) $size)->set('precision', (int) $precision);
     }
     
     public function double($name)
@@ -219,19 +213,14 @@ class Create
         return $this->addColumn($name, 'string')->set('length', $length);
     }
     
+    public function fixed($name, $length = 255)
+    {
+        return $this->addColumn($name, 'fixed')->set('length', $length);
+    }
+    
     public function text($name)
     {
         return $this->addColumn($name);
-    }
-    
-    public function longText($name)
-    {
-        return $this->addColumn($name, 'longText');
-    }
-    
-    public function mediumText($name)
-    {
-        return $this->addColumn($name, 'mediumText');
     }
     
     public function time($name)

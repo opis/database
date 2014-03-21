@@ -43,6 +43,11 @@ class Column
         return $this->type;
     }
     
+    public function getTable()
+    {
+        return $this->table;
+    }
+    
     public function getName()
     {
         return $this->name;
@@ -67,6 +72,24 @@ class Column
     public function has($key)
     {
         return isset($this->properties[$key]);
+    }
+    
+    public function size($value)
+    {
+        $value = strtolower($value);
+        
+        if(!in_array($value, array('tiny', 'small', 'normal', 'medium', 'big')))
+        {
+            return $this;
+        }
+        
+        return $this->set('size', $value);
+    }
+    
+    public function autoincrement()
+    {
+        $this->table->autoincrement($this);
+        return $this;
     }
     
     public function primary()

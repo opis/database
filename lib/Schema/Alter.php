@@ -41,25 +41,52 @@ class Alter
         return $this;
     }
     
+    protected function addKey($type, $name, $columns)
+    {
+        if($columns === null)
+        {
+            $columns = array($name);
+        }
+        elseif(!is_array($columns))
+        {
+            $columns = array($columns);
+        }
+        
+        return $this->addCommand($type, array(
+            'name' => $name,
+            'columns' => $columns,
+        ));
+    }
+    
     public function getTableName()
     {
         return $this->table;
     }
     
     
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+    
     public function dropIndex($name)
     {
         return $this->addCommand('dropIndex', $name);
     }
     
-    public function dropUniqueKey($name)
+    public function dropUnique($name)
     {
         return $this->addCommand('dropUniqueKey', $name);
     }
     
-    public function dropPrimaryKey($name)
+    public function dropPrimary($name)
     {
         return $this->addCommand('dropPrimaryKey', $name);
+    }
+    
+    public function dropForeign($name)
+    {
+        return $this->addCommand('dropForeignKey', $name);
     }
     
     public function dropColumn($name)
@@ -72,6 +99,54 @@ class Alter
         return $this->addCommand('renameColumn', array('from' => $from, 'to' => $to));
     }
     
+    public function modifyColumn($column)
+    {
+        $columnObject = new AlterColumn($column);
+        $this->addCommand('modifyColumn', $columnObject);
+        return $columnObject;
+    }
+    
+    public function addColumn($name)
+    {
+        $columnObject = new AlterColumn($column);
+        $this->addCommand('addColumn', $columnObject);
+        return $columnObject;
+    }
+    
+    public function addPrimary($name, $columns = null)
+    {
+        return $this->addKey('addPrimary', $name, $columns);
+    }
+    
+    public function addUnique($name, $columns = null)
+    {
+        return $this->addKey('addUnique', $name, $columns);
+    }
+    
+    public function addIndex($name, $columns = null)
+    {
+        return $this->addKey('addIndex', $name, $columns);
+    }
+    
+    public function addForeign($name, $columns = null)
+    {
+        if($columns === null)
+        {
+            $columns = array($name);
+        }
+        elseif(!is_array($columns))
+        {
+            $columns = array($columns);
+        }
+        
+        $foreign = new ForeignKey($columns);
+        $this->addCommand('addForeign', array(
+            'name' => $name,
+            'foreign' => $foreign,
+        ));
+        
+        return $foreign;
+    }
     
     
 }

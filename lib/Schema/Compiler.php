@@ -25,7 +25,7 @@ class Compiler
     
     protected $separator = ';';
     
-    protected $wrapper = '"%s"';
+    protected $wrapper = '`%s`';
     
     protected $params = array();
     
@@ -65,24 +65,69 @@ class Compiler
     
     protected function handleColumnType(Column $column)
     {
+        
+        
         switch($column->getType())
         {
             case 'integer':
-                return ' INT ';
-            case 'smallInteger':
-                return ' SMALLINT ';
-            case 'mediumInteger':
-                return ' MEDIUMINT ';
-            case 'bigInteger':
-                return ' BIGINT ';
-            case 'serial':
-                return ' INT AUTO_INCREMENT ';
+                $value = ' INT ';
+                
+                switch($column->get('size', 'normal'))
+                {
+                    case 'tiny':
+                        $value = ' TINYINT ';
+                        break;
+                    case 'small':
+                        $value = ' SMALLINT ';
+                        break;
+                    case 'medium':
+                        $value = ' MEDIUMINT ';
+                        break;
+                    case 'big':
+                        $value = ' BIGINT ';
+                        break;
+                }
+                
+                if($column->getTable()->getAutoincrement() === $column)
+                {
+                    $value .= ' AUTO_INCREMENT ';
+                }
+                
+                return $value;
             case 'boolean':
                 return ' TINYINT(1) ';
             case 'string':
-                return ' VARCHAR(' . $column->get('length') . ') ';
+                return ' VARCHAR(' . $column->get('length', 255) . ') ';
+            case 'fixed':
+                return ' CHAR(' . $column->get('length', 255) .')';
             case 'text':
-                return '';
+                switch($column->get('size', 'normal'))
+                {
+                    case 'tiny':
+                    case 'small':
+                        return ' TINYTEXT ';
+                    case 'medium':
+                        return ' MEDIUMTEXT ';
+                    case 'big':
+                        return ' LONGTEXT ';
+                }
+                return ' TEXT ';
+            case 'float':
+                return ' FLOAT ';
+            case 'double':
+                return ' DOUBLE ';
+            case 'decimal':
+                return ' DECIMAL ';
+            case 'binary':
+                return ' BLOB ';
+            case 'time':
+                return ' TIME ';
+            case 'date':
+                return ' DATE ';
+            case 'dateTime':
+                return ' DATETIME ';
+            case 'timestamp':
+                return ' TIMESTAMP ';
         }
     }
     
