@@ -15,6 +15,8 @@ class Create
     
     protected $table;
     
+    protected $engine;
+    
     public function __construct($table)
     {
         $this->table = $table;
@@ -50,6 +52,17 @@ class Create
     public function getIndexes()
     {
         return $this->indexes;
+    }
+    
+    public function getEngine()
+    {
+        return $this->engine;
+    }
+    
+    public function engine($name)
+    {
+        $this->engine = $name;
+        return $this;
     }
     
     public function primary($name, $columns = null)

@@ -121,6 +121,11 @@ class Compiler
     
     protected function handleEngine(Create $schema)
     {
+        if(null !== $engine = $schema->getEngine())
+        {
+            return ' ENGINE = ' . strtoupper($engine);
+        }
+        
         return '';
     }
     
