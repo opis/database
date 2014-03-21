@@ -111,10 +111,9 @@ class Compiler
         
         $sql = array();
         
-        foreach($indexes as $index)
+        foreach($indexes as $name => $columns)
         {
-            $sql[] = 'CREATE ' . ($index->isUnique() ? 'UNIQUE INDEX' : 'INDEX ') . $this->wrap($index->getName())
-            . ' ON ' . $this->wrap($index->getTable()) . '(' . $this->wrapArray($index->getColumns()) . ')';
+            $sql[] = 'CREATE INDEX ' . $this->wrap($name) . ' ON ' . $this->wrap($schema->getTableName()) . '(' . $this->wrapArray($columns) . ')';
         }
         
         return "\n" . $this->separator . implode("\n" . $this->separator, $sql);
@@ -123,6 +122,11 @@ class Compiler
     protected function handleEngine(Create $schema)
     {
         return '';
+    }
+    
+    public function getParams()
+    {
+        return $this->params;
     }
     
     public function create(Create $schema)
