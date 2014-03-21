@@ -24,13 +24,54 @@ class Alter
 {
     protected $table;
     
+    protected $commands = array();
+    
     public function __construct($table)
     {
         $this->table = $table;
+    }
+    
+    protected function addCommand($name, $data)
+    {
+        $this->commands[] = array(
+            'type' => $name,
+            'data' => $data,
+        );
+        
+        return $this;
     }
     
     public function getTableName()
     {
         return $this->table;
     }
+    
+    
+    public function dropIndex($name)
+    {
+        return $this->addCommand('dropIndex', $name);
+    }
+    
+    public function dropUniqueKey($name)
+    {
+        return $this->addCommand('dropUniqueKey', $name);
+    }
+    
+    public function dropPrimaryKey($name)
+    {
+        return $this->addCommand('dropPrimaryKey', $name);
+    }
+    
+    public function dropColumn($name)
+    {
+        return $this->addCommand('dropColumn', $name);
+    }
+    
+    public function renameColumn($from, $to)
+    {
+        return $this->addCommand('renameColumn', array('from' => $from, 'to' => $to));
+    }
+    
+    
+    
 }

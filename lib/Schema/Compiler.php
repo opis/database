@@ -137,6 +137,33 @@ class Compiler
         return $this->separator . "\n" . implode($this->separator . "\n", $sql);
     }
     
+    protected function handleForeignKeys(Create $schema)
+    {
+        $keys = $schema->getForeignKeys();
+        
+        if(empty($keys))
+        {
+            return '';
+        }
+        
+        $sql = array();
+        
+        foreach($keys as $name => $key)
+        {
+            $cmd  = 'CONSTRAINT ' . $this->wrap($name) . ' FOREIGN KEY (' . $this->wrapArray($key->getColumns()). ') ';
+            $cmd .= 'REFERENCES ' . $this->wrap($key->getReferencedTable()) . ' ('. $this->wrapArray($key->getReferencedColumns()) .')';
+            
+            foreach($key->getActions() as $actionName => $action)
+            {
+                $cmd .= ' ' . $actionName . ' ' . $action;
+            }
+            
+            $sql[] = $cmd;
+        }
+        
+        return ",\n" . implode(",\n", $sql);
+    }
+    
     protected function handleEngine(Create $schema)
     {
         if(null !== $engine = $schema->getEngine())
@@ -159,6 +186,7 @@ class Compiler
         $sql .= $this->handleColumns($schema->getColumns());
         $sql .= $this->handlePrimaryKey($schema);
         $sql .= $this->handleUniqueKeys($schema);
+        $sql .= $this->handleForeignKeys($schema);
         $sql .= "\n)" . $this->handleEngine($schema);
         $sql .= $this->handleIndexKeys($schema);
         
