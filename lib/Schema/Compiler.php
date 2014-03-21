@@ -16,9 +16,9 @@ class Compiler
         return sprintf($this->wrapper, $name);
     }
     
-    protected function wrapArray(array $value)
+    protected function wrapArray(array $value, $separator = ', ')
     {
-        return array_map(array($this, 'wrap'), $value);
+        return implode($separator, array_map(array($this, 'wrap'), $value));
     }
     
     protected function value($value)
@@ -77,7 +77,7 @@ class Compiler
             return '';
         }
         
-        return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . implode(', ', $this->wrapArray($pk['columns'])) . ')';
+        return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . $this->wrapArray($pk['columns']) . ')';
     }
     
     protected function handleUniqueKeys(Create $schema)
@@ -94,7 +94,7 @@ class Compiler
         
         foreach($schema->getUniqueKeys() as $name => $columns)
         {   
-            $sql[] = 'CONSTRAINT ' . $this->wrap($name) . ' UNIQUE (' . implode(', ', $this->wrapArray($columns)) . ')';
+            $sql[] = 'CONSTRAINT ' . $this->wrap($name) . ' UNIQUE (' . $this->wrapArray($columns) . ')';
         }
         
         return ",\n" . implode(",\n", $sql);
@@ -116,7 +116,7 @@ class Compiler
             $sql[] = 'CREATE INDEX ' . $this->wrap($name) . ' ON ' . $this->wrap($schema->getTableName()) . '(' . $this->wrapArray($columns) . ')';
         }
         
-        return "\n" . $this->separator . implode("\n" . $this->separator, $sql);
+        return $this->separator . "\n" . implode($this->separator . "\n", $sql);
     }
     
     protected function handleEngine(Create $schema)
