@@ -25,7 +25,7 @@ class CreateColumn extends BaseColumn
     
     protected $table;
     
-    public function __construct(Create $table, $name, $type)
+    public function __construct(CreateTable $table, $name, $type)
     {
         $this->table = $table;
         parent::__construct($name, $type);
