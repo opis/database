@@ -51,9 +51,9 @@ class Compiler
     {
         $sql = array();
         
-        foreach($columns as $name => $column)
+        foreach($columns as $column)
         {
-            $line  = $this->wrap($name);
+            $line  = $this->wrap($name->getName());
             $line .= $this->handleColumnType($column);
             $line .= $this->handleColumnModifiers($column);
             $sql[] = $line;
