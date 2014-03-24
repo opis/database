@@ -94,9 +94,21 @@ class AlterTable
         return $this->addCommand('dropColumn', $name);
     }
     
-    public function renameColumn($from, $to)
+    public function renameColumn($from, $to, $type)
     {
-        return $this->addCommand('renameColumn', array('from' => $from, 'to' => $to));
+        $type = strtolower($type);
+        
+        if(!in_array($type, array('integer', 'float', 'double', 'boolean', 'decimal',
+                                  'string', 'fixed', 'text', 'date', 'time',
+                                  'datetime', 'timestamp', 'binary')))
+        {
+            return $this;
+        }
+        
+        return $this->addCommand('renameColumn', array(
+            'from' => $from,
+            'column' => new AlterColumn($this, $to, $type),
+        ));
     }
     
     public function modifyColumn($column)

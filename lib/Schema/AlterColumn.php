@@ -25,10 +25,10 @@ class AlterColumn extends BaseColumn
     
     protected $table;
     
-    public function __construct(AlterTable $table, $name)
+    public function __construct(AlterTable $table, $name, $type = null)
     {
         $this->table = $table;
-        parent::__construct($name);
+        parent::__construct($name, $type);
     }
     
     public function getTable()

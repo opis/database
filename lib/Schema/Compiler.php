@@ -29,7 +29,7 @@ class Compiler
     
     protected $params = array();
     
-    protected $modifiers = array('nullable', 'default', 'unsigned');
+    protected $modifiers = array('unsigned', 'nullable', 'default', 'autoincrement');
     
     protected function wrap($name)
     {
@@ -53,90 +53,115 @@ class Compiler
         
         foreach($columns as $name => $column)
         {
-            $type  = 'handleType' . ucfirst($column->getType());
             $line  = $this->wrap($name);
-            $line .= $this->{$type}($column);
-            
-            foreach($this->modifiers as $modifier)
-            {
-                $callback = 'handleModifier' . ucfirst($modifier);
-                $line .= $this->{$callback}($column);
-            }
-            
+            $line .= $this->handleColumnType($column);
+            $line .= $this->handleColumnModifiers($column);
             $sql[] = $line;
         }
         
         return implode(",\n", $sql);
     }
     
+    protected function handleColumnType(BaseColumn $column)
+    {
+        $type  = 'handleType' . ucfirst($column->getType());
+        return $this->{$type}($column);
+    }
+    
+    protected function handleColumnModifiers(BaseColumn $column)
+    {
+        $line = '';
+        foreach($this->modifiers as $modifier)
+        {
+            $callback = 'handleModifier' . ucfirst($modifier);
+            $line .= $this->{$callback}($column);
+        }
+        return $line;
+    }
+    
     protected function handleTypeInteger(BaseColumn $column)
     {
-        return ' INTEGER ';
+        return ' INTEGER';
     }
     
     protected function handleTypeFloat(BaseColumn $column)
     {
-        return ' FLOAT ';
+        return ' FLOAT';
     }
     
     protected function hanleTypeDouble(BaseColumn $column)
     {
-        return ' DOUBLE ';
+        return ' DOUBLE';
     }
     
     protected function handleTypeDecimal(BaseColumn $column)
     {
-        return ' DECIMAL ';
+        return ' DECIMAL';
     }
     
     protected function handleTypeBoolean(BaseColumn $column)
     {
-        return ' BOOLEAN ';
+        return ' TINYINT(1)';
+    }
+    
+    protected function handleTypeBinary(BaseColumn $column)
+    {
+        return ' BLOB';
     }
     
     protected function handleTypeString(BaseColumn $column)
     {
-        return ' VARCHAR(' . $this->value($column->get('lenght', 255)) . ') ';
+        return ' VARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
     
     protected function handleTypeFixed(BaseColumn $column)
     {
-        return ' CHAR(' . $this->value($column->get('lenght', 255)) . ') ';
+        return ' CHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
     
     protected function handleTypeTime(BaseColumn $column)
     {
-        return ' TIME ';
+        return ' TIME';
     }
     
     protected function handleTypeTimestamp(BaseColumn $column)
     {
-        return ' TIMESTAMP ';
+        return ' TIMESTAMP';
     }
     
     protected function handleTypeDate(BaseColumn $column)
     {
-        return ' DATE ';
+        return ' DATE';
     }
     
     protected function handleTypeDateTime(BaseColumn $column)
     {
-        return ' DATETIME ';
+        return ' DATETIME';
     }
     
     protected function handleModifierUnsigned(BaseColumn $column)
     {
-        return $column->get('unisgned', false) ? ' UNISGNED ' : '';
+        return $column->get('unisgned', false) ? ' UNISGNED' : '';
     }
     
     protected function handleModifierNullable(BaseColumn $column)
     {
-        return $column->get('nullable', false) ? ' NOT NULL ' : ' NULL ';
+        return $column->get('nullable', false) ? ' NULL' : ' NOT NULL';
     }
     
     protected function handleModifierDefault(BaseColumn $column)
     {
         return null === $column->get('default') ? '' : ' DEFAULT (' . $this->value($column->get('default')) . ')';
+    }
+    
+    protected function handleModifierAutoincrement(BaseColumn $column)
+    {
+        if($column->getType() !== 'integer')
+        {
+            return '';
+        }
+        
+        return $column->get('autoincrement', false) ? '' : ' AUTO_INCREMENT';
     }
     
     protected function handlePrimaryKey(CreateTable $schema)
@@ -248,37 +273,46 @@ class Compiler
     
     protected function handleDropColumn(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP COLUMN ' . $this->wrap($data);
     }
     
     protected function handleRenameColumn(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' CHANGE '. $this->wrap($data['from']) .', '
+        .  $this->wrap($data['column']->getName()) . $this->handleColumnType($data['column']);
     }
     
     protected function handleModifyColumn(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY COLUMN ' . $this->handleColumns(array($data));
     }
     
     protected function handleAddColumn(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD COLUMN ' . $this->handleColumns(array($data));
     }
     
     protected function handleAddPrimary(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
+        . $this->wrap($data['name']) . ' PRIMARY KEY (' . $this->wrapArray($data['columns']) . ')';
     }
     
     protected function handleAddUnique(AlterTable $table, $data)
     {
-        
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
+        . $this->wrap($data['name']) . ' UNIQUE (' . $this->wrapArray($data['columns']) . ')';
     }
     
     protected function handleAddIndex(AlterTable $table, $data)
     {
-        
+        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' ('. $this->wrapArray($data['columns']) . ')';
+    }
+    
+    protected function handleAddForeign(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
+        . $this->wrap($data['name']) . ' UNIQUE (' . $this->wrapArray($data['columns']) . ')';
     }
     
     public function getParams()
@@ -302,7 +336,25 @@ class Compiler
     
     public function alter(AlterTable $schema)
     {
+        $sql = array();
         
+        foreach($schema->getCommands() as $command)
+        {
+            $type = 'handle' . ucfirst($command['type']);
+            $sql[] = $this->{$type}($schema, $command['data']);
+        }
+        
+        return implode($this->separator . "\n", $sql);
+    }
+    
+    public function drop($table)
+    {
+        return 'DROP TABLE ' . $this->wrap($table);
+    }
+    
+    public function truncate($table)
+    {
+        return 'TRUNCATE TABLE ' . $this->wrap($table);
     }
     
 }
