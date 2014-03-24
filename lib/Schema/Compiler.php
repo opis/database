@@ -201,7 +201,7 @@ class Compiler
         
         if(empty($indexes))
         {
-            return '';
+            return array();
         }
         
         $sql = array();
@@ -211,7 +211,7 @@ class Compiler
             $sql[] = 'CREATE INDEX ' . $this->wrap($name) . ' ON ' . $this->wrap($schema->getTableName()) . '(' . $this->wrapArray($columns) . ')';
         }
         
-        return $this->separator . "\n" . implode($this->separator . "\n", $sql);
+        return $sql;
     }
     
     protected function handleForeignKeys(CreateTable $schema)
@@ -317,7 +317,9 @@ class Compiler
     
     public function getParams()
     {
-        return $this->params;
+        $params = $this->params;
+        $this->params = array();
+        return $params;
     }
     
     public function create(CreateTable $schema)
@@ -329,32 +331,56 @@ class Compiler
         $sql .= $this->handleUniqueKeys($schema);
         $sql .= $this->handleForeignKeys($schema);
         $sql .= "\n)" . $this->handleEngine($schema);
-        $sql .= $this->handleIndexKeys($schema);
         
-        return $sql;
+        $commands = array();
+        
+        $commands[] = array(
+            'sql' => $sql,
+            'params' => $this->getParams(),
+        );
+        
+        foreach($this->handleIndexKeys($schema) as $index)
+        {
+            $commands[] = array(
+                'sql' => $index,
+                'params' => array(),
+            );
+        }
+        
+        return $commands;
     }
     
     public function alter(AlterTable $schema)
     {
-        $sql = array();
+        $commands = array();
         
         foreach($schema->getCommands() as $command)
         {
             $type = 'handle' . ucfirst($command['type']);
-            $sql[] = $this->{$type}($schema, $command['data']);
+            $sql = $this->{$type}($schema, $command['data']);
+            $commands[] = array(
+                'sql' => $sql,
+                'params' => $this->getParams(),
+            );
         }
         
-        return implode($this->separator . "\n", $sql);
+        return $commands;
     }
     
     public function drop($table)
     {
-        return 'DROP TABLE ' . $this->wrap($table);
+        return array(
+            'sql' => 'DROP TABLE ' . $this->wrap($table),
+            'params' => array(),
+        );
     }
     
     public function truncate($table)
     {
-        return 'TRUNCATE TABLE ' . $this->wrap($table);
+        return array(
+            'sql' => 'TRUNCATE TABLE ' . $this->wrap($table),
+            'params' => array(),
+        );
     }
     
 }
