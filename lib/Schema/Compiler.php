@@ -161,7 +161,7 @@ class Compiler
             return '';
         }
         
-        return $column->get('autoincrement', false) ? '' : ' AUTO_INCREMENT';
+        return $column->get('autoincrement', false) ? ' AUTO_INCREMENT' : '';
     }
     
     protected function handlePrimaryKey(CreateTable $schema)
