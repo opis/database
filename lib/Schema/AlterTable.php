@@ -120,7 +120,7 @@ class AlterTable
     
     public function addColumn($name)
     {
-        $columnObject = new AlterColumn($column);
+        $columnObject = new AlterColumn($name);
         $this->addCommand('addColumn', $columnObject);
         return $columnObject;
     }
