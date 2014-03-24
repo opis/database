@@ -89,9 +89,10 @@ class Schema
     
     public function alter($table, Closure $callback)
     {
+        $compiler = $this->connection->schemaCompiler();
         $schema = new AlterTable($table);
         $callback($schema);
-        return $schema;
+        return $compiler->alter($schema);
     }
     
 }
