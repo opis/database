@@ -20,7 +20,7 @@
 
 namespace Opis\Database\Schema;
 
-class Alter
+class AlterTable
 {
     protected $table;
     

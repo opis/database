@@ -25,9 +25,11 @@ class Compiler
     
     protected $separator = ';';
     
-    protected $wrapper = '`%s`';
+    protected $wrapper = '"%s"';
     
     protected $params = array();
+    
+    protected $modifiers = array('nullable', 'default', 'unsigned');
     
     protected function wrap($name)
     {
@@ -51,91 +53,96 @@ class Compiler
         
         foreach($columns as $name => $column)
         {
+            $type  = 'handleType' . ucfirst($column->getType());
             $line  = $this->wrap($name);
-            $line .= $this->handleColumnType($column);
-            $line .= $column->get('unsigned', false) ? ' UNSIGNED ' : '';
-            $line .= $column->get('nullable', false) ? ' NULL ' : ' NOT NULL ';
-            $default = $column->get('default');
-            $line .= $default === null ? '' : ' DEFAULT ' . $this->value($default);
+            $line .= $this->{$type}($column);
+            
+            foreach($this->modifiers as $modifier)
+            {
+                $callback = 'handleModifier' . ucfirst($modifier);
+                $line .= $this->{$callback}($column);
+            }
+            
             $sql[] = $line;
         }
         
         return implode(",\n", $sql);
     }
     
-    protected function handleColumnType(Column $column)
+    protected function handleTypeInteger(BaseColumn $column)
     {
-        
-        
-        switch($column->getType())
-        {
-            case 'integer':
-                $value = ' INT ';
-                
-                switch($column->get('size', 'normal'))
-                {
-                    case 'tiny':
-                        $value = ' TINYINT ';
-                        break;
-                    case 'small':
-                        $value = ' SMALLINT ';
-                        break;
-                    case 'medium':
-                        $value = ' MEDIUMINT ';
-                        break;
-                    case 'big':
-                        $value = ' BIGINT ';
-                        break;
-                }
-                
-                if($column->getTable()->getAutoincrement() === $column)
-                {
-                    $value .= ' AUTO_INCREMENT ';
-                }
-                
-                return $value;
-            case 'boolean':
-                return ' TINYINT(1) ';
-            case 'string':
-                return ' VARCHAR(' . $column->get('length', 255) . ') ';
-            case 'fixed':
-                return ' CHAR(' . $column->get('length', 255) .')';
-            case 'text':
-                switch($column->get('size', 'normal'))
-                {
-                    case 'tiny':
-                    case 'small':
-                        return ' TINYTEXT ';
-                    case 'medium':
-                        return ' MEDIUMTEXT ';
-                    case 'big':
-                        return ' LONGTEXT ';
-                }
-                return ' TEXT ';
-            case 'float':
-                return ' FLOAT ';
-            case 'double':
-                return ' DOUBLE ';
-            case 'decimal':
-                return ' DECIMAL ';
-            case 'binary':
-                return ' BLOB ';
-            case 'time':
-                return ' TIME ';
-            case 'date':
-                return ' DATE ';
-            case 'dateTime':
-                return ' DATETIME ';
-            case 'timestamp':
-                return ' TIMESTAMP ';
-        }
+        return ' INTEGER ';
+    }
+    
+    protected function handleTypeFloat(BaseColumn $column)
+    {
+        return ' FLOAT ';
+    }
+    
+    protected function hanleTypeDouble(BaseColumn $column)
+    {
+        return ' DOUBLE ';
+    }
+    
+    protected function handleTypeDecimal(BaseColumn $column)
+    {
+        return ' DECIMAL ';
+    }
+    
+    protected function handleTypeBoolean(BaseColumn $column)
+    {
+        return ' BOOLEAN ';
+    }
+    
+    protected function handleTypeString(BaseColumn $column)
+    {
+        return ' VARCHAR(' . $this->value($column->get('lenght', 255)) . ') ';
+    }
+    
+    protected function handleTypeFixed(BaseColumn $column)
+    {
+        return ' CHAR(' . $this->value($column->get('lenght', 255)) . ') ';
+    }
+    
+    protected function handleTypeTime(BaseColumn $column)
+    {
+        return ' TIME ';
+    }
+    
+    protected function handleTypeTimestamp(BaseColumn $column)
+    {
+        return ' TIMESTAMP ';
+    }
+    
+    protected function handleTypeDate(BaseColumn $column)
+    {
+        return ' DATE ';
+    }
+    
+    protected function handleTypeDateTime(BaseColumn $column)
+    {
+        return ' DATETIME ';
+    }
+    
+    protected function handleModifierUnsigned(BaseColumn $column)
+    {
+        return $column->get('unisgned', false) ? ' UNISGNED ' : '';
+    }
+    
+    protected function handleModifierNullable(BaseColumn $column)
+    {
+        return $column->get('nullable', false) ? ' NOT NULL ' : ' NULL ';
+    }
+    
+    protected function handleModifierDefault(BaseColumn $column)
+    {
+        return null === $column->get('default') ? '' : ' DEFAULT (' . $this->value($column->get('default')) . ')';
     }
     
     protected function handlePrimaryKey(Create $schema)
     {
-        $pk = $schema->getPrimaryKey();
         
-        if($pk === null)
+        if(null === $pk = $schema->getPrimaryKey())
         {
             return '';
         }
@@ -143,7 +150,7 @@ class Compiler
         return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . $this->wrapArray($pk['columns']) . ')';
     }
     
-    protected function handleUniqueKeys(Create $schema)
+    protected function handleUniqueKeys(CreateTable $schema)
     {
         
         $indexes = $schema->getUniqueKeys();
@@ -163,7 +170,7 @@ class Compiler
         return ",\n" . implode(",\n", $sql);
     }
     
-    protected function handleIndexKeys(Create $schema)
+    protected function handleIndexKeys(CreateTable $schema)
     {
         $indexes = $schema->getIndexes();
         
@@ -182,7 +189,7 @@ class Compiler
         return $this->separator . "\n" . implode($this->separator . "\n", $sql);
     }
     
-    protected function handleForeignKeys(Create $schema)
+    protected function handleForeignKeys(CreateTable $schema)
     {
         $keys = $schema->getForeignKeys();
         
@@ -209,7 +216,7 @@ class Compiler
         return ",\n" . implode(",\n", $sql);
     }
     
-    protected function handleEngine(Create $schema)
+    protected function handleEngine(CreateTable $schema)
     {
         if(null !== $engine = $schema->getEngine())
         {
@@ -219,12 +226,67 @@ class Compiler
         return '';
     }
     
+    protected function handleDropPrimaryKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
+    }
+    
+    protected function handleDropUniqueKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
+    }
+    
+    protected function handleDropIndex(AlterTable $table, $data)
+    {
+        return 'DROP INDEX ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data);
+    }
+    
+    protected function handleDropForeignKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
+    }
+    
+    protected function handleDropColumn(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleRenameColumn(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleModifyColumn(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleAddColumn(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleAddPrimary(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleAddUnique(AlterTable $table, $data)
+    {
+        
+    }
+    
+    protected function handleAddIndex(AlterTable $table, $data)
+    {
+        
+    }
+    
     public function getParams()
     {
         return $this->params;
     }
     
-    public function create(Create $schema)
+    public function create(CreateTable $schema)
     {
         $sql  = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
         $sql .= "(\n";
@@ -238,7 +300,7 @@ class Compiler
         return $sql;
     }
     
-    public function alter(Alter $schema)
+    public function alter(AlterTable $schema)
     {
         
     }

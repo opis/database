@@ -20,7 +20,7 @@
 
 namespace Opis\Database\Schema;
 
-class Create
+class CreateTable
 {
     
     protected $columns = array();
@@ -46,7 +46,7 @@ class Create
     
     protected function addColumn($name, $type)
     {
-        $column = new Column($this, $type, $name);
+        $column = new CreateColumn($this, $type, $name);
         $this->columns[$name] = $column;
         return $column;
     }
@@ -182,10 +182,9 @@ class Create
         return $this->addColumn($name, 'integer');
     }
     
-    
-    public function float($name, $size = 8, $precision = 2)
+    public function float($name)
     {
-        return $this->addColumn($name, 'float')->set('digits', (int) $size)->set('precision', (int) $precision);
+        return $this->addColumn($name, 'float');
     }
     
     public function double($name)
@@ -193,9 +192,9 @@ class Create
         return $this->addColumn($name, 'double');
     }
     
-    public function decimal($name)
+    public function decimal($name, $maximum = null, $decimal = null)
     {
-        return $this->addColumn($name, 'decimal');
+        return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }
     
     public function boolean($name)

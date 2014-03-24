@@ -20,27 +20,15 @@
 
 namespace Opis\Database\Schema;
 
-class Column
+class CreateColumn extends BaseColumn
 {
-    
-    protected $properties = array();
-    
-    protected $name;
-    
-    protected $type;
     
     protected $table;
     
-    public function __construct(Create $table, $type, $name)
+    public function __construct(Create $table, $name, $type)
     {
         $this->table = $table;
-        $this->type = $type;
-        $this->name = $name;
-    }
-    
-    public function getType()
-    {
-        return $this->type;
+        parent::__construct($name, $type);
     }
     
     public function getTable()
@@ -48,43 +36,6 @@ class Column
         return $this->table;
     }
     
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-    
-    public function get($key, $default = null)
-    {
-        return isset($this->properties[$key]) ? $this->properties[$key] : $default;
-    }
-    
-    public function set($key, $value)
-    {
-        $this->properties[$key] = $value;
-        return $this;
-    }
-    
-    public function has($key)
-    {
-        return isset($this->properties[$key]);
-    }
-    
-    public function size($value)
-    {
-        $value = strtolower($value);
-        
-        if(!in_array($value, array('tiny', 'small', 'normal', 'medium', 'big')))
-        {
-            return $this;
-        }
-        
-        return $this->set('size', $value);
-    }
     
     public function autoincrement()
     {
@@ -109,19 +60,5 @@ class Column
         $this->table->index($this->name);
         return $this;
     }
-    
-    public function nullable()
-    {
-        return $this->set('nullable', true);
-    }
-    
-    public function description($comment)
-    {
-        return $this->set('description', $comment);
-    }
-    
-    public function implicit($value)
-    {
-        return $this->set('default', $value);
-    }
+
 }

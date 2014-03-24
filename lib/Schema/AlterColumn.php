@@ -20,21 +20,15 @@
 
 namespace Opis\Database\Schema;
 
-class AlterColumn
+class AlterColumn extends BaseColumn
 {
-    
-    protected $name;
     
     protected $table;
     
-    protected $type = 'integer';
-    
-    protected $properties = array();
-    
-    public function __construct(Alter $table, $name)
+    public function __construct(AlterTable $table, $name)
     {
         $this->table = $table;
-        $this->name = $name;
+        parent::__construct($name);
     }
     
     public function getTable()
@@ -42,72 +36,9 @@ class AlterColumn
         return $this->table;
     }
     
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    public function getType()
-    {
-        return $this->type;
-    }
-    
-    protected function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-    
-    public function set($name, $value)
-    {
-        $this->properties[$name] = $value;
-        return $this;
-    }
-    
-    public function has($name)
-    {
-        return isset($this->properties[$name]);
-    }
-    
-    
-    public function get($name, $default = null)
-    {
-        if(!isset($this->properties[$name]))
-        {
-            return $default;
-        }
-        
-        return $this->properties[$name];
-    }
-    
     public function integer()
     {
         return $this->setType('integer');
-    }
-    
-    public function bigInteger()
-    {
-        return $this->setType('bigInteger');
-    }
-    
-    public function smallInteger()
-    {
-        return $this->setType('smallInteger');
-    }
-    
-    public function mediumInteger()
-    {
-        return $this->setType('mediumInteger');
-    }
-    
-    public function unsigned()
-    {
-        return $this->set('unsigned', true);
-    }
-    
-    public function nullable($value = false)
-    {
-        return $this->set('nullable', $value);
     }
     
     public function implicit($value)
@@ -150,14 +81,9 @@ class AlterColumn
         return $this->setType('text');
     }
     
-    public function longText()
+    public function fixed()
     {
-        return $this->setType('longText');
-    }
-    
-    public function mediumText()
-    {
-        return $this->setType('mediumText');
+        return $this->setType('fixed');
     }
     
     public function time()
