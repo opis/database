@@ -46,7 +46,7 @@ class CreateTable
     
     protected function addColumn($name, $type)
     {
-        $column = new CreateColumn($this, $type, $name);
+        $column = new CreateColumn($this, $name, $type);
         $this->columns[$name] = $column;
         return $column;
     }
