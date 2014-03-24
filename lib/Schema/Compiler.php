@@ -139,7 +139,7 @@ class Compiler
         return null === $column->get('default') ? '' : ' DEFAULT (' . $this->value($column->get('default')) . ')';
     }
     
-    protected function handlePrimaryKey(Create $schema)
+    protected function handlePrimaryKey(CreateTable $schema)
     {
         
         if(null === $pk = $schema->getPrimaryKey())
