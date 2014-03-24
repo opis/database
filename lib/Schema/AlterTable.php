@@ -58,6 +58,13 @@ class AlterTable
         ));
     }
     
+    protected function addColumn($name, $type)
+    {
+        $columnObject = new AlterColumn($this, $name, $type);
+        $this->addCommand('addColumn', $columnObject);
+        return $columnObject;
+    }
+    
     public function getTableName()
     {
         return $this->table;
@@ -68,6 +75,7 @@ class AlterTable
     {
         return $this->commands;
     }
+    
     
     public function dropIndex($name)
     {
@@ -118,13 +126,6 @@ class AlterTable
         return $columnObject;
     }
     
-    public function addColumn($name)
-    {
-        $columnObject = new AlterColumn($name);
-        $this->addCommand('addColumn', $columnObject);
-        return $columnObject;
-    }
-    
     public function addPrimary($name, $columns = null)
     {
         return $this->addKey('addPrimary', $name, $columns);
@@ -160,5 +161,69 @@ class AlterTable
         return $foreign;
     }
     
+    public function integer($name)
+    {
+        return $this->addColumn($name, 'integer');
+    }
+    
+    public function float($name)
+    {
+        return $this->addColumn($name, 'float');
+    }
+    
+    public function double($name)
+    {
+        return $this->addColumn($name, 'double');
+    }
+    
+    public function decimal($name, $maximum = null, $decimal = null)
+    {
+        return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
+    }
+    
+    public function boolean($name)
+    {
+        return $this->addColumn($name, 'boolean');
+    }
+    
+    public function binary($name)
+    {
+        return $this->addColumn($name, 'binary');
+    }
+    
+    public function string($name, $length = 255)
+    {
+        return $this->addColumn($name, 'string')->set('length', $length);
+    }
+    
+    public function fixed($name, $length = 255)
+    {
+        return $this->addColumn($name, 'fixed')->set('length', $length);
+    }
+    
+    public function text($name)
+    {
+        return $this->addColumn($name);
+    }
+    
+    public function time($name)
+    {
+        return $this->addColumn($name, 'time');
+    }
+    
+    public function timestamp($name)
+    {
+        return $this->addColumn($name, 'timestamp');
+    }
+    
+    public function date($name)
+    {
+        return $this->addColumn($name, 'date');
+    }
+    
+    public function dateTime($name)
+    {
+        return $this->addColumn($name, 'dateTime');
+    }
     
 }

@@ -173,7 +173,7 @@ class CreateTable
            return $this; 
         }
         
-        $this->autoincrement = $column;
+        $this->autoincrement = $column->set('autoincrement', true);
         return $this->primary($column->getName());
     }
     

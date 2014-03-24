@@ -36,74 +36,10 @@ class AlterColumn extends BaseColumn
         return $this->table;
     }
     
-    public function integer()
+    public function autoincrement()
     {
-        return $this->setType('integer');
-    }
-    
-    public function implicit($value)
-    {
-        return $this->set('default', $value);
-    }
-    
-    public function float()
-    {
-        return $this->setType('float');
-    }
-    
-    public function double()
-    {
-        return $this->setType('double');
-    }
-    
-    public function decimal()
-    {
-        return $this->setType('decimal');
-    }
-    
-    public function boolean()
-    {
-        return $this->setType('boolean');
-    }
-    
-    public function binary()
-    {
-        return $this->setType('binary');
-    }
-    
-    public function string($length = 255)
-    {
-        return $this->setType('string')->set('length', $length);
-    }
-    
-    public function text()
-    {
-        return $this->setType('text');
-    }
-    
-    public function fixed()
-    {
-        return $this->setType('fixed');
-    }
-    
-    public function time()
-    {
-        return $this->setType('time');
-    }
-    
-    public function timestamp()
-    {
-        return $this->setType('timestamp');
-    }
-    
-    public function date()
-    {
-        return $this->setType('date');
-    }
-    
-    public function dateTime()
-    {
-        return $this->setType('dateTime');
+        $this->table->addPrimary($this->name);
+        return $this->set('autoincrement', true);
     }
     
 }
