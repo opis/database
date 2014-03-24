@@ -53,7 +53,7 @@ class Compiler
         
         foreach($columns as $column)
         {
-            $line  = $this->wrap($name->getName());
+            $line  = $this->wrap($column->getName());
             $line .= $this->handleColumnType($column);
             $line .= $this->handleColumnModifiers($column);
             $sql[] = $line;
