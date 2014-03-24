@@ -22,8 +22,8 @@ namespace Opis\Database;
 
 use Closure;
 use PDOException;
-use Opis\Database\Schema\Create;
-use Opis\Database\Schema\Alter;
+use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
 
 class Schema
@@ -81,15 +81,15 @@ class Schema
     {
         $compiler = $this->connection->schemaCompiler();
         
-        $schema = new Create($table);
+        $schema = new CreateTable($table);
         $callback($schema);
-        
+        return $compiler->create($schema);
         return $this->execute($compiler->create($schema), $compiler->getParams());
     }
     
     public function alter($table, Closure $callback)
     {
-        $schema = new Alter($table);
+        $schema = new AlterTable($table);
         $callback($schema);
         return $schema;
     }
