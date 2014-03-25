@@ -25,4 +25,33 @@ use Opis\Database\Schema\Compiler;
 class MySQL extends Compiler
 {
     protected $wrapper = '`%s`';
+    
+    
+    protected function handleTypeInteger(BaseColumn $column)
+    {
+        switch($column->get('size', 'normal'))
+        {
+            case 'tiny':
+                return ' TINY';
+            case 'small':
+                return ' SMALLINT';
+            case 'medium':
+                return ' MEDIUMINT';
+            case 'big':
+                return ' BIGINT';
+        }
+        
+        return ' INTEGER';
+    }
+    
+    protected function handleTypeDecimal(BaseColumn $column)
+    {
+        if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
+        {
+            return ' DECIAMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
+        }
+        
+        return ' DECIMAL';
+    }
+    
 }

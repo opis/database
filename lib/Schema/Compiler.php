@@ -31,6 +31,8 @@ class Compiler
     
     protected $modifiers = array('unsigned', 'nullable', 'default', 'autoincrement');
     
+    protected $serials = array('tiny', 'small', 'normal', 'medium', 'big');
+    
     protected function wrap($name)
     {
         return sprintf($this->wrapper, $name);
@@ -65,17 +67,33 @@ class Compiler
     protected function handleColumnType(BaseColumn $column)
     {
         $type  = 'handleType' . ucfirst($column->getType());
-        return $this->{$type}($column);
+        $result = trim($this->{$type}($column));
+        
+        if($result !== '')
+        {
+            $result = ' ' . $result;
+        }
+        
+        return $result;
     }
     
     protected function handleColumnModifiers(BaseColumn $column)
     {
         $line = '';
+        
         foreach($this->modifiers as $modifier)
         {
             $callback = 'handleModifier' . ucfirst($modifier);
-            $line .= $this->{$callback}($column);
+            $result = trim($this->{$callback}($column));
+            
+            if($result !== '')
+            {
+                $result = ' ' . $result;
+            }
+            
+            $line .= $result;
         }
+        
         return $line;
     }
     
@@ -156,7 +174,7 @@ class Compiler
     
     protected function handleModifierAutoincrement(BaseColumn $column)
     {
-        if($column->getType() !== 'integer')
+        if($column->getType() !== 'integer' || !in_array($column->get('size', 'normal'), $this->serials))
         {
             return '';
         }
