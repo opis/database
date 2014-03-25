@@ -65,6 +65,7 @@ class AlterTable
         return $columnObject;
     }
     
+    
     public function getTableName()
     {
         return $this->table;

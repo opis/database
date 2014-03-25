@@ -38,7 +38,6 @@ class AlterColumn extends BaseColumn
     
     public function autoincrement()
     {
-        $this->table->addPrimary($this->name);
         return $this->set('autoincrement', true);
     }
     
