@@ -21,6 +21,8 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\Compiler;
+use Opis\Database\Schema\BaseColumn;
+
 
 class MySQL extends Compiler
 {
