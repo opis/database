@@ -99,62 +99,62 @@ class Compiler
     
     protected function handleTypeInteger(BaseColumn $column)
     {
-        return ' INTEGER';
+        return 'INTEGER';
     }
     
     protected function handleTypeFloat(BaseColumn $column)
     {
-        return ' FLOAT';
+        return 'FLOAT';
     }
     
     protected function hanleTypeDouble(BaseColumn $column)
     {
-        return ' DOUBLE';
+        return 'DOUBLE';
     }
     
     protected function handleTypeDecimal(BaseColumn $column)
     {
-        return ' DECIMAL';
+        return 'DECIMAL';
     }
     
     protected function handleTypeBoolean(BaseColumn $column)
     {
-        return ' TINYINT(1)';
+        return 'TINYINT(1)';
     }
     
     protected function handleTypeBinary(BaseColumn $column)
     {
-        return ' BLOB';
+        return 'BLOB';
     }
     
     protected function handleTypeString(BaseColumn $column)
     {
-        return ' VARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'VARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
     
     protected function handleTypeFixed(BaseColumn $column)
     {
-        return ' CHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'CHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
     
     protected function handleTypeTime(BaseColumn $column)
     {
-        return ' TIME';
+        return 'TIME';
     }
     
     protected function handleTypeTimestamp(BaseColumn $column)
     {
-        return ' TIMESTAMP';
+        return 'TIMESTAMP';
     }
     
     protected function handleTypeDate(BaseColumn $column)
     {
-        return ' DATE';
+        return 'DATE';
     }
     
     protected function handleTypeDateTime(BaseColumn $column)
     {
-        return ' DATETIME';
+        return 'DATETIME';
     }
     
     protected function handleModifierUnsigned(BaseColumn $column)
