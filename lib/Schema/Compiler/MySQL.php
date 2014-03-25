@@ -22,7 +22,7 @@ namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
-
+use Opis\Database\Schema\AlterTable;
 
 class MySQL extends Compiler
 {
@@ -34,26 +34,61 @@ class MySQL extends Compiler
         switch($column->get('size', 'normal'))
         {
             case 'tiny':
-                return ' TINY';
+                return 'TINYINT';
             case 'small':
-                return ' SMALLINT';
+                return 'SMALLINT';
             case 'medium':
-                return ' MEDIUMINT';
+                return 'MEDIUMINT';
             case 'big':
-                return ' BIGINT';
+                return 'BIGINT';
         }
         
-        return ' INTEGER';
+        return 'INT';
     }
     
     protected function handleTypeDecimal(BaseColumn $column)
     {
         if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
         {
-            return ' DECIAMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
+            return 'DECIMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
         }
         
-        return ' DECIMAL';
+        return 'DECIMAL';
     }
     
+    protected function handleTypeText(BaseColumn $column)
+    {
+        switch($column->get('size', 'normal'))
+        {
+            case 'tiny':
+            case 'small':
+                return 'SMALLTEXT';
+            case 'medium':
+                return 'MEDIUMTEXT';
+            case 'big':
+                return 'LONGTEXT';
+        }
+        
+        return 'TEXT';
+    }
+    
+    protected function handleDropPrimaryKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
+    }
+    
+    protected function handleDropUniqueKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
+    }
+    
+    protected function handleDropIndex(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
+    }
+    
+    protected function handleDropForeignKey(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
+    }
 }

@@ -99,7 +99,7 @@ class Compiler
     
     protected function handleTypeInteger(BaseColumn $column)
     {
-        return 'INTEGER';
+        return 'INT';
     }
     
     protected function handleTypeFloat(BaseColumn $column)
@@ -119,12 +119,17 @@ class Compiler
     
     protected function handleTypeBoolean(BaseColumn $column)
     {
-        return 'TINYINT(1)';
+        return 'BOOLEAN';
     }
     
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'BLOB';
+    }
+    
+    protected function handleTypeText(BaseColumn $column)
+    {
+        return 'TEXT';
     }
     
     protected function handleTypeString(BaseColumn $column)
@@ -159,17 +164,17 @@ class Compiler
     
     protected function handleModifierUnsigned(BaseColumn $column)
     {
-        return $column->get('unisgned', false) ? ' UNISGNED' : '';
+        return $column->get('unisgned', false) ? 'UNISGNED' : '';
     }
     
     protected function handleModifierNullable(BaseColumn $column)
     {
-        return $column->get('nullable', false) ? ' NULL' : ' NOT NULL';
+        return $column->get('nullable', false) ? 'NULL' : 'NOT NULL';
     }
     
     protected function handleModifierDefault(BaseColumn $column)
     {
-        return null === $column->get('default') ? '' : ' DEFAULT (' . $this->value($column->get('default')) . ')';
+        return null === $column->get('default') ? '' : 'DEFAULT (' . $this->value($column->get('default')) . ')';
     }
     
     protected function handleModifierAutoincrement(BaseColumn $column)
@@ -179,7 +184,7 @@ class Compiler
             return '';
         }
         
-        return $column->get('autoincrement', false) ? ' AUTO_INCREMENT' : '';
+        return $column->get('autoincrement', false) ? 'AUTO_INCREMENT' : '';
     }
     
     protected function handlePrimaryKey(CreateTable $schema)
@@ -386,7 +391,7 @@ class Compiler
     }
     
     public function drop($table)
-    {
+    {   
         return array(
             'sql' => 'DROP TABLE ' . $this->wrap($table),
             'params' => array(),
