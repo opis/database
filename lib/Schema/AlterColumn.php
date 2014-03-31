@@ -38,7 +38,7 @@ class AlterColumn extends BaseColumn
     
     public function defaultValue($value)
     {
-        if($this->get('preventImplicit', false))
+        if(!$this->get('preventImplicit', false))
         {
             return $this;
         }
