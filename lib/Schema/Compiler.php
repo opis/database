@@ -169,6 +169,11 @@ class Compiler
     
     protected function handleModifierNullable(BaseColumn $column)
     {
+        if(!$column->has('nullable'))
+        {
+            return '';
+        }
+        
         return $column->get('nullable', false) ? 'NULL' : 'NOT NULL';
     }
     
