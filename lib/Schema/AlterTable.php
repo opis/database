@@ -122,7 +122,7 @@ class AlterTable
     
     public function modifyColumn($column)
     {
-        $columnObject = new AlterColumn($column);
+        $columnObject = new AlterColumn($this, $column);
         $this->addCommand('modifyColumn', $columnObject);
         return $columnObject;
     }
