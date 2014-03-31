@@ -68,7 +68,7 @@ class AlterTable
     protected function modifyColumn($column, $type)
     {
         $columnObject = new AlterColumn($this, $column, $type);
-        $columnObject->set('preventDefault', true);
+        $columnObject->set('handleDefault', false);
         $this->addCommand('modifyColumn', $columnObject);
         return $columnObject;
     }

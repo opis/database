@@ -38,12 +38,12 @@ class AlterColumn extends BaseColumn
     
     public function defaultValue($value)
     {
-        if(!$this->get('preventImplicit', false))
+        if($this->get('handleDefault', true))
         {
-            return $this;
+            return parent::defaultValue($value);
         }
         
-        return parent::defaultValue($value);
+        return $this;
     }
     
     public function autoincrement()
