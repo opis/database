@@ -14,6 +14,7 @@ Currently supported databases:
 * DB2
 * MS SQL Server
 * SQLite
+* Firebird
 * NuoDB
 
 ###Installation
