@@ -94,7 +94,7 @@ class BaseColumn
         return $this->set('description', $comment);
     }
     
-    public function implicit($value)
+    public function defaultValue($value)
     {
         return $this->set('default', $value);
     }

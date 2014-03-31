@@ -36,6 +36,16 @@ class AlterColumn extends BaseColumn
         return $this->table;
     }
     
+    public function defaultValue($value)
+    {
+        if($this->get('preventImplicit', false))
+        {
+            return $this;
+        }
+        
+        return parent::defaultValue($value);
+    }
+    
     public function autoincrement()
     {
         return $this->set('autoincrement', true);

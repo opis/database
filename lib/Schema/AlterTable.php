@@ -65,6 +65,14 @@ class AlterTable
         return $columnObject;
     }
     
+    protected function modifyColumn($column, $type)
+    {
+        $columnObject = new AlterColumn($this, $column, $type);
+        $columnObject->set('preventDefault', true);
+        $this->addCommand('modifyColumn', $columnObject);
+        return $columnObject;
+    }
+    
     
     public function getTableName()
     {
@@ -120,12 +128,6 @@ class AlterTable
         ));
     }
     
-    public function modifyColumn($column)
-    {
-        $columnObject = new AlterColumn($this, $column);
-        $this->addCommand('modifyColumn', $columnObject);
-        return $columnObject;
-    }
     
     public function addPrimary($name, $columns = null)
     {
@@ -225,6 +227,71 @@ class AlterTable
     public function dateTime($name)
     {
         return $this->addColumn($name, 'dateTime');
+    }
+    
+    public function toInteger($name)
+    {
+        return $this->modifyColumn($name, 'integer');
+    }
+    
+    public function toFloat($name)
+    {
+        return $this->modifyColumn($name, 'float');
+    }
+    
+    public function toDouble($name)
+    {
+        return $this->modifyColumn($name, 'double');
+    }
+    
+    public function toDecimal($name, $maximum = null, $decimal = null)
+    {
+        return $this->modifyColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
+    }
+    
+    public function toBoolean($name)
+    {
+        return $this->modifyColumn($name, 'boolean');
+    }
+    
+    public function toBinary($name)
+    {
+        return $this->modifyColumn($name, 'binary');
+    }
+    
+    public function toString($name, $length = 255)
+    {
+        return $this->modifyColumn($name, 'string')->set('length', $length);
+    }
+    
+    public function toFixed($name, $length = 255)
+    {
+        return $this->modifyColumn($name, 'fixed')->set('length', $length);
+    }
+    
+    public function toText($name)
+    {
+        return $this->modifyColumn($name);
+    }
+    
+    public function toTime($name)
+    {
+        return $this->modifyColumn($name, 'time');
+    }
+    
+    public function toTimestamp($name)
+    {
+        return $this->modifyColumn($name, 'timestamp');
+    }
+    
+    public function toDate($name)
+    {
+        return $this->modifyColumn($name, 'date');
+    }
+    
+    public function toDateTime($name)
+    {
+        return $this->modifyColumn($name, 'dateTime');
     }
     
 }
