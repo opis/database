@@ -345,6 +345,18 @@ class Compiler
         . 'REFERENCES ' . $this->wrap($key->getReferencedTable()) . '(' . $this->wrapArray($key->getReferencedColumns()) . ')';
     }
     
+    protected function handleSetDefaultValue(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
+        . $this->wrap($data['columns']) . ' SET DEFAULT ' . $this->value($data['value']);
+    }
+        
+    protected function handleDropDefaultValue(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
+        . $this->wrap($data) . ' DROP DEFAULT';
+    }
+    
     public function getParams()
     {
         $params = $this->params;

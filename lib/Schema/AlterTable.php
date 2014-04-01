@@ -111,6 +111,11 @@ class AlterTable
         return $this->addCommand('dropColumn', $name);
     }
     
+    public function dropDefaultValue($column)
+    {
+        return $this->addCommand('dropDefaultValue', $column);
+    }
+    
     public function renameColumn($from, $to, $type)
     {
         $type = strtolower($type);
@@ -162,6 +167,14 @@ class AlterTable
         ));
         
         return $foreign;
+    }
+    
+    public function setDefaultValue($column, $value)
+    {
+        return $this->addCommand('setDefaultValue', array(
+            'column' => $column,
+            'value' => $value,
+        ));
     }
     
     public function integer($name)
