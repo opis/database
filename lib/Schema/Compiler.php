@@ -348,7 +348,7 @@ class Compiler
     protected function handleSetDefaultValue(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
-        . $this->wrap($data['columns']) . ' SET DEFAULT ' . $this->value($data['value']);
+        . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
         
     protected function handleDropDefaultValue(AlterTable $table, $data)

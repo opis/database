@@ -56,6 +56,11 @@ class MySQL extends Compiler
         return 'DECIMAL';
     }
     
+    protected function handleTypeBoolean(BaseColumn $column)
+    {
+        return 'TINYINT(1)';
+    }
+    
     protected function handleTypeText(BaseColumn $column)
     {
         switch($column->get('size', 'normal'))
@@ -90,5 +95,16 @@ class MySQL extends Compiler
     protected function handleDropForeignKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
+    }
+    
+    protected function handleSetDefaultValue(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
+        . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
+    }
+    
+    protected function handleDropDefaultValue(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 }
