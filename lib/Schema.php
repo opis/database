@@ -47,7 +47,7 @@ class Schema
         $this->pdo = $connection->pdo();
     }
     
-    public function replaceParams($query, array $params)
+    protected function replaceParams($query, array $params)
     {
         $pdo = $this->connection->pdo();
         
@@ -57,9 +57,8 @@ class Schema
         }, $query);
     }
     
-    protected function prepare($query, array $params)
+    protected function execute($command, array $params = array())
     {
-        // Prepare statement
         try
         {
             $statement = $this->pdo->prepare($query);
@@ -69,12 +68,7 @@ class Schema
             throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
         }
         
-        return $statement;
-    }
-    
-    public function execute($command, array $params = array())
-    {
-        $this->prepare($command, $params)->execute($params);
+        return $statement->execute($params);
     }
     
     public function create($table, Closure $callback)
@@ -82,17 +76,45 @@ class Schema
         $compiler = $this->connection->schemaCompiler();
         
         $schema = new CreateTable($table);
+        
         $callback($schema);
-        return $compiler->create($schema);
-        return $this->execute($compiler->create($schema), $compiler->getParams());
+        
+        foreach($compiler->create($schema) as $result)
+        {
+            $this->execute($result['sql'], $result['params']);
+        }
     }
     
     public function alter($table, Closure $callback)
     {
         $compiler = $this->connection->schemaCompiler();
+        
         $schema = new AlterTable($table);
+        
         $callback($schema);
-        return $compiler->alter($schema);
+        
+        foreach($compiler->create($schema) as $result)
+        {
+            $this->execute($result['sql'], $result['params']);
+        }
+    }
+    
+    public function drop($table)
+    {
+        $compiler = $this->connection->schemaCompiler();
+        
+        $result = $compiler->drop($table);
+        
+        $this->execute($result['sql'], $result['paramse']);
+    }
+    
+    public function truncate($table)
+    {
+        $compiler = $this->connection->schemaCompiler();
+        
+        $result = $compiler->truncate($table);
+        
+        $this->execute($result['sql'], $result['paramse']);
     }
     
 }
