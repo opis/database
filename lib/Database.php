@@ -72,17 +72,17 @@ class Database
     
     public function from($tables)
     {
-        return new QueryCommand($this, $tables);
+        return new QueryCommand($this->connection, $tables);
     }
     
     public function insert($table, $columns = array())
     {
-        return new InsertCommand($this, $table, $columns);
+        return new InsertCommand($this->connection, $table, $columns);
     }
     
     public function update($table)
     {
-        return new UpdateCommand($this, $table);
+        return new UpdateCommand($this->connection, $table);
     }
     
     
