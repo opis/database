@@ -20,10 +20,7 @@
 
 namespace Opis\Database;
 
-use PDO;
 use Closure;
-use PDOException;
-use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\Query as QueryCommand;
 use Opis\Database\SQL\Insert as InsertCommand;
