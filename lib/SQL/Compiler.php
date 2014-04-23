@@ -86,7 +86,9 @@ class Compiler
     
     public function getParams()
     {
-        return $this->params;
+        $params = $this->params;
+        $this->params = array();
+        return $params;
     }
     
     protected function handleExpressions(array $expressions)

@@ -72,6 +72,9 @@ class Connection implements Serializable
     /** @var    \PDO    The PDO object associated with this connection */
     protected $pdo = null;
     
+    /** @var    \Opis\Database\Compiler The compiler associated with this connection */
+    protected $compiler = null;
+    
     /** @var    string  The DSN assocatied with this connection */
     protected $dsn = null;
     
@@ -305,7 +308,12 @@ class Connection implements Serializable
     
     public function compiler()
     {
-        return new \Opis\Database\SQL\Compiler();
+        if($this->compiler === null)
+        {
+            $this->compiler = new \Opis\Database\SQL\Compiler();
+        }
+        
+        return $this->compiler;
     }
     
     /**
