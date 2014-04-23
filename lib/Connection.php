@@ -44,10 +44,13 @@ class Connection implements Serializable
     protected $password = null;
     
     /** @var    bool    Log queries flag */
-    protected $log = false;
+    protected $logQueries = false;
     
-    /** @var    array   Queries */
-    protected $queries = array();
+    /** @var    array   Logged queries */
+    protected $log = array();
+    
+    /** @var    array   Init commands */
+    protected $commands = array();
     
     /** @var    array   PDO connection options */
     protected $options = array(
@@ -121,32 +124,27 @@ class Connection implements Serializable
     
     public function logQueries($value = true)
     {
-        $this->log = $value;
+        $this->logQueries = $value;
         return $this;
     }
     
-    /**
-     * Check if query logging is enabled
-     *
-     * @return  bool
-     */
-    
-    public function loggingEnabled()
-    {
-        return $this->log;
-    }
     
     /**
-     * Add a query
+     * Add an init command
      *
-     * @param   string  $query Query
+     * @param   string  $query SQL command
+     * @param   array   $params (optional) Params
      *
      * @return \Opis\Database\Connection
      */
     
-    public function query($query)
+    public function initCommand($query, array $params = array())
     {
-        $this->queries[] = $query;
+        $this->commands[] = array(
+            'query' => $query,
+            'params' => $params,
+        );
+        
         return $this;
     }
     
@@ -241,6 +239,15 @@ class Connection implements Serializable
     }
     
     /**
+     * Use persistent connections
+     */
+    
+    public function persistent()
+    {
+        return $this->option(PDO::ATTR_PERSISTENT, true);
+    }
+    
+    /**
      * Genarate the DSN associated with this connection
      *
      * @return  string
@@ -280,24 +287,14 @@ class Connection implements Serializable
             {
                 throw new RuntimeException(vsprintf("%s(): Failed to connect to the '%s' database. %s", array(__METHOD__, $this->dbname(), $e->getMessage())));
             }
-            if(!empty($this->queries))
+            
+            foreach($this->commands as $command)
             {
-                foreach($this->queries as $query)
-                {
-                    $this->pdo->exec($query);
-                }
+                $this->pdo->prepare($command['query'])->execute($command['params']);
             }
+            
         }
         return $this->pdo;
-    }
-    
-    /**
-     * Use persistent connections
-     */
-    
-    public function persistent()
-    {
-        return $this->option(PDO::ATTR_PERSISTENT, true);
     }
     
     /**
@@ -316,12 +313,190 @@ class Connection implements Serializable
         throw new \Exception('Schema not supported');
     }
     
+    
+    /**
+     * Returns the query log for this database.
+     *
+     * @access public
+     * 
+     * @return array
+     */
+
+    public function getLog()
+    {
+        return $this->log;
+    }
+    
+    /**
+     * Log a query.
+     *
+     * @access  protected
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query parameters
+     * @param   int     $start  Start time in microseconds
+     */
+
+    protected function log($query, array $params, $start)
+    {
+        $time = microtime(true) - $start;
+        $query = $this->replaceParams($query, $params);
+        $this->log[] = compact('query', 'time');
+    }
+    
+    /**
+     * Replace placeholders with parameteters.
+     *
+     * @access  protected
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query paramaters
+     * 
+     * @return string
+     */
+
+    protected function replaceParams($query, array $params)
+    {
+        $pdo = $this->pdo();
+        
+        return preg_replace_callback('/\?/', function($matches) use (&$params, $pdo){
+            $param = array_shift($params);
+            return (is_int($param) || is_float($param)) ? $param : $pdo->quote(is_object($param) ? get_class($param) : $param);
+        }, $query);
+    }
+    
+    /**
+     * Prepares a query.
+     *
+     * @access  protected
+     * 
+     * @param   string  $query  SQL query
+     * @param   array   $params Query parameters
+     * 
+     * @return  array
+     */
+
+    protected function prepare($query, array $params)
+    {
+        try
+        {
+            $statement = $this->pdo()->prepare($query);
+        }
+        catch(PDOException $e)
+        {
+            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
+        }
+        
+        return array('query' => $query, 'params' => $params, 'statement' => $statement);
+    }
+    
+    /**
+     * Executes a prepared query and returns TRUE on success or FALSE on failure.
+     *
+     * @access  protected
+     *
+     * @param   array   $prepared   Prepared query
+     *
+     * @return  boolean
+     */
+
+    protected function execute(array $prepared)
+    {
+        if($this->logQueries)
+        {
+            $start = microtime(true);
+        }
+        
+        $result = $prepared['statement']->execute($prepared['params']);
+        
+        if($this->logQueries)
+        {
+            $this->log($prepared['query'], $prepared['params'], $start);
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Execute a query
+     *
+     * @access  public
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  \Opis\Database\ResultSet
+     */
+    
+    public function query($sql, array $params = array())
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        return new ResultSet($prepared['statement']);
+    }
+    
+    /**
+     * Execute a non-query SQL command
+     *
+     * @access  public
+     *
+     * @param   string  $sql    SQL Command
+     * @param   array   $params (optional) Command params
+     *
+     * @return  mixed Command result
+     */
+    
+    public function command($sql, array $params = array())
+    {
+        return $this->execute($this->prepare($sql, $params));
+    }
+    
+    /**
+     * Execute a query and return the number of affected rows
+     *
+     * @access  public
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  int
+     */
+    
+    public function count($sql, array $params = array())
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        $result = $prepared['statement']->rowCount();
+        $prepared['statement']->closeCursor();
+        return $result;
+    }
+    
+    /**
+     * Execute a query and fetch the first column
+     *
+     * @access  public
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  \Opis\Database\ResultSet
+     */
+    
+    public function column($sql, array $params)
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        $result = $prepared['statement']->fetchColumn();
+        $prepared['statement']->closeCursor();
+        return $result;
+    }
+    
     public function serialize()
     {
         return serialize(array(
             'username' => $this->username,
             'password' => $this->password,
-            'log' => $this->log,
+            'logQueries' => $this->logQueries,
             'options' => $this->options,
             'queries' => $this->queries,
             'properties' => $this->properties,

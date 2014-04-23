@@ -31,17 +31,8 @@ use Opis\Database\SQL\Update as UpdateCommand;
 
 class Database
 {
-    /** @var    \PDO    PDO instance. */
-    protected $pdo;
-
     /** @var    \Opis\Database\Connection   Connection instance. */
     protected $connection;
-
-    /** @var    boolean Enable log flag. */
-    protected $enableLog;
-
-    /** @var    array   Query log. */
-    protected $log = array();
     
     /**
      * Constructor
@@ -54,82 +45,21 @@ class Database
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->pdo = $connection->pdo();
-        $this->enableLog = $connection->loggingEnabled();
-    }
-
-    /**
-     * Returns a new instance of the compiler associated with this database
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\SQL\Compiler;
-     */
-
-    public function getCompiler()
-    {
-        return $this->connection->compiler();
     }
     
     /**
-    * Get connection
+    * Database connection
+    *
+    * @access   public
+    *
+    * @return   \Opis\Database\Connection
     */
     
     public function getConnection()
     {
         return $this->connection;
     }
-
-    /**
-     * Enables or disable the query log.
-     *
-     * @access public
-     */
-
-    public function enableLog($value = true)
-    {
-        $this->enableLog = $value;
-    }
-
-
-    /**
-     * Replace placeholders with parameteters.
-     *
-     * @access  public
-     * 
-     * @param   string  $query  SQL query
-     * @param   array   $params Query paramaters
-     * 
-     * @return string
-     */
-
-    public function replaceParams($query, array $params)
-    {
-        $pdo = $this->connection->pdo();
-        
-        return preg_replace_callback('/\?/', function($matches) use (&$params, $pdo){
-            $param = array_shift($params);
-            return (is_int($param) || is_float($param)) ? $param : $pdo->quote(is_object($param) ? get_class($param) : $param);
-        }, $query);
-    }
-
-    /**
-     * Log a query.
-     *
-     * @access  protected
-     * 
-     * @param   string  $query  SQL query
-     * @param   array   $params Query parameters
-     * @param   int     $start  Start time in microseconds
-     */
-
-    protected function log($query, array $params, $start)
-    {
-        $time = microtime(true) - $start;
-        $query = $this->replaceParams($query, $params);
-        $this->log[] = compact('query', 'time');
-    }
-
+    
     /**
      * Returns the query log for this database.
      *
@@ -140,85 +70,7 @@ class Database
 
     public function getLog()
     {
-        return $this->log;
-    }
-
-    /**
-     * Prepares a query.
-     *
-     * @access  protected
-     * 
-     * @param   string  $query  SQL query
-     * @param   array   $params Query parameters
-     * 
-     * @return  array
-     */
-
-    protected function prepare($query, array $params)
-    {
-        // Prepare statement
-        try
-        {
-            $statement = $this->pdo->prepare($query);
-        }
-        catch(PDOException $e)
-        {
-            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
-        }
-        // Return query, parameters and the prepared statement
-        return array('query' => $query, 'params' => $params, 'statement' => $statement);
-    }
-
-    /**
-     * Executes the prepared query and returns TRUE on success or FALSE on failure.
-     *
-     * @access  protected
-     *
-     * @param   array   $prepared   Prepared query
-     *
-     * @return  boolean
-     */
-
-    protected function execute(array $prepared)
-    {
-        if($this->enableLog)
-        {
-            $start = microtime(true);
-        }
-        $result = $prepared['statement']->execute($prepared['params']);
-        if($this->enableLog)
-        {
-            $this->log($prepared['query'], $prepared['params'], $start);
-        }
-        return $result;
-    }
-    
-    public function count($sql, array $params)
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return $prepared['statement']->rowCount();
-    }
-    
-    public function query($sql, array $params)
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return new ResultSet($prepared['statement']);
-    }
-    
-    public function success($sql, array $params)
-    {
-        return $this->execute($this->prepare($sql, $params));
-    }
-    
-    public function column($sql, array $params)
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        $result = $prepared['statement']->fetchColumn();
-        $prepared['statement']->closeCursor();
-        return $result;
+        return $this->connection->getLog();
     }
     
     public function from($tables)
