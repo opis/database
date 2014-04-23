@@ -20,23 +20,23 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\Connection;
 
 class Delete extends DeleteStatement
 {
-    protected $database;
+    protected $connection;
     
-    public function __construct(Database $database, Compiler $compiler, $from, $joins, Where $where = null)
+    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, Where $where = null)
     {
         parent::__construct($compiler, $from, $where);
-        $this->database = $database;
+        $this->connection = $connection;
         $this->joins = $joins;
     }
     
     public function delete($tables = array())
     {
         parent::delete($tables);
-        return $database->count((string) $this, $this->compiler->getParams());
+        return $this->connection->count((string) $this, $this->compiler->getParams());
     }
     
 }

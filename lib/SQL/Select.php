@@ -20,16 +20,16 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\Connection;
 
 class Select extends SelectStatement
 {
-    protected $database;
+    protected $connection;
     
-    public function __construct(Database $database, Compiler $compiler, $tables, $joins, Where $where = null)
+    public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, Where $where = null)
     {
         parent::__construct($compiler, $tables, $where);
-        $this->database = $database;
+        $this->connection = $connection;
         $this->joins = $joins;
     }
     
@@ -43,49 +43,43 @@ class Select extends SelectStatement
     public function select($columns = array())
     {
         parent::select($columns);
-        return $this->database->query((string) $this, $this->compiler->getParams());
-    }
-    
-    public function first($columns = array())
-    {
-        parent::select($columns);
-        return $this->database->first((string) $this, $this->compiler->getParams());
+        return $this->connection->query((string) $this, $this->compiler->getParams());
     }
     
     public function column($name)
     {
         parent::column($name);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
     public function count($column = '*',  $distinct = false)
     {
         parent::count($column, $distinct);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
     public function avg($column, $distinct = false)
     {
         parent::avg($column, $distinct);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
     public function sum($column, $distinct  = false)
     {
         parent::sum($column, $distinct);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
     public function min($column, $distinct = false)
     {
         parent::min($column, $distinct);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
     public function max($column, $distinct = false)
     {
         parent::max($column, $distinct);
-        return $this->database->column((string) $this, $this->compiler->getParams());
+        return $this->connection->column((string) $this, $this->compiler->getParams());
     }
     
 }

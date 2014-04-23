@@ -20,23 +20,22 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\Connection;
 
 class Update extends UpdateStatement
 {
     
-    protected $database;
+    protected $connection;
     
-    public function __construct(Database $database, $table)
+    public function __construct(Connection $connection, $table)
     {
-        parent::__construct($database->getCompiler(), $table);
-        $this->database = $database;
+        parent::__construct($connection->compiler(), $table);
+        $this->connection = $connection;
     }
-    
     
     public function execute()
     {
-        return $this->database->count((string) $this, $this->compiler->getParams());
+        return $this->connection->count((string) $this, $this->compiler->getParams());
     }
     
 }

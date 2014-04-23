@@ -20,29 +20,29 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\Connection;
 
 class Query extends WhereJoinCondition
 {
-    protected $database;
+    protected $connection;
     
     protected $tables;
     
-    public function __construct(Database $database, $tables)
+    public function __construct(Connection $connection, $tables)
     {
-        parent::__construct($database->getCompiler());
+        parent::__construct($connection->compiler());
         $this->tables =  $tables;
-        $this->database = $database;
+        $this->connection = $connection;
     }
     
     protected function buildSelect()
     {
-        return new Select($this->database, $this->compiler, $this->tables, $this->joins, $this->where);
+        return new Select($this->connection, $this->compiler, $this->tables, $this->joins, $this->where);
     }
     
     protected function buildDelete()
     {
-        return new Delete($this->database, $this->compiler, $this->tables, $this->joins, $this->where);
+        return new Delete($this->connection, $this->compiler, $this->tables, $this->joins, $this->where);
     }
     
     public function distinct($value = true)

@@ -20,23 +20,22 @@
 
 namespace Opis\Database\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\Connection;
 
 class Insert extends InsertStatement
 {
     
-    protected $database;
+    protected $connection;
     
-    public function __construct(Database $database, $table, $columns = array())
+    public function __construct(Connection $connection, $table, $columns = array())
     {
-        parent::__construct($database->getCompiler(), $table, $columns);
-        $this->database = $database;
+        parent::__construct($connection->compiler(), $table, $columns);
+        $this->connection = $connection;
     }
-    
     
     public function execute()
     {
-        return $this->database->success((string) $this, $this->compiler->getParams());
+        return $this->connection->command((string) $this, $this->compiler->getParams());
     }
     
 }
