@@ -31,8 +31,6 @@ class Schema
     /** @var    \Opis\Database\Connection   Connection. */
     protected $connection;
     
-    protected $pdo;
-    
     /**
      * Constructor
      *
@@ -44,32 +42,8 @@ class Schema
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->pdo = $connection->pdo();
     }
-    
-    protected function replaceParams($query, array $params)
-    {
-        $pdo = $this->connection->pdo();
-        
-        return preg_replace_callback('/\?/', function($matches) use (&$params, $pdo){
-            $param = array_shift($params);
-            return (is_int($param) || is_float($param)) ? $param : $pdo->quote(is_object($param) ? get_class($param) : $param);
-        }, $query);
-    }
-    
-    protected function execute($command, array $params = array())
-    {
-        try
-        {
-            $statement = $this->pdo->prepare($query);
-        }
-        catch(PDOException $e)
-        {
-            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
-        }
-        
-        return $statement->execute($params);
-    }
+
     
     public function create($table, Closure $callback)
     {
@@ -81,7 +55,7 @@ class Schema
         
         foreach($compiler->create($schema) as $result)
         {
-            $this->execute($result['sql'], $result['params']);
+            $this->connection->command($result['sql'], $result['params']);
         }
     }
     
@@ -95,7 +69,7 @@ class Schema
         
         foreach($compiler->create($schema) as $result)
         {
-            $this->execute($result['sql'], $result['params']);
+            $this->connection->command($result['sql'], $result['params']);
         }
     }
     
@@ -105,7 +79,7 @@ class Schema
         
         $result = $compiler->drop($table);
         
-        $this->execute($result['sql'], $result['paramse']);
+        $this->connection->command($result['sql'], $result['params']);
     }
     
     public function truncate($table)
@@ -114,7 +88,7 @@ class Schema
         
         $result = $compiler->truncate($table);
         
-        $this->execute($result['sql'], $result['paramse']);
+        $this->connection->command($result['sql'], $result['params']);
     }
     
 }
