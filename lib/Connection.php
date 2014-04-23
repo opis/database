@@ -144,7 +144,7 @@ class Connection implements Serializable
     public function initCommand($query, array $params = array())
     {
         $this->commands[] = array(
-            'query' => $query,
+            'sql' => $query,
             'params' => $params,
         );
         
@@ -293,10 +293,11 @@ class Connection implements Serializable
             
             foreach($this->commands as $command)
             {
-                $this->pdo->prepare($command['query'])->execute($command['params']);
+                $this->command($command['sql'], $command['params']);
             }
             
         }
+        
         return $this->pdo;
     }
     
@@ -596,20 +597,6 @@ class Connection implements Serializable
      */
     
     public static function mysql($username, $password)
-    {
-        return new MySQLConnection($username, $password);
-    }
-    
-    /**
-     * Creates a MariaDB specific connection
-     *
-     * @param   string  $username   Username
-     * @param   string  $password   Password
-     *
-     * @return  \Opis\Database\DSN\MySQL
-     */
-    
-    public static function mariaDB($username, $password)
     {
         return new MySQLConnection($username, $password);
     }
