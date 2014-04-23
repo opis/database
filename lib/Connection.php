@@ -308,9 +308,15 @@ class Connection implements Serializable
         return new \Opis\Database\SQL\Compiler();
     }
     
+    /**
+     * Returns an instance of the schema compiler associated with this connection
+     *
+     * @return \Opis\Database\Schema\Compiler
+     */
+    
     public function schemaCompiler()
     {
-        throw new \Exception('Schema not supported');
+        throw new \Exception('Schema not supported yet');
     }
     
     
