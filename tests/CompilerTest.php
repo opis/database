@@ -516,22 +516,22 @@ class FakeConnection extends Connection
         return new $class();
     }
    
-    public function query($sql, array $params)
+    public function query($sql, array $params = array())
     {
         return $sql;
     }
     
-    public function count($sql, array $params)
+    public function count($sql, array $params = array())
     {
         return $sql;
     }
     
-    public function command($sql, array $params)
+    public function command($sql, array $params = array())
     {
         return $sql;
     }
     
-    public function column($sql, array $params)
+    public function column($sql, array $params = array())
     {
         return $sql;
     }
