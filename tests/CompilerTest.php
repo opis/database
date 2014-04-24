@@ -512,7 +512,9 @@ class FakeConnection extends Connection
         {
             return new \Opis\Database\SQL\Compiler();
         }
+        
         $class = '\\Opis\\Database\\Compiler\\' . $this->prefix;
+        
         return new $class();
     }
    
