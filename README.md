@@ -24,7 +24,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```json
 {
     "require": {
-        "opis/database": "1.1.*"
+        "opis/database": "1.2.*"
     }
 }
 ```
@@ -81,35 +81,16 @@ $result = $db->from('orders')
 
 ####Creating records
 
-```sql
-INSERT INTO `laptops` VALUES ('Toshiba', 'white')
-```
-
-```php
-$result = $db->insert('laptops')
-             ->values(array('Toshiba', 'white'))
-             ->execute();
-```
 
 ```sql
 INSERT INTO `laptops` (`brand`, `color`) VALUES ('Toshiba', 'white')
 ```
 
 ```php
-$result = $db->insert('laptops', array('brand', 'color'))
-             ->values(array('Toshiba', 'white'))
-             ->execute();
-```
-
-```sql
-INSERT INTO `laptops` (`brand`, `color`) VALUES ('Toshiba', 'white'), ('Dell', 'black')
-```
-
-```php
-$result = $db->insert('laptops', array('brand', 'color'))
-             ->values(array('Toshiba', 'white'))
-             ->values(array('Dell', 'black'))
-             ->execute();
+$result = $db->into('laptops')->insert(array(
+                'brand' => 'Toshiba',
+                'color' => 'white'
+            ));
 ```
 
 ####Updating records
