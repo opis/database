@@ -7,7 +7,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
  
     protected function getDatabase()
     {
-        return new FakeDB(new FakeConnection('Compiler'));
+        return new Database(new FakeConnection('Compiler'));
     }
     
     protected function wrap($text, $a = '"', $b = '"')
@@ -502,28 +502,6 @@ class CompilerTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class FakeDB extends Database
-{
-    public function query($sql, array $params)
-    {
-        return $sql;
-    }
-    
-    public function count($sql, array $params)
-    {
-        return $sql;
-    }
-    
-    public function success($sql, array $params)
-    {
-        return $sql;
-    }
-    
-    public function column($sql, array $params)
-    {
-        return $sql;
-    }
-}
 
 class FakeConnection extends Connection
 {
@@ -536,10 +514,26 @@ class FakeConnection extends Connection
         }
         $class = '\\Opis\\Database\\Compiler\\' . $this->prefix;
         return new $class();
-   }
+    }
    
-   public function pdo()
-   {
-      return null;
-   }
+    public function query($sql, array $params)
+    {
+        return $sql;
+    }
+    
+    public function count($sql, array $params)
+    {
+        return $sql;
+    }
+    
+    public function command($sql, array $params)
+    {
+        return $sql;
+    }
+    
+    public function column($sql, array $params)
+    {
+        return $sql;
+    }
+   
 }
