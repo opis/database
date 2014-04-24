@@ -287,15 +287,8 @@ class Compiler
     }
     
     protected function handleInsertValues(array $values)
-    {
-        $sql = array();
-        
-        foreach($values as $insert)
-        {
-            $sql[] = '(' . $this->params($insert) . ')';
-        }
-        
-        return ' VALUES ' . implode(', ', $sql);
+    {   
+        return ' VALUES ('. $this->params($values) . ')';   
     }
     
     protected function handleLimit($limit)

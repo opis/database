@@ -494,7 +494,7 @@ class Connection implements Serializable
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
      *
-     * @return  \Opis\Database\ResultSet
+     * @return  mixed
      */
     
     public function column($sql, array $params)

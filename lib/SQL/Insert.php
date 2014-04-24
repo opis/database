@@ -27,14 +27,15 @@ class Insert extends InsertStatement
     
     protected $connection;
     
-    public function __construct(Connection $connection, $table, $columns = array())
+    public function __construct(Connection $connection, $table)
     {
-        parent::__construct($connection->compiler(), $table, $columns);
+        parent::__construct($connection->compiler(), $table);
         $this->connection = $connection;
     }
     
-    public function execute()
+    public function insert(array $values)
     {
+        parent::insert($values);
         return $this->connection->command((string) $this, $this->compiler->getParams());
     }
     

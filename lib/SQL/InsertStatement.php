@@ -32,23 +32,14 @@ class InsertStatement
     
     protected $values = array();
     
+    protected $autoincrement;
+    
     protected $sql;
     
-    public function __construct(Compiler $compiler, $table, $columns = array())
+    public function __construct(Compiler $compiler, $table)
     {
         $this->compiler = $compiler;
         $this->tables = array((string) $table);
-        if(!is_array($columns))
-        {
-            $columns = array($columns);
-        }
-        foreach($columns as $column)
-        {
-            $this->columns[] = array(
-                'name' => $column,
-                'alias' => null,
-            );
-        }
     }
     
     public function getTables()
@@ -66,30 +57,27 @@ class InsertStatement
         return $this->columns;
     }
     
-    
-    public function values($values)
+    public function insert(array $values)
     {
-        if(!is_array($values))
+        foreach($values as $column => $value)
         {
-            $values = array($values);
-        }
-        
-        $result = array();
-        
-        foreach($values as $value)
-        {
+            $this->columns[] = array(
+                'name' => $column,
+                'alias' => null,
+            );
+            
             if($value instanceof Closure)
             {
                 $expression = new Expression($this->compiler);
                 $value($expression);
-                $result[] = $expression;
+                $this->values[] = $expression;
             }
             else
             {
-                $result[] = $value;
+                $this->values[] = $value;
             }
         }
-        $this->values[] = $result;
+        
         return $this;
     }
     

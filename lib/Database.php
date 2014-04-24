@@ -75,9 +75,9 @@ class Database
         return new QueryCommand($this->connection, $tables);
     }
     
-    public function insert($table, $columns = array())
+    public function into($table)
     {
-        return new InsertCommand($this->connection, $table, $columns);
+        return new InsertCommand($this->connection, $table);
     }
     
     public function update($table)
