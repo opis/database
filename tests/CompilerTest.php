@@ -7,7 +7,12 @@ class CompilerTest extends PHPUnit_Framework_TestCase
  
     protected function getDatabase()
     {
-        return new Database(new FakeConnection('Compiler'));
+        return new Database($this->getConnection());
+    }
+    
+    protected function getConnection()
+    {
+        new FakeConnection('Compiler');
     }
     
     protected function wrap($text, $a = '"', $b = '"')

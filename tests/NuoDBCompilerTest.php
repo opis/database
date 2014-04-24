@@ -2,8 +2,9 @@
 
 class NuoDBCompilerTest extends CompilerTest
 {
-    protected function getDatabase()
+    
+    protected function getConnection()
     {
-        return new FakeDB(new FakeConnection('NuoDB'));
+        new FakeConnection('NuoDB');
     }
 }

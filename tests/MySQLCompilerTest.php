@@ -3,9 +3,9 @@
 class MySQLCompilerTest extends CompilerTest
 {
     
-    protected function getDatabase()
+    protected function getConnection()
     {
-        return new FakeDB(new FakeConnection('MySQL'));
+        new FakeConnection('MySQL');
     }
     
     protected function wrap($text, $a = '"', $b = '"')

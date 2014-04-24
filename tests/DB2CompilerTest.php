@@ -1,9 +1,9 @@
 <?php
 
 class DB2CompilerTest extends CompilerTest
-{
-    protected function getDatabase()
+{   
+    protected function getConnection()
     {
-        return new FakeDB(new FakeConnection('DB2'));
+        new FakeConnection('DB2');
     }
 }

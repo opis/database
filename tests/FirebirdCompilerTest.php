@@ -2,8 +2,8 @@
 
 class FirebirdCompilerTest extends CompilerTest
 {
-    protected function getDatabase()
+    protected function getConnection()
     {
-        return new FakeDB(new FakeConnection('Firebird'));
+        new FakeConnection('Firebird');
     }
 }
