@@ -12,7 +12,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
     
     protected function getConnection()
     {
-        new FakeConnection('Compiler');
+        return new FakeConnection('Compiler');
     }
     
     protected function wrap($text, $a = '"', $b = '"')

@@ -4,6 +4,6 @@ class FirebirdCompilerTest extends CompilerTest
 {
     protected function getConnection()
     {
-        new FakeConnection('Firebird');
+        return new FakeConnection('Firebird');
     }
 }

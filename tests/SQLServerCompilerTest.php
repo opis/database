@@ -4,7 +4,7 @@ class SQLServerCompilerTest extends CompilerTest
 {    
     protected function getConnection()
     {
-        new FakeConnection('SQLServer');
+        return new FakeConnection('SQLServer');
     }
     
     protected function wrap($text, $a = '"', $b = '"')

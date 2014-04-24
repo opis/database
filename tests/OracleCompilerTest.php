@@ -5,7 +5,7 @@ class OracleCompilerTest extends CompilerTest
     
     protected function getConnection()
     {
-        new FakeConnection('Oracle');
+        return new FakeConnection('Oracle');
     }
     
     protected function wrap($text, $a = '"', $b = '"')
