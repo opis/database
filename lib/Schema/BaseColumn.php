@@ -89,6 +89,11 @@ class BaseColumn
         return $this->set('nullable', $value);
     }
     
+    public function notNull($value = true)
+    {
+        return $this->nullable($value);
+    }
+    
     public function description($comment)
     {
         return $this->set('description', $comment);

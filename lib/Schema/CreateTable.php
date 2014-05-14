@@ -166,7 +166,7 @@ class CreateTable
         return $foreign;
     }
     
-    public function autoincrement(Column $column)
+    public function autoincrement(CreateColumn $column)
     {
         if($column->getType() !== 'integer')
         {

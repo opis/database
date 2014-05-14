@@ -45,6 +45,7 @@ class Compiler
     
     protected function value($value)
     {
+        return $value;
         $this->params[] = $value;
         return '?';
     }
@@ -134,12 +135,12 @@ class Compiler
     
     protected function handleTypeString(BaseColumn $column)
     {
-        return 'VARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'VARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
     
     protected function handleTypeFixed(BaseColumn $column)
     {
-        return 'CHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'CHAR(' . $this->value($column->get('length', 255)) . ')';
     }
     
     protected function handleTypeTime(BaseColumn $column)
