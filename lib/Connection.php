@@ -242,6 +242,19 @@ class Connection implements Serializable
     }
     
     /**
+     * Set charset
+     *
+     * @param   string  $value  Charset
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
+    public function charset($value)
+    {
+        return $this;
+    }
+    
+    /**
      * Use persistent connections
      */
     
