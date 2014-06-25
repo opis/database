@@ -44,7 +44,15 @@ class Schema
         $this->connection = $connection;
     }
 
-    
+    /**
+     * Creates a new table
+     *
+     * @access  public
+     *
+     * @param   string      $table      Table name
+     * @param   \Closure    $callback   A callback that will define table's fields and indexes
+     */
+       
     public function create($table, Closure $callback)
     {
         $compiler = $this->connection->schemaCompiler();
@@ -58,6 +66,15 @@ class Schema
             $this->connection->command($result['sql'], $result['params']);
         }
     }
+    
+    /**
+     * Alters a table's definition
+     *
+     * @access  public
+     *
+     * @param   string      $table      Table name
+     * @param   \Closure    $callback   A callback that will add or remove fields or indexes
+     */
     
     public function alter($table, Closure $callback)
     {
@@ -73,6 +90,14 @@ class Schema
         }
     }
     
+    /**
+     * Deletes a table
+     *
+     * @access  public
+     *
+     * @param   string  $table  Table name
+     */
+    
     public function drop($table)
     {
         $compiler = $this->connection->schemaCompiler();
@@ -81,6 +106,14 @@ class Schema
         
         $this->connection->command($result['sql'], $result['params']);
     }
+    
+    /**
+     * Deletes all records from a table
+     *
+     * @access  public
+     *
+     * @param   string  $table  Table name
+     */
     
     public function truncate($table)
     {

@@ -45,12 +45,12 @@ class Database
     }
     
     /**
-    * Database connection
-    *
-    * @access   public
-    *
-    * @return   \Opis\Database\Connection
-    */
+     * Database connection
+     *
+     * @access  public
+     *
+     * @return   \Opis\Database\Connection
+     */
     
     public function getConnection()
     {
@@ -70,15 +70,45 @@ class Database
         return $this->connection->getLog();
     }
     
+    /**
+     * Execute a query in order to fetch or to delete records.
+     *
+     * @access  public
+     *
+     * @param   string|array    $tables Table name or an array of tables
+     *
+     * @return  Opis\Database\SQL\Query
+     */
+    
     public function from($tables)
     {
         return new QueryCommand($this->connection, $tables);
     }
     
+    /**
+     * Insert new records into the specified table.
+     *
+     * @access  public
+     *
+     * @param   string  $table  Table name
+     *
+     * @return  \Opis\Database\SQL\Insert
+     */
+    
     public function into($table)
     {
         return new InsertCommand($this->connection, $table);
     }
+    
+    /**
+     * Update records.
+     *
+     * @access  public
+     *
+     * @param   string  $table  Table name
+     *
+     * @return  \Opis\Database\SQL\Update
+     */
     
     public function update($table)
     {
@@ -87,13 +117,13 @@ class Database
     
     
     /**
-     * Executes queries and rolls back the transaction if any of them fail.
+     * Initiate a new transaction
      *
-     * @access public
+     * @access  public
      * 
-     * @param \Closure $queries Queries
+     * @param   \Closure    $queries    A callback that will be called when the transaction will begin
      * 
-     * @return mixed
+     * @return  \Opis\Database\Transaction
      */
 
     public function transaction(Closure $queries)
