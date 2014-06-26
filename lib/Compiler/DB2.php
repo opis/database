@@ -71,8 +71,3 @@ class DB2 extends Compiler
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
     }
 }
-
-
-
-
-
