@@ -113,7 +113,7 @@ class DBLib extends Connection
     }
     
     /**
-     * Sets the connection's character set
+     * Sets the client character set.
      *
      * @access  public
      *
@@ -126,6 +126,18 @@ class DBLib extends Connection
     {
         return $this->set('charset', $value);
     }
+    
+    /**
+     * Sets the application name (used in sysprocesses).
+     *
+     * Defaults to "PHP Generic DB-lib" or "PHP freetds".
+     * 
+     * @access  public
+     *
+     * @param   string  $value   Application name
+     *
+     * @return  \Opis\Database\DSN\DBLib    Self reference
+     */
     
     public function appName($value)
     {
