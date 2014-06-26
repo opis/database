@@ -24,7 +24,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```json
 {
     "require": {
-        "opis/database": "1.2.*"
+        "opis/database": "1.3.*"
     }
 }
 ```
