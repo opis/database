@@ -647,13 +647,14 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      * @param   string  $password   Password
+     * @param   string  $driver     (Optional) Driver
      * 
      * @return  \Opis|Database\DSN\DBLib
      */
     
-    public static function mssql($username, $password)
+    public static function mssql($username, $password, $driver = 'dblib')
     {
-        return new DBLibConnection($username, $password);
+        return new DBLibConnection($driver, $username, $password);
     }
     
     /**

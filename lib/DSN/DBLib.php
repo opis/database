@@ -25,26 +25,66 @@ use Opis\Database\Connection;
 class DBLib extends Connection
 {
     
+    /** @var    array   DSN properties */
     protected $properties = array(
         'host' => '127.0.0.1'
     );
     
+    /** @var    int     Port. */
     protected $port;
     
-    public function __construct($username = null, $password = null)
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $driver     Driver (dblib, sybase or mssql)
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
+    
+    public function __construct($driver, $username = null, $password = null)
     {
-        parent::__construct('dblib', $username, $password);
+        parent::__construct($driver, $username, $password);
     }
+    
+    /**
+     * Returns the compiler associated with this connection type.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Compiler\SQLServer
+     */
     
     public function compiler()
     {
         return new \Opis\Database\Compiler\SQLServer();
     }
     
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\DBLib    Self reference
+     */
+    
     public function database($name)
     {
         return $this->setDatabase('dbname', $name);
     }
+    
+    /**
+     * Sets the hostname on which the database server resides
+     *
+     * @access  public
+     *
+     * @param   string  $name   Host's name
+     *
+     * @return  \Opis\Database\DSN\DBLib    Self reference
+     */
     
     public function host($name)
     {
@@ -55,12 +95,32 @@ class DBLib extends Connection
         return $this->set('host', $name);
     }
     
+    /**
+     * Sets the port number where the database server is listening.
+     *
+     * @access  public
+     *
+     * @param   int     $value   Port
+     *
+     * @return  \Opis\Database\DSN\DBLib    Self reference
+     */
+    
     public function port($value)
     {
         $this->port = $value;
         $value = $this->properties['host'] . ':' . $value;
         return $this->set('host', $value);
     }
+    
+    /**
+     * Sets the connection's character set
+     *
+     * @access  public
+     *
+     * @param   string  $value   Character set
+     *
+     * @return  \Opis\Database\DSN\DBLib    Self reference
+     */
     
     public function charset($value)
     {
