@@ -24,48 +24,108 @@ use Opis\Database\Connection;
 
 class SQLServer extends Connection
 {
-    
-    protected $server;
-    
-    protected $port;
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
     
     public function __construct($username = null, $password = null)
     {
         parent::__construct('sqlsrv', $username, $password);
     }
+            
+    /**
+     * Returns the compiler associated with this connection type.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Compiler\SQLServer
+     */
     
     public function compiler()
     {
         return new \Opis\Database\Compiler\SQLServer();
     }
     
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
+    
     public function database($name)
     {
         return $this->setDatabase('Database', $name);
     }
+    
+    /**
+     * Sets the application name used in tracing.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Application name
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
     
     public function app($name)
     {
         return $this->set('App', $name);
     }
     
-    public function server($name)
+    /**
+     * Sets the name of the database server.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Server name.
+     * @param   int     $port   (Optional) Server port.
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
+    
+    public function server($name, $port = null)
     {
-        $this->server = $name;
+        if($port !== null)
+        {
+            $name .= ',' . $port; 
+        }
+        
         return $this->set('Server', $name);
     }
-    
-    public function port($value)
-    {
-        $this->port = $value;
-        $value = ($this->server === null ? 'localhost' : $this->server) . ',' . $this->port;
-        return $this->set('Server', $value);
-    }
+        
+    /**
+     * Specifies whether the connection is assigned from a connection pool or not. 
+     *
+     * @access  public
+     *
+     * @param   boolean $value  (Optional) Flag
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
     
     public function connectionPooling($value = true)
     {
         return $this->set('ConnectionPooling', $value ? 1 : 0);
     }
+    
+    /**
+     * Specifies whether the communication with SQL Server is encrypted or unencrypted.
+     *
+     * @access  public
+     *
+     * @param   boolean $value  (Optional) Flag
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
     
     public function encrypt($value = true)
     {

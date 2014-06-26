@@ -26,7 +26,18 @@ use Opis\Database\Connection;
 
 class Generic extends Connection
 {
+    /** @var    \Closure    Compiler constructor. */
     protected $compilerConstructor;
+    
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $dsn        Connection DSN
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
     
     public function __construct($dsn, $username = null, $password = null)
     {
@@ -34,17 +45,35 @@ class Generic extends Connection
         parent::__construct('', $username, $password);
     }
     
+    /**
+     * Sets a callback that will construct the compiler associated with this connection type
+     *
+     * @access  public
+     *
+     * @param   \Closure    $compiler   Callback
+     *
+     * @return  \Opis\Database\DSN\Generic    Self reference
+     */
+    
     public function setCompiler(Closure $compiler)
     {
         $this->compilerConstructor = $compiler;
         return $this;
     }
-    
+        
+    /**
+     * Returns the compiler associated with this connection type.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Compiler
+     */
+        
     public function compiler()
     {
         if($this->compilerConstructor !== null)
         {
-            return $this->compilerConstructor();
+            return $this->compilerConstructor($this);
         }
         
         switch($this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME))

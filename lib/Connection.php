@@ -264,7 +264,7 @@ class Connection implements Serializable
     }
     
     /**
-     * Genarate the DSN associated with this connection
+     * Generate the DSN associated with this connection
      *
      * @return  string
      */

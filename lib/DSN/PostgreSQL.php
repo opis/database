@@ -24,25 +24,65 @@ use Opis\Database\Connection;
 
 class PostgreSQL extends Connection
 {
+    /** @var    array   DSN properties */
     protected $properties = array(
         'host' => 'localhost',
         'port' => '5432',
     );
+        
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
     
     public function __construct($username = null, $password = null)
     {
         parent::__construct('pgsql', $username, $password);
     }
+            
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\PostgreSQL    Self reference
+     */
     
     public function database($name)
     {
         return $this->setDatabase('dbase', $name);
     }
     
+    /**
+     * Sets the hostname on which the database server resides
+     *
+     * @access  public
+     *
+     * @param   string  $name   Host's name
+     *
+     * @return  \Opis\Database\DSN\PostgreSQL    Self reference
+     */
+    
     public function host($name)
     {
         return $this->set('host', $name);
     }
+    
+    /**
+     * Sets the port number where the database server is listening.
+     *
+     * @access  public
+     *
+     * @param   int     $value   Port
+     *
+     * @return  \Opis\Database\DSN\PostgreSQL    Self reference
+     */
     
     public function port($value)
     {

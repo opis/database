@@ -24,27 +24,73 @@ use Opis\Database\Connection;
 
 class Firebird extends Connection
 {
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
     
     public function __construct($username = null, $password = null)
     {
         parent::__construct('firebird', $username, $password);
     }
     
+    /**
+     * Returns the compiler associated with this connection type.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Compiler\Firebird
+     */
+    
     public function compiler()
     {
         new \Opis\Database\Compiler\Firebird();
     }
     
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\Firebird    Self reference
+     */
+        
     public function database($name)
     {
         return $this->setDatabase('dbname', $name);
     }
     
+    /**
+     * Sets the client character set.
+     *
+     * @access  public
+     *
+     * @param   string  $value   Character set
+     *
+     * @return  \Opis\Database\DSN\Firebird    Self reference
+     */
+        
     public function charset($value)
     {
         return $this->set('charset', $value);
     }
     
+    /**
+     * Sets the SQL role name. 
+     *
+     * @access  public
+     *
+     * @param   string  $value   Role name
+     *
+     * @return  \Opis\Database\DSN\Firebird    Self reference
+     */
+        
     public function role($value)
     {
         return $this->set('role', $value);

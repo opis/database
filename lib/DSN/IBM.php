@@ -24,31 +24,78 @@ use Opis\Database\Connection;
 
 class IBM extends Connection
 {
-    
+    /** @var    array   DSN properties */
     protected $properties = array(
         'DIRIVER' => '{IBM DB2 ODBC DRIVER}',
         'PROTOCOL' => 'TCPIP',
     );
+    
+    /**
+     * Constructor
+     *
+     * @access  public
+     *
+     * @param   string  $username   (Optional) Username
+     * @param   string  $password   (Optional) Password
+     */
     
     public function __construct($username = null, $password = null)
     {
         parent::__construct('ibm', $username, $password);
     }
     
+    /**
+     * Returns the compiler associated with this connection type.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Compiler\DB2
+     */
+    
     public function compiler()
     {
         return new \Opis\Database\Compiler\DB2();
     }
+        
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\IBM    Self reference
+     */
     
     public function database($name)
     {
         return $this->setDatabase('DATABASE', $name);
     }
+        
+    /**
+     * Sets the hostname on which the database server resides
+     *
+     * @access  public
+     *
+     * @param   string  $name   Host's name
+     *
+     * @return  \Opis\Database\DSN\IBM    Self reference
+     */
     
     public function host($name)
     {
         return $this->set('HOSTNAME', $name);
     }
+        
+    /**
+     * Sets the port number where the database server is listening.
+     *
+     * @access  public
+     *
+     * @param   int     $value   Port
+     *
+     * @return  \Opis\Database\DSN\IBM    Self reference
+     */
     
     public function port($value)
     {
