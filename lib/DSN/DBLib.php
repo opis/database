@@ -31,9 +31,9 @@ class DBLib extends Connection
     
     protected $port;
     
-    public function __construct($driver, $username = null, $password = null)
+    public function __construct($username = null, $password = null)
     {
-        parent::__construct($driver, $username, $password);
+        parent::__construct('dblib', $username, $password);
     }
     
     public function compiler()

@@ -550,7 +550,7 @@ class Connection implements Serializable
      * @param   string  $username   (optional) Username
      * @param   string  $password   (optional)  Password
      *
-     * @return  \Opis\Database\Connection
+     * @return  \Opis\Database\DSN\Generic
      */
     
     public static function generic($dsn, $username = null, $password = null)
@@ -647,22 +647,21 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      * @param   string  $password   Password
-     * @param   string  $driver     (optional) Driver
      * 
      * @return  \Opis|Database\DSN\DBLib
      */
     
-    public static function mssql($username, $password, $driver = 'dblib')
+    public static function mssql($username, $password)
     {
-        return new DBLibConnection($driver, $username, $password);
+        return new DBLibConnection($username, $password);
     }
     
     /**
-     * Creates a SQLite specific connection
+     * Creates an SQLite specific connection
      *
      * If the $path parameter is omitted, an in-memory database will be created
      * 
-     * @param   string  $path   (optional) Username
+     * @param   string  $path   (optional) Path to database
      *
      * @return  \Opis\Database\DSN\SQLite
      */
@@ -673,11 +672,11 @@ class Connection implements Serializable
     }
     
     /**
-     * Creates a SQLite2 specific connection
+     * Creates an SQLite2 specific connection
      *
      * If the $path parameter is omitted, an in-memory database will be created
      * 
-     * @param   string  $path   (optional) Username
+     * @param   string  $path   (optional) Path to database
      *
      * @return  \Opis\Database\DSN\SQLite
      */
