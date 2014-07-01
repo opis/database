@@ -106,7 +106,7 @@ class Where implements WhereInterface
                 'type' => 'whereInSelect',
                 'column' => $column,
                 'subquery' => $select,
-                'separator' => $select,
+                'separator' => $separator,
                 'not' => $not,
             );
         }
