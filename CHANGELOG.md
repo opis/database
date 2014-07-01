@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database 1.3.1, 2014.07.01
+
+* Fixed a bug in `Opis\Database\SQL\Where` class.
+
 ### Opis Database 1.3.0, 2014.06.26
 
 * Removed `port` method from `Opis\Database\DSN\SQLServer` class
