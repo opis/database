@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database 1.3.2, 2014.07.03
+
+* Added autoload file
+
 ### Opis Database 1.3.1, 2014.07.01
 
 * Fixed a bug in `Opis\Database\SQL\Where` class.
