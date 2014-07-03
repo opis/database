@@ -87,10 +87,11 @@ INSERT INTO `laptops` (`brand`, `color`) VALUES ('Toshiba', 'white')
 ```
 
 ```php
-$result = $db->into('laptops')->insert(array(
+$result = $db->insert(array(
                 'brand' => 'Toshiba',
                 'color' => 'white'
-            ));
+            ))
+            ->into('laptops');
 ```
 
 ####Updating records
