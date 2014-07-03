@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database 1.4.0, 2014.07.04
+
+*  Modified `insert` command.
+
 ### Opis Database 1.3.2, 2014.07.03
 
 * Added autoload file
