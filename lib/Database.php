@@ -86,18 +86,18 @@ class Database
     }
     
     /**
-     * Insert new records into the specified table.
+     * Insert new records into a table.
      *
      * @access  public
      *
-     * @param   string  $table  Table name
+     * @param   array  $values  An array of values.
      *
      * @return  \Opis\Database\SQL\Insert
      */
     
-    public function into($table)
+    public function insert(array $values)
     {
-        return new InsertCommand($this->connection, $table);
+        return new InsertCommand($this->connection, $values);
     }
     
     /**

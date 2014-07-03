@@ -36,10 +36,9 @@ class InsertStatement
     
     protected $sql;
     
-    public function __construct(Compiler $compiler, $table)
+    public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
-        $this->tables = array((string) $table);
     }
     
     public function getTables()
@@ -78,6 +77,12 @@ class InsertStatement
             }
         }
         
+        return $this;
+    }
+    
+    public function into($table)
+    {
+        $this->tables = array((string) $table);
         return $this;
     }
     
