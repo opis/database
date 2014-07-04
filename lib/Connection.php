@@ -457,7 +457,7 @@ class Connection implements Serializable
             'password' => $this->password,
             'logQueries' => $this->logQueries,
             'options' => $this->options,
-            'queries' => $this->queries,
+            'commands' => $this->commands,
             'dsn' => $this->dsn,
         ));
     }
