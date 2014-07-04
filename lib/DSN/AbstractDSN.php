@@ -20,30 +20,51 @@
 
 namespace Opis\Database\DSN;
 
-class DBLib extends AbstractDSN
+abstract class AbstractDSN
 {
     
     /** @var    array   DSN properties */
-    protected $properties = array(
-        'host' => '127.0.0.1'
-    );
+    protected $properties = array();
     
-    /** @var    int     Port. */
-    protected $port;
+    /** @var    string  DSN prefix */
+    protected $prefix;
+    
+    /** @var    string Builded DSN */
+    protected $dsn;
     
     /**
      * Constructor
      *
      * @access  public
      *
-     * @param   string  $prefix     DSN prefix (dblib, mssql, sybase)
+     * @param   string  $prefix     DSN prefix
      */
     
     public function __construct($prefix)
     {
-        parent::__construct($prefix);
+        $this->prefix = $prefix;
     }
     
+    public function set($key, $value)
+    {
+        $this->properties[$key] = $value;
+        return $this;
+    }
+    
+    /**
+     * Sets the name of the database.
+     *
+     * @access  public
+     *
+     * @param   string  $name   Database name
+     *
+     * @return  \Opis\Database\DSN\AbstractDSN    Self reference
+     */
+    
+    public function database($name)
+    {
+        return $this->set('dbname', $database);
+    }
     
     /**
      * Sets the hostname on which the database server resides
@@ -52,17 +73,12 @@ class DBLib extends AbstractDSN
      *
      * @param   string  $name   Host's name
      *
-     * @return  \Opis\Database\DSN\DBLib    Self reference
+     * @return  \Opis\Database\DSN\AbstractDSN    Self reference
      */
     
     public function host($name)
     {
-        if($this->port !== null)
-        {
-            $name = $name . ':' . $this->port;
-        }
-        
-        return $this->set('host', $name);
+        return $this->set('host', $host);
     }
     
     /**
@@ -72,31 +88,50 @@ class DBLib extends AbstractDSN
      *
      * @param   int     $value   Port
      *
-     * @return  \Opis\Database\DSN\DBLib    Self reference
+     * @return  \Opis\Database\DSN\AbstractDSN    Self reference
      */
     
     public function port($value)
     {
-        $this->port = $value;
-        $value = $this->properties['host'] . ':' . $value;
-        return $this->set('host', $value);
+        return $this->set('port', $port);
     }
     
     /**
-     * Sets the application name (used in sysprocesses).
+     * Sets the client character set.
      *
-     * Defaults to "PHP Generic DB-lib" or "PHP freetds".
-     * 
      * @access  public
      *
-     * @param   string  $value   Application name
+     * @param   string  $value   Character set
      *
-     * @return  \Opis\Database\DSN\DBLib    Self reference
+     * @return  \Opis\Database\DSN\AbstractDSN    Self reference
      */
     
-    public function appName($value)
+    public function charset($value)
     {
-        return $this->set('appname', $value);
+        return $this->set('charset', $value);
+    }
+    
+    /**
+     * Builds the DSN
+     *
+     * @return  string
+     */
+    
+    public function __toString()
+    {
+        if($this->dsn === null)
+        {
+            $tmp = array();
+            
+            foreach($this->properties as $key => $value)
+            {
+                $tmp[] = $key . '=' . $value;
+            }
+            
+            $this->dsn = $this->prefix . ':' . implode(';', $tmp);
+        }
+        
+        return $this->dsn;
     }
     
 }

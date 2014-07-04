@@ -20,9 +20,7 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
-
-class IBM extends Connection
+class IBM extends AbstractDSN
 {
     /** @var    array   DSN properties */
     protected $properties = array(
@@ -34,27 +32,11 @@ class IBM extends Connection
      * Constructor
      *
      * @access  public
-     *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
-        parent::__construct('ibm', $username, $password);
-    }
-    
-    /**
-     * Returns the compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Compiler\DB2
-     */
-    
-    public function compiler()
-    {
-        return new \Opis\Database\Compiler\DB2();
+        parent::__construct('ibm');
     }
         
     /**
@@ -69,7 +51,7 @@ class IBM extends Connection
     
     public function database($name)
     {
-        return $this->setDatabase('DATABASE', $name);
+        return $this->set('DATABASE', $name);
     }
         
     /**
@@ -100,6 +82,21 @@ class IBM extends Connection
     public function port($value)
     {
         return $this->set('PORT', $value);
+    }
+    
+    /**
+     * Sets the client character set.
+     *
+     * @access  public
+     *
+     * @param   string  $value   Character set
+     *
+     * @return  \Opis\Database\DSN\IBM    Self reference
+     */
+    
+    public function charset($value)
+    {
+        return $this;
     }
     
 }

@@ -20,9 +20,7 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
-
-class MySQL extends Connection
+class MySQL extends AbstractDSN
 {
     /** @var    array   DSN properties */
     protected $properties = array(
@@ -34,104 +32,10 @@ class MySQL extends Connection
      * Constructor
      *
      * @access  public
-     *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
-        parent::__construct('mysql', $username, $password);
-    }
-        
-    /**
-     * Returns the compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Compiler\MySQL
-     */
-    
-    public function compiler()
-    {
-        return new \Opis\Database\Compiler\MySQL();
-    }
-    
-        
-    /**
-     * Returns the schema compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Schema\Compiler\MySQL
-     */
-    
-    public function schemaCompiler()
-    {
-        return new \Opis\Database\Schema\Compiler\MySQL();
-    }
-        
-    /**
-     * Sets the name of the database.
-     *
-     * @access  public
-     *
-     * @param   string  $name   Database name
-     *
-     * @return  \Opis\Database\DSN\MySQL    Self reference
-     */
-    
-    public function database($name)
-    {
-        return $this->setDatabase('dbname', $name);
-    }
-        
-    /**
-     * Sets the hostname on which the database server resides
-     *
-     * @access  public
-     *
-     * @param   string  $name   Host's name
-     *
-     * @return  \Opis\Database\DSN\MySQL    Self reference
-     */
-    
-    public function host($name)
-    {
-        return $this->set('host', $name);
-    }
-        
-    /**
-     * Sets the port number where the database server is listening.
-     *
-     * @access  public
-     *
-     * @param   int     $value   Port
-     *
-     * @return  \Opis\Database\DSN\MySQL    Self reference
-     */
-    
-    public function port($value)
-    {
-        return $this->set('port', $value);
-    }
-        
-    /**
-     * Sets the client character set.
-     *
-     * @access  public
-     *
-     * @param   string  $value   Character set
-     *
-     * @return  \Opis\Database\DSN\MySQL    Self reference
-     */
-    
-    public function charset($value)
-    {
-        if (version_compare(PHP_VERSION, '5.3.6', '>='))
-        {
-            return $this->set('charset', $value);
-        }
-        return $this->option(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES '.$value);
+        parent::__construct('mysql');
     }
 }

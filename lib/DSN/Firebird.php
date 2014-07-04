@@ -20,36 +20,27 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
-
-class Firebird extends Connection
+class Firebird extends AbstractDSN
 {
+    
+    protected $database;
+    
+    protected $host;
+    
+    protected $port;
+    
     /**
      * Constructor
      *
      * @access  public
      *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
     public function __construct($username = null, $password = null)
     {
-        parent::__construct('firebird', $username, $password);
+        parent::__construct('firebird');
     }
     
-    /**
-     * Returns the compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Compiler\Firebird
-     */
-    
-    public function compiler()
-    {
-        new \Opis\Database\Compiler\Firebird();
-    }
     
     /**
      * Sets the name of the database.
@@ -63,7 +54,40 @@ class Firebird extends Connection
         
     public function database($name)
     {
-        return $this->setDatabase('dbname', $name);
+        $this->database = $name;
+        return $this;
+    }
+    
+    /**
+     * Sets the hostname on which the database server resides
+     *
+     * @access  public
+     *
+     * @param   string  $name   Host's name
+     *
+     * @return  \Opis\Database\DSN\Firebird    Self reference
+     */
+    
+    public function host($name)
+    {
+        $this->host = $host;
+        return $this;
+    }
+    
+    /**
+     * Sets the port number where the database server is listening.
+     *
+     * @access  public
+     *
+     * @param   int     $value   Port
+     *
+     * @return  \Opis\Database\DSN\Firebird    Self reference
+     */
+    
+    public function port($value)
+    {
+        $this->port = $value;
+        return $this;
     }
     
     /**
@@ -95,4 +119,43 @@ class Firebird extends Connection
     {
         return $this->set('role', $value);
     }
+    
+    /**
+     * Builds the DSN
+     *
+     * @return  string
+     */
+    
+    public function __toString()
+    {
+        if($this->dsn === null)
+        {
+            $dbname = $this->database;
+            
+            if($this->host !== null)
+            {
+                if($this->port !== null)
+                {
+                    $dbname = $this->host . '/' . $this->port . ':' . $dbname;
+                }
+                else
+                {
+                    $dbname = $this->host . ':' . $dbname;
+                }
+            }
+            
+            $tmp = $this->properties;
+            
+            $this->properties = array(
+                'dbname' => $dbname,
+            );
+            
+            $this->properties += $tmp;
+            
+            return parent::__toString();
+        }
+        
+        return $this->dsn;
+    }
+    
 }
