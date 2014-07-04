@@ -20,10 +20,13 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
+use Opis\Database\DSN;
 
-class SQLite extends Connection
+class SQLite extends DSN
 {
+    
+    protected $database;
+    
     /**
      * Constructor
      *
@@ -42,16 +45,16 @@ class SQLite extends Connection
             $path = ':memory:';
         }
         
-        $this->databse = $path;
+        $this->database = $path;
     }
-        
+    
     /**
-     * Generates the DSN associated with this connection
+     * Builds the DSN
      *
      * @return  string
      */
     
-    public function dsn()
+    public function __toString()
     {
         if($this->dsn === null)
         {

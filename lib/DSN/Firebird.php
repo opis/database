@@ -20,7 +20,9 @@
 
 namespace Opis\Database\DSN;
 
-class Firebird extends AbstractDSN
+use Opis\Database\DSN;
+
+class Firebird extends DSN
 {
     
     protected $database;
@@ -33,10 +35,9 @@ class Firebird extends AbstractDSN
      * Constructor
      *
      * @access  public
-     *
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
         parent::__construct('firebird');
     }
@@ -144,13 +145,7 @@ class Firebird extends AbstractDSN
                 }
             }
             
-            $tmp = $this->properties;
-            
-            $this->properties = array(
-                'dbname' => $dbname,
-            );
-            
-            $this->properties += $tmp;
+            $this->set('dbname', $dbname);
             
             return parent::__toString();
         }

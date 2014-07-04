@@ -20,7 +20,9 @@
 
 namespace Opis\Database\DSN;
 
-class DBLib extends AbstractDSN
+use Opis\Database\DSN;
+
+class DBLib extends DSN
 {
     
     /** @var    array   DSN properties */

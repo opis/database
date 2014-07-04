@@ -20,71 +20,28 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
+use Opis\Database\DSN;
 
-class Oracle extends Connection
+class Oracle extends DSN
 {
     /** @var    int     Port. */
     protected $port;
     
     /** @var    string  Host name. */
     protected $host;
+    
+    /** @var    string  Database name. */
+    protected $database;
         
     /**
      * Constructor
      *
      * @access  public
-     *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
-        parent::__construct('oci', $username, $password);
-    }
-    
-    /**
-     * Generates the DSN associated with this connection
-     *
-     * @return  string
-     */
-    
-    public function dsn()
-    {
-        if($this->dsn !== null)
-        {
-            $value = $this->database;
-            
-            if($this->host != null)
-            {
-                if($this->port != null)
-                {
-                    $value = '//' . $this->host . ':' . $this->port . '/' . $value;
-                }
-                else
-                {
-                    $value = '//' . $this->host . '/' . $value;
-                }
-            }
-            
-            $this->set('dbname', $value);
-        }
-        
-        return parent::dsn();
-    }
-        
-    /**
-     * Returns the compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Compiler\Oracle
-     */
-    
-    public function compiler()
-    {
-        return new \Opis\Database\Compiler\Oracle();
+        parent::__construct('oci');
     }
         
     /**
@@ -134,19 +91,36 @@ class Oracle extends Connection
         $this->host = $value;
         return $this;
     }
-        
+    
     /**
-     * Sets the client character set.
+     * Builds the DSN
      *
-     * @access  public
-     *
-     * @param   string  $value   Character set
-     *
-     * @return  \Opis\Database\DSN\Oracle    Self reference
+     * @return  string
      */
     
-    public function charset($value)
+    public function __toString()
     {
-        return $this->set('charset', $value);
+        if($this->dsn === null)
+        {
+            $value = $this->database;
+            
+            if($this->host != null)
+            {
+                if($this->port != null)
+                {
+                    $value = '//' . $this->host . ':' . $this->port . '/' . $value;
+                }
+                else
+                {
+                    $value = '//' . $this->host . '/' . $value;
+                }
+            }
+            
+            $this->set('dbname', $value);
+            
+            return parent::__toString();
+        }
+        
+        return $this->dsn;
     }
 }

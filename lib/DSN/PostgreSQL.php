@@ -20,9 +20,9 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
+use Opis\Database\DSN;
 
-class PostgreSQL extends Connection
+class PostgreSQL extends DSN
 {
     /** @var    array   DSN properties */
     protected $properties = array(
@@ -34,58 +34,26 @@ class PostgreSQL extends Connection
      * Constructor
      *
      * @access  public
-     *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
-        parent::__construct('pgsql', $username, $password);
+        parent::__construct('pgsql');
     }
-            
+    
     /**
-     * Sets the name of the database.
+     * Sets the client character set.
      *
      * @access  public
      *
-     * @param   string  $name   Database name
+     * @param   string  $value   Character set
      *
      * @return  \Opis\Database\DSN\PostgreSQL    Self reference
      */
     
-    public function database($name)
+    public function charset($value)
     {
-        return $this->setDatabase('dbase', $name);
+        return $this;
     }
     
-    /**
-     * Sets the hostname on which the database server resides
-     *
-     * @access  public
-     *
-     * @param   string  $name   Host's name
-     *
-     * @return  \Opis\Database\DSN\PostgreSQL    Self reference
-     */
-    
-    public function host($name)
-    {
-        return $this->set('host', $name);
-    }
-    
-    /**
-     * Sets the port number where the database server is listening.
-     *
-     * @access  public
-     *
-     * @param   int     $value   Port
-     *
-     * @return  \Opis\Database\DSN\PostgreSQL    Self reference
-     */
-    
-    public function port($value)
-    {
-        return $this->set('port', $value);
-    }
 }

@@ -20,36 +20,21 @@
 
 namespace Opis\Database\DSN;
 
-use Opis\Database\Connection;
+use Opis\Database\DSN;
 
-class SQLServer extends Connection
+class SQLServer extends DSN
 {
     /**
      * Constructor
      *
      * @access  public
-     *
-     * @param   string  $username   (Optional) Username
-     * @param   string  $password   (Optional) Password
      */
     
-    public function __construct($username = null, $password = null)
+    public function __construct()
     {
-        parent::__construct('sqlsrv', $username, $password);
+        parent::__construct('sqlsrv');
     }
-            
-    /**
-     * Returns the compiler associated with this connection type.
-     *
-     * @access  public
-     *
-     * @return  \Opis\Database\Compiler\SQLServer
-     */
     
-    public function compiler()
-    {
-        return new \Opis\Database\Compiler\SQLServer();
-    }
     
     /**
      * Sets the name of the database.
@@ -63,7 +48,52 @@ class SQLServer extends Connection
     
     public function database($name)
     {
-        return $this->setDatabase('Database', $name);
+        return $this->set('Database', $name);
+    }
+    
+    /**
+     * Sets the hostname on which the database server resides
+     *
+     * @access  public
+     *
+     * @param   string  $name   Host's name
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
+    
+    public function host($name)
+    {
+        return $this;
+    }
+    
+    /**
+     * Sets the port number where the database server is listening.
+     *
+     * @access  public
+     *
+     * @param   int     $value   Port
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
+    
+    public function port($value)
+    {
+        return $this;
+    }
+    
+    /**
+     * Sets the client character set.
+     *
+     * @access  public
+     *
+     * @param   string  $value   Character set
+     *
+     * @return  \Opis\Database\DSN\SQLServer    Self reference
+     */
+    
+    public function charset($value)
+    {
+        return $this;
     }
     
     /**

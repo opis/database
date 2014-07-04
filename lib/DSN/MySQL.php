@@ -20,7 +20,9 @@
 
 namespace Opis\Database\DSN;
 
-class MySQL extends AbstractDSN
+use Opis\Database\DSN;
+
+class MySQL extends DSN
 {
     /** @var    array   DSN properties */
     protected $properties = array(

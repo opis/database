@@ -20,7 +20,9 @@
 
 namespace Opis\Database\DSN;
 
-class IBM extends AbstractDSN
+use Opis\Database\DSN;
+
+class IBM extends DSN
 {
     /** @var    array   DSN properties */
     protected $properties = array(
