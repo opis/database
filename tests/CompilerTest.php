@@ -513,12 +513,12 @@ class FakeConnection extends Connection
     
    public function compiler()
    {
-        if($this->prefix === 'Compiler')
+        if($this->dsn === 'Compiler')
         {
             return new \Opis\Database\SQL\Compiler();
         }
         
-        $class = '\\Opis\\Database\\Compiler\\' . $this->prefix;
+        $class = '\\Opis\\Database\\Compiler\\' . $this->dsn;
         
         return new $class();
     }
