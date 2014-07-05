@@ -57,6 +57,9 @@ class Connection implements Serializable
     /** @var    \Opis\Database\Compiler The compiler associated with this connection */
     protected $compiler;
     
+    /** @var    \Opis\Database\Schema\Compiler The schema compiler associated with this connection */
+    protected $schemaCompiler;
+    
     /** @var    string  The DSN for this connection */
     protected $dsn;
     
@@ -269,7 +272,28 @@ class Connection implements Serializable
     
     public function schemaCompiler()
     {
-        throw new \Exception('Schema not supported yet');
+        if($this->schemaCompiler === null)
+        {
+            switch($this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME))
+            {
+                case 'mysql':
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL();
+                    break;
+                case 'pgsql':
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\PostgreSQL();
+                    break;
+                case 'dblib':
+                case 'mssql':
+                case 'sqlsrv':
+                case 'sybase':
+                    $this->compiler = new \Opis\Database\Schema\Compiler\SQLServer();
+                    break;
+                default:
+                    throw new \Exception('Schema not supported yet');
+            }
+        }
+        
+        return $this->schemaCompiler;
     }
     
     

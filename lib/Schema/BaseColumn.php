@@ -84,14 +84,14 @@ class BaseColumn
         return $this->set('size', $value);
     }
     
-    public function nullable($value = true)
+    public function nullable()
     {
-        return $this->set('nullable', $value);
+        return $this->set('nullable', true);
     }
     
-    public function notNull($value = true)
+    public function notNull()
     {
-        return $this->nullable($value);
+        return $this->set('nullable', false);
     }
     
     public function description($comment)
