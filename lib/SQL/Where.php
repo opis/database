@@ -42,8 +42,15 @@ class Where
         return $this;
     }
     
-    protected function addCondition($value, $operator)
+    protected function addCondition($value, $operator, $scalar = true)
     {
+        if(!$scalar && is_string($value))
+        {
+            $value = function($expr) use ($value){
+                $expr->column($value);
+            };
+        }
+        
         $this->whereClause->addCondition($this->column, $value, $operator, $this->separator);
         return $this->condition;
     }
@@ -72,33 +79,32 @@ class Where
         return $this->condition;
     }
     
-    public function is($value)
+    public function is($value, $scalar = true)
     {
-        return $this->addCondition($value, '=');
+        return $this->addCondition($value, '=', $scalar);
     }
     
-    public function isNot($value)
+    public function isNot($value, $scalar = true)
     {
         return $this->addCondition($value, '!=');
     }
     
-    
-    public function lessThan($value)
+    public function lessThan($value, $scalar = true)
     {
         return $this->addCondition($value, '<');
     }
     
-    public function greaterThan($value)
+    public function greaterThan($value, $scalar = true)
     {
         return $this->addCondition($value, '>');
     }
     
-    public function atLeast($value)
+    public function atLeast($value, $scalar = true)
     {
         return $this->addCondition($value, '>=');
     }
     
-    public function atMost($value)
+    public function atMost($value, $scalar = true)
     {
         return $this->addCondition($value, '<=');
     }
@@ -143,24 +149,36 @@ class Where
         return $this->addNullCondition(true);
     }
     
-    public function lt($value)
+    //Aliases
+    
+    public function eq($value, $scalar = true)
     {
-        return $this->lessThan($value);
+        return $this->is($value, $scalar);
     }
     
-    public function gt($value)
+    public function ne($value, $scalar = true)
     {
-        return $this->greaterThan($value);
+        return $this->isNot($value, $scalar);
     }
     
-    public function gte($value)
+    public function lt($value, $scalar = true)
     {
-        return $this->atLeast($value);
+        return $this->lessThan($value, $scalar);
     }
     
-    public function lte($value)
+    public function gt($value, $scalar = true)
     {
-        return $this->atMost($value);
+        return $this->greaterThan($value, $scalar);
+    }
+    
+    public function gte($value, $scalar = true)
+    {
+        return $this->atLeast($value, $scalar);
+    }
+    
+    public function lte($value, $scalar = true)
+    {
+        return $this->atMost($value, $scalar);
     }
     
 }
