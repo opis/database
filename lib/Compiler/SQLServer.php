@@ -60,7 +60,7 @@ class SQLServer extends Compiler
             $sql .= ' FROM ';
             $sql .= $this->handleTables($select->getTables());
             $sql .= $this->handleJoins($select->getJoinClauses());
-            $sql .= $this->handleWheres($select->getWhereClauses());
+            $sql .= $this->handleWheres($select->getWhereConditions());
             $sql .= $this->handleGroupings($select->getGroupClauses());
             $sql .= $this->handleOrderings($select->getOrderClauses());
             $sql .= $this->handleHavings($select->getHavingClauses());
@@ -81,7 +81,7 @@ class SQLServer extends Compiler
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
         $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereClauses());
+        $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleHavings($select->getHavingClauses());
         

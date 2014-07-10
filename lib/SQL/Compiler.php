@@ -199,6 +199,7 @@ class Compiler
         for($i = 1; $i < $count; $i++)
         {
             $sql[] = $wheres[$i]['separator'] .' '. $this->$wheres[$i]['type']($wheres[$i]);
+            
         }
         
         return ($prefix ? ' WHERE ' : '') . implode(' ', $sql);
@@ -329,7 +330,7 @@ class Compiler
     
     protected function whereNested(array $where)
     {
-        return '(' . $this->handleWheres($where['clause']->getWhereClauses(), false) . ')';
+        return '(' . $this->handleWheres($where['clause']->getWhereConditions(), false) . ')';
     }
     
     protected function whereExists(array $where)
@@ -425,7 +426,7 @@ class Compiler
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
         $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereClauses());
+        $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
         $sql .= $this->handleHavings($select->getHavingClauses());
@@ -451,7 +452,7 @@ class Compiler
         $sql  = 'UPDATE ';
         $sql .= $this->handleTables($update->getTables());
         $sql .= $this->handleSetColumns($update->getColumns());
-        $sql .= $this->handleWheres($update->getWhereClauses());
+        $sql .= $this->handleWheres($update->getWhereConditions());
         
         return $sql;
     }
@@ -462,7 +463,7 @@ class Compiler
         $sql .= $sql === 'DELETE ' ? 'FROM ' : ' FROM ';
         $sql .= $this->handleTables($delete->getFrom());
         $sql .= $this->handleJoins($delete->getJoinClauses());
-        $sql .= $this->handleWheres($delete->getWhereClauses());
+        $sql .= $this->handleWheres($delete->getWhereConditions());
         
         return $sql;
     }

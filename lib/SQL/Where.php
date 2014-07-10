@@ -22,302 +22,145 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class Where implements WhereInterface
+class Where
 {
+    protected $condition;
+    protected $column;
+    protected $separator;
+    protected $whereClause;
     
-    protected $clauses = array();
-    
-    protected $compiler;
-    
-    public function __construct(Compiler $compiler)
+    public function __construct(WhereCondition $condition)
     {
-        $this->compiler = $compiler;
+        $this->condition = $condition;
+        $this->whereClause = $condition->getWhereClause();
     }
     
-    protected function addWhereClause($column, $value, $operator, $separator)
+    public function init($column, $separator)
     {
-        if($column instanceof Closure)
-        {
-            $where = new Where($this->compiler);
-            $column($where);
-            $this->clauses[] = array(
-                'type' => 'whereNested',
-                'clause' => $where,
-                'separator' => $separator
-            );
-        }
-        elseif($value instanceof Closure)
-        {
-            $expr = new Expression($this->compiler);
-            $value($expr);
-            $this->clauses[] = array(
-                'type' => 'whereColumn',
-                'column' => $column,
-                'value' => $expr,
-                'operator' => $operator,
-                'separator' => $separator,
-            );
-        }
-        else
-        {
-            $this->clauses[] = array(
-                'type' => 'whereColumn',
-                'column' => $column,
-                'value' => $value,
-                'operator' => $operator,
-                'separator' => $separator,
-            );
-        }
+        $this->column = $column;
+        $this->separator = $separator;
         return $this;
     }
     
-    protected function addLikeClause($column, $pattern, $separator, $not)
+    protected function addCondition($value, $operator)
     {
-        $this->clauses[] = array(
-            'type' => 'whereLike',
-            'column' => $column,
-            'pattern' => $pattern,
-            'separator' => $separator,
-            'not' => $not,
-        );
-        return $this;
+        $this->whereClause->addCondition($this->column, $value, $operator, $this->separator);
+        return $this->condition;
     }
     
-    protected function addBetweenClause($column, $value1, $value2, $separator, $not)
+    protected function addBetweenCondition($value1, $value2, $not)
     {
-        $this->clauses[] = array(
-            'type' => 'whereBetween',
-            'column' => $column,
-            'value1' => $value1,
-            'value2' => $value2,
-            'separator' => $separator,
-            'not' => $not,
-        );
-        return $this;   
+        $this->whereClause->addBetweenCondition($this->column, $value1, $value2, $this->separator, $not);
+        return $this->condition;
     }
     
-    protected function addInClause($column, $value, $separator, $not)
+    protected function addLikeCondition($pattern, $not)
     {
-        if($value instanceof Closure)
-        {
-            $select = new Subquery($this->compiler);
-            $value($select);
-            $this->clauses[] = array(
-                'type' => 'whereInSelect',
-                'column' => $column,
-                'subquery' => $select,
-                'separator' => $separator,
-                'not' => $not,
-            );
-        }
-        else
-        {
-            $this->clauses[] = array(
-                'type' => 'whereIn',
-                'column' => $column,
-                'value' => $value,
-                'separator' => $separator,
-                'not' => $not,
-            );
-        }
-        return $this;
+        $this->whereClause->addLikeCondition($this->column, $pattern, $this->separator, $not);
+        return $this->condition;
     }
     
-    protected function addNullClause($column, $separator, $not)
+    protected function addInCondition($value, $not)
     {
-        $this->clauses[] = array(
-            'type' => 'whereNull',
-            'column' => $column,
-            'separator' => $separator,
-            'not' => $not,
-        );
-        return $this;
+        $this->whereClause->addInCondition($this->column, $value, $this->separator, $not);
+        return $this->condition;
     }
     
-    protected function addExistsClause($closure, $separator, $not)
+    public function addNullCondition($not)
     {
-        $select = new Subquery($this->compiler);
-        $closure($select);
-        
-        $this->clauses[] = array(
-            'type' => 'whereExists',
-            'subquery' => $select,
-            'separator' => $separator,
-            'not' => $not,
-        );
-        
-        return $this;
+        $this->whereClause->addNullCondition($this->column, $this->separator, $not);
+        return $this->condition;
     }
     
-    
-    public function getWhereClauses()
+    public function is($value)
     {
-        return $this->clauses;
+        return $this->addCondition($value, '=');
     }
     
-    
-    public function where($column, $value = null, $operator = '=')
+    public function isNot($value)
     {
-        return $this->addWhereClause($column, $value, $operator, 'AND');
+        return $this->addCondition($value, '!=');
     }
     
-    public function andWhere($column, $value = null, $operator = '=')
+    
+    public function lessThan($value)
     {
-        return $this->where($column, $value, $operator);
+        return $this->addCondition($value, '<');
     }
     
-    public function orWhere($column, $value = null, $operator = '=')
+    public function greaterThan($value)
     {
-        return $this->addWhereClause($column, $value, $operator, 'OR');
+        return $this->addCondition($value, '>');
     }
     
-    public function whereBetween($column, $value1, $value2)
+    public function atLeast($value)
     {
-        return $this->addBetweenClause($column, $value1, $value2, 'AND', false);
+        return $this->addCondition($value, '>=');
     }
     
-    public function andWhereBetween($column, $value1, $value2)
+    public function atMost($value)
     {
-        return $this->whereBetween($column, $value1, $value2);
+        return $this->addCondition($value, '<=');
     }
     
-    public function orWhereBetween($column, $value1, $value2)
+    public function between($value1, $value2)
     {
-        return $this->addBetweenClause($column, $value1, $value2, 'OR', false);
+        return $this->addBetweenCondition($value1, $value2, false);
     }
     
-    public function whereNotBetween($column, $value1, $value2)
+    public function notBetween($value1, $value2)
     {
-        return $this->addBetweenClause($column, $value1, $value2, 'AND', true);
+        return $this->addBetweenCondition($value1, $value2, true);
     }
     
-    public function andWhereNotBetween($column, $value1, $value2)
+    public function like($value)
     {
-        return $this->whereNotBetween($column, $value1, $value2);
+        return $this->addLikeCondition($value, false);
     }
     
-    public function orWhereNotBetween($column, $value1, $value2)
+    public function notLike($value)
     {
-        return $this->addBetweenClause($column, $value1, $value2, 'OR', true);
+        return $this->addLikeCondition($value, true);
     }
     
-    public function whereLike($column, $value)
+    public function in($value)
     {
-        return $this->addLikeClause($column, $value, 'AND', false);
+        return $this->addInCondition($value, false);
     }
     
-    public function andWhereLike($column, $value)
+    public function notIn($value)
     {
-        return $this->whereLike($column, $value);
+        return $this->addInCondition($value, true);
     }
     
-    public function orWhereLike($column, $value)
+    public function isNull()
     {
-        return $this->addLikeClause($column, $value, 'OR', false);
+        return $this->addNullCondition(false);
     }
     
-    public function whereNotLike($column, $value)
+    public function notNull()
     {
-        return $this->addLikeClause($column, $value, 'AND', true);
+        return $this->addNullCondition(true);
     }
     
-    public function andWhereNotLike($column, $value)
+    public function lt($value)
     {
-        return $this->whereNotLike($column, $value);
+        return $this->lessThan($value);
     }
     
-    public function orWhereNotLike($column, $value)
+    public function gt($value)
     {
-        return $this->addLikeClause($column, $value, 'OR', true);
+        return $this->greaterThan($value);
     }
     
-    public function whereIn($column, $value)
+    public function gte($value)
     {
-        return $this->addInClause($column, $value, 'AND', false);
+        return $this->atLeast($value);
     }
     
-    public function andWhereIn($column, $value)
+    public function lte($value)
     {
-        return $this->whereIn($column, $value);
+        return $this->atMost($value);
     }
     
-    public function orWhereIn($column, $value)
-    {
-        return $this->addInClause($column, $value, 'OR', false);
-    }
-    
-    public function whereNotIn($column, $value)
-    {
-        return $this->addInClause($column, $value, 'AND', true);
-    }
-    
-    public function andWhereNotIn($column, $value)
-    {
-        return $this->whereNotIn($column, $value);
-    }
-    
-    public function orWhereNotIn($column, $value)
-    {
-        return $this->addInClause($column, $value, 'OR', true);
-    }
-    
-    public function whereNull($column)
-    {
-        return $this->addNullClause($column, 'AND', false);
-    }
-    
-    public function andWhereNull($column)
-    {
-        return $this->whereNull($column);
-    }
-    
-    public function orWhereNull($column)
-    {
-        return $this->addNullClause($column, 'OR', false);
-    }
-    
-    public function whereNotNull($column)
-    {
-        return $this->addNullClause($column, 'AND', true);
-    }
-    
-    public function andWhereNotNull($column)
-    {
-        return $this->whereNotNull($column);
-    }
-    
-    public function orWhereNotNull($column)
-    {
-        return $this->addNullClause($column, 'OR', true);
-    }
-    
-    public function whereExists(Closure $select)
-    {
-        return $this->addExistsClause($select, 'AND', false);
-    }
-    
-    public function andWhereExists(Closure $select)
-    {
-        return $this->whereExists($select);
-    }
-    
-    public function orWhereExists(Closure $select)
-    {
-        return $this->addExistsClause($select, 'OR', false);
-    }
-    
-    public function whereNotExists(Closure $select)
-    {   
-        return $this->addExistsClause($select, 'AND', true);
-    }
-    
-    public function andWhereNotExists(Closure $select)
-    {   
-        return $this->whereNotExists($select);
-    }
-    
-    public function orWhereNotExists(Closure $select)
-    {
-        return $this->addExistsClause($select, 'OR', true);
-    }
 }

@@ -20,13 +20,15 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
+
 class WhereJoinCondition extends WhereCondition
 {
     protected $joins = array();
     
-    public function __construct(Compiler $compiler, Where $where = null)
+    public function __construct(Compiler $compiler, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $where);
+        parent::__construct($compiler, $clause);
     }
     
     public function getJoinClauses()

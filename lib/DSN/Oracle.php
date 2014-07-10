@@ -115,8 +115,11 @@ class Oracle extends DSN
                     $value = '//' . $this->host . '/' . $value;
                 }
             }
-            
-            $this->set('dbname', $value);
+            $tmp = $this->properties;
+            $this->properties = array(
+                'dbname' => $value,
+            );
+            $this->properties += $tmp;
             
             return parent::__toString();
         }

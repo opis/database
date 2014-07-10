@@ -30,9 +30,9 @@ class UpdateStatement extends WhereCondition
     
     protected $sql;
     
-    public function __construct(Compiler $compiler, $table, Where $where = null)
+    public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $where);
+        parent::__construct($compiler, $clause);
         $this->tables = array((string) $table);
     }
     

@@ -145,7 +145,13 @@ class Firebird extends DSN
                 }
             }
             
-            $this->set('dbname', $dbname);
+            $tmp = $this->properties;
+            
+            $this->properties = array(
+                'dbname' => $dbname
+            );
+            
+            $this->properties += $tmp;
             
             return parent::__toString();
         }

@@ -28,9 +28,9 @@ class DeleteStatement extends WhereJoinCondition
     
     protected $sql;
     
-    public function __construct(Compiler $compiler, $from, Where $where = null)
+    public function __construct(Compiler $compiler, $from, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $where);
+        parent::__construct($compiler, $clause);
         
         if(!is_array($from))
         {

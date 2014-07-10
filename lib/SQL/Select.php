@@ -26,9 +26,9 @@ class Select extends SelectStatement
 {
     protected $connection;
     
-    public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, Where $where = null)
+    public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $tables, $where);
+        parent::__construct($compiler, $tables, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }

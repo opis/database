@@ -37,12 +37,12 @@ class Query extends WhereJoinCondition
     
     protected function buildSelect()
     {
-        return new Select($this->connection, $this->compiler, $this->tables, $this->joins, $this->where);
+        return new Select($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
     }
     
     protected function buildDelete()
     {
-        return new Delete($this->connection, $this->compiler, $this->tables, $this->joins, $this->where);
+        return new Delete($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
     }
     
     public function distinct($value = true)

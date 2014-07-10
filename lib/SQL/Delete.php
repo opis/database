@@ -26,9 +26,9 @@ class Delete extends DeleteStatement
 {
     protected $connection;
     
-    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, Where $where = null)
+    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $from, $where);
+        parent::__construct($compiler, $from, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }
