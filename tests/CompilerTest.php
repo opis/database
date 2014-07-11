@@ -305,7 +305,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
         $db = $this->getDatabase();
         $expect = 'SELECT * FROM {users} WHERE {name} = ? AND ({email} = ? OR {points} > ?)';
         $query = $db->from('users')
-                    ->where('name', 'test')
+                    ->where('name')->is('test')
                     ->andWhere(function($group){
                         $group->where('email')->is('test')
                               ->orWhere('points')->greaterThan(100);
@@ -319,7 +319,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
         $db = $this->getDatabase();
         $expect = 'SELECT * FROM {users} WHERE {name} = ? OR ({email} = ? AND {points} > ?)';
         $query = $db->from('users')
-                    ->where('name', 'test')
+                    ->where('name')->is('test')
                     ->orWhere(function($group){
                         $group->where('email')->is('test')
                               ->andWhere('points')->greaterThan(100);
