@@ -57,9 +57,14 @@ class Join
         return $this->conditions;
     }
     
-    public function andOn($column1, $column2 = null, $operator = '=')
+    public function on($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'AND');
+    }
+    
+    public function andOn($column1, $column2 = null, $operator = '=')
+    {
+        return $this->on($column1, $column2, $operator);
     }
     
     public function orOn($column1, $column2 = null, $operator = '=')
