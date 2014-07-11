@@ -42,9 +42,9 @@ class Where
         return $this;
     }
     
-    protected function addCondition($value, $operator, $scalar = true)
+    protected function addCondition($value, $operator, $iscolumn = false)
     {
-        if(!$scalar && is_string($value))
+        if($iscolumn && is_string($value))
         {
             $value = function($expr) use ($value){
                 $expr->column($value);
@@ -79,34 +79,34 @@ class Where
         return $this->condition;
     }
     
-    public function is($value, $scalar = true)
+    public function is($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '=', $scalar);
+        return $this->addCondition($value, '=', $iscolumn);
     }
     
-    public function isNot($value, $scalar = true)
+    public function isNot($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '!=');
+        return $this->addCondition($value, '!=', $iscolumn);
     }
     
-    public function lessThan($value, $scalar = true)
+    public function lessThan($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '<');
+        return $this->addCondition($value, '<', $iscolumn);
     }
     
-    public function greaterThan($value, $scalar = true)
+    public function greaterThan($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '>');
+        return $this->addCondition($value, '>', $iscolumn);
     }
     
-    public function atLeast($value, $scalar = true)
+    public function atLeast($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '>=');
+        return $this->addCondition($value, '>=', $iscolumn);
     }
     
-    public function atMost($value, $scalar = true)
+    public function atMost($value, $iscolumn = false)
     {
-        return $this->addCondition($value, '<=');
+        return $this->addCondition($value, '<=', $iscolumn);
     }
     
     public function between($value1, $value2)
@@ -151,34 +151,34 @@ class Where
     
     //Aliases
     
-    public function eq($value, $scalar = true)
+    public function eq($value, $iscolumn = false)
     {
-        return $this->is($value, $scalar);
+        return $this->is($value, $iscolumn);
     }
     
-    public function ne($value, $scalar = true)
+    public function ne($value, $iscolumn = false)
     {
-        return $this->isNot($value, $scalar);
+        return $this->isNot($value, $iscolumn);
     }
     
-    public function lt($value, $scalar = true)
+    public function lt($value, $iscolumn = false)
     {
-        return $this->lessThan($value, $scalar);
+        return $this->lessThan($value, $iscolumn);
     }
     
-    public function gt($value, $scalar = true)
+    public function gt($value, $iscolumn = false)
     {
-        return $this->greaterThan($value, $scalar);
+        return $this->greaterThan($value, $iscolumn);
     }
     
-    public function gte($value, $scalar = true)
+    public function gte($value, $iscolumn = false)
     {
-        return $this->atLeast($value, $scalar);
+        return $this->atLeast($value, $iscolumn);
     }
     
-    public function lte($value, $scalar = true)
+    public function lte($value, $iscolumn = false)
     {
-        return $this->atMost($value, $scalar);
+        return $this->atMost($value, $iscolumn);
     }
     
 }
