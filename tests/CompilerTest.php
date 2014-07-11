@@ -397,7 +397,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
         $query = $db->from('users')
                     ->where('name')->like('%')
                     ->andWhere('points')->like('%')
-                    ->orWhereLike('user')->like('%')
+                    ->orWhere('user')->like('%')
                     ->select();
         $this->assertEquals($this->wrap($expect), $query, $query);
     }
