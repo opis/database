@@ -158,4 +158,9 @@ class Expression
         return $this->addFunction('sqlFunction', 'FORMAT', $column, array('format' => $format));
     }
     
+    public function __get($value)
+    {
+        return $this->addExpression('op', $value);
+    }
+    
 }
