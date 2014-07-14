@@ -47,31 +47,27 @@ class UpdateStatement extends WhereCondition
     }
     
     
-    public function set($column, $value = null)
+    public function set(array $columns)
     {
-        if(is_array($column))
+        foreach($columns as $column => $value)
         {
-            foreach($column as $key => $value)
+            if($value instanceof Closure)
             {
-                $this->set($key, $value);
+                $expr = new Expression($this->compiler);
+                $value($expr);
+                
+                $this->columns[] = array(
+                    'column' => $column,
+                    'value' => $expr,
+                );
             }
-        }
-        elseif($value instanceof Closure)
-        {
-            $expr = new Expression($this->compiler);
-            $value($expr);
-            
-            $this->columns[] = array(
-                'column' => $column,
-                'value' => $expr,
-            );
-        }
-        else
-        {
-            $this->columns[] = array(
-                'column' => $column,
-                'value' => $value,
-            );
+            else
+            {
+                $this->columns[] = array(
+                    'column' => $column,
+                    'value' => $value,
+                );
+            }
         }
         return $this;
     }
