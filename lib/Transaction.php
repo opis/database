@@ -93,6 +93,12 @@ class Transaction
         $this->pdo()->rollBack();
     }
     
+    public function run()
+    {
+        $transaction = $this->transaction;
+        return $transaction($this->database);
+    }
+    
     public function execute(Closure $execute = null)
     {
         if($execute !== null)
@@ -103,7 +109,7 @@ class Transaction
         try
         {
             $this->begin();
-            $result = $this->transaction($this->database);
+            $result = $this->run();
             $pdo->commit();
             
             if($this->successCallback !== null)
