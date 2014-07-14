@@ -33,8 +33,9 @@ class Update extends UpdateStatement
         $this->connection = $connection;
     }
     
-    public function execute()
+    public function set($column, $value = null)
     {
+        parent::set($column, $value);
         return $this->connection->count((string) $this, $this->compiler->getParams());
     }
     
