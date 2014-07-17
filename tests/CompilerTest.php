@@ -497,16 +497,17 @@ class CompilerTest extends PHPUnit_Framework_TestCase
         $query = $db->from('users')
                     ->where('name')->is('test')
                     ->groupBy('name')
-                    ->having(function($aggregate){
-                        $aggregate->count('points');
-                    }, 20, '<')
-                    ->andHaving(function($aggregate){
-                        $aggregate->sum('points', true);
-                    }, 40, '>')
-                    ->orHaving(function($aggregate){
-                        $aggregate->avg('points');
-                    }, 10)
+                    ->having('points', function($column){
+                        $column->count()->lt(20);
+                    })
+                    ->andHaving('points', function($column){
+                        $column->sum(true)->gt(40);
+                    })
+                    ->orHaving('points', function($column){
+                        $column->avg()->eq(10);
+                    })
                     ->select();
+                    
         $this->assertEquals($this->wrap($expect), $query, $query);
     }
 }
