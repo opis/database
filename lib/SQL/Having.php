@@ -74,7 +74,7 @@ class Having
         $this->addCondition($value, '<', $iscolumn);
     }
     
-    public function gt($value, $iscolum = false)
+    public function gt($value, $iscolumn = false)
     {
         $this->addCondition($value, '>', $iscolumn);
     }
