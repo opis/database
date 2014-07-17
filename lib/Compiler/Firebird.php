@@ -72,7 +72,7 @@ class Firebird extends Compiler
         $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
-        $sql .= $this->handleHavings($select->getHavingClauses());
+        $sql .= $this->handleHavings($select->getHavingConditions());
 		$sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
 		$sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
 		

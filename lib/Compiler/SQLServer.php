@@ -63,7 +63,7 @@ class SQLServer extends Compiler
             $sql .= $this->handleWheres($select->getWhereConditions());
             $sql .= $this->handleGroupings($select->getGroupClauses());
             $sql .= $this->handleOrderings($select->getOrderClauses());
-            $sql .= $this->handleHavings($select->getHavingClauses());
+            $sql .= $this->handleHavings($select->getHavingConditions());
             
             return $sql;
         }
@@ -83,7 +83,7 @@ class SQLServer extends Compiler
         $sql .= $this->handleJoins($select->getJoinClauses());
         $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleHavings($select->getHavingClauses());
+        $sql .= $this->handleHavings($select->getHavingConditions());
         
         if($offset === null)
         {

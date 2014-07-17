@@ -25,7 +25,7 @@ use Closure;
 class SelectStatement extends WhereJoinCondition
 {
     
-    protected $have = array();
+    protected $have;
     
     protected $group = array();
     
@@ -58,11 +58,12 @@ class SelectStatement extends WhereJoinCondition
         }
         
         $this->tables = $tables;
+        $this->have = new HavingCondition($this->compiler);
     }
     
-    public function getHavingClauses()
+    public function getHavingConditions()
     {
-        return $this->have;
+        return $this->have->getHavingConditions();
     }
     
     public function getOrderClauses()
@@ -144,19 +145,22 @@ class SelectStatement extends WhereJoinCondition
         return $this;
     }
     
-    public function having(Closure $aggregate, $value, $operator = '=')
+    public function having($column, Closure $value = null)
     {
-        return $this->addHavingClause($aggregate, $value, $operator, 'AND');
+        $this->have->having($column, $value);
+        return $this;
     }
     
-    public function andHaving(Closure $aggregate, $value, $operator = '=')
+    public function andHaving($column, Closure $value)
     {
-        return $this->having($aggregate, $value, $operator);
+        $this->have->andHaving($column, $value);
+        return $this;
     }
     
-    public function orHaving(Closure $aggregate, $value, $operator = '=')
+    public function orHaving($column, Closure $value = null)
     {
-        return $this->addHavingClause($aggregate, $value, $operator, 'OR');
+        $this->have->orHaving($column, $value);
+        return $this;
     }
     
     public function orderBy($columns, $order = 'ASC')

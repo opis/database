@@ -24,13 +24,19 @@ class AggregateExpression
 {
     protected $compiler;
     
-    protected $value;
+    protected $havingClause;
     
-    protected $alias;
+    protected $having;
     
-    public function __construct(Compiler $compiler)
+    protected $column;
+    
+    protected $separator;
+    
+    public function __construct(Compiler $compiler, HavingClause $clause)
     {
         $this->compiler = $compiler;
+        $this->havingClause = $clause;
+        $this->having = new Having($this->compiler, $this->havingClause);
     }
     
     protected function expression()
@@ -38,34 +44,43 @@ class AggregateExpression
         return new Expression($this->compiler);
     }
     
-    public function getExpression()
+    
+    public function init($column, $separator)
     {
-        return $this->value;
+        $this->column = $column;
+        $this->separator = $separator;
+        return $this;
     }
     
-    public function count($column = '*', $distinct = false)
+    
+    public function count($distinct = false)
     {
-        $this->value = $this->expression()->count($column, $distinct);
+        $value = $this->expression()->count($this->column, $distinct);
+        return $this->having->init($value, $this->separator);
     }
     
-    public function avg($column, $distinct = false)
+    public function avg($distinct = false)
     {
-        $this->value = $this->expression()->avg($column, $distinct);
+        $value = $this->expression()->avg($this->column, $distinct);
+        return $this->having->init($value, $this->separator);
     }
     
-    public function sum($column, $distinct  = false)
+    public function sum($distinct  = false)
     {
-        $this->value = $this->expression()->sum($column, $distinct);
+        $value = $this->expression()->sum($this->column, $distinct);
+        return $this->having->init($value, $this->separator);
     }
     
-    public function min($column, $distinct = false)
+    public function min($distinct = false)
     {
-        $this->value = $this->expression()->min($column, $distinct);
+        $value = $this->expression()->min($this->column, $distinct);
+        return $this->having->init($value, $this->separator);
     }
     
-    public function max($column, $distinct = false)
+    public function max($distinct = false)
     {
-        $this->value = $this->expression()->max($column, $distinct);
+        $value = $this->expression()->max($this->column, $distinct);
+        return $this->having->init($value, $this->separator);
     }
     
 }

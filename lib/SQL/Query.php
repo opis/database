@@ -20,6 +20,7 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
 use Opis\Database\Connection;
 
 class Query extends WhereJoinCondition
@@ -55,14 +56,19 @@ class Query extends WhereJoinCondition
         return $this->buildSelect()->groupBy($columns);
     }
     
-    public function having($column, $value, $operator = '=')
+    public function having($column, Closure $value = null)
     {
-        return $this->buildSelect()->having($column, $value, $operator);
+        return $this->buildSelect()->having($column, $value);
     }
     
-    public function orHaving($column, $value, $operator = '=')
+    public function andHaving($column, Closure $value)
     {
-        return $this->buildSelect()->orHaving($column, $value, $operator);
+        return $this->buildSelect()->andHaving($column, $value);
+    }
+    
+    public function orHaving($column, Closure $value = null)
+    {
+        return $this->buildSelect()->orHaving($column, $value);
     }
     
     public function orderBy($columns, $order = 'ASC')

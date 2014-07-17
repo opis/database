@@ -235,22 +235,24 @@ class Compiler
         return implode(' ', $sql);
     }
     
-    protected function handleHavings(array $having)
+    protected function handleHavings(array $havings, $prefix = true)
     {
-        if(empty($having))
+        if(empty($havings))
         {
             return '';
         }
-        $sql[] = $this->wrap($having[0]['column']) . ' ' . $having[0]['operator'] . ' ' . $this->param($having[0]['value']);
+        
+        $sql[] = $this->$havings[0]['type']($havings[0]);
+        
        
-        $count = count($having);
+        $count = count($havings);
         
         for($i = 1; $i < $count; $i++)
         {
-            $sql[] = $having[$i]['separator'] .' '. $this->wrap($having[$i]['column']) . ' ' . $having[$i]['operator'] . ' ' . $this->param($having[$i]['value']);
+            $sql[] = $havings[$i]['separator'] . ' ' . $this->$havings[$i]['type']($havings[$i]);
         }
         
-        return ' HAVING ' . implode(' ', $sql);
+        return ($prefix ? ' HAVING ' : '') . implode(' ', $sql);
     }
     
     protected function handleOrderings(array $ordering)
@@ -358,6 +360,31 @@ class Compiler
         return $this->wrap($where['column']) . ' ' . $where['operator'] .' (' . $where['subquery'] . ')';
     }
     
+    protected function havingCondition(array $having)
+    {
+        return $this->wrap($having['aggregate']) . ' ' . $having['operator'] . ' ' . $this->param($having['value']);
+    }
+    
+    protected function havingNested(array $having)
+    {
+        return '('. $this->handleHavings($having['conditions'], false) . ')';
+    }
+    
+    protected function havingBetween(array $having)
+    {
+        return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT BETWEEN ' : ' BETWEEN ') . $this->param($having['value1']) . ' AND ' . $this->param($having['value2']);
+    }
+    
+    protected function havingInSelect(array $having)
+    {
+        return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '('. $having['subquery'] .')';
+    }
+    
+    protected function havingIn(array $having)
+    {
+        return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '('. $this->params($having['value']) .')';
+    }
+    
     protected function aggregateFunctionCOUNT(array $func)
     {
         return 'COUNT(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->columns($func['column']) . ')';
@@ -429,7 +456,7 @@ class Compiler
         $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
-        $sql .= $this->handleHavings($select->getHavingClauses());
+        $sql .= $this->handleHavings($select->getHavingConditions());
         $sql .= $this->handleLimit($select->getLimit());
         $sql .= $this->handleOffset($select->getOffset());
         return $sql;
