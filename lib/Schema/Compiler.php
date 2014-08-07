@@ -165,7 +165,7 @@ class Compiler
     
     protected function handleModifierUnsigned(BaseColumn $column)
     {
-        return $column->get('unisgned', false) ? 'UNISGNED' : '';
+        return $column->get('unisgned', false) ? 'UNSIGNED' : '';
     }
     
     protected function handleModifierNullable(BaseColumn $column)

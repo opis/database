@@ -219,7 +219,7 @@ class CreateTable
     
     public function text($name)
     {
-        return $this->addColumn($name);
+        return $this->addColumn($name, 'text');
     }
     
     public function time($name)
