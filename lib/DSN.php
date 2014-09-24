@@ -98,7 +98,7 @@ class DSN
     
     public function host($name)
     {
-        return $this->set('host', $host);
+        return $this->set('host', $name);
     }
     
     /**
@@ -113,7 +113,7 @@ class DSN
     
     public function port($value)
     {
-        return $this->set('port', $port);
+        return $this->set('port', $value);
     }
     
     /**
