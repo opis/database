@@ -110,7 +110,7 @@ class Transaction
         {
             $this->begin();
             $result = $this->run();
-            $pdo->commit();
+            $this->commit();
             
             if($this->successCallback !== null)
             {
