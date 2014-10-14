@@ -31,6 +31,10 @@ class Schema
     /** @var    \Opis\Database\Connection   Connection. */
     protected $connection;
     
+    protected $tableList;
+    
+    protected $currentDatabase;
+    
     /**
      * Constructor
      *
@@ -42,6 +46,60 @@ class Schema
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+    }
+    
+    public function getCurrentDatabase()
+    {
+        if($this->currentDatabase === null)
+        {
+            $compiler = $this->connection->schemaCompiler();
+            $result = $compiler->currentDatabase($this->connection->dsn());
+            
+            if(is_array($result))
+            {
+                $this->currentDatabase = $this->connection->column($result['sql'], $result['params']);
+            }
+            else
+            {
+                $this->currentDatabase = $result;
+            }
+        }
+        
+        return $this->currentDatabase;
+    }
+    
+    public function hasTable($table, $clear = false)
+    {
+        $list = $this->getTables($clear);
+        return isset($list[strtolower($table)]);
+    }
+    
+    public function getTables($clear = false)
+    {
+        if($clear)
+        {
+            $this->tableList = null;
+        }
+        
+        if($this->tableList === null)
+        {
+            $compiler = $this->connection->schemaCompiler();
+            
+            $database = $this->getCurrentDatabase();
+            
+            $sql = $compiler->getTables($database);
+            
+            $results = $this->connection->query($sql['sql'], $sql['params'])->all();
+            
+            $this->tableList = array();
+            
+            foreach($results as $result)
+            {
+                $this->tableList[strtolower($result)] = $result;
+            }
+        }
+        
+        return $this->tableList;
     }
 
     /**
