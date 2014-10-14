@@ -31,9 +31,12 @@ class Schema
     /** @var    \Opis\Database\Connection   Connection. */
     protected $connection;
     
+    /** @var    array   Table list. */
     protected $tableList;
     
+    /** @var    string  Currently used database name. */
     protected $currentDatabase;
+    
     
     /**
      * Constructor
@@ -47,6 +50,14 @@ class Schema
     {
         $this->connection = $connection;
     }
+    
+    /**
+     * Get the name of the currently used database
+     *
+     * @access  public
+     *
+     * @return  string
+     */
     
     public function getCurrentDatabase()
     {
@@ -68,11 +79,32 @@ class Schema
         return $this->currentDatabase;
     }
     
+    /**
+     * Check if the specified table exists
+     *
+     * @access  public
+     * 
+     * @param   string  $table  Table name
+     * @param   boolean $clear  (optional) Refresh table list
+     *
+     * @return  boolean
+     */
+    
     public function hasTable($table, $clear = false)
     {
         $list = $this->getTables($clear);
         return isset($list[strtolower($table)]);
     }
+    
+    /**
+     * Get a list with all tables that belong to the currently used database
+     *
+     * @access  public
+     *
+     * @param   boolean $clear  (optional) Refresh table list
+     *
+     * @return  array
+     */
     
     public function getTables($clear = false)
     {
