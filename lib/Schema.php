@@ -121,13 +121,16 @@ class Schema
             
             $sql = $compiler->getTables($database);
             
-            $results = $this->connection->query($sql['sql'], $sql['params'])->all();
+            $results = $this->connection
+                            ->query($sql['sql'], $sql['params'])
+                            ->fetchNum()
+                            ->all();
             
             $this->tableList = array();
             
             foreach($results as $result)
             {
-                $this->tableList[strtolower($result)] = $result;
+                $this->tableList[strtolower($result[0])] = $result[0];
             }
         }
         

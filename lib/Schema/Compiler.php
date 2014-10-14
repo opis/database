@@ -365,6 +365,27 @@ class Compiler
         return $params;
     }
     
+    public function currentDatabase($dsn){
+        
+        return array(
+            'sql' => 'SELECT database()',
+            'params' => array(),
+        );
+    }
+    
+    public function getTables($database)
+    {
+        $sql = 'SELECT ' . $this->wrap('table_name') . ' FROM ' . $this->wrap('information_schema')
+                . '.' . $this->wrap('tables') . ' WHERE table_type = ? AND table_schema = ? ORDER BY '
+                . $this->wrap('table_name') . ' ASC';
+        
+        return array(
+            'sql' => $sql,
+            'params' => array('BASE TABLE', $database),
+        );
+        
+    }
+    
     public function create(CreateTable $schema)
     {
         $sql  = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
