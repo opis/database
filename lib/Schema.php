@@ -158,6 +158,8 @@ class Schema
         {
             $this->connection->command($result['sql'], $result['params']);
         }
+        //clear table list
+        $this->tableList = null;
     }
     
     /**
@@ -198,6 +200,9 @@ class Schema
         $result = $compiler->drop($table);
         
         $this->connection->command($result['sql'], $result['params']);
+        
+        //clear table list
+        $this->tableList = null;
     }
     
     /**
