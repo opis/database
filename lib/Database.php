@@ -31,6 +31,9 @@ class Database
     /** @var    \Opis\Database\Connection   Connection instance. */
     protected $connection;
     
+    /** @var    \Opis\Database\Schema       Schema instance. */
+    protected $schema;
+    
     /**
      * Constructor
      *
@@ -113,6 +116,24 @@ class Database
     public function update($table)
     {
         return new UpdateCommand($this->connection, $table);
+    }
+    
+    /**
+     * The associated schema instance.
+     *
+     * @access  public
+     *
+     * @return  \Opis\Database\Schema
+     */
+    
+    public function schema()
+    {
+        if($this->schema === null)
+        {
+            $this->schema = new Schema($this->connection);
+        }
+        
+        return $this->schema;
     }
     
     
