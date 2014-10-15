@@ -1,6 +1,6 @@
 {
     "name": "opis/database",
-    "description": "Database abstraction layer",
+    "description": "Opis Database is a library that provides an abstraction layer over several database systems, offering a standard way of handling database records and thus, making the differences between various SQL dialects irrelevant to the developers.",
     "keywords": ["database", "query", "abstraction", "mysql", "postgre", "sql", "sqlite",
                  "firebird", "nuodb", "db2", "oracle","sql server"],
     "homepage": "http://opis.io",
@@ -26,7 +26,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "2.1-dev"
         }
     }
 }
