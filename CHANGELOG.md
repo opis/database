@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### Opis Database 2.0-dev
+### Opis Database 2.0.0, 2014.10.15
 
 * This is a full API change
 * Changed `where`, `andWhere` and `orWhere` methods of the `Opis\Database\SQL\WhereCondition` class. The methods accepts now a single
