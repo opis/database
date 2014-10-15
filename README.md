@@ -7,179 +7,40 @@ Opis Database
 
 Database abstraction layer
 -------------------------
-Currently supported databases:
-* MySQL
-* PostgreSQL
-* Oracle
-* DB2
-* MS SQL Server
-* SQLite
-* Firebird
-* NuoDB
+**Opis Database** is a library that provides an abstraction layer over several database systems, offering a standard way of handling database records and thus, making the differences between various SQL dialects irrelevant to the developers.
 
-###Installation
+The library has support for the following database types: MySQL, PostgreSQL, Microsoft SQL, SQLite, Firebird, IBM DB2, Oracle, NuoDB. 
 
-This library is available on [Packagist](https://packagist.org/packages/opis/database) and can be installed using [Composer](http://getcomposer.org)
+### License
+
+**Opis Database** is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). 
+
+### Requirements
+
+* PHP 5.3.* or higher
+* PDO
+
+### Installation
+
+This library is available on [Packagist](https://packagist.org/packages/opis/database) and can be installed using [Composer](http://getcomposer.org).
 
 ```json
 {
     "require": {
-        "opis/database": "1.4.*"
+        "opis/database": "2.0.*"
     }
 }
 ```
-###Documentation
 
-###Examples
-
-Connecting to a database
+If you are unable to use [Composer](http://getcomposer.org) you can download the
+[tar.gz](https://github.com/opis/database/archive/2.0.0.tar.gz) or the [zip](https://github.com/opis/database/archive/2.0.0.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
-use \Opis\Database\Database;
-use \Opis\Database\Connection;
 
-$connection = Connection::mysql('user', 'password')
-                        ->database('db1')
-                        ->charset('utf8');
+require_once 'path/to/database-2.0.0/autoload.php';
 
-$db = new Database($connection);
 ```
 
-####Selecting records
+### Documentation
 
-```sql
-SELECT * FROM `products` WHERE `category` = 'laptops' AND `quantity` > 10
-```
-
-```php
-$result = $db->from('products')
-             ->where('category', 'laptops')
-             ->andWhere('quantity', 10, '>')
-             ->select();
-```
-
-```sql
-SELECT * FROM `customers` WHERE `name` LIKE 'A%'
-```
-
-```php
-$result = $db->from('customers')
-             ->whereLike('name', 'A%')
-             ->select();
-```
-
-```sql
-SELECT `orders`.`id`, `customers`.`name`, `orders`.`date` FROM `orders`
-INNER JOIN `customers` ON `orders`.`customer` = `customers`.`id`
-```
-
-```php
-$result = $db->from('orders')
-             ->join('customers', 'orders.customer', 'customer.id')
-             ->select(array('orders.id', 'cutsomers.name', 'orders.date'));
-```
-
-####Creating records
-
-
-```sql
-INSERT INTO `laptops` (`brand`, `color`) VALUES ('Toshiba', 'white')
-```
-
-```php
-$result = $db->insert(array(
-                'brand' => 'Toshiba',
-                'color' => 'white'
-            ))
-            ->into('laptops');
-```
-
-####Updating records
-
-```sql
-UPDATE `orders` SET `product` = 'Toshiba', `color` = 'white' WHERE `id` = 2013
-```
-
-```php
-$result = $db->update('orders')
-             ->where('id', 2013)
-             ->set(array('product' => 'Toshiba', 'color' => 'white'))
-             ->execute();
-```
-
-```sql
-UPDATE `orders` SET `product` = 'Toshiba', `color` = 'white', `last_update` = NOW() WHERE `id` = 2013
-```
-
-```php
-$result = $db->update('orders')
-             ->where('id', 2013)
-             ->set(array('product' => 'Toshiba', 'color' => 'white'))
-             ->set('last_update', function($expr){
-                $expr->now();
-             })
-             ->execute();
-```
-
-```sql
-UPDATE `orders` SET `product` = 'Toshiba', `color` = UCASE(`color`) WHERE `id` = 2013
-```
-
-```php
-$result = $db->update('orders')
-             ->where('id', 2013)
-             ->set('product' => 'Toshiba')
-             ->set('color', function($expr){
-                $expr->ucase('color');
-             })
-             ->execute();
-```
-
-####Deleting records
-
-```sql
-DELETE FROM `orders` WHERE `id` = 2013
-```
-
-```php
-$result = $db->from('orders')
-             ->where('id', 2013)
-             ->delete();
-```
-
-Delete from multiple tables
-
-```sql
-DELETE `customers`, `orders` FROM `customers`
-INNER JOIN `orders` ON `orders`.`customer` = `customers`.`id`
-WHERE `customers`.`id` = 102
-```
-
-```php
-$result = $db->from('customers')
-             ->where('customers.id', 102)
-             ->join('orders', 'orders.customer', 'customers.id')
-             ->delete(array('customers', 'orders'));
-```
-
-####Select into
-
-```sql
-SELECT * INTO `copy` FROM `customers`
-```
-
-```php
-$result = $db->from('customers')
-             ->into('copy')
-             ->select();
-```
-
-```sql
-SELECT * INTO `copy` IN `other_DB` FROM `customers`
-```
-
-```php
-$result = $db->from('customers')
-             ->into('copy', 'other_DB')
-             ->select();
-```
+Examples and documentation about this library can be found at http://opis.io/database .
