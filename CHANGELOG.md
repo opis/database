@@ -1,5 +1,25 @@
 CHANGELOG
 -----------
+### Opis Database 2.0-dev
+
+* Changed `where`, `andWhere` and `orWhere` methods of the `Opis\Database\SQL\WhereCondition` class. The methods accepts now a single
+argument, representing a column or a closure used to group conditions.
+* Added `is`, `eq`, `isNot`, `ne`, ` lessThan`, `lt`, `greaterThan`, `gt`, `atLeast`, `gte`, `atMost`, `lte`, `between`,
+`notBetween`, `in`, `notIn`, `like`, `notLike`, `isNull` and `notNull` methods. This methods are used in conjunction with the
+`where`, `andWhere` and `orWhere` methods.
+* Removed `whereBetween`, `andWhereBetween`, `orWhereBetween`, `whereNotBetween`, `andWhereNotBetween` and `orWhereNotBetween` methods
+from `Opis\Database\SQL\WhereCondition` class.
+* Removed `whereIn`, `andWhereIn`, `orWhereIn`, `whereNotIn`, `andWhereNotIn` and `orWhereNotIn` methods
+from `Opis\Database\SQL\WhereCondition` class.
+* Removed `whereLike`, `andWhereLike`, `orWhereLike`, `whereNotLike`, `andWhereNotLike` and `orWhereNotLike` methods
+from `Opis\Database\SQL\WhereCondition` class.
+* Removed `whereNull`, `andWhereNull`, `orWhereNull`, `whereNotNull`, `andWhereNotNull` and `orWhereNotNull` methods 
+from `Opis\Database\SQL\WhereCondition` class.
+* Modified `join`, `leftJoin`, `rightJoin`, `fullJoin` methods of the `Opis\Database\SQL\WhereJoinCondition` class.
+* Modified `having` method of the `Opis\Database\SQL\SelectStatement` class.
+* Removed `execute` method from `Opis\Database\SQL\Update` class.
+* Changed `set` method of the `Opis\Database\SQL\Update` class.
+
 ### Opis Database 1.4.0, 2014.07.04
 
 *  Modified `insert` command.
