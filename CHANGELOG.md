@@ -2,6 +2,7 @@ CHANGELOG
 -----------
 ### Opis Database 2.0-dev
 
+* This is a full API change
 * Changed `where`, `andWhere` and `orWhere` methods of the `Opis\Database\SQL\WhereCondition` class. The methods accepts now a single
 argument, representing a column or a closure used to group conditions.
 * Added `is`, `eq`, `isNot`, `ne`, ` lessThan`, `lt`, `greaterThan`, `gt`, `atLeast`, `gte`, `atMost`, `lte`, `between`,
@@ -19,6 +20,8 @@ from `Opis\Database\SQL\WhereCondition` class.
 * Modified `having` method of the `Opis\Database\SQL\SelectStatement` class.
 * Removed `execute` method from `Opis\Database\SQL\Update` class.
 * Changed `set` method of the `Opis\Database\SQL\Update` class.
+* Added `schema` method to the `Opis\Database\Database` class.
+* The schema builder is now officially supported, although it is still marked as experimental.
 
 ### Opis Database 1.4.0, 2014.07.04
 
