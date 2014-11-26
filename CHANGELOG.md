@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database 2.0.1, 2014.11.26
+
+* Fixed a bug in `Opis\Database\Schema\Complier` class.
+
 ### Opis Database 2.0.0, 2014.10.15
 
 * This is a full API change
