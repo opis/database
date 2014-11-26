@@ -180,7 +180,7 @@ class Compiler
     
     protected function handleModifierDefault(BaseColumn $column)
     {
-        return null === $column->get('default') ? '' : 'DEFAULT (' . $this->value($column->get('default')) . ')';
+        return null === $column->get('default') ? '' : 'DEFAULT ' . $this->value($column->get('default'));
     }
     
     protected function handleModifierAutoincrement(BaseColumn $column)
