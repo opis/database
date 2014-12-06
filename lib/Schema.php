@@ -186,6 +186,21 @@ class Schema
     }
     
     /**
+     * Change a table's name
+     *
+     * @access  public
+     * 
+     * @param   string  $table  The table
+     * @param   string  $name   The new name of the table
+     */
+    
+    public function renameTable($table, $name)
+    {
+        $result = $this->connection->schemaCompiler()->renameTable($table, $name);
+        $this->connection->command($result['sql'], $result['params']);
+    }
+    
+    /**
      * Deletes a table
      *
      * @access  public

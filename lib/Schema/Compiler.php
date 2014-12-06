@@ -365,10 +365,18 @@ class Compiler
         return $params;
     }
     
-    public function currentDatabase($dsn){
-        
+    public function currentDatabase($dsn)
+    {
         return array(
             'sql' => 'SELECT database()',
+            'params' => array(),
+        );
+    }
+    
+    public function renameTable($old, $new)
+    {
+        return array(
+            'sql' => 'RENAME TABLE ' . $this->wrap($old) . ' TO ' . $this->wrap($new),
             'params' => array(),
         );
     }
