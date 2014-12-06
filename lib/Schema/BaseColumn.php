@@ -84,6 +84,10 @@ class BaseColumn
         return $this->set('size', $value);
     }
     
+    /**
+     * Deprecated since 2.1.0
+     */
+    
     public function nullable()
     {
         return $this->set('nullable', true);
