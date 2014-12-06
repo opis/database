@@ -44,10 +44,18 @@ class Compiler
     }
     
     protected function value($value)
-    {
-        return $value;
-        $this->params[] = $value;
-        return '?';
+    {   
+        if(is_numeric($value))
+        {
+            return $value;
+        }
+        
+        if(is_string($value))
+        {
+            return "'" . str_replace("'", "''", $value) . "'";
+        }
+        
+        return 'NULL';
     }
     
     protected function handleColumns(array $columns)
@@ -170,12 +178,12 @@ class Compiler
     
     protected function handleModifierNullable(BaseColumn $column)
     {
-        if(!$column->has('nullable'))
+        if($column->get('nullable', true))
         {
             return '';
         }
         
-        return $column->get('nullable', false) ? 'NULL' : 'NOT NULL';
+        return 'NOT NULL';
     }
     
     protected function handleModifierDefault(BaseColumn $column)
