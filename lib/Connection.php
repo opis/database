@@ -179,12 +179,14 @@ class Connection implements Serializable
     /**
      * Use persistent connections
      *
+     * @param   bool    $value  (optional) Value
+     * 
      * @return  \Opis\Database\Connection
      */
     
-    public function persistent()
+    public function persistent($value = true)
     {
-        return $this->option(PDO::ATTR_PERSISTENT, true);
+        return $this->option(PDO::ATTR_PERSISTENT, $value);
     }
     
     /**
@@ -294,6 +296,16 @@ class Connection implements Serializable
         }
         
         return $this->schemaCompiler;
+    }
+    
+    
+    /**
+     * Close the current connection by destroying the associated PDO object
+     */
+    
+    public function disconnect()
+    {
+        $this->pdo = null;
     }
     
     
