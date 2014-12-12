@@ -1,5 +1,15 @@
 CHANGELOG
 -----------
+### Opis Database 2.1.0
+
+* Modified `persistent` method in `Opis\Database\Connection`. The method accepts now an optional
+boolean argument that specify if the connection should pe persistent or not.
+* Added `disconnect` method in `Opis\Database\Connection`
+* Added `renameTable` method in `Opis\Database\Schema\Compiler`
+* Added `renameTable` method in `Opis\Database\Schema`
+* The `Opis\Database\Schema\BaseTable`'s `nullable` method was deprecated.
+* Fixed several bugs in `Opis\Database\Schema\Compiler`
+
 ### Opis Database 2.0.1, 2014.11.26
 
 * Fixed a bug in `Opis\Database\Schema\Complier` class.
