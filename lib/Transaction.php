@@ -34,8 +34,6 @@ class Transaction
     
     protected $errorCallback;
     
-    protected $pdo;
-    
     public function __construct(Database $database, Closure $transaction)
     {
         $this->database = $database;
@@ -71,11 +69,7 @@ class Transaction
     
     public function pdo()
     {
-        if($this->pdo === null)
-        {
-            $this->pdo = $this->database->getConnection()->pdo();
-        }
-        return $this->pdo;
+        return $this->database->getConnection()->pdo();
     }
     
     public function begin()
