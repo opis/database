@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### Opis Database 2.1.0
+### Opis Database 2.1.0, 2014.12.12
 
 * Modified `persistent` method in `Opis\Database\Connection`. The method accepts now an optional
 boolean argument that specify if the connection should pe persistent or not.
@@ -9,6 +9,8 @@ boolean argument that specify if the connection should pe persistent or not.
 * Added `renameTable` method in `Opis\Database\Schema`
 * The `Opis\Database\Schema\BaseTable`'s `nullable` method was deprecated.
 * Fixed several bugs in `Opis\Database\Schema\Compiler`
+* Modified the `pdo` method in `Opis\Database\Transaction`. The `PDO` object is no longer stored as a property,
+ in order to avoid keeping the connection alive after the `disconnect` method was called.
 
 ### Opis Database 2.0.1, 2014.11.26
 
