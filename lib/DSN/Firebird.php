@@ -71,7 +71,7 @@ class Firebird extends DSN
     
     public function host($name)
     {
-        $this->host = $host;
+        $this->host = $name;
         return $this;
     }
     
