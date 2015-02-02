@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database 2.1.1, 2015.02.02
+
+* Fixed a bug (see https://github.com/opis/database/pull/4)
+
 ### Opis Database 2.1.0, 2014.12.12
 
 * Modified `persistent` method in `Opis\Database\Connection`. The method accepts now an optional
