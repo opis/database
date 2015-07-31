@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Database
+
+* Removed `branch-alias` from `composer.json` file
+
 ### Opis Database 2.1.1, 2015.02.02
 
 * Fixed a bug (see https://github.com/opis/database/pull/4)
