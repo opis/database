@@ -27,17 +27,17 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```json
 {
     "require": {
-        "opis/database": "2.1.*"
+        "opis/database": "^2.1.2"
     }
 }
 ```
 
 If you are unable to use [Composer](http://getcomposer.org) you can download the
-[tar.gz](https://github.com/opis/database/archive/2.1.1.tar.gz) or the [zip](https://github.com/opis/database/archive/2.1.1.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
+[tar.gz](https://github.com/opis/database/archive/2.1.2.tar.gz) or the [zip](https://github.com/opis/database/archive/2.1.2.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
 
-require_once 'path/to/database-2.1.1/autoload.php';
+require_once 'path/to/database-2.1.2/autoload.php';
 
 ```
 
