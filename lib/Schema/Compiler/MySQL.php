@@ -67,7 +67,7 @@ class MySQL extends Compiler
         {
             case 'tiny':
             case 'small':
-                return 'SMALLTEXT';
+                return 'TINYTEXT';
             case 'medium':
                 return 'MEDIUMTEXT';
             case 'big':
@@ -75,6 +75,22 @@ class MySQL extends Compiler
         }
         
         return 'TEXT';
+    }
+    
+    protected function handleTypeBinary(BaseColumn $column)
+    {
+        switch($column->get('size', 'normal'))
+        {
+            case 'tiny':
+            case 'small':
+                return 'TINYBLOB';
+            case 'medium':
+                return 'MEDIUMBLOB';
+            case 'big':
+                return 'LONGBLOB';
+        }
+        
+        return 'BLOB';
     }
     
     protected function handleDropPrimaryKey(AlterTable $table, $data)

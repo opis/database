@@ -50,6 +50,11 @@ class Compiler
             return $value;
         }
         
+        if(is_bool($value))
+        {
+            return $value ? 1 : 0;
+        }
+        
         if(is_string($value))
         {
             return "'" . str_replace("'", "''", $value) . "'";
