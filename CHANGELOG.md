@@ -1,8 +1,10 @@
 CHANGELOG
 -----------
-### Opis Database
+### Opis Database, 2.1.2, 2015.10.01
 
 * Removed `branch-alias` from `composer.json` file
+* Fixed a bug that prevented boolean values to be used with the `defaultValue` method.
+* Fixed a bug where `text` and `binary` types were not mapped correctly.
 
 ### Opis Database 2.1.1, 2015.02.02
 
