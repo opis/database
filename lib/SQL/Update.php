@@ -33,6 +33,45 @@ class Update extends UpdateStatement
         $this->connection = $connection;
     }
     
+    protected function incrementOrDecrement($sign, $columns, $value)
+    {
+        if(!is_array($columns))
+        {
+            $columns = array($columns);
+        }
+        
+        $values = array();
+        
+        foreach($columns as $k => $v)
+        {
+            if(is_numeric($k))
+            {
+                $values[$v] = function($expr) use($sign, $v, $value){
+                  $expr->column($v)->{$sign}->value($value);  
+                };
+            }
+            else
+            {
+                $values[$k] = function($expr) use($sign, $k, $v){
+                    $expr->column($k)->{$sign}->value($v);
+                };
+            }
+        }
+        
+        return $this->set($values);
+        
+    }
+    
+    public function increment($column, $value = 1)
+    {
+        return $this->incrementOrDecrement('+', $column, $value);
+    }
+    
+    public function decrement($column, $value = 1)
+    {
+        return $this->incrementOrDecrement('-', $column, $value);
+    }
+    
     public function set(array $columns)
     {
         parent::set($columns);
