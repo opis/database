@@ -63,6 +63,9 @@ class Connection implements Serializable
     /** @var    string  The DSN for this connection */
     protected $dsn;
     
+    /** @var    string  Driver's name */
+    protected $driver;
+    
     /**
      * Constructor
      * 
@@ -73,11 +76,12 @@ class Connection implements Serializable
      * @param   string  $password  (optional) Password
      */
     
-    public function __construct($dsn, $username = null, $password = null)
+    public function __construct($dsn, $username = null, $password = null, $driver = null)
     {
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
+        $this->driver = $driver;
     }
     
     /**
@@ -201,6 +205,22 @@ class Connection implements Serializable
     }
     
     /**
+     * Returns the driver's name
+     *
+     * @return  string
+     */
+    
+    public function driver()
+    {
+        if($this->driver === null)
+        {
+            $this->driver = $this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+        }
+        
+        return $this->driver;
+    }
+    
+    /**
      * Returns the PDO object associated with this connection
      *
      * @return \PDO
@@ -232,7 +252,7 @@ class Connection implements Serializable
     {
         if($this->compiler === null)
         {
-            switch($this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME))
+            switch($this->driver())
             {
                 case 'mysql':
                     $this->compiler = new \Opis\Database\Compiler\MySQL();
@@ -276,7 +296,7 @@ class Connection implements Serializable
     {
         if($this->schemaCompiler === null)
         {
-            switch($this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME))
+            switch($this->driver())
             {
                 case 'mysql':
                     $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL();
@@ -290,6 +310,8 @@ class Connection implements Serializable
                 case 'sybase':
                     $this->compiler = new \Opis\Database\Schema\Compiler\SQLServer();
                     break;
+                case 'sqlite':
+                    $this->complier = new \Opis\Database\Schema\Compiler\SQLite();
                 default:
                     throw new \Exception('Schema not supported yet');
             }
