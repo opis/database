@@ -7,6 +7,7 @@ can be used to specify a the driver used by the current connection
 * Added `Opis\Database\Connection::driver` method
 * Bugfixes and improvements
 * Added `Opis\Database\Schema\Compiler\SQLite` class. This class provides schema support for SQLite
+* Newly added `increment` and `decrement` methods can now be used when a row is updated
 
 ### v2.1.2, 2015.10.01
 
