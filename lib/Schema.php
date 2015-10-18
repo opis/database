@@ -198,6 +198,7 @@ class Schema
     {
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
         $this->connection->command($result['sql'], $result['params']);
+        $this->tableList = null;
     }
     
     /**
