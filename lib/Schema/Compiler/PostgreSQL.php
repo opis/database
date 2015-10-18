@@ -29,27 +29,23 @@ class PostgreSQL extends Compiler
     
     protected $modifiers = array('nullable', 'default');
     
-    protected $intTypes = array(
-        'normal' => 'INTEGER',
-        'tiny' => 'SMALLINT',
-        'small' => 'SMALLINT',
-        'medium' => 'INTEGER',
-        'big' => 'BIGINT',
-    );
-    
     protected function handleTypeInteger(BaseColumn $column)
     {
-        if($column->get('autoincrement', false))
+        $autoincrement = $column->get('autoincrement', false);
+        
+        switch($column->get('size', 'normal'))
         {
-            if($column->get('size', 'normal') === 'big')
-            {
-                return 'BIGSERIAL';
-            }
-            
-            return 'SERIAL';
+            case 'tiny':
+            case 'small':
+                return $autoincrement ? 'SMALLSERIAL' : 'SMALLINT';
+            case 'medium':
+                return $autoincrement ? 'SERIAL' : 'INTEGER';
+            case 'big':
+                return $autoincrement ? 'BIGSERIAL' : 'BIGINT';
         }
         
-        return $this->intTypes[$column->get('size', 'normal')];
+        return $autoincrement ? 'SEARIAL' : 'INTEGER';
+        
     }
     
     protected function handleIndexKeys(CreateTable $schema)
