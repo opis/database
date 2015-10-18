@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### dev
+### v2.2.0, 2015.10.19
 
 * Added an optional parameter to `Opis\Database\Connection`'s constructor method. The parameter
 can be used to specify a the driver used by the current connection
