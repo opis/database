@@ -48,6 +48,46 @@ class PostgreSQL extends Compiler
         
     }
     
+    protected function handleTypeFloat(BaseColumn $column)
+    {
+        return $this->handleTypeDouble($column);
+    }
+    
+    protected function handleTypeDouble(BaseColumn $column)
+    {
+        return 'DOUBLE PRECISION';
+    }
+    
+    protected function handleTypeDecimal(BaseColumn $column)
+    {
+        if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
+        {
+            return 'DECIMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
+        }
+        
+        return 'DECIMAL';
+    }
+    
+    protected function handleTypeBinary(BaseColumn $column)
+    {
+        return 'BYTEA';
+    }
+    
+    protected function handleTypeTime(BaseColumn $column)
+    {
+        return 'TIME(0) WITHOUT TIME ZONE';
+    }
+    
+    protected function handleTypeTimestamp(BaseColumn $column)
+    {
+        return 'TIMESTAMP(0) WITHOUT TIME ZONE';
+    }
+    
+    protected function handleTypeDateTime(BaseColumn $column)
+    {
+        return 'TIMESTAMP(0) WITHOUT TIME ZONE';
+    }
+    
     protected function handleIndexKeys(CreateTable $schema)
     {
         $indexes = $schema->getIndexes();
@@ -77,5 +117,10 @@ class PostgreSQL extends Compiler
     protected function handleDropIndex(AlterTable $table, $data)
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
+    }
+    
+    protected function handleEngine(CreateTable $schema)
+    {
+        return '';
     }
 }

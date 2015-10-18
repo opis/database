@@ -247,10 +247,11 @@ class Compiler
         }
         
         $sql = array();
+        $table = $this->wrap($schema->getTableName());
         
         foreach($indexes as $name => $columns)
         {
-            $sql[] = 'CREATE INDEX ' . $this->wrap($name) . ' ON ' . $this->wrap($schema->getTableName()) . '(' . $this->wrapArray($columns) . ')';
+            $sql[] = 'CREATE INDEX ' . $this->wrap($name) . ' ON ' . $table . '(' . $this->wrapArray($columns) . ')';
         }
         
         return $sql;
