@@ -121,7 +121,7 @@ class Compiler
         return 'FLOAT';
     }
     
-    protected function hanleTypeDouble(BaseColumn $column)
+    protected function handleTypeDouble(BaseColumn $column)
     {
         return 'DOUBLE';
     }
