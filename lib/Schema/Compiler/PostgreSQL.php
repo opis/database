@@ -123,4 +123,12 @@ class PostgreSQL extends Compiler
     {
         return '';
     }
+    
+    public function currentDatabase($dsn)
+    {
+        return array(
+            'sql' => 'SELECT current_database()',
+            'params' => array(),
+        );
+    }
 }
