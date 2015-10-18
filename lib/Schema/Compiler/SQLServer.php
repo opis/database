@@ -30,6 +30,8 @@ class SQLServer extends Compiler
     
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
+    protected $autoincrement = 'IDENTITY';
+    
     protected function handleTypeInteger(BaseColumn $column)
     {
         switch($column->get('size', 'normal'))
@@ -75,16 +77,6 @@ class SQLServer extends Compiler
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
-    }
-    
-    protected function handleModifierAutoincrement(BaseColumn $column)
-    {
-        if($column->getType() !== 'integer' || !in_array($column->get('size', 'normal'), $this->serials))
-        {
-            return '';
-        }
-        
-        return $column->get('autoincrement', false) ? 'IDENTITY' : '';
     }
     
     protected function handleEngine(CreateTable $schema)

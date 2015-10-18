@@ -33,6 +33,8 @@ class Compiler
     
     protected $serials = array('tiny', 'small', 'normal', 'medium', 'big');
     
+    protected $autoincrement = 'AUTO_INCREMENT';
+    
     protected function wrap($name)
     {
         return sprintf($this->wrapper, $name);
@@ -203,7 +205,7 @@ class Compiler
             return '';
         }
         
-        return $column->get('autoincrement', false) ? 'AUTO_INCREMENT' : '';
+        return $column->get('autoincrement', false) ? $this->autoincrement : '';
     }
     
     protected function handlePrimaryKey(CreateTable $schema)
@@ -380,7 +382,7 @@ class Compiler
     }
     
     public function currentDatabase($dsn)
-    {
+    {   
         return array(
             'sql' => 'SELECT database()',
             'params' => array(),
