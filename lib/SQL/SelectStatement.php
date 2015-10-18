@@ -151,7 +151,7 @@ class SelectStatement extends WhereJoinCondition
         return $this;
     }
     
-    public function andHaving($column, Closure $value)
+    public function andHaving($column, Closure $value = null)
     {
         $this->have->andHaving($column, $value);
         return $this;
