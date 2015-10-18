@@ -44,13 +44,13 @@ class PostgreSQL extends Compiler
                 return $autoincrement ? 'BIGSERIAL' : 'BIGINT';
         }
         
-        return $autoincrement ? 'SEARIAL' : 'INTEGER';
+        return $autoincrement ? 'SERIAL' : 'INTEGER';
         
     }
     
     protected function handleTypeFloat(BaseColumn $column)
     {
-        return $this->handleTypeDouble($column);
+        return 'REAL';
     }
     
     protected function handleTypeDouble(BaseColumn $column)
