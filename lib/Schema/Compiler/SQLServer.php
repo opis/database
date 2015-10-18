@@ -86,4 +86,17 @@ class SQLServer extends Compiler
         
         return $column->get('autoincrement', false) ? 'IDENTITY' : '';
     }
+    
+    protected function handleEngine(CreateTable $schema)
+    {
+        return '';
+    }
+    
+    public function currentDatabase($dsn)
+    {
+        return array(
+            'sql' => 'SELECT SCHEMA_NAME()',
+            'params' => array(),
+        );
+    }
 }
