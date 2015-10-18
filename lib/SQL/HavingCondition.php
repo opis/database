@@ -71,7 +71,7 @@ class HavingCondition
         return $this->addCondition($column, $value, 'AND');
     }
     
-    public function andHaving($column, Closure $value)
+    public function andHaving($column, Closure $value = null)
     {
         return $this->having($column, $value);
     }
