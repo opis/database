@@ -62,4 +62,20 @@ class SQLite extends Compiler
         );
     }
     
+    public function getColumns($database, $table)
+    {
+        return array(
+            'sql' => 'PRAGMA table_info('. $this->wrap($table) . ')',
+            'params' => array(),
+        );
+    }
+    
+    public function renameTable($old, $new)
+    {
+        return array(
+            'sql' => 'ALTER TABLE ' .$this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'params' => array(),
+        );
+    }
+    
 }
