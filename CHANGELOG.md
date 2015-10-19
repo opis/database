@@ -11,6 +11,7 @@ in `Opis\Database\Schema\AlterTable` class
 * Added `Opis\Database\Connection::schema` method
 * Changed `Opis\Database\Database::schema` method. The schema object is now returned from the connection object.
 * Added `Opis\Database\Schema::getColumns` method
+* Schema compilers now takes as an argument the current connection
 
 ### v2.2.0, 2015.10.19
 
