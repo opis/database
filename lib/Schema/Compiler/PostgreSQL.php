@@ -109,6 +109,12 @@ class PostgreSQL extends Compiler
         return $sql;
     }
     
+    protected function handleRenameColumn(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
+                . $this->wrap($data['from']) . ' TO ' . $this->wrap($data['column']->getName()); 
+    }
+    
     protected function handleAddIndex(AlterTable $table, $data)
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' ('. $this->wrapArray($data['columns']) . ')';
@@ -124,6 +130,20 @@ class PostgreSQL extends Compiler
         return '';
     }
     
+    public function getColumns($database, $table)
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
+                . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
+                . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+                . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+                . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+        
+        return array(
+            'sql' => $sql,
+            'params' => array($database, $table),
+        );
+    }
+    
     public function currentDatabase($dsn)
     {
         return array(
@@ -131,4 +151,13 @@ class PostgreSQL extends Compiler
             'params' => array(),
         );
     }
+    
+    public function renameTable($old, $new)
+    {
+        return array(
+            'sql' => 'ALTER TABLE ' .$this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'params' => array(),
+        );
+    }
+    
 }
