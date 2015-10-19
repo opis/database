@@ -1,5 +1,17 @@
 CHANGELOG
 -----------
+### v2.3.0, 2015.10.19
+
+* Fixed various bugs
+* Improved schema compilers
+* Added `primary`, `unique`, `index` and `foreign` methods to `Opis\Database\Schema\AlterTable` class
+* The `addPrimary`, `addUnique`, `addIndex` and `addForeign` methods were deprecated
+in `Opis\Database\Schema\AlterTable` class
+* The third argument of the `Opis\Database\Schema\AlterTable::renameColumn` method was removed
+* Added `Opis\Database\Connection::schema` method
+* Changed `Opis\Database\Database::schema` method. The schema object is now returned from the connection object.
+* Added `Opis\Database\Schema::getColumns` method
+
 ### v2.2.0, 2015.10.19
 
 * Added an optional parameter to `Opis\Database\Connection`'s constructor method. The parameter
