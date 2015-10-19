@@ -105,4 +105,18 @@ class SQLServer extends Compiler
             'params' => array(),
         );
     }
+    
+    public function getColumns($database, $table)
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
+                . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
+                . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+                . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+                . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+        
+        return array(
+            'sql' => $sql,
+            'params' => array($database, $table),
+        );
+    }
 }
