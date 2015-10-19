@@ -123,4 +123,17 @@ class MySQL extends Compiler
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
+    
+    protected function handleRenameColumn(AlterTable $table, $data)
+    {
+        $table_name = $table->getTableName();
+        $column_name = $data['from'];
+        $new_name = $data['column']->getName();
+        $columns = $this->connection->schema()->getColumns($table_name, false, false);
+        $column_type = isset($columns[$column_name]) ? $columns[$column_name]['type'] : 'integer';
+        
+        return 'ALTER TABLE ' . $this->wrap($table_name) . ' CHANGE '. $this->wrap($column_name)
+        . ' '.  $this->wrap($new_name) . ' ' . $column_type;
+    }
+    
 }
