@@ -79,9 +79,23 @@ class SQLServer extends Compiler
         return 'DATETIME';
     }
     
+    protected function handleRenameColumn(AlterTable $table, $data)
+    {
+        return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
+                . $this->wrap($data['column']->getName()) . ', COLUMN';
+    }
+    
     protected function handleEngine(CreateTable $schema)
     {
         return '';
+    }
+    
+    public function renameTable($old, $new)
+    {
+        return array(
+            'sql' => 'sp_rename ' . $this->wrap($old) . ', ' . $this->wrap($new),
+            'params' => array(),
+        );
     }
     
     public function currentDatabase($dsn)
