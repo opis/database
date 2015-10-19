@@ -214,6 +214,7 @@ class Schema
         {
             $this->connection->command($result['sql'], $result['params']);
         }
+        
         //clear table list
         $this->tableList = null;
     }
@@ -235,6 +236,8 @@ class Schema
         
         $callback($schema);
         
+        unset($this->columns[strtolower($table)]);
+        
         foreach($compiler->alter($schema) as $result)
         {
             $this->connection->command($result['sql'], $result['params']);
@@ -255,6 +258,7 @@ class Schema
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
         $this->connection->command($result['sql'], $result['params']);
         $this->tableList = null;
+        unset($this->columns[strtolower($table)]);
     }
     
     /**
@@ -275,6 +279,7 @@ class Schema
         
         //clear table list
         $this->tableList = null;
+        unset($this->columns[strtolower($table)]);
     }
     
     /**
