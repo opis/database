@@ -20,6 +20,8 @@
 
 namespace Opis\Database\Schema;
 
+use Opis\Database\Connection;
+
 class Compiler
 {
     
@@ -34,6 +36,13 @@ class Compiler
     protected $serials = array('tiny', 'small', 'normal', 'medium', 'big');
     
     protected $autoincrement = 'AUTO_INCREMENT';
+    
+    protected $connection;
+    
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
     
     protected function wrap($name)
     {
@@ -323,8 +332,14 @@ class Compiler
     
     protected function handleRenameColumn(AlterTable $table, $data)
     {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' CHANGE '. $this->wrap($data['from']) .', '
-        .  $this->wrap($data['column']->getName()) . $this->handleColumnType($data['column']);
+        $table_name = $table->getTableName();
+        $column_name = $data['from'];
+        $new_name = $data['column']->getName();
+        $columns = $this->connection->schema()->getColumns($table_name, false, false);
+        $column_type = isset($columns[$column_name]) ? $columns[$column_name]['type'] : 'integer';
+        
+        return 'ALTER TABLE ' . $this->wrap($table_name) . ' CHANGE '. $this->wrap($column_name)
+        . ' '.  $this->wrap($new_name) . ' ' . $column_type;
     }
     
     protected function handleModifyColumn(AlterTable $table, $data)
@@ -408,6 +423,20 @@ class Compiler
             'params' => array('BASE TABLE', $database),
         );
         
+    }
+    
+    public function getColumns($database, $table)
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
+                . ', ' . $this->wrap('column_type') . ' AS ' . $this->wrap('type')
+                . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+                . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+                . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+        
+        return array(
+            'sql' => $sql,
+            'params' => array($database, $table),
+        );
     }
     
     public function create(CreateTable $schema)

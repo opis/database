@@ -37,6 +37,9 @@ class Schema
     /** @var    string  Currently used database name. */
     protected $currentDatabase;
     
+    /** @var    array   Column list */
+    protected $columns = array();
+    
     
     /**
      * Constructor
@@ -136,6 +139,59 @@ class Schema
         
         return $this->tableList;
     }
+    
+    /**
+     * Get a list with all columns that belong to the specified table
+     *
+     * @access  public
+     *
+     * @param   boolean $clear  (optional) Refresh column list
+     * @param   boolean $names  (optional) Return only the column names
+     *
+     * @return  array
+     */
+    
+    public function getColumns($table, $clear = false, $names = true)
+    {
+        if($clear)
+        {
+            unset($this->columns[$table]);
+        }
+        
+        if(!$this->hasTable($table, $clear))
+        {
+            return false;
+        }
+        
+        if(!isset($this->columns[$table]))
+        {
+            $compiler = $this->connection->schemaCompiler();
+            
+            $database = $this->getCurrentDatabase();
+                
+            $sql = $compiler->getColumns($database, $table);
+                
+            $results = $this->connection
+                            ->query($sql['sql'], $sql['params'])
+                            ->fetchAssoc()
+                            ->all();
+                            
+            $columns = array();
+            
+            foreach($results as $ord => &$col)
+            {
+                $columns[$col['name']] = array(
+                    'name' => $col['name'],
+                    'type' => $col['type'],
+                );
+            }
+            
+            $this->columns[$table] = $columns;
+        }
+        
+        return $names ? array_keys($this->columns[$table]) : $this->columns[$table];
+    }
+    
 
     /**
      * Creates a new table
@@ -179,7 +235,7 @@ class Schema
         
         $callback($schema);
         
-        foreach($compiler->create($schema) as $result)
+        foreach($compiler->alter($schema) as $result)
         {
             $this->connection->command($result['sql'], $result['params']);
         }

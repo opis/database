@@ -66,6 +66,9 @@ class Connection implements Serializable
     /** @var    string  Driver's name */
     protected $driver;
     
+    /** @var    \Opis\Database\Schema   Schema instance */
+    protected $schema;
+    
     /**
      * Constructor
      * 
@@ -221,6 +224,22 @@ class Connection implements Serializable
     }
     
     /**
+     * Returns the schema associated with this connection
+     *
+     * @return  \Opis\Database\Schema
+     */
+    
+    public function schema()
+    {
+        if($this->schema === null)
+        {
+            $this->schema = new Schema($this);
+        }
+        
+        return $this->schema;
+    }
+    
+    /**
      * Returns the PDO object associated with this connection
      *
      * @return \PDO
@@ -299,19 +318,19 @@ class Connection implements Serializable
             switch($this->driver())
             {
                 case 'mysql':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL();
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL($this);
                     break;
                 case 'pgsql':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\PostgreSQL();
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\PostgreSQL($this);
                     break;
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
-                    $this->compiler = new \Opis\Database\Schema\Compiler\SQLServer();
+                    $this->compiler = new \Opis\Database\Schema\Compiler\SQLServer($this);
                     break;
                 case 'sqlite':
-                    $this->complier = new \Opis\Database\Schema\Compiler\SQLite();
+                    $this->complier = new \Opis\Database\Schema\Compiler\SQLite($this);
                 default:
                     throw new \Exception('Schema not supported yet');
             }

@@ -130,7 +130,7 @@ class Database
     {
         if($this->schema === null)
         {
-            $this->schema = new Schema($this->connection);
+            $this->schema = $this->connection->schema();
         }
         
         return $this->schema;

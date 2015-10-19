@@ -116,40 +116,30 @@ class AlterTable
         return $this->addCommand('dropDefaultValue', $column);
     }
     
-    public function renameColumn($from, $to, $type)
-    {
-        $type = strtolower($type);
-        
-        if(!in_array($type, array('integer', 'float', 'double', 'boolean', 'decimal',
-                                  'string', 'fixed', 'text', 'date', 'time',
-                                  'datetime', 'timestamp', 'binary')))
-        {
-            return $this;
-        }
-        
+    public function renameColumn($from, $to)
+    {        
         return $this->addCommand('renameColumn', array(
             'from' => $from,
-            'column' => new AlterColumn($this, $to, $type),
+            'column' => new AlterColumn($this, $to),
         ));
     }
     
-    
-    public function addPrimary($name, $columns = null)
+    public function primary($name, $columns = null)
     {
         return $this->addKey('addPrimary', $name, $columns);
     }
     
-    public function addUnique($name, $columns = null)
+    public function unique($name, $columns = null)
     {
         return $this->addKey('addUnique', $name, $columns);
     }
     
-    public function addIndex($name, $columns = null)
+    public function index($name, $columns = null)
     {
         return $this->addKey('addIndex', $name, $columns);
     }
     
-    public function addForeign($name, $columns = null)
+    public function foreign($name, $columns = null)
     {
         if($columns === null)
         {
@@ -167,6 +157,42 @@ class AlterTable
         ));
         
         return $foreign;
+    }
+    
+    /**
+     * @deprecated since 2.3.0
+     */
+    
+    public function addPrimary($name, $columns = null)
+    {
+        return $this->primary($name, $columns);
+    }
+    
+    /**
+     * @deprecated since 2.3.0
+     */
+    
+    public function addUnique($name, $columns = null)
+    {
+        return $this->unique($name, $columns);
+    }
+    
+    /**
+     * @deprecated since 2.3.0
+     */
+    
+    public function addIndex($name, $columns = null)
+    {
+        return $this->index($name, $columns);
+    }
+    
+    /**
+     * @deprecated since 2.3.0
+     */
+    
+    public function addForeign($name, $columns = null)
+    {
+        return $this->foreign($name, $columns);
     }
     
     public function setDefaultValue($column, $value)
