@@ -1,0 +1,170 @@
+<?php
+/* ===========================================================================
+ * Opis Project
+ * http://opis.io
+ * ===========================================================================
+ * Copyright 2013-2015 Marius Sarca
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================================ */
+
+namespace Opis\Database;
+
+use RuntimeException;
+use Opis\Database\ORM\Query;
+
+abstract class Model
+{
+    protected $table;
+    
+    protected $className;
+    
+    protected $columns;
+    
+    protected $primaryKey = 'id';
+    
+    protected $wasModified = false;
+     
+    protected $isNew = false;
+    
+    protected $loaded = false;
+    
+    protected $readonly = false;
+    
+    protected $mapColumns = array();
+    
+    protected $mapGetSet = array();
+    
+    protected $model = array();
+    
+    protected $cache = array();
+    
+    public final function __construct($new = true)
+    {
+        $this->isNew = $new;
+        $this->loaded = true;
+        $this->mapGetSet = array_flip($this->mapColumns);
+    }
+    
+    public abstract function getConnection();
+    
+    public function __set($name, $value)
+    {   
+        if(!$this->loaded)
+        {
+            $this->columns[$name] = $value;
+            return;
+        }
+        
+        if($this->readonly)
+        {
+            throw new RuntimeException('Readonly');
+        }
+        
+        if(isset($this->mapGetSet[$name]))
+        {
+            $name = $this->mapGetSet[$name];
+        }
+        
+        $this->wasModified = true;
+        unset($this->cache[$name]);
+        $this->columns[$name] = $value;
+    }
+    
+    public function __get($name)
+    {
+        $getter = $name;
+        
+        if(isset($this->mapGetSet[$name]))
+        {
+            $name = $this->mapGetSet[$name];
+        }
+        
+        if(isset($this->columns[$name]))
+        {
+            $accesor = $getter . 'Accessor';
+            
+            if(method_exists($this, $accesor))
+            {
+                if(!isset($this->cache[$name]))
+                {
+                    $this->cache[$name] = $this->{$accesor}($this->columns[$name]);
+                }
+                
+                return $this->cache[$name];
+            }
+            
+            return $this->columns[$name];
+        }
+        
+        if(isset($this->model[$name]))
+        {
+            return $this->model[$name];
+        }
+        
+        if(method_exists($this, $name))
+        {
+            return $this->model[$name] = $this->{$name}()->getModel();
+        }
+        
+        throw new RuntimeException('Not found');
+    }
+    
+    public function getTable()
+    {
+        if($this->table === null)
+        {
+            $this->table = strtolower($this->getClassName()) . 's';
+        }
+        
+        return $this->table;
+    }
+    
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
+    }
+    
+    protected function getClassName()
+    {
+        if($this->className === null)
+        {
+            $name = get_class($this);
+            
+            if(false !== $pos = strrpos($name, '\\'))
+            {
+                $name = substr($name, $pos + 1);
+            }
+            
+            $this->className = $name;
+        }
+        
+        return $this->className;
+    }
+    
+    protected function queryBuilder()
+    {
+        return new Query($this);
+    }
+    
+    public function __call($name, array $arguments)
+    {
+        return call_user_func_array(array($this->queryBuilder(), $name), $arguments);
+    }
+    
+    public static function __callStatic($name, array $arguments)
+    {
+        return call_user_func_array(array(new static(), $name), $arguments);
+    }
+    
+}
