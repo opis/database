@@ -22,12 +22,23 @@ namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\ORM\Relation;
 
-class HasOne extends Relation
+class BelongsTo extends Relation
 {
+    
+    public function getForeignKey()
+    {
+        if($this->foreignKey === null)
+        {
+            $this->foreignKey = $this->model->getForeignKey();
+        }
+        
+        return $this->foreignKey;
+    }
+    
     public function getModel()
     {   
         return $this->query
-                    ->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()})
+                    ->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()})
                     ->select($this->select)
                     ->fetchClass(get_class($this->model), array(false))
                     ->first();
