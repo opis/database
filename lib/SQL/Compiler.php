@@ -432,7 +432,7 @@ class Compiler
     
     protected function sqlFunctionROUND(array $func)
     {
-        return 'REOUND(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
+        return 'ROUND(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
     }
     
     protected function sqlFunctionNOW(array $func)

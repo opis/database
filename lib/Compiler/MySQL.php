@@ -25,7 +25,16 @@ use Opis\Database\SQL\Compiler;
 class MySQL extends Compiler
 {
     
-  /** @var string Wrapper used to escape table and column names. */
-  protected $wrapper = '`%s`';
+    /** @var string Wrapper used to escape table and column names. */
+    protected $wrapper = '`%s`';
+
+    protected function sqlFunctionROUND(array $func)
+    {
+        return 'FORMAT(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
+    }
     
+    protected function sqlFunctionLEN(array $func)
+    {
+        return 'LENGTH(' . $this->wrap($func['column']) . ')';
+    }
 }
