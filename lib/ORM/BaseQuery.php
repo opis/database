@@ -21,15 +21,14 @@
 namespace Opis\Database\ORM;
 
 use Closure;
-use Opis\Database\SQL\Select;
+use Opis\Database\SQL\SelectStatement;
 
 abstract class BaseQuery
 {
     protected $query;
     protected $whereCondition;
-    protected $select = array();
     
-    public function __construct(Select $query, WhereCondition $whereCondition)
+    public function __construct(SelectStatement $query, WhereCondition $whereCondition)
     {
         $this->query = $query;
         $this->whereCondition = $whereCondition;
@@ -125,12 +124,6 @@ abstract class BaseQuery
     public function fullJoin($table, Closure $closure)
     {
         $table->query->fullJoin($table, $closure);
-        return $this;
-    }
-    
-    public function select($columns = array())
-    {
-        $this->select = $columns;
         return $this;
     }
     

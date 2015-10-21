@@ -18,18 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\ORM\Relation;
+namespace Opis\Database\ORM;
 
-use Opis\Database\ORM\Relation;
+use Opis\Database\SQL\SelectStatement;
 
-class HasOne extends Relation
+class Select extends SelectStatement
 {
-    public function getModel()
+    public function from($tables)
     {
-        $this->query->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()});
+        if(!is_array($tables))
+        {
+            $tables = array($tables);
+        }
         
-        return $this->query()
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->first();
+        $this->tables = $tables;
+        return $this;
     }
 }

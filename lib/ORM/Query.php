@@ -22,58 +22,72 @@ namespace Opis\Database\ORM;
 
 use Closure;
 use Opis\Database\Model;
-use Opis\Database\SQL\Select;
 
 class Query extends BaseQuery
 {
     protected $model;
     protected $connection;
+    protected $compiler;
     
     public function __construct(Model $model)
     {
         $this->model = $model;
         $this->connection = $connection = $model->getConnection();
+        $this->compiler = $compiler = $connection->compiler();
         
-        $query = new Select($connection, $connection->compiler(), $model->getTable(), array());
+        $query = new Select($compiler, $model->getTable());
         $whereCondition = new WhereCondition($this, $query);
         
         parent::__construct($query, $whereCondition);
     }
     
-    public function first()
+    protected function query(array &$columns)
     {
-        return $this->query
-                    ->select($this->select)
+        if(!empty($columns))
+        {
+            $columns[] = $this->model->getPrimaryKey();
+        }
+        
+        return $this->connection->query((string) $this->query->select($columns),
+                                        $this->compiler->getParams());
+    }
+    
+    public function first(array $columns = array())
+    {
+        return $this->query()
                     ->fetchClass(get_class($this->model), array(false))
                     ->first();
     }
     
-    public function all()
+    public function all(array $columns = array())
     {
-        return $this->query
-                    ->select($this->select)
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();
     }
     
-    public function find($id)
+    public function find($id, array $columns = array())
     {
-        return $this->query
-                    ->where($this->model->getPrimaryKey())->is($id)
-                    ->select($this->select)
+        $this->query->where($this->model->getPrimaryKey())->is($id);
+        
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->first();
     }
     
-    public function findAll(array $ids = null)
+    public function findAll(array $columns = array())
+    {
+        return $this->findMany(array(), $columns);
+    }
+    
+    public function findMany(array $ids = null, array $columns = array())
     {
         if($ids !== null && !empty($ids))
         {
             $this->query->where($this->model->getPrimaryKey())->in($ids);
         }
         
-        return $this->query
-                    ->select($this->select)
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();
     }
