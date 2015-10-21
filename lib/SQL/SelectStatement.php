@@ -206,6 +206,8 @@ class SelectStatement extends WhereJoinCondition
             $expr->columns($columns);
         }
         $this->columns = $expr->getColumns();
+        
+        return $this;
     }
     
     public function column($name)

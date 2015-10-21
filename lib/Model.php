@@ -25,6 +25,7 @@ use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation\HasOne;
 use Opis\Database\ORM\Relation\HasMany;
 use Opis\Database\ORM\Relation\BelongsTo;
+use Opis\Database\ORM\Relation\BelongsToMany;
 
 abstract class Model
 {
@@ -59,7 +60,7 @@ abstract class Model
         $this->mapGetSet = array_flip($this->mapColumns);
     }
     
-    public abstract function getConnection();
+    public static abstract function getConnection();
     
     public function __set($name, $value)
     {   
@@ -77,6 +78,11 @@ abstract class Model
         if(isset($this->mapGetSet[$name]))
         {
             $name = $this->mapGetSet[$name];
+        }
+        
+        if(method_exists($this, $name . 'Mutator'))
+        {
+            $value = $this->{$name . 'Mutator'}($value);
         }
         
         $this->wasModified = true;
@@ -156,6 +162,11 @@ abstract class Model
     public function belongsTo($model, $foreignKey = null)
     {
         return new BelongsTo($this, new $model, $foreignKey);
+    }
+    
+    public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
+    {
+        return new BelongsToMany($this, new $model, $foreignKey, $junctionTable, $junctionKey);
     }
     
     protected function getClassShortName()

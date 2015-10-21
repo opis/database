@@ -20,8 +20,6 @@
 
 namespace Opis\Database\ORM;
 
-use Opis\Database\SQL\Select;
-
 class WhereCondition
 {
     protected $builder;

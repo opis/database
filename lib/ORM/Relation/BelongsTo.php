@@ -36,10 +36,10 @@ class BelongsTo extends Relation
     }
     
     public function getModel()
-    {   
-        return $this->query
-                    ->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()})
-                    ->select($this->select)
+    {
+        $this->query->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
+        
+        return $this->query()
                     ->fetchClass(get_class($this->model), array(false))
                     ->first();
     }

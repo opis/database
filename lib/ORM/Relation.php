@@ -21,7 +21,6 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Model;
-use Opis\Database\SQL\Select;
 
 abstract class Relation extends BaseQuery
 {
@@ -29,16 +28,19 @@ abstract class Relation extends BaseQuery
     protected $model;
     protected $foreignKey;
     protected $connection;
+    protected $compiler;
     protected $owner;
     protected $ownerPK;
     
     public function __construct(Model $owner, Model $model, $foreignKey = null)
     {        
         $this->connection = $connection = $owner->getConnection();
+        $this->compiler = $compiler = $connection->compiler();
         $this->model = $model;
         $this->foreignKey = $foreignKey;
         $this->owner = $owner;
-        $query = new Select($connection, $connection->compiler(), $model->getTable(), array());
+        
+        $query = new Select($compiler, $model->getTable());
         $whereCondition = new WhereCondition($this, $query);
         
         parent::__construct($query, $whereCondition);
@@ -54,18 +56,27 @@ abstract class Relation extends BaseQuery
         return $this->foreignKey;
     }
     
-    public function first()
+    protected function query(array &$columns = array())
     {
-        return $this->query
-                    ->select($this->select)
+        if(!empty($columns))
+        {
+            $columns[] = $this->model->getPrimaryKey();
+        }
+        
+        return $this->connection->query((string) $this->query->select($columns),
+                                        $this->compiler->getParams());
+    }
+    
+    public function first(array $columns = array())
+    {
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->first();
     }
     
-    public function all()
+    public function all(array $columns = array())
     {
-        return $this->query
-                    ->select($this->select)
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();
     }
