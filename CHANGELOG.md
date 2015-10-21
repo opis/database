@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v2.3.1, 2015.10.21
+
+* Fixed a bug in `Opis\Database\SQL\Compiler::sqlFunctionROUND`
+* Fixed some bugs in `Opis\Database\Compiler\MySQL` compiler class
+
 ### v2.3.0, 2015.10.19
 
 * Fixed various bugs
