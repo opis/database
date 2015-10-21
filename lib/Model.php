@@ -24,6 +24,7 @@ use RuntimeException;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation\HasOne;
 use Opis\Database\ORM\Relation\HasMany;
+use Opis\Database\ORM\Relation\BelongsTo;
 
 abstract class Model
 {
@@ -150,6 +151,11 @@ abstract class Model
     public function hasMany($model, $foreignKey = null)
     {
         return new HasMany($this, new $model, $foreignKey);
+    }
+    
+    public function belongsTo($model, $foreignKey = null)
+    {
+        return new BelongsTo($this, new $model, $foreignKey);
     }
     
     protected function getClassShortName()

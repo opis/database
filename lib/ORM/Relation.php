@@ -33,21 +33,25 @@ abstract class Relation extends BaseQuery
     protected $ownerPK;
     
     public function __construct(Model $owner, Model $model, $foreignKey = null)
-    {
-        if($foreignKey === null)
-        {
-            $foreignKey = $model->getForeignKey();
-        }
-        
+    {        
         $this->connection = $connection = $owner->getConnection();
         $this->model = $model;
         $this->foreignKey = $foreignKey;
         $this->owner = $owner;
-        $this->ownerPK = $owner->{$owner->getPrimaryKey()};
         $query = new Select($connection, $connection->compiler(), $model->getTable(), array());
         $whereCondition = new WhereCondition($this, $query);
         
         parent::__construct($query, $whereCondition);
+    }
+    
+    public function getForeignKey()
+    {
+        if($this->foreignKey === null)
+        {
+            $this->foreignKey = $this->owner->getForeignKey();
+        }
+        
+        return $this->foreignKey;
     }
     
     public function first()

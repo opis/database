@@ -65,10 +65,14 @@ class Query extends BaseQuery
                     ->first();
     }
     
-    public function findAll(array $ids)
+    public function findAll(array $ids = null)
     {
+        if($ids !== null && !empty($ids))
+        {
+            $this->query->where($this->model->getPrimaryKey())->in($ids);
+        }
+        
         return $this->query
-                    ->where($this->model->getPrimaryKey())->in($ids)
                     ->select($this->select)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();

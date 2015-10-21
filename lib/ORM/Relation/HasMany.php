@@ -27,7 +27,7 @@ class HasMany extends Relation
     public function getModel()
     {   
         return $this->query
-                    ->where($this->foreignKey)->is($this->ownerPK)
+                    ->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()})
                     ->select($this->select)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();
