@@ -20,20 +20,30 @@
 
 namespace Opis\Database\ORM;
 
-use Closure;
 use Opis\Database\Model;
 use Opis\Database\SQL\Select;
 
-class Query extends BaseQuery
+abstract class Relation extends BaseQuery
 {
-    protected $model;
-    protected $connection;
     
-    public function __construct(Model $model)
+    protected $model;
+    protected $foreignKey;
+    protected $connection;
+    protected $owner;
+    protected $ownerPK;
+    
+    public function __construct(Model $owner, Model $model, $foreignKey = null)
     {
-        $this->model = $model;
-        $this->connection = $connection = $model->getConnection();
+        if($foreignKey === null)
+        {
+            $foreignKey = $model->getForeignKey();
+        }
         
+        $this->connection = $connection = $owner->getConnection();
+        $this->model = $model;
+        $this->foreignKey = $foreignKey;
+        $this->owner = $owner;
+        $this->ownerPK = $owner->{$owner->getPrimaryKey()};
         $query = new Select($connection, $connection->compiler(), $model->getTable(), array());
         $whereCondition = new WhereCondition($this, $query);
         
@@ -56,22 +66,5 @@ class Query extends BaseQuery
                     ->all();
     }
     
-    public function find($id)
-    {
-        return $this->query
-                    ->where($this->model->getPrimaryKey())->is($id)
-                    ->select($this->select)
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->first();
-    }
-    
-    public function findAll(array $ids)
-    {
-        return $this->query
-                    ->where($this->model->getPrimaryKey())->in($ids)
-                    ->select($this->select)
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->all();
-    }
-    
+    public abstract function getModel();
 }

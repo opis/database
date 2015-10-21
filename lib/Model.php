@@ -22,6 +22,8 @@ namespace Opis\Database;
 
 use RuntimeException;
 use Opis\Database\ORM\Query;
+use Opis\Database\ORM\Relation\HasOne;
+use Opis\Database\ORM\Relation\HasMany;
 
 abstract class Model
 {
@@ -124,7 +126,7 @@ abstract class Model
     {
         if($this->table === null)
         {
-            $this->table = strtolower($this->getClassName()) . 's';
+            $this->table = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . 's';
         }
         
         return $this->table;
@@ -135,7 +137,22 @@ abstract class Model
         return $this->primaryKey;
     }
     
-    protected function getClassName()
+    public function getForeignKey()
+    {
+        return strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . '_id';
+    }
+    
+    public function hasOne($model, $foreignKey = null)
+    {
+        return new HasOne($this, new $model, $foreignKey);
+    }
+    
+    public function hasMany($model, $foreignKey = null)
+    {
+        return new HasMany($this, new $model, $foreignKey);
+    }
+    
+    protected function getClassShortName()
     {
         if($this->className === null)
         {
@@ -159,7 +176,16 @@ abstract class Model
     
     public function __call($name, array $arguments)
     {
-        return call_user_func_array(array($this->queryBuilder(), $name), $arguments);
+        $object = $this->queryBuilder();
+        
+        if(method_exists($this, $name . 'Scope'))
+        {
+            array_unshift($arguments, $object);
+            $object = $this;
+            $name .= 'Scope';
+        }
+        
+        return call_user_func_array(array($object, $name), $arguments);
     }
     
     public static function __callStatic($name, array $arguments)

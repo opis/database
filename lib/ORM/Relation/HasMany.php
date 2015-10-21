@@ -18,34 +18,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\ORM;
+namespace Opis\Database\ORM\Relation;
 
-use Opis\Database\SQL\Select;
+use Opis\Database\ORM\Relation;
 
-class WhereCondition
+class HasMany extends Relation
 {
-    protected $builder;
-    protected $query;
-    protected $method;
-    protected $column;
-    
-    public function __construct(BaseQuery $builder, Select $query)
-    {
-        $this->builder = $builder;
-        $this->query = $query;
-    }
-    
-    public function setColumn($column, $method)
-    {
-        $this->column = $column;
-        $this->method = $method;
-        return $this;
-    }
-    
-    public function __call($name, $arguments)
-    {
-        $where = $this->query->{$this->method}($this->column);
-        call_user_func_array(array($where, $name), $arguments);
-        return $this->builder;
+    public function getModel()
+    {   
+        return $this->query
+                    ->where($this->foreignKey)->is($this->ownerPK)
+                    ->select($this->select)
+                    ->fetchClass(get_class($this->model), array(false))
+                    ->all();
     }
 }
