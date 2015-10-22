@@ -80,9 +80,11 @@ abstract class Model
             $name = $this->mapGetSet[$name];
         }
         
-        if(method_exists($this, $name . 'Mutator'))
+        $mutator = $name . 'Mutator';
+        
+        if(method_exists($this, $mutator))
         {
-            $value = $this->{$name . 'Mutator'}($value);
+            $value = $this->{$mutator}($value);
         }
         
         $this->wasModified = true;
