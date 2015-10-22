@@ -35,7 +35,7 @@ class BelongsTo extends Relation
         return $this->foreignKey;
     }
     
-    public function getModel()
+    public function getResult()
     {
         $this->query->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
         

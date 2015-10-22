@@ -60,7 +60,7 @@ class BelongsToMany extends Relation
         return $this->junctionKey;
     }
     
-    public function getModel()
+    public function getResult()
     {
         $self = $this;
         $junctionTable = $this->getJunctionTable();
