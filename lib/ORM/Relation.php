@@ -81,5 +81,15 @@ abstract class Relation extends BaseQuery
                     ->all();
     }
     
-    public abstract function getModel();
+    public function getModel()
+    {
+        return $this->model;
+    }
+    
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+    
+    public abstract function getResult();
 }

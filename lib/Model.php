@@ -49,7 +49,7 @@ abstract class Model
     
     protected $mapGetSet = array();
     
-    protected $model = array();
+    protected $result = array();
     
     protected $cache = array();
     
@@ -116,17 +116,22 @@ abstract class Model
             return $this->columns[$name];
         }
         
-        if(isset($this->model[$name]))
+        if(isset($this->result[$name]))
         {
-            return $this->model[$name];
+            return $this->result[$name];
         }
         
         if(method_exists($this, $name))
         {
-            return $this->model[$name] = $this->{$name}()->getModel();
+            return $this->result[$name] = $this->{$name}()->getResult();
         }
         
         throw new RuntimeException('Not found');
+    }
+    
+    public function setResult($name, $value)
+    {
+        $this->result[$name] = $value;
     }
     
     public function getTable()
