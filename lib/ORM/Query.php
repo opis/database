@@ -28,7 +28,7 @@ class Query extends BaseQuery
     protected $model;
     protected $connection;
     protected $compiler;
-    protected $with;
+    protected $with = array();
     
     public function __construct(Model $model)
     {
@@ -41,7 +41,6 @@ class Query extends BaseQuery
         
         parent::__construct($query, $whereCondition);
     }
-    
     
     protected function query(array &$columns = array())
     {
@@ -65,6 +64,10 @@ class Query extends BaseQuery
         return $this;
     }
     
+    public function delete(array $tables = array())
+    {
+        return $this->query->toDelete($this->connection)->delete($tables);
+    }
     
     public function first(array $columns = array())
     {

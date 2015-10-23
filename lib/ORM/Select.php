@@ -20,6 +20,8 @@
 
 namespace Opis\Database\ORM;
 
+use Opis\Database\Connection;
+use Opis\Database\SQL\Delete;
 use Opis\Database\SQL\SelectStatement;
 
 class Select extends SelectStatement
@@ -49,11 +51,14 @@ class Select extends SelectStatement
         return $this;
     }
     
-    
     public function select($columns = array())
     {
         $this->sql = null;
         return parent::select($columns);
     }
     
+    public function toDelete(Connection $connection)
+    {
+        return new Delete($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+    }
 }
