@@ -21,6 +21,7 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Model;
+use Opis\Database\Connection;
 use Opis\Database\SQL\Expression;
 
 abstract class Relation extends BaseQuery
@@ -32,9 +33,9 @@ abstract class Relation extends BaseQuery
     protected $compiler;
     protected $owner;
     
-    public function __construct(Model $owner, Model $model, $foreignKey = null)
+    public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null)
     {        
-        $this->connection = $connection = $owner->getConnection();
+        $this->connection = $connection;
         $this->compiler = $compiler = $connection->compiler();
         $this->model = $model;
         $this->foreignKey = $foreignKey;

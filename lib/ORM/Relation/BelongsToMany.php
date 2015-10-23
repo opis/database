@@ -21,6 +21,7 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\Model;
+use Opis\Database\Connection;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Select;
 use Opis\Database\SQL\Expression;
@@ -33,12 +34,12 @@ class BelongsToMany extends Relation
     
     protected $junctionKey;
     
-    public function __construct(Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
+    public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         $this->junctionTable = $junctionTable;
         $this->junctionKey = $junctionKey;
         
-        parent::__construct($owner, $model, $foreignKey);
+        parent::__construct($connection, $owner, $model, $foreignKey);
     }
     
     protected function getJunctionTable()

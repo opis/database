@@ -276,22 +276,22 @@ abstract class Model
     
     public function hasOne($model, $foreignKey = null)
     {
-        return new HasOne($this, new $model, $foreignKey);
+        return new HasOne(static::getConnection(), $this, new $model, $foreignKey);
     }
     
     public function hasMany($model, $foreignKey = null)
     {
-        return new HasMany($this, new $model, $foreignKey);
+        return new HasMany(static::getConnection(), $this, new $model, $foreignKey);
     }
     
     public function belongsTo($model, $foreignKey = null)
     {
-        return new BelongsTo($this, new $model, $foreignKey);
+        return new BelongsTo(static::getConnection(), $this, new $model, $foreignKey);
     }
     
     public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
-        return new BelongsToMany($this, new $model, $foreignKey, $junctionTable, $junctionKey);
+        return new BelongsToMany(static::getConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
     }
     
     protected function database()
@@ -353,7 +353,7 @@ abstract class Model
     
     protected function queryBuilder()
     {
-        return new Query($this);
+        return new Query(static::getConnection(), $this);
     }
     
     public function __call($name, array $arguments)

@@ -20,8 +20,8 @@
 
 namespace Opis\Database\ORM;
 
-use Closure;
 use Opis\Database\Model;
+use Opis\Database\Connection;
 
 class Query extends BaseQuery
 {
@@ -30,10 +30,10 @@ class Query extends BaseQuery
     protected $compiler;
     protected $with = array();
     
-    public function __construct(Model $model)
+    public function __construct(Connection $connection, Model $model)
     {
         $this->model = $model;
-        $this->connection = $connection = $model->getConnection();
+        $this->connection = $connection;
         $this->compiler = $compiler = $connection->compiler();
         
         $query = new Select($compiler, $model->getTable());
