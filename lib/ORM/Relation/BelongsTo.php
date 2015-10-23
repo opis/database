@@ -20,6 +20,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Model;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Select;
 use Opis\Database\SQL\Expression;
@@ -30,6 +31,11 @@ class BelongsTo extends Relation
     public function hasMany()
     {
         return false;
+    }
+    
+    public function getRelatedColumn(Model $model, $name)
+    {
+        return $this->getForeignKey();
     }
     
     public function getLazyLoader(Select $query)

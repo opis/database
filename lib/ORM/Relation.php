@@ -51,6 +51,11 @@ abstract class Relation extends BaseQuery
         return true;
     }
     
+    public function getRelatedColumn(Model $model, $name)
+    {
+        return $name;
+    }
+    
     public function getLazyLoader(Select $query)
     {        
         $fk = $this->getForeignKey();

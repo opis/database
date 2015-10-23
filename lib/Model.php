@@ -93,6 +93,11 @@ abstract class Model
             $value = $this->{$mutator}($value);
         }
         
+        if(method_exists($this, $name))
+        {
+            $name = $this->{$name}()->getRelatedColumn($this, $name);
+        }
+        
         $this->modified[$name] = true;
         $this->columns[$name] = $value;
     }
@@ -147,14 +152,15 @@ abstract class Model
         {
             $self = $this;
             
-            $id = $this->database->transaction(function($db) use($self){
+            $id = $this->database()->transaction(function($db) use($self){
                 
                 $db->insert($self->prepareColumns())
                    ->into($self->getTable());
                 
                 return $db->getConnection()->pdo()->lastInsertId($self->getSequence());
                 
-            });
+            })
+            ->execute();
             
             $this->columns[$this->getPrimaryKey()] = $id;
             $this->isNew = false;
@@ -164,7 +170,13 @@ abstract class Model
         
         if(!empty($this->modified))
         {
-            $result = $this->database()->update($this->getTable())->set($this->prepareColumns(true));
+            $pk = $this->getPrimaryKey();
+            
+            $result = $this->database()
+                           ->update($this->getTable())
+                           ->where($pk)->is($this->columns[$pk])
+                           ->set($this->prepareColumns(true));
+                           
             $this->modified = array();
             return (bool) $result;
         }
@@ -263,7 +275,7 @@ abstract class Model
     {
         $results = array();
         
-        $columns = $update ? array_intersect_key($this->columns, $this->modifed) : $this->columns;
+        $columns = $update ? array_intersect_key($this->columns, $this->modified) : $this->columns;
         
         foreach($columns as $column => &$value)
         {
