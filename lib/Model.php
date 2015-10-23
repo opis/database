@@ -68,6 +68,14 @@ abstract class Model
     
     public static abstract function getConnection();
     
+    public static function create(array $columns)
+    {
+        $item = new static();
+        $item->assign($columns);
+        $item->save();
+        return $item;
+    }
+    
     public function __set($name, $value)
     {   
         if(!$this->loaded)
@@ -204,6 +212,14 @@ abstract class Model
         $this->deleted = true;
         
         return (bool) $result;
+    }
+    
+    public function assign(array $values)
+    {
+        foreach($values as $column => &$value)
+        {
+            $this->{$column} = $value;
+        }
     }
     
     public function setLazyLoader($name, $value)
