@@ -29,39 +29,146 @@ use Opis\Database\ORM\Relation\BelongsToMany;
 
 abstract class Model
 {
+    /**
+     * Model's table name
+     *
+     * @var string
+     */
+    
     protected $table;
     
-    protected $className;
-    
-    protected $columns;
+    /**
+     * Table's primary key
+     *
+     * @var string
+     */
     
     protected $primaryKey = 'id';
-     
-    protected $isNew = false;
     
-    protected $loaded = false;
-    
-    protected $readonly = false;
-    
-    protected $mapColumns = array();
-    
-    protected $mapGetSet = array();
-    
-    protected $result = array();
-    
-    protected $modified = array();
-    
-    protected $loader = array();
-    
-    protected $deleted = false;
-    
-    protected $database;
+    /**
+     * Table's associated sequence name
+     *
+     * @var string
+     */
     
     protected $sequence;
     
-    protected $fillable;
+    /**
+     * Guarded attributes that are not mass assignable
+     *
+     * @var array
+     */
     
     protected $guarded;
+    
+    /**
+     * Mass asignable attributes
+     *
+     * @var array
+     */
+    
+    protected $fillable;
+    
+    /**
+     * Database instance
+     *
+     * @var \Opis\Database\Database
+     */
+    protected $database;
+    
+    /**
+     * Model's short class name
+     *
+     * @var string
+     */
+    
+    protected $className;
+    
+    /**
+     * New record
+     *
+     * @var boolean
+     */
+    
+    protected $isNew = false;
+    
+    /**
+     * Indicates if the record is loaded
+     *
+     * @var boolean
+     */
+    
+    protected $loaded = false;
+    
+    /**
+     * Indicates if the record was deleted
+     *
+     * @var boolean
+     */
+    
+    protected $deleted = false;
+    
+    /**
+     * Indicates if the model's properties are readonly
+     *
+     * @var boolean
+     */
+    
+    protected $readonly = false;
+    
+    /**
+     * A list with related models
+     *
+     * @var array
+     */
+    
+    protected $result = array();
+    
+    /**
+     * A list with loaders
+     *
+     * @var array
+     */
+    
+    protected $loader = array();
+    
+    /**
+     * Columns' values
+     *
+     * @var array
+     */
+    
+    protected $columns = array();
+    
+    /**
+     * A list with modified columns
+     *
+     * @var array
+     */
+    
+    protected $modified = array();
+    
+    /**
+     * A list of user defined column mappings
+     */
+    
+    protected $mapColumns = array();
+    
+    /**
+     * Internally used column mappings
+     */
+    
+    protected $mapGetSet = array();
+    
+    
+    /**
+     * Constructor
+     *
+     * @final
+     * @access public
+     *
+     * @param   boolean $new    Indicates if this is an existing record or not
+     */
     
     public final function __construct($new = true)
     {
@@ -70,7 +177,21 @@ abstract class Model
         $this->mapGetSet = array_flip($this->mapColumns);
     }
     
+    /**
+     * Database connection
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
     public static abstract function getConnection();
+    
+    /**
+     * Creates a new record
+     *
+     * @param   array   $columns    A column-value mapped array
+     *
+     * @return  \Opis\Database\Model
+     */
     
     public static function create(array $columns)
     {
@@ -79,6 +200,13 @@ abstract class Model
         $item->save();
         return $item;
     }
+    
+    /**
+     * Sets a columns value
+     *
+     * @param   string  $name   Column's name
+     * @param   mixed   $value  Column's value
+     */
     
     public function __set($name, $value)
     {   
@@ -113,6 +241,15 @@ abstract class Model
         $this->modified[$name] = true;
         $this->columns[$name] = $value;
     }
+    
+    
+    /**
+     * Gets a column's value or a related model
+     *
+     * @param   string  $name   Key
+     *
+     * @return  mixed
+     */
     
     public function __get($name)
     {
@@ -152,6 +289,12 @@ abstract class Model
         
         throw new RuntimeException('Not found');
     }
+    
+    /**
+     * Saves this model
+     *
+     * @return  boolean
+     */
     
     public function save()
     {
@@ -197,6 +340,12 @@ abstract class Model
         
     }
     
+    /**
+     * Deletes this model
+     *
+     * @return  boolean
+     */
+    
     public function delete()
     {
         if($this->deleted)
@@ -217,6 +366,12 @@ abstract class Model
         
         return (bool) $result;
     }
+    
+    /**
+     * Mass assign values to this model
+     *
+     * @param   array   $values A column-value mapped array
+     */
     
     public function assign(array $values)
     {
@@ -249,10 +404,23 @@ abstract class Model
         }
     }
     
+    /**
+     * Set a lazy loader for a property
+     *
+     * @param   string                          $name   Property's name
+     * @param   \Opis\Database\ORM\LazyLoader   $value  Lazy loader object
+     */
+    
     public function setLazyLoader($name, $value)
     {
         $this->loader[$name] = $value;
     }
+    
+    /**
+     * Get the model's associated table
+     *
+     * @return  string
+     */
     
     public function getTable()
     {
@@ -264,35 +432,90 @@ abstract class Model
         return $this->table;
     }
     
+    
+    /**
+     * Get the name of the primary key of the modle's associated table
+     *
+     * @return  string
+     */
+    
     public function getPrimaryKey()
     {
         return $this->primaryKey;
     }
+    
+    /**
+     * Get the name of the foreign key of the modle's associated table
+     *
+     * @return  string
+     */
     
     public function getForeignKey()
     {
         return strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . '_id';
     }
     
+    /**
+     * Define a Has One relation
+     *
+     * @param   string  $model          Related model
+     * @param   string  $foreignKey     (optional) Foreign key
+     *
+     * @return  \Opis\Database\ORM\Relation\HasOne
+     */
+    
     public function hasOne($model, $foreignKey = null)
     {
         return new HasOne(static::getConnection(), $this, new $model, $foreignKey);
     }
+    
+    /**
+     * Define a Has Many relation
+     *
+     * @param   string  $model          Related model
+     * @param   string  $foreignKey     (optional) Foreign key
+     *
+     * @return  \Opis\Database\ORM\Relation\HasMany
+     */
     
     public function hasMany($model, $foreignKey = null)
     {
         return new HasMany(static::getConnection(), $this, new $model, $foreignKey);
     }
     
+    /**
+     * Define a Belong To relation
+     *
+     * @param   string  $model          Related model
+     * @param   string  $foreignKey     (optional) Foreign key
+     *
+     * @return  \Opis\Database\ORM\Relation\BelongsTo
+     */
+    
     public function belongsTo($model, $foreignKey = null)
     {
         return new BelongsTo(static::getConnection(), $this, new $model, $foreignKey);
     }
     
+    /**
+     * Define a Many to Many relation
+     *
+     * @param   string  $model          Related model
+     * @param   string  $foreignKey     (optional) Foreign key
+     *
+     * @return  \Opis\Database\ORM\Relation\BelongsToMany
+     */
+    
     public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         return new BelongsToMany(static::getConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
     }
+    
+    /**
+     * Database instance
+     *
+     * @return  \Opis\Database\Database
+     */
     
     protected function database()
     {
@@ -304,6 +527,12 @@ abstract class Model
         return $this->database;
     }
     
+    /**
+     * Sequence's name
+     *
+     * @return  string
+     */
+    
     protected function getSequence()
     {
         if($this->sequence === null)
@@ -313,6 +542,14 @@ abstract class Model
         
         return $this->sequence;
     }
+    
+    /**
+     * Prepare columns
+     *
+     * @param   boolean $update Indicates if this is an update operation
+     *
+     * @return  array
+     */
     
     protected function prepareColumns($update = false)
     {
@@ -334,6 +571,12 @@ abstract class Model
         return $results;
     }
     
+    /**
+     * Returns the short class name of the model
+     *
+     * @return  string
+     */
+    
     protected function getClassShortName()
     {
         if($this->className === null)
@@ -351,10 +594,25 @@ abstract class Model
         return $this->className;
     }
     
+    /**
+     * Returns a query builder
+     *
+     * @return  \Opis\Database\ORM\Query
+     */
+    
     protected function queryBuilder()
     {
         return new Query(static::getConnection(), $this);
     }
+    
+    /**
+     * Handles dynamic method calls into the model
+     *
+     * @param   string  $name       Method's name
+     * @param   string  $arguments  Method's arguments
+     *
+     * @return  mixed
+     */
     
     public function __call($name, array $arguments)
     {
@@ -369,6 +627,15 @@ abstract class Model
         
         return call_user_func_array(array($object, $name), $arguments);
     }
+    
+    /**
+     * Handles dynamic static method calls into the model
+     *
+     * @param   string  $name       Method's name
+     * @param   string  $arguments  Method's arguments
+     *
+     * @return  mixed
+     */
     
     public static function __callStatic($name, array $arguments)
     {
