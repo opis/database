@@ -24,6 +24,14 @@ use Opis\Database\SQL\SelectStatement;
 
 class Select extends SelectStatement
 {
+    
+    protected $locked = false;
+    
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+    
     public function from($tables)
     {
         if(!is_array($tables))
@@ -34,4 +42,18 @@ class Select extends SelectStatement
         $this->tables = $tables;
         return $this;
     }
+    
+    public function lock()
+    {
+        $this->locked = true;
+        return $this;
+    }
+    
+    
+    public function select($columns = array())
+    {
+        $this->sql = null;
+        return parent::select($columns);
+    }
+    
 }

@@ -53,6 +53,8 @@ abstract class Model
     
     protected $cache = array();
     
+    protected $loader = array();
+    
     public final function __construct($new = true)
     {
         $this->isNew = $new;
@@ -123,6 +125,11 @@ abstract class Model
             return $this->result[$name];
         }
         
+        if(isset($this->loader[$name]))
+        {
+            return $this->result[$name] = $this->loader[$name]->getResult($this, $name);
+        }
+        
         if(method_exists($this, $name))
         {
             return $this->result[$name] = $this->{$name}()->getResult();
@@ -131,9 +138,9 @@ abstract class Model
         throw new RuntimeException('Not found');
     }
     
-    public function setResult($name, $value)
+    public function setLazyLoader($name, $value)
     {
-        $this->result[$name] = $value;
+        $this->loader[$name] = $value;
     }
     
     public function getTable()

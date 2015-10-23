@@ -21,6 +21,7 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Model;
+use Opis\Database\SQL\Expression;
 
 abstract class Relation extends BaseQuery
 {
@@ -30,7 +31,6 @@ abstract class Relation extends BaseQuery
     protected $connection;
     protected $compiler;
     protected $owner;
-    protected $ownerPK;
     
     public function __construct(Model $owner, Model $model, $foreignKey = null)
     {        
@@ -46,6 +46,28 @@ abstract class Relation extends BaseQuery
         parent::__construct($query, $whereCondition);
     }
     
+    protected function hasMany()
+    {
+        return true;
+    }
+    
+    public function getLazyLoader(Select $query)
+    {        
+        $fk = $this->getForeignKey();
+        $pk = $this->owner->getPrimaryKey();
+        
+        $select = new Select($this->compiler, $this->model->getTable());
+        
+        $expr = new Expression($this->compiler);
+        $expr->op($query->select($pk));
+        
+        $select->where($fk)->in(array($expr));
+        
+        return new LazyLoader($this->connection, (string) $select,
+                              $this->compiler->getParams(), $this->hasMany(),
+                              get_class($this->model), $fk, $pk);
+    }
+    
     public function getForeignKey()
     {
         if($this->foreignKey === null)
@@ -58,7 +80,7 @@ abstract class Relation extends BaseQuery
     
     protected function query(array &$columns = array())
     {
-        if(!empty($columns))
+        if(!$this->query->isLocked() && !empty($columns))
         {
             $columns[] = $this->model->getPrimaryKey();
         }

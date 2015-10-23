@@ -28,6 +28,7 @@ class Query extends BaseQuery
     protected $model;
     protected $connection;
     protected $compiler;
+    protected $with;
     
     public function __construct(Model $model)
     {
@@ -41,7 +42,8 @@ class Query extends BaseQuery
         parent::__construct($query, $whereCondition);
     }
     
-    protected function query(array &$columns)
+    
+    protected function query(array &$columns = array())
     {
         if(!empty($columns))
         {
@@ -52,6 +54,18 @@ class Query extends BaseQuery
                                         $this->compiler->getParams());
     }
     
+    public function with($value)
+    {
+        if(!is_array($value))
+        {
+            $value = array($value);
+        }
+        
+        $this->with = $value;
+        return $this;
+    }
+    
+    
     public function first(array $columns = array())
     {
         return $this->query()
@@ -61,18 +75,40 @@ class Query extends BaseQuery
     
     public function all(array $columns = array())
     {
-        return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->all();
+        $results = $this->query($columns)
+                        ->fetchClass(get_class($this->model), array(false))
+                        ->all();
+        
+        if(!empty($results) && !empty($this->with))
+        {
+            foreach($this->with as $with)
+            {
+                if(!method_exists($this->model, $with))
+                {
+                    continue;
+                }
+                
+                $loader = $this->model->{$with}()->getLazyLoader($this->query);
+                
+                if($loader === null)
+                {
+                    continue;
+                }
+                
+                foreach($results as $result)
+                {
+                    $result->setLazyLoader($with, $loader);
+                }
+            }
+        }
+        
+        return $results;
     }
     
     public function find($id, array $columns = array())
     {
         $this->query->where($this->model->getPrimaryKey())->is($id);
-        
-        return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->first();
+        return $this->first($columns);
     }
     
     public function findAll(array $columns = array())
@@ -86,10 +122,7 @@ class Query extends BaseQuery
         {
             $this->query->where($this->model->getPrimaryKey())->in($ids);
         }
-        
-        return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
-                    ->all();
+        return $this->all($columns);
     }
     
 }

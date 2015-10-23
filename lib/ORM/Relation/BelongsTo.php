@@ -21,9 +21,33 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\ORM\Relation;
+use Opis\Database\ORM\Select;
+use Opis\Database\SQL\Expression;
+use Opis\Database\ORM\LazyLoader;
 
 class BelongsTo extends Relation
 {
+    public function hasMany()
+    {
+        return false;
+    }
+    
+    public function getLazyLoader(Select $query)
+    {        
+        $fk = $this->getForeignKey();
+        $pk = $this->owner->getPrimaryKey();
+        
+        $select = new Select($this->compiler, $this->model->getTable());
+        
+        $expr = new Expression($this->compiler);
+        $expr->op($query->select($fk));
+        
+        $select->where($pk)->in(array($expr));
+        
+        return new LazyLoader($this->connection, (string) $select,
+                              $this->compiler->getParams(), $this->hasMany(),
+                              get_class($this->model), $pk, $fk);
+    }
     
     public function getForeignKey()
     {

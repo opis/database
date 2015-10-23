@@ -22,6 +22,9 @@ namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\Model;
 use Opis\Database\ORM\Relation;
+use Opis\Database\ORM\Select;
+use Opis\Database\SQL\Expression;
+use Opis\Database\ORM\LazyLoader;
 
 class BelongsToMany extends Relation
 {
@@ -60,6 +63,34 @@ class BelongsToMany extends Relation
         return $this->junctionKey;
     }
     
+    public function getLazyLoader(Select $query)
+    {
+        $fk = $this->getForeignKey();
+        $pk = $this->owner->getPrimaryKey();
+        
+        $junctionTable = $this->getJunctionTable();
+        $junctionKey = $this->getJunctionKey();
+        $joinTable = $this->model->getTable();
+        $joinColumn = $this->model->getPrimaryKey();
+        
+        $select = new Select($this->compiler, $junctionTable);
+        
+        $expr = new Expression($this->compiler);
+        $expr->op($query->select($pk));
+        
+        $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
+        
+        $select->join($joinTable, function($join) use($junctionTable, $junctionKey, $joinTable, $joinColumn){
+                    $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
+               })
+               ->where($junctionTable . '.' .$fk)->in(array($expr))
+               ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
+        
+        return new LazyLoader($this->connection, (string) $select,
+                              $this->compiler->getParams(), $this->hasMany(),
+                              get_class($this->model), $linkKey, $pk);
+    }
+    
     public function getResult()
     {
         $self = $this;
@@ -74,10 +105,12 @@ class BelongsToMany extends Relation
              ->join($joinTable, function($join) use($junctionTable, $junctionKey, $joinTable, $joinColumn){
                 $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
              })
-             ->where($foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
-             ->select($joinTable . '.*');
+             ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
+             ->lock();
+             
+        $columns = array($joinTable . '.*');
         
-        return $this->query()
+        return $this->query($columns)
                     ->fetchClass(get_class($this->model), array(false))
                     ->all();
     }
