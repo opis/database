@@ -36,8 +36,6 @@ abstract class Model
     protected $columns;
     
     protected $primaryKey = 'id';
-    
-    protected $wasModified = false;
      
     protected $isNew = false;
     
@@ -51,9 +49,15 @@ abstract class Model
     
     protected $result = array();
     
-    protected $cache = array();
+    protected $modified = array();
     
     protected $loader = array();
+    
+    protected $deleted = false;
+    
+    protected $database;
+    
+    protected $sequence;
     
     public final function __construct($new = true)
     {
@@ -89,8 +93,7 @@ abstract class Model
             $value = $this->{$mutator}($value);
         }
         
-        $this->wasModified = true;
-        unset($this->cache[$name]);
+        $this->modified[$name] = true;
         $this->columns[$name] = $value;
     }
     
@@ -109,12 +112,7 @@ abstract class Model
             
             if(method_exists($this, $accesor))
             {
-                if(!isset($this->cache[$name]))
-                {
-                    $this->cache[$name] = $this->{$accesor}($this->columns[$name]);
-                }
-                
-                return $this->cache[$name];
+                return $this->{$accesor}($this->columns[$name]);                
             }
             
             return $this->columns[$name];
@@ -136,6 +134,64 @@ abstract class Model
         }
         
         throw new RuntimeException('Not found');
+    }
+    
+    public function save()
+    {
+        if($this->deleted)
+        {
+            throw new RuntimeException('The record was deleted');
+        }
+        
+        if($this->isNew)
+        {
+            $self = $this;
+            
+            $id = $this->database->transaction(function($db) use($self){
+                
+                $db->insert($self->prepareColumns())
+                   ->into($self->getTable());
+                
+                return $db->getConnection()->pdo()->lastInsertId($self->getSequence());
+                
+            });
+            
+            $this->columns[$this->getPrimaryKey()] = $id;
+            $this->isNew = false;
+            
+            return (bool) $id;
+        }
+        
+        if(!empty($this->modified))
+        {
+            $result = $this->database()->update($this->getTable())->set($this->prepareColumns(true));
+            $this->modified = array();
+            return (bool) $result;
+        }
+        
+        return true;
+        
+    }
+    
+    public function delete()
+    {
+        if($this->deleted)
+        {
+            throw new RuntimeException('The record was deleted');
+        }
+        
+        if($this->isNew)
+        {
+            throw new RuntimeException('This is a new record that was not saved yet');
+        }
+        $pk = $this->getPrimaryKey();
+        
+        $result = $this->database->from($this->getTable())
+                                 ->where($pk)->is($this->columns[$pk])
+                                 ->delete();
+        $this->deleted = true;
+        
+        return (bool) $result;
     }
     
     public function setLazyLoader($name, $value)
@@ -181,6 +237,46 @@ abstract class Model
     public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         return new BelongsToMany($this, new $model, $foreignKey, $junctionTable, $junctionKey);
+    }
+    
+    protected function database()
+    {
+        if($this->database === null)
+        {
+            $this->database = new Database(static::getConnection());
+        }
+        
+        return $this->database;
+    }
+    
+    protected function getSequence()
+    {
+        if($this->sequence === null)
+        {
+            $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey() . '_seq';
+        }
+        
+        return $this->sequence;
+    }
+    
+    protected function prepareColumns($update = false)
+    {
+        $results = array();
+        
+        $columns = $update ? array_intersect_key($this->columns, $this->modifed) : $this->columns;
+        
+        foreach($columns as $column => &$value)
+        {
+            if($value instanceof Model)
+            {
+                $results[$column] = $value->{$value->getPrimaryKey()};
+                continue;
+            }
+            
+            $results[$column] = &$value;
+        }
+        
+        return $results;
     }
     
     protected function getClassShortName()

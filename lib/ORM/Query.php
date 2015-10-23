@@ -82,27 +82,32 @@ class Query extends BaseQuery
     
     public function count($column = '*',  $distinct = false)
     {
-        
+        $this->query->count($column, $distinct);
+        return $this->execute();
     }
     
     public function avg($column, $distinct = false)
     {
-        
+        $this->query->avg($column, $distinct);
+        return $this->execute();
     }
     
     public function sum($column, $distinct  = false)
     {
-        
+        $this->query->sum($column, $distinct);
+        return $this->execute();
     }
     
     public function min($column, $distinct = false)
     {
-        
+        $this->query->min($column, $distinct);
+        return $this->execute();
     }
     
     public function max($column, $distinct = false)
     {
-        
+        $this->query->max($column, $distinct);
+        return $this->execute();
     }
     
     public function first(array $columns = array())
