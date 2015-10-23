@@ -53,6 +53,11 @@ class Query extends BaseQuery
                                         $this->compiler->getParams());
     }
     
+    protected function execute()
+    {
+        return $this->connection->column((string) $this->query, $this->compiler->getParams());
+    }
+    
     public function with($value)
     {
         if(!is_array($value))
@@ -67,6 +72,37 @@ class Query extends BaseQuery
     public function delete(array $tables = array())
     {
         return $this->query->toDelete($this->connection)->delete($tables);
+    }
+    
+    public function column($name)
+    {
+        $this->query->column($name);
+        return $this->execute();
+    }
+    
+    public function count($column = '*',  $distinct = false)
+    {
+        
+    }
+    
+    public function avg($column, $distinct = false)
+    {
+        
+    }
+    
+    public function sum($column, $distinct  = false)
+    {
+        
+    }
+    
+    public function min($column, $distinct = false)
+    {
+        
+    }
+    
+    public function max($column, $distinct = false)
+    {
+        
     }
     
     public function first(array $columns = array())
