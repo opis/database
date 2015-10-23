@@ -59,6 +59,10 @@ abstract class Model
     
     protected $sequence;
     
+    protected $fillable;
+    
+    protected $guarded;
+    
     public final function __construct($new = true)
     {
         $this->isNew = $new;
@@ -216,9 +220,32 @@ abstract class Model
     
     public function assign(array $values)
     {
-        foreach($values as $column => &$value)
+        if($this->fillable !== null && is_array($this->fillable))
         {
-            $this->{$column} = $value;
+            foreach($values as $column => &$value)
+            {
+                if(in_array($column, $this->fillable))
+                {
+                    $this->{$column} = $value;
+                }
+            }
+        }
+        elseif($this->guarded !== null && is_array($this->guarded))
+        {
+            foreach($values as $column => &$value)
+            {
+                if(!in_array($column, $this->guarded))
+                {
+                    $this->{$column} = $value;
+                }
+            }
+        }
+        else
+        {
+            foreach($values as $column => &$value)
+            {
+                $this->{$column} = $value;
+            }
         }
     }
     
