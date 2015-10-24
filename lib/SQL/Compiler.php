@@ -483,6 +483,7 @@ class Compiler
     {
         $sql  = 'UPDATE ';
         $sql .= $this->handleTables($update->getTables());
+        $sql .= $this->handleJoins($update->getJoinClauses());
         $sql .= $this->handleSetColumns($update->getColumns());
         $sql .= $this->handleWheres($update->getWhereConditions());
         
