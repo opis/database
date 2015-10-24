@@ -445,6 +445,11 @@ class Compiler
         return 'FORMAT('. $this->wrap($func['column']). ', ' . $this->param($func['format']) . ')';
     }
     
+    public function getDateFormat()
+    {
+        return $this->dateFormat;
+    }
+    
     public function select(SelectStatement $select)
     {
         $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
