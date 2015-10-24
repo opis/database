@@ -395,30 +395,16 @@ abstract class Model
     {
         if($this->fillable !== null && is_array($this->fillable))
         {
-            foreach($values as $column => &$value)
-            {
-                if(in_array($column, $this->fillable))
-                {
-                    $this->{$column} = $value;
-                }
-            }
+            $values = array_intersect_key($values, array_flip($this->fillable));
         }
         elseif($this->guarded !== null && is_array($this->guarded))
         {
-            foreach($values as $column => &$value)
-            {
-                if(!in_array($column, $this->guarded))
-                {
-                    $this->{$column} = $value;
-                }
-            }
+            $values = array_diff_key($values, array_flip($this->guarded));
         }
-        else
+        
+        foreach($values as $column => &$value)
         {
-            foreach($values as $column => &$value)
-            {
-                $this->{$column} = $value;
-            }
+            $this->{$column} = $value;
         }
     }
     
