@@ -22,7 +22,7 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class UpdateStatement extends WhereCondition
+class UpdateStatement extends WhereJoinCondition
 {
     protected $tables;
     
@@ -32,8 +32,14 @@ class UpdateStatement extends WhereCondition
     
     public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
     {
+        if(!is_array($table))
+        {
+            $table = array($table);
+        }
+        
+        $this->tables = $table;
+        
         parent::__construct($compiler, $clause);
-        $this->tables = array((string) $table);
     }
     
     public function getTables()
