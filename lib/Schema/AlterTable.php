@@ -159,42 +159,6 @@ class AlterTable
         return $foreign;
     }
     
-    /**
-     * @deprecated since 2.3.0
-     */
-    
-    public function addPrimary($name, $columns = null)
-    {
-        return $this->primary($name, $columns);
-    }
-    
-    /**
-     * @deprecated since 2.3.0
-     */
-    
-    public function addUnique($name, $columns = null)
-    {
-        return $this->unique($name, $columns);
-    }
-    
-    /**
-     * @deprecated since 2.3.0
-     */
-    
-    public function addIndex($name, $columns = null)
-    {
-        return $this->index($name, $columns);
-    }
-    
-    /**
-     * @deprecated since 2.3.0
-     */
-    
-    public function addForeign($name, $columns = null)
-    {
-        return $this->foreign($name, $columns);
-    }
-    
     public function setDefaultValue($column, $value)
     {
         return $this->addCommand('setDefaultValue', array(
