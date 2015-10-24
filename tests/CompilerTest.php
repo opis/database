@@ -523,7 +523,7 @@ class FakeConnection extends Connection
             return new \Opis\Database\SQL\Compiler();
         }
         
-        $class = '\\Opis\\Database\\Compiler\\' . $this->dsn;
+        $class = '\\Opis\\Database\\SQL\\Compiler\\' . $this->dsn;
         
         return new $class();
     }

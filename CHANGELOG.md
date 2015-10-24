@@ -10,6 +10,7 @@ CHANGELOG
 `Opis\Database\DSN` namespace
 * Added `Opis\Database\SQL\Compiler::getDateFormat` method
 * Added support for ORM
+* Addes support for joins in `UPDATE` statementes
 
 ### v2.3.1, 2015.10.21
 
