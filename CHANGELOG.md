@@ -11,6 +11,7 @@ CHANGELOG
 * Added `Opis\Database\SQL\Compiler::getDateFormat` method
 * Added support for ORM
 * Addes support for joins in `UPDATE` statementes
+* Moved classes that were under the `Opis\Database\Compiler` namespace to `Opis\Database\SQL\Compiler` namespace
 
 ### v2.3.1, 2015.10.21
 
