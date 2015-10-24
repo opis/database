@@ -22,6 +22,7 @@ namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
+use Opis\Database\SQL\UpdateStatement;
 
 class SQLServer extends Compiler
 {
@@ -95,5 +96,25 @@ class SQLServer extends Compiler
         
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
         
+    }
+    
+    public function update(UpdateStatement $update)
+    {
+        $joins = $this->handleJoins($update->getJoinClauses());
+        $tables = $update->getTables();
+        
+        if($joins !== '')
+        {
+            $joins = ' FROM ' . $this->handleTables($tables) . ' ' . $joins;
+            $tables = array_values($tables);
+        }
+        
+        $sql  = 'UPDATE ';
+        $sql .= $this->handleTables($tables);
+        $sql .= $this->handleSetColumns($update->getColumns());
+        $sql .= $joins;
+        $sql .= $this->handleWheres($update->getWhereConditions());
+        
+        return $sql;
     }
 }
