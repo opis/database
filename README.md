@@ -27,7 +27,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```json
 {
     "require": {
-        "opis/database": "^2.3.1"
+        "opis/database": "^3.0.0"
     }
 }
 ```
@@ -37,7 +37,7 @@ If you are unable to use [Composer](http://getcomposer.org) you can download the
 
 ```php
 
-require_once 'path/to/database-2.3.1/autoload.php';
+require_once 'path/to/database-3.0.0/autoload.php';
 
 ```
 
