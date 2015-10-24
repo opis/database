@@ -7,7 +7,9 @@ Opis Database
 
 Database abstraction layer
 -------------------------
-**Opis Database** is a library that provides an abstraction layer over several database systems, offering a standard way of handling database records and thus, making the differences between various SQL dialects irrelevant to the developers.
+**Opis Database** is a library that provides an abstraction layer over several database systems,
+offering a standard way of handling database records and thus, making the differences between various SQL dialects
+irrelevant for developers.
 
 The library has support for the following database types: MySQL, PostgreSQL, Microsoft SQL, SQLite, Firebird, IBM DB2, Oracle, NuoDB. 
 
@@ -33,7 +35,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```
 
 If you are unable to use [Composer](http://getcomposer.org) you can download the
-[tar.gz](https://github.com/opis/database/archive/2.3.1.tar.gz) or the [zip](https://github.com/opis/database/archive/2.3.1.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
+[tar.gz](https://github.com/opis/database/archive/3.0.0.tar.gz) or the [zip](https://github.com/opis/database/archive/3.0.0.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
 
