@@ -1,5 +1,16 @@
 CHANGELOG
 -----------
+### v3.0.0
+
+* Removed deprecated `Opis\Database\Schema\AlterTable::addPrimary` method
+* Removed deprecated `Opis\Database\Schema\AlterTable::addUnique` method
+* Removed deprecated `Opis\Database\Schema\AlterTable::addIndex` method
+* Removed deprecated `Opis\Database\Schema\AlterTable::addForeign` method
+* Removed `Opis\Database\DSN` class and all other classes that were under the
+`Opis\Database\DSN` namespace
+* Added `Opis\Database\SQL\Compiler::getDateFormat` method
+* Added support for ORM
+
 ### v2.3.1, 2015.10.21
 
 * Fixed a bug in `Opis\Database\SQL\Compiler::sqlFunctionROUND`
