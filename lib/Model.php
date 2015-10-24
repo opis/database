@@ -160,6 +160,22 @@ abstract class Model
     
     protected $mapGetSet = array();
     
+    /**
+     * A list of user defined type casts for columns
+     *
+     * @var array
+     */
+    
+    protected $cast = array();
+    
+    /**
+     * Date format
+     *
+     * @var string
+     */
+    
+    protected $dateFormat;
+    
     
     /**
      * Constructor
@@ -224,6 +240,11 @@ abstract class Model
         if(isset($this->mapGetSet[$name]))
         {
             $name = $this->mapGetSet[$name];
+        }
+        
+        if(isset($this->cast[$name]) && $value !== null)
+        {
+            //$value = 
         }
         
         $mutator = $name . 'Mutator';
@@ -317,19 +338,17 @@ abstract class Model
             })
             ->execute();
             
-            $this->columns[$this->getPrimaryKey()] = $id;
+            $this->columns[$this->primaryKey] = $id;
             $this->isNew = false;
             
             return (bool) $id;
         }
         
         if(!empty($this->modified))
-        {
-            $pk = $this->getPrimaryKey();
-            
+        {   
             $result = $this->database()
                            ->update($this->getTable())
-                           ->where($pk)->is($this->columns[$pk])
+                           ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
                            ->set($this->prepareColumns(true));
                            
             $this->modified = array();
@@ -357,10 +376,9 @@ abstract class Model
         {
             throw new RuntimeException('This is a new record that was not saved yet');
         }
-        $pk = $this->getPrimaryKey();
         
         $result = $this->database->from($this->getTable())
-                                 ->where($pk)->is($this->columns[$pk])
+                                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
                                  ->delete();
         $this->deleted = true;
         
@@ -512,6 +530,58 @@ abstract class Model
     }
     
     /**
+     * Casts a column's value
+     *
+     * @param   string  $name   Column's name
+     * @param   mixed   $value  Value to be casted
+     *
+     * @return  mixed
+     */
+    
+    protected function cast($name, $value)
+    {
+        $cast = $this->cast[$name];
+        
+        if($cast instanceof \Closure)
+        {
+            return $cast($value);
+        }
+        
+        switch($cast)
+        {
+            case 'integer':
+                return (int) $value;
+            case 'float':
+                return (float) $value;
+            case 'boolean':
+                return $value ? true : false;
+            case 'string':
+                return (string) $value;
+            case 'date':
+                return $value instanceof DateTimeInterface ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
+        }
+        
+        throw new RuntimeException(vsprintf('Unknown cast type "%s"', array($cast)));
+    }
+    
+    /**
+     * Get a DateTime format
+     *
+     * @return string
+     */
+    
+    protected function getDateFormat()
+    {
+        if($this->dateFormat === null)
+        {
+            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
+        }
+        
+        return $this->dateFormat;
+    }
+    
+    
+    /**
      * Database instance
      *
      * @return  \Opis\Database\Database
@@ -537,7 +607,7 @@ abstract class Model
     {
         if($this->sequence === null)
         {
-            $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey() . '_seq';
+            $this->sequence = $this->getTable() . '_' . $this->primaryKey . '_seq';
         }
         
         return $this->sequence;
@@ -561,7 +631,7 @@ abstract class Model
         {
             if($value instanceof Model)
             {
-                $results[$column] = $value->{$value->getPrimaryKey()};
+                $results[$column] = $value->{$value->primaryKey};
                 continue;
             }
             
