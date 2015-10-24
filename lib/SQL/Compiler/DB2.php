@@ -18,44 +18,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
-use Opis\Database\SQL\Expression;
 
-class Oracle extends Compiler
+class DB2 extends Compiler
 {
-    
-    protected function wrap($value)
-    {
-        if($value instanceof Expression)
-        {
-            return $this->handleExpressions($value->getExpressions());
-        }
-        
-        $wrapped = array();
-        
-        foreach(explode('.', $value) as $segment)
-        {
-            if($segment == '*')
-            {
-                $wrapped[] = $segment;
-            }
-            else
-            {
-                $wrapped[] = sprintf($this->wrapper, strtoupper($segment));
-            }
-        }
-        
-        return implode('.', $wrapped);
-    }
-    
+
     /**
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\SelectStatament    $select  Query object.
+     * @param   \Opis\Database\SQL\SelectStatement    $select  Select statement object.
      * @return  array
      */
 
@@ -69,24 +44,30 @@ class Oracle extends Compiler
             return parent::select($select);
         }
         
+        $order = trim($this->handleOrderings($select->getOrderClauses()));
+        
+        if(empty($order))
+        {
+            $order = 'ORDER BY (SELECT 0)';
+        }
+        
         $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
+        $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
         $sql .= $this->handleJoins($select->getJoinClauses());
         $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleOrderings($select->getOrderClauses());
         $sql .= $this->handleHavings($select->getHavingConditions());
         
         if($offset === null)
         {
-            return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
+            $offset = 0;
         }
-        
         $limit += $offset;
         $offset++;
         
-        return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
+        return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
     }
 }

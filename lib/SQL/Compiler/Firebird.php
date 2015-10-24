@@ -18,7 +18,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;

@@ -18,19 +18,26 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
 
-class DB2 extends Compiler
+class SQLServer extends Compiler
 {
+
+    /** @var string Date format. */
+    protected $dateForamt = 'Y-m-d H:i:s.0000000';
+
+    /** @var string Wrapper used to escape table and column names. */
+    protected $wrapper = '[%s]';
+
 
     /**
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\SelectStatement    $select  Select statement object.
+     * @param   \Opis\Database\SQL\SelectStatement    $select  Query object.
      * @return  array
      */
 
@@ -42,6 +49,23 @@ class DB2 extends Compiler
         if($limit === null && $offset === null)
         {
             return parent::select($select);
+        }
+        
+        if($offset === null)
+        {
+            $sql  =  $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+            $sql .= 'TOP ' . $limit . ' ';
+            $sql .= $this->handleColumns($select->getColumns());
+            $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
+            $sql .= ' FROM ';
+            $sql .= $this->handleTables($select->getTables());
+            $sql .= $this->handleJoins($select->getJoinClauses());
+            $sql .= $this->handleWheres($select->getWhereConditions());
+            $sql .= $this->handleGroupings($select->getGroupClauses());
+            $sql .= $this->handleOrderings($select->getOrderClauses());
+            $sql .= $this->handleHavings($select->getHavingConditions());
+            
+            return $sql;
         }
         
         $order = trim($this->handleOrderings($select->getOrderClauses()));
@@ -65,9 +89,11 @@ class DB2 extends Compiler
         {
             $offset = 0;
         }
+        
         $limit += $offset;
         $offset++;
         
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
+        
     }
 }

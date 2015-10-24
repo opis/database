@@ -18,39 +18,23 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Compiler;
+namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
 
-class NuoDB extends Compiler
+class MySQL extends Compiler
 {
-
+    
     /** @var string Wrapper used to escape table and column names. */
-    protected $wrapper = '"%s"';
+    protected $wrapper = '`%s`';
 
-    /**
-     * Compiles LIMIT clauses.
-     *
-     * @access  protected
-     * @param   int        $limit  Limit
-     * @return  string
-     */
-
-    protected function handleLimit($limit)
+    protected function sqlFunctionROUND(array $func)
     {
-        return ($limit === null) ? '' : ' FETCH ' . $limit;
+        return 'FORMAT(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
     }
-
-    /**
-     * Compiles OFFSET clauses.
-     * 
-     * @access  protected
-     * @param   int        $offset  Limit
-     * @return  string
-     */
-
-    protected function handleOffset($offset)
+    
+    protected function sqlFunctionLEN(array $func)
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $offset;
+        return 'LENGTH(' . $this->wrap($func['column']) . ')';
     }
 }

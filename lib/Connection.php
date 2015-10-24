@@ -274,28 +274,28 @@ class Connection implements Serializable
             switch($this->driver())
             {
                 case 'mysql':
-                    $this->compiler = new \Opis\Database\Compiler\MySQL();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\MySQL();
                     break;
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
-                    $this->compiler = new \Opis\Database\Compiler\SQLServer();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\SQLServer();
                     break;
                 case 'oci':
                 case 'oracle':
-                    $this->compiler = new \Opis\Database\Compiler\Oracle();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\Oracle();
                     break;
                 case 'firebird':
-                    $this->compiler = new \Opis\Database\Compiler\Firebird();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\Firebird();
                     break;
                 case 'db2':
                 case 'ibm':
                 case 'odbc':
-                    $this->compiler = new \Opis\Database\Compiler\DB2();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\DB2();
                     break;
                 case 'nuodb':
-                    $this->compiler = new \Opis\Database\Compiler\NuoDB();
+                    $this->compiler = new \Opis\Database\SQL\Compiler\NuoDB();
                     break;
                 default:
                     $this->compiler = new \Opis\Database\SQL\Compiler();
