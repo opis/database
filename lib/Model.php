@@ -30,6 +30,22 @@ use Opis\Database\ORM\Relation\BelongsToMany;
 abstract class Model
 {
     /**
+     * Autoincrement primary key type
+     *
+     * @var int
+     */
+    
+    const PRIMARY_KEY_AUTOINCREMENT = 1;
+    
+    /**
+     * Custom primary key type
+     *
+     * @var int
+     */
+    
+    const PRIMARY_KEY_CUSTOM = 2;
+    
+    /**
      * Model's table name
      *
      * @var string
@@ -44,6 +60,14 @@ abstract class Model
      */
     
     protected $primaryKey = 'id';
+    
+    /**
+     * Primary key's type
+     *
+     * @var int
+     */
+    
+    protected $primaryKeyType = Model::PRIMARY_KEY_AUTOINCREMENT;
     
     /**
      * Table's associated sequence name
@@ -330,10 +354,18 @@ abstract class Model
             
             $id = $this->database()->transaction(function($db) use($self){
                 
-                $db->insert($self->prepareColumns())
+                $columns = $self->prepareColumns();
+                $customPK = $self->primaryKeyType === Model::PRIMARY_KEY_CUSTOM;
+                
+                if($customPK)
+                {
+                    $columns[$this->primaryKey] = $self->generatePrimaryKey();
+                }
+                
+                $db->insert($columns)
                    ->into($self->getTable());
                 
-                return $db->getConnection()->pdo()->lastInsertId($self->getSequence());
+                return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->pdo()->lastInsertId($self->getSequence());
                 
             })
             ->execute();
@@ -513,6 +545,17 @@ abstract class Model
     public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         return new BelongsToMany(static::getConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
+    }
+    
+    /**
+     * Generates a unique primary key
+     *
+     * @return  mixed
+     */
+    
+    protected function generatePrimaryKey()
+    {
+        throw new RuntimeException('Unimplemented method');
     }
     
     /**
