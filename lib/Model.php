@@ -268,7 +268,7 @@ abstract class Model
         
         if(isset($this->cast[$name]) && $value !== null)
         {
-            //$value = 
+            $value = $this->cast($name, $value);
         }
         
         $mutator = $name . 'Mutator';
