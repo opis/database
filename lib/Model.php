@@ -456,7 +456,7 @@ abstract class Model
     
     public function getForeignKey()
     {
-        return strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . '_id';
+        return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
     }
     
     /**
