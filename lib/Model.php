@@ -266,16 +266,16 @@ abstract class Model
             $name = $this->mapGetSet[$name];
         }
         
-        if(isset($this->cast[$name]) && $value !== null)
-        {
-            $value = $this->cast($name, $value);
-        }
-        
         $mutator = $name . 'Mutator';
         
         if(method_exists($this, $mutator))
         {
             $value = $this->{$mutator}($value);
+        }
+        
+        if(isset($this->cast[$name]))
+        {
+            $value = $this->cast($name, $value);
         }
         
         if(method_exists($this, $name))
@@ -308,13 +308,19 @@ abstract class Model
         if(isset($this->columns[$name]))
         {
             $accesor = $getter . 'Accessor';
+            $value = $this->columns[$name];
+            
+            if(isset($this->cast[$name]))
+            {
+                $value = $this->cast($name, $value);
+            }
             
             if(method_exists($this, $accesor))
             {
-                return $this->{$accesor}($this->columns[$name]);                
+                return $this->{$accesor}($value);                
             }
             
-            return $this->columns[$name];
+            return $value;
         }
         
         if(isset($this->result[$name]))
@@ -568,15 +574,8 @@ abstract class Model
      */
     
     protected function cast($name, $value)
-    {
-        $cast = $this->cast[$name];
-        
-        if($cast instanceof \Closure)
-        {
-            return $cast($value);
-        }
-        
-        switch($cast)
+    {   
+        switch($this->cast[$name])
         {
             case 'integer':
                 return (int) $value;
@@ -586,6 +585,8 @@ abstract class Model
                 return $value ? true : false;
             case 'string':
                 return (string) $value;
+            case 'array':
+                return is_array($value) ? json_encode($value) : json_decode($value, true);
             case 'date':
                 return $value instanceof DateTimeInterface ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
         }
