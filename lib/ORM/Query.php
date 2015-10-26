@@ -74,6 +74,11 @@ class Query extends BaseQuery
         return $this->query->toDelete($this->connection)->delete($tables);
     }
     
+    public function update(array $columns)
+    {
+        return $this->query->toUpdate($this->connection)->update($columns);
+    }
+    
     public function column($name)
     {
         $this->query->column($name);

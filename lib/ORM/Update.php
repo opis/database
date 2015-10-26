@@ -21,49 +21,24 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Connection;
-use Opis\Database\SQL\Delete;
-use Opis\Database\SQL\SelectStatement;
+use Opis\Database\SQL\Compiler;
+use Opis\Database\SQL\WhereClause;
+use Opis\Database\SQL\UpdateStatment;
 
-class Select extends SelectStatement
+class Update extends UpdateStatment
 {
+    protected $connection;
     
-    protected $locked = false;
-    
-    public function isLocked()
+    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
-        return $this->locked;
+        parent::__construct($compiler, $from, $clause);
+        $this->connection = $connection;
+        $this->joins = $joins;
     }
     
-    public function from($tables)
+    public function update(array $columns)
     {
-        if(!is_array($tables))
-        {
-            $tables = array($tables);
-        }
-        
-        $this->tables = $tables;
-        return $this;
-    }
-    
-    public function lock()
-    {
-        $this->locked = true;
-        return $this;
-    }
-    
-    public function select($columns = array())
-    {
-        $this->sql = null;
-        return parent::select($columns);
-    }
-    
-    public function toDelete(Connection $connection)
-    {
-        return new Delete($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
-    }
-    
-    public function toUpdate(Connection $connection)
-    {
-        return new Update($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        parent::set($columns);
+        return $this->connection->count((string) $this, $this->compiler->getParams());
     }
 }
