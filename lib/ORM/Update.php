@@ -23,9 +23,9 @@ namespace Opis\Database\ORM;
 use Opis\Database\Connection;
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\WhereClause;
-use Opis\Database\SQL\UpdateStatment;
+use Opis\Database\SQL\UpdateStatement;
 
-class Update extends UpdateStatment
+class Update extends UpdateStatement
 {
     protected $connection;
     
