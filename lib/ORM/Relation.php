@@ -26,7 +26,6 @@ use Opis\Database\SQL\Expression;
 
 abstract class Relation extends BaseQuery
 {
-    
     protected $model;
     protected $foreignKey;
     protected $connection;
