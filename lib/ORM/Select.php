@@ -29,6 +29,11 @@ class Select extends SelectStatement
     
     protected $locked = false;
     
+    public function getCompiler()
+    {
+        return $this->compiler;
+    }
+    
     public function isLocked()
     {
         return $this->locked;

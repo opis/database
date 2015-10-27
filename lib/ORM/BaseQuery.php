@@ -28,11 +28,23 @@ abstract class BaseQuery
     protected $query;
     protected $whereCondition;
     protected $isReadOnly = false;
+    protected $with;
     
     public function __construct(SelectStatement $query, WhereCondition $whereCondition)
     {
         $this->query = $query;
         $this->whereCondition = $whereCondition;
+    }
+    
+    public function with($value)
+    {
+        if(!is_array($value))
+        {
+            $value = array($value);
+        }
+        
+        $this->with = $value;
+        return $this;
     }
     
     public function where($column)
@@ -136,5 +148,32 @@ abstract class BaseQuery
     {
         $this->query->distinct();
         return $this;
+    }
+    
+    protected function prepareResults(array &$results)
+    {
+        if(!empty($results) && !empty($this->with))
+        {
+            foreach($this->with as $with)
+            {
+                if(!method_exists($this->model, $with))
+                {
+                    continue;
+                }
+                
+                $query = clone $this->query;
+                $loader = $this->model->{$with}()->getLazyLoader($query);
+                
+                if($loader === null)
+                {
+                    continue;
+                }
+                
+                foreach($results as $result)
+                {
+                    $result->setLazyLoader($with, $loader);
+                }
+            }
+        }
     }
 }

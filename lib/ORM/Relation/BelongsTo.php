@@ -50,8 +50,7 @@ class BelongsTo extends Relation
         
         $select->where($pk)->in(array($expr));
         
-        return new LazyLoader($this->connection, (string) $select,
-                              $this->compiler->getParams(), $this->hasMany(),
+        return new LazyLoader($this->connection, $query, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $pk, $fk);
     }
     

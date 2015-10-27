@@ -20,8 +20,8 @@
 
 namespace Opis\Database\ORM;
 
-use Opis\Database\Connection;
 use Opis\Database\Model;
+use Opis\Database\Connection;
 
 class LazyLoader
 {
@@ -33,16 +33,20 @@ class LazyLoader
     protected $pk;
     protected $results;
     protected $hasMany;
+    protected $query;
+    protected $readonly;
     
-    public function __construct(Connection $connection, $sql, array $params, $hasMany, $model, $fk, $pk)
+    public function __construct(Connection $connection, Select $query, $readonly, $hasMany, $model, $fk, $pk)
     {
         $this->connection = $connection;
-        $this->sql = $sql;
+        //$this->sql = $sql;
         $this->model = $model;
-        $this->params = $params;
+        //$this->params = $params;
         $this->hasMany = $hasMany;
         $this->fk = $fk;
         $this->pk = $pk;
+        $this->readonly = $readonly;
+        $this->query = $query;
     }
     
     protected function &getResults()
@@ -50,8 +54,8 @@ class LazyLoader
         if($this->results === null)
         {
             $this->results = $this->connection
-                                  ->query($this->sql, $this->params)
-                                  ->fetchClass($this->model, array(false))
+                                  ->query((string) $this->query, $this->query->getCompiler()->getParams())
+                                  ->fetchClass($this->model, array($this->readonly))
                                   ->all();
         }
         

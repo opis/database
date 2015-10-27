@@ -127,29 +127,8 @@ class Query extends BaseQuery
         $results = $this->query($columns)
                         ->fetchClass(get_class($this->model), array($this->isReadOnly))
                         ->all();
-        
-        if(!empty($results) && !empty($this->with))
-        {
-            foreach($this->with as $with)
-            {
-                if(!method_exists($this->model, $with))
-                {
-                    continue;
-                }
-                
-                $loader = $this->model->{$with}()->getLazyLoader($this->query);
-                
-                if($loader === null)
-                {
-                    continue;
-                }
-                
-                foreach($results as $result)
-                {
-                    $result->setLazyLoader($with, $loader);
-                }
-            }
-        }
+                        
+        $this->prepareResults($results);
         
         return $results;
     }

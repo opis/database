@@ -87,8 +87,7 @@ class BelongsToMany extends Relation
                ->where($junctionTable . '.' .$fk)->in(array($expr))
                ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
         
-        return new LazyLoader($this->connection, (string) $select,
-                              $this->compiler->getParams(), $this->hasMany(),
+        return new LazyLoader($this->connection, $query, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $linkKey, $pk);
     }
     

@@ -68,8 +68,7 @@ abstract class Relation extends BaseQuery
         
         $select->where($fk)->in(array($expr));
         
-        return new LazyLoader($this->connection, (string) $select,
-                              $this->compiler->getParams(), $this->hasMany(),
+        return new LazyLoader($this->connection, $query, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $fk, $pk);
     }
     
@@ -103,9 +102,13 @@ abstract class Relation extends BaseQuery
     
     public function all(array $columns = array())
     {
-        return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
-                    ->all();
+        $results = $this->query($columns)
+                        ->fetchClass(get_class($this->model), array($this->isReadOnly))
+                        ->all();
+                        
+        $this->prepareResults($results);
+        
+        return $results;
     }
     
     public function getModel()
