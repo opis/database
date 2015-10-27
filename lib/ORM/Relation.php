@@ -97,14 +97,14 @@ abstract class Relation extends BaseQuery
     public function first(array $columns = array())
     {
         return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
                     ->first();
     }
     
     public function all(array $columns = array())
     {
         return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
                     ->all();
     }
     
