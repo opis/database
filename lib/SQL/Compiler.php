@@ -94,7 +94,7 @@ class Compiler
     protected function handleExpressions(array $expressions)
     {
         $sql = array();
-        //print_r($expressions); die('xx');
+        
         foreach($expressions as $expr)
         {
             switch($expr['type'])

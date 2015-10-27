@@ -21,6 +21,7 @@
 namespace Opis\Database\ORM;
 
 use Closure;
+use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
 
 abstract class BaseQuery
@@ -29,9 +30,12 @@ abstract class BaseQuery
     protected $whereCondition;
     protected $isReadOnly = false;
     protected $with;
+    protected $prepared;
+    protected $compiler;
     
-    public function __construct(SelectStatement $query, WhereCondition $whereCondition)
+    public function __construct(Compiler $compiler, SelectStatement $query, WhereCondition $whereCondition)
     {
+        $this->compiler = $compiler;
         $this->query = $query;
         $this->whereCondition = $whereCondition;
     }
@@ -150,11 +154,25 @@ abstract class BaseQuery
         return $this;
     }
     
+    protected function prepareQuery()
+    {
+        if($this->prepared === null)
+        {
+            $this->prepared = array(
+                'sql' => (string) $this->query,
+                'params' => $this->compiler->getParams(),
+            );
+        }
+        
+        return $this->prepared;
+    }
+    
     protected function prepareResults(array &$results)
     {
         if(!empty($results) && !empty($this->with))
         {
             $attr = $this->getWithAttributes();
+            $prepared = $this->prepareQuery();
             
             foreach($attr['with'] as $with)
             {
@@ -163,9 +181,7 @@ abstract class BaseQuery
                     continue;
                 }
                 
-                $query = clone $this->query;
-                
-                $loader = $this->model->{$with}()->getLazyLoader($query, $attr['extra'][$with]);
+                $loader = $this->model->{$with}()->getLazyLoader($this->query, $prepared['params'], $attr['extra'][$with]);
                 
                 if($loader === null)
                 {

@@ -29,21 +29,20 @@ abstract class Relation extends BaseQuery
     protected $model;
     protected $foreignKey;
     protected $connection;
-    protected $compiler;
     protected $owner;
     
     public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null)
     {        
         $this->connection = $connection;
-        $this->compiler = $compiler = $connection->compiler();
         $this->model = $model;
         $this->foreignKey = $foreignKey;
         $this->owner = $owner;
         
+        $compiler = $connection->compiler();
         $query = new Select($compiler, $model->getTable());
         $whereCondition = new WhereCondition($this, $query);
         
-        parent::__construct($query, $whereCondition);
+        parent::__construct($compiler, $query, $whereCondition);
     }
     
     protected function hasMany()
@@ -56,7 +55,7 @@ abstract class Relation extends BaseQuery
         return $name;
     }
     
-    public function getLazyLoader(Select $query, array $with)
+    public function getLazyLoader(Select $query, array $params, array $with)
     {        
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
@@ -68,7 +67,8 @@ abstract class Relation extends BaseQuery
         
         $select->where($fk)->in(array($expr));
         
-        return new LazyLoader($this->connection, $select, $with, $this->isReadOnly, $this->hasMany(),
+        return new LazyLoader($this->connection, $select, $params,
+                              $with, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $fk, $pk);
     }
     
@@ -91,8 +91,11 @@ abstract class Relation extends BaseQuery
             $columns[] = $pk;
         }
         
-        return $this->connection->query((string) $this->query->obpk($pk)->select($columns),
-                                        $this->compiler->getParams());
+        $this->query->obpk($pk)->select($columns);
+        
+        $query = $this->prepareQuery();
+        
+        return $this->connection->query($query['sql'], $query['params']);
     }
     
     public function first(array $columns = array())

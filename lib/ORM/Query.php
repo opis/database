@@ -27,19 +27,18 @@ class Query extends BaseQuery
 {
     protected $model;
     protected $connection;
-    protected $compiler;
     protected $with = array();
     
     public function __construct(Connection $connection, Model $model)
     {
         $this->model = $model;
         $this->connection = $connection;
-        $this->compiler = $compiler = $connection->compiler();
         
+        $compiler = $connection->compiler();
         $query = new Select($compiler, $model->getTable());
         $whereCondition = new WhereCondition($this, $query);
         
-        parent::__construct($query, $whereCondition);
+        parent::__construct($compiler, $query, $whereCondition);
     }
     
     protected function query(array &$columns = array())
@@ -51,8 +50,11 @@ class Query extends BaseQuery
             $columns[] = $pk;
         }
         
-        return $this->connection->query((string) $this->query->obpk($pk)->select($columns),
-                                        $this->compiler->getParams());
+        $this->query->obpk($pk)->select($columns);
+        
+        $query = $this->prepareQuery();
+        
+        return $this->connection->query($query['sql'], $query['params']);
     }
     
     protected function execute()
