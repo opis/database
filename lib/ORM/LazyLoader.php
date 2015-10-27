@@ -53,7 +53,7 @@ class LazyLoader
         if($this->results === null)
         {
             $results = $this->connection
-                            ->query((string) $this->query, $this->query->getCompiler()->getParams())
+                            ->query((string) $this->query->obpk($this->fk), $this->query->getCompiler()->getParams())
                             ->fetchClass($this->modelClass, array($this->readonly))
                             ->all();
                             

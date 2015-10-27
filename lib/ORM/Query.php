@@ -44,12 +44,14 @@ class Query extends BaseQuery
     
     protected function query(array &$columns = array())
     {
+        $pk = $this->model->getPrimaryKey();
+        
         if(!empty($columns))
         {
-            $columns[] = $this->model->getPrimaryKey();
+            $columns[] = $pk;
         }
         
-        return $this->connection->query((string) $this->query->select($columns),
+        return $this->connection->query((string) $this->query->obpk($pk)->select($columns),
                                         $this->compiler->getParams());
     }
     
