@@ -199,7 +199,7 @@ abstract class Model
      * @final
      * @access public
      *
-     * @param   boolean $new    Indicates if this is an existing record or not
+     * @param   boolean $readonly   Indicates if this is a read-only model
      */
     
     public final function __construct($readonly = false)
