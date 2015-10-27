@@ -118,14 +118,14 @@ class Query extends BaseQuery
     public function first(array $columns = array())
     {
         return $this->query()
-                    ->fetchClass(get_class($this->model), array(false))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
                     ->first();
     }
     
     public function all(array $columns = array())
     {
         $results = $this->query($columns)
-                        ->fetchClass(get_class($this->model), array(false))
+                        ->fetchClass(get_class($this->model), array($this->isReadOnly))
                         ->all();
         
         if(!empty($results) && !empty($this->with))
