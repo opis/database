@@ -109,14 +109,6 @@ abstract class Model
     protected $className;
     
     /**
-     * New record
-     *
-     * @var boolean
-     */
-    
-    protected $isNew = false;
-    
-    /**
      * Indicates if the record is loaded
      *
      * @var boolean
@@ -210,10 +202,10 @@ abstract class Model
      * @param   boolean $new    Indicates if this is an existing record or not
      */
     
-    public final function __construct($new = true)
+    public final function __construct($readonly = false)
     {
-        $this->isNew = $new;
         $this->loaded = true;
+        $this->readonly = $readonly;
         $this->mapGetSet = array_flip($this->mapColumns);
     }
     
@@ -264,6 +256,11 @@ abstract class Model
         if(isset($this->mapGetSet[$name]))
         {
             $name = $this->mapGetSet[$name];
+        }
+        
+        if($this->primaryKey == $name)
+        {
+            return;
         }
         
         $mutator = $name . 'Mutator';
@@ -351,10 +348,10 @@ abstract class Model
     {
         if($this->deleted)
         {
-            throw new RuntimeException('The record was deleted');
+            throw new RuntimeException('This record was deleted');
         }
         
-        if($this->isNew)
+        if(!isset($this->columns[$this->primaryKey]))
         {
             $self = $this;
             
@@ -377,7 +374,6 @@ abstract class Model
             ->execute();
             
             $this->columns[$this->primaryKey] = $id;
-            $this->isNew = false;
             
             return (bool) $id;
         }
@@ -407,10 +403,10 @@ abstract class Model
     {
         if($this->deleted)
         {
-            throw new RuntimeException('The record was deleted');
+            throw new RuntimeException('This record was deleted');
         }
         
-        if($this->isNew)
+        if(!isset($this->columns[$this->primaryKey]))
         {
             throw new RuntimeException('This is a new record that was not saved yet');
         }
