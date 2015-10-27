@@ -106,28 +106,28 @@ abstract class BaseQuery
     
     public function join($table, Closure $closure)
     {
-        $table->query->join($table, $closure);
+        $this->query->join($table, $closure);
         $this->isReadOnly = true;
         return $this;
     }
     
     public function leftJoin($table, Closure $closure)
     {
-        $table->query->leftJoin($table, $closure);
+        $this->query->leftJoin($table, $closure);
         $this->isReadOnly = true;
         return $this;
     }
     
     public function rightJoin($table, Closure $closure)
     {
-        $table->query->rightJoin($table, $closure);
+        $this->query->rightJoin($table, $closure);
         $this->isReadOnly = true;
         return $this;
     }
     
     public function fullJoin($table, Closure $closure)
     {
-        $table->query->fullJoin($table, $closure);
+        $this->query->fullJoin($table, $closure);
         $this->isReadOnly = true;
         return $this;
     }
