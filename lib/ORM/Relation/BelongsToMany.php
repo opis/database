@@ -112,7 +112,7 @@ class BelongsToMany extends Relation
         $columns = array($joinTable . '.*');
         
         return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array(false))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
                     ->all();
     }
 }
