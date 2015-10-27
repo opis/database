@@ -26,8 +26,6 @@ use Opis\Database\Connection;
 class LazyLoader
 {
     protected $connection;
-    protected $sql;
-    protected $params;
     protected $model;
     protected $fk;
     protected $pk;
@@ -35,13 +33,14 @@ class LazyLoader
     protected $hasMany;
     protected $query;
     protected $readonly;
+    protected $with;
+    protected $modelClass;
     
-    public function __construct(Connection $connection, Select $query, $readonly, $hasMany, $model, $fk, $pk)
+    public function __construct(Connection $connection, Select $query, array $with, $readonly, $hasMany, $model, $fk, $pk)
     {
         $this->connection = $connection;
-        //$this->sql = $sql;
-        $this->model = $model;
-        //$this->params = $params;
+        $this->modelClass = $model;
+        $this->with = $with;
         $this->hasMany = $hasMany;
         $this->fk = $fk;
         $this->pk = $pk;
@@ -53,13 +52,82 @@ class LazyLoader
     {
         if($this->results === null)
         {
-            $this->results = $this->connection
-                                  ->query((string) $this->query, $this->query->getCompiler()->getParams())
-                                  ->fetchClass($this->model, array($this->readonly))
-                                  ->all();
+            $results = $this->connection
+                            ->query((string) $this->query, $this->query->getCompiler()->getParams())
+                            ->fetchClass($this->modelClass, array($this->readonly))
+                            ->all();
+                            
+            $this->prepareResults($results);
+            $this->results = &$results;
         }
         
         return $this->results;
+    }
+    
+    protected function prepareResults(array &$results)
+    {
+        if(!empty($results) && !empty($this->with))
+        {
+            $model = $this->modelClass;
+            $this->model = new $model;
+            $attr = $this->getWithAttributes();
+            
+            foreach($attr['with'] as $with)
+            {
+                if(!method_exists($this->model, $with))
+                {
+                    continue;
+                }
+                
+                $query = clone $this->query;
+                
+                $loader = $this->model->{$with}()->getLazyLoader($query, $attr['extra'][$with]);
+                
+                if($loader === null)
+                {
+                    continue;
+                }
+                
+                foreach($results as $result)
+                {
+                    $result->setLazyLoader($with, $loader);
+                }
+            }
+        }
+    }
+    
+    protected function getWithAttributes()
+    {
+        $with = array();
+        $extra = array();
+        
+        foreach($this->with as $value)
+        {
+            $value = explode('.', $value);
+            $name = array_shift($value);
+            
+            if(!isset($extra[$name]))
+            {
+                $extra[$name] = array();
+                $with[] = $name;
+            }
+            
+            if(!empty($value))
+            {
+                $extra[$name][] = implode('.', $value);
+            }
+            
+        }
+        
+        foreach($extra as &$value)
+        {
+            $value = array_unique($value);
+        }
+        
+        return array(
+            'with' => $with,
+            'extra' => $extra,
+        );
     }
     
     protected function getFirst(Model $model, $with)

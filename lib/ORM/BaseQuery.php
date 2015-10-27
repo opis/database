@@ -154,7 +154,9 @@ abstract class BaseQuery
     {
         if(!empty($results) && !empty($this->with))
         {
-            foreach($this->with as $with)
+            $attr = $this->getWithAttributes();
+            
+            foreach($attr['with'] as $with)
             {
                 if(!method_exists($this->model, $with))
                 {
@@ -162,7 +164,8 @@ abstract class BaseQuery
                 }
                 
                 $query = clone $this->query;
-                $loader = $this->model->{$with}()->getLazyLoader($query);
+                
+                $loader = $this->model->{$with}()->getLazyLoader($query, $attr['extra'][$with]);
                 
                 if($loader === null)
                 {
@@ -175,5 +178,39 @@ abstract class BaseQuery
                 }
             }
         }
+    }
+    
+    protected function getWithAttributes()
+    {
+        $with = array();
+        $extra = array();
+        
+        foreach($this->with as $value)
+        {
+            $value = explode('.', $value);
+            $name = array_shift($value);
+            
+            if(!isset($extra[$name]))
+            {
+                $extra[$name] = array();
+                $with[] = $name;
+            }
+            
+            if(!empty($value))
+            {
+                $extra[$name][] = implode('.', $value);
+            }
+            
+        }
+        
+        foreach($extra as &$value)
+        {
+            $value = array_unique($value);
+        }
+        
+        return array(
+            'with' => $with,
+            'extra' => $extra,
+        );
     }
 }
