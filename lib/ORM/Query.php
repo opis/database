@@ -27,7 +27,6 @@ class Query extends BaseQuery
 {
     protected $model;
     protected $connection;
-    protected $with = array();
     
     public function __construct(Connection $connection, Model $model)
     {
@@ -60,17 +59,6 @@ class Query extends BaseQuery
     protected function execute()
     {
         return $this->connection->column((string) $this->query, $this->compiler->getParams());
-    }
-    
-    public function with($value)
-    {
-        if(!is_array($value))
-        {
-            $value = array($value);
-        }
-        
-        $this->with = $value;
-        return $this;
     }
     
     public function delete(array $tables = array())

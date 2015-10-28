@@ -29,10 +29,10 @@ abstract class BaseQuery
     protected $query;
     protected $whereCondition;
     protected $isReadOnly = false;
-    protected $with;
     protected $prepared;
     protected $compiler;
-    protected $immediate;
+    protected $immediate = false;
+    protected $with = array();
     
     public function __construct(Compiler $compiler, SelectStatement $query, WhereCondition $whereCondition)
     {
