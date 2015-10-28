@@ -13,8 +13,10 @@ CHANGELOG
 * Addes support for joins in `UPDATE` statementes
 * Moved classes that were under the `Opis\Database\Compiler` namespace to `Opis\Database\SQL\Compiler` namespace
 * Added .gitattributes file
-* Added `Opis\Database\Connection::setDateFormat` method. The method allows you to set the date format used by the compiler.
-* Added `Opis\Database\Connection::setWrapperFormat` method. The method allows y ou to set the identifier wrapper used by the compiler.
+* Added `Opis\Database\Connection::setDateFormat` method. The method allows you to set the date format
+used by the compiler.
+* Added `Opis\Database\Connection::setWrapperFormat` method. The method allows you to set the identifier wrapper
+used by the compiler.
 
 ### v2.3.1, 2015.10.21
 
