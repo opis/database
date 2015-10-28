@@ -74,6 +74,14 @@ class Compiler
         return '?';
     }
     
+    public function setOptions(array $options)
+    {
+        foreach($options as $name => $value)
+        {
+            $this->{$name} = $value;
+        }
+    }
+    
     public function params(array $params)
     {
         return implode(', ', array_map(array($this, 'param'), $params));

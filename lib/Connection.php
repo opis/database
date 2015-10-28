@@ -69,14 +69,18 @@ class Connection implements Serializable
     /** @var    \Opis\Database\Schema   Schema instance */
     protected $schema;
     
+    /** @var    arrray  Compiler options */
+    protected $compilerOptions = array();
+    
     /**
      * Constructor
      * 
      * @access public
      *
-     * @param   string  $dsn    The DSN string
-     * @param   string  $username  (optional) Username
-     * @param   string  $password  (optional) Password
+     * @param   string  $dsn        The DSN string
+     * @param   string  $username   (optional) Username
+     * @param   string  $password   (optional) Password
+     * @param   string  $driver     (optional) Driver's name
      */
     
     public function __construct($dsn, $username = null, $password = null, $driver = null)
@@ -197,6 +201,34 @@ class Connection implements Serializable
     }
     
     /**
+     * Set date format
+     *
+     * @param   string  $format Date format
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
+    public function setDateFormat($format)
+    {
+        $this->compilerOptions['dateFormat'] = $format;
+        return $this;
+    }
+    
+    /**
+     * Set identifier wrapper
+     *
+     * @param   string  $wrapper    Identifier wrapper
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
+    public function setWrapper($wrapper)
+    {
+        $this->compilerOptions['wrapper'] = $wrapper;
+        return $this;
+    }
+    
+    /**
      * Returns the DSN associated with this connection
      *
      * @return  string
@@ -270,7 +302,7 @@ class Connection implements Serializable
     public function compiler()
     {
         if($this->compiler === null)
-        {
+        {   
             switch($this->driver())
             {
                 case 'mysql':
@@ -300,6 +332,8 @@ class Connection implements Serializable
                 default:
                     $this->compiler = new \Opis\Database\SQL\Compiler();
             }
+            
+            $this->compiler->setOptions($this->compilerOptions);
         }
         
         return $this->compiler;
@@ -314,7 +348,7 @@ class Connection implements Serializable
     public function schemaCompiler()
     {
         if($this->schemaCompiler === null)
-        {
+        {   
             switch($this->driver())
             {
                 case 'mysql':
@@ -554,14 +588,15 @@ class Connection implements Serializable
      *
      * @param   string  $dsn        DSN connection string
      * @param   string  $username   (optional) Username
-     * @param   string  $password   (optional)  Password
+     * @param   string  $password   (optional) Password
+     * @param   string  $driver     (optional) Driver's name
      *
      * @return  \Opis\Database\Connection
      */
     
-    public static function create($dsn, $username = null, $password = null)
+    public static function create($dsn, $username = null, $password = null, $driver = null)
     {
-        return new static($dsn, $username, $password);
+        return new static($dsn, $username, $password, $driver);
     }
 
 }
