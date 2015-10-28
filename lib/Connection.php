@@ -222,7 +222,7 @@ class Connection implements Serializable
      * @return  \Opis\Database\Connection
      */
     
-    public function setWrapper($wrapper)
+    public function setWrapperFormat($wrapper)
     {
         $this->compilerOptions['wrapper'] = $wrapper;
         return $this;
