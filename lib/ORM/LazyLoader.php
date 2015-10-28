@@ -36,8 +36,9 @@ class LazyLoader
     protected $with;
     protected $modelClass;
     protected $params;
+    protected $immediate;
     
-    public function __construct(Connection $connection, Select $query, array $params, array $with, $readonly, $hasMany, $model, $fk, $pk)
+    public function __construct(Connection $connection, Select $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
     {
         $this->connection = $connection;
         $this->modelClass = $model;
@@ -48,6 +49,12 @@ class LazyLoader
         $this->readonly = $readonly;
         $this->query = $query;
         $this->params = $params;
+        $this->immediate = $immediate;
+        
+        if($immediate)
+        {
+            $this->getResults();
+        }
     }
     
     protected function &getResults()
@@ -81,9 +88,8 @@ class LazyLoader
                     continue;
                 }
                 
-                //$query = clone $this->query;
-                
-                $loader = $this->model->{$with}()->getLazyLoader($this->query, $this->params, $attr['extra'][$with]);
+                $loader = $this->model->{$with}()->getLazyLoader($this->query, $this->params,
+                                                                 $attr['extra'][$with], $this->immediate);
                 
                 if($loader === null)
                 {

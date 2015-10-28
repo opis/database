@@ -55,7 +55,7 @@ abstract class Relation extends BaseQuery
         return $name;
     }
     
-    public function getLazyLoader(Select $query, array $params, array $with)
+    public function getLazyLoader(Select $query, array $params, array $with, $immediate)
     {        
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
@@ -68,7 +68,7 @@ abstract class Relation extends BaseQuery
         $select->where($fk)->in(array($expr));
         
         return new LazyLoader($this->connection, $select, $params,
-                              $with, $this->isReadOnly, $this->hasMany(),
+                              $with, $immediate, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $fk, $pk);
     }
     

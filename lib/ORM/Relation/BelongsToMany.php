@@ -64,7 +64,7 @@ class BelongsToMany extends Relation
         return $this->junctionKey;
     }
     
-    public function getLazyLoader(Select $query, array $params, array $with)
+    public function getLazyLoader(Select $query, array $params, array $with, $immediate)
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
@@ -87,7 +87,7 @@ class BelongsToMany extends Relation
                ->where($junctionTable . '.' .$fk)->in(array($expr))
                ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
         
-        return new LazyLoader($this->connection, $select, $params, $with,
+        return new LazyLoader($this->connection, $select, $params, $with, $immediate,
                               $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $linkKey, $pk);
     }

@@ -32,6 +32,7 @@ abstract class BaseQuery
     protected $with;
     protected $prepared;
     protected $compiler;
+    protected $immediate;
     
     public function __construct(Compiler $compiler, SelectStatement $query, WhereCondition $whereCondition)
     {
@@ -40,7 +41,7 @@ abstract class BaseQuery
         $this->whereCondition = $whereCondition;
     }
     
-    public function with($value)
+    public function with($value, $immediate = false)
     {
         if(!is_array($value))
         {
@@ -48,6 +49,7 @@ abstract class BaseQuery
         }
         
         $this->with = $value;
+        $this->immediate = $immediate;
         return $this;
     }
     
@@ -181,7 +183,8 @@ abstract class BaseQuery
                     continue;
                 }
                 
-                $loader = $this->model->{$with}()->getLazyLoader($this->query, $prepared['params'], $attr['extra'][$with]);
+                $loader = $this->model->{$with}()->getLazyLoader($this->query, $prepared['params'],
+                                                                 $attr['extra'][$with], $this->immediate);
                 
                 if($loader === null)
                 {
