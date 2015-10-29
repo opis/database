@@ -17,6 +17,7 @@ CHANGELOG
 used by the compiler.
 * Added `Opis\Database\Connection::setWrapperFormat` method. The method allows you to set the identifier wrapper
 used by the compiler.
+* Added support for `NULL` values ordering
 
 ### v2.3.1, 2015.10.21
 
