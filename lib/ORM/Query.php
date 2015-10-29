@@ -40,6 +40,7 @@ class Query extends BaseQuery
         parent::__construct($compiler, $query, $whereCondition);
     }
     
+    
     protected function query(array &$columns = array())
     {
         $pk = $this->model->getPrimaryKey();
@@ -49,11 +50,8 @@ class Query extends BaseQuery
             $columns[] = $pk;
         }
         
-        $this->query->obpk($pk)->select($columns);
-        
-        $query = $this->prepareQuery();
-        
-        return $this->connection->query($query['sql'], $query['params']);
+        return $this->connection->query((string) $this->query->select($columns),
+                                        $this->query->getCompiler()->getParams());
     }
     
     protected function execute()
@@ -120,7 +118,7 @@ class Query extends BaseQuery
                         ->fetchClass(get_class($this->model), array($this->isReadOnly))
                         ->all();
                         
-        $this->prepareResults($results);
+        $this->prepareResults($this->model, $results);
         
         return $results;
     }

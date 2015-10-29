@@ -28,17 +28,6 @@ class Select extends SelectStatement
 {
     
     protected $locked = false;
-    protected $obpk = true;
-    
-    public function obpk($pk)
-    {
-        if($this->obpk)
-        {
-            $this->orderBy($pk);
-        }
-        
-        return $this;
-    }
     
     public function getCompiler()
     {
@@ -65,12 +54,6 @@ class Select extends SelectStatement
     {
         $this->locked = true;
         return $this;
-    }
-    
-    public function orderBy($columns, $order = 'ASC')
-    {
-        $this->obpk = false;
-        return parent::orderBy($columns, $order);
     }
     
     public function select($columns = array())

@@ -21,9 +21,8 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\Model;
-use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Select;
-use Opis\Database\SQL\Expression;
+use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\LazyLoader;
 
 class BelongsTo extends Relation
@@ -42,26 +41,25 @@ class BelongsTo extends Relation
     {        
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        $query = $options['query'];
-        $params = $options['params'];
+        
+        $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        $compiler = $query->getCompiler();
         
-        $select = new Select($compiler, $this->model->getTable());
+        $select = new Select($this->compiler, $this->model->getTable());
         
-        $expr = new Expression($compiler);
-        $expr->op($query->select($fk));
-        
-        $select->where($pk)->in(array($expr));
+        $select->where($pk)->in($ids);
         
         if($callback !== null)
         {
             $callback($select);
         }
         
-        return new LazyLoader($this->connection, $select, $params, $with, $immediate,
+        $query = (string) $select;
+        $params = $select->getCompiler()->getParams();
+        
+        return new LazyLoader($this->connection, $query, $params, $with, $immediate,
                               $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $pk, $fk);
     }

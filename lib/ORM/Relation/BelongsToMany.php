@@ -22,9 +22,8 @@ namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\Model;
 use Opis\Database\Connection;
-use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Select;
-use Opis\Database\SQL\Expression;
+use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\LazyLoader;
 
 class BelongsToMany extends Relation
@@ -68,29 +67,25 @@ class BelongsToMany extends Relation
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        $query = $options['query'];
-        $params = $options['params'];
+        
+        $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        $compiler = $query->getCompiler();
         
         $junctionTable = $this->getJunctionTable();
         $junctionKey = $this->getJunctionKey();
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
         
-        $select = new Select($compiler, $junctionTable);
-        
-        $expr = new Expression($compiler);
-        $expr->op($query->select($pk));
+        $select = new Select($this->compiler, $junctionTable);
         
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
         
         $select->join($joinTable, function($join) use($junctionTable, $junctionKey, $joinTable, $joinColumn){
                     $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
                })
-               ->where($junctionTable . '.' .$fk)->in(array($expr))
+               ->where($junctionTable . '.' .$fk)->in($ids)
                ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
         
         if($callback !== null)
@@ -98,7 +93,10 @@ class BelongsToMany extends Relation
             $callback($select);
         }
         
-        return new LazyLoader($this->connection, $select, $params, $with, $immediate,
+        $query = (string) $select;
+        $params = $select->getCompiler()->getParams();
+        
+        return new LazyLoader($this->connection, $query, $params, $with, $immediate,
                               $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $linkKey, $pk);
     }

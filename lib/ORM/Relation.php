@@ -22,7 +22,6 @@ namespace Opis\Database\ORM;
 
 use Opis\Database\Model;
 use Opis\Database\Connection;
-use Opis\Database\SQL\Expression;
 
 abstract class Relation extends BaseQuery
 {
@@ -59,26 +58,25 @@ abstract class Relation extends BaseQuery
     {        
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        $query = $options['query'];
-        $params = $options['params'];
+        
+        $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        $compiler = $query->getCompiler();
         
-        $select = new Select($compiler, $this->model->getTable());
+        $select = new Select($this->compiler, $this->model->getTable());
         
-        $expr = new Expression($compiler);
-        $expr->op($query->select($pk));
-        
-        $select->where($fk)->in(array($expr));
+        $select->where($fk)->in($ids);
         
         if($callback !== null)
         {
             $callback($select);
         }
         
-        return new LazyLoader($this->connection, $select, $params,
+        $query = (string) $select;
+        $params = $select->getCompiler()->getParams();
+        
+        return new LazyLoader($this->connection, $query, $params,
                               $with, $immediate, $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $fk, $pk);
     }
@@ -102,11 +100,8 @@ abstract class Relation extends BaseQuery
             $columns[] = $pk;
         }
         
-        $this->query->obpk($pk)->select($columns);
-        
-        $query = $this->prepareQuery();
-        
-        return $this->connection->query($query['sql'], $query['params']);
+        return $this->connection->query((string) $this->query->select($columns),
+                                        $this->query->getCompiler()->getParams());
     }
     
     public function first(array $columns = array())
@@ -122,7 +117,7 @@ abstract class Relation extends BaseQuery
                         ->fetchClass(get_class($this->model), array($this->isReadOnly))
                         ->all();
                         
-        $this->prepareResults($results);
+        $this->prepareResults($this->model, $results);
         
         return $results;
     }

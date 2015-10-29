@@ -24,15 +24,12 @@ use Closure;
 use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\SelectStatement;
 
-abstract class BaseQuery
+abstract class BaseQuery extends BaseLoader
 {
     protected $query;
     protected $whereCondition;
     protected $isReadOnly = false;
-    protected $prepared;
     protected $compiler;
-    protected $immediate = false;
-    protected $with = array();
     
     public function __construct(Compiler $compiler, SelectStatement $query, WhereCondition $whereCondition)
     {
@@ -41,17 +38,6 @@ abstract class BaseQuery
         $this->whereCondition = $whereCondition;
     }
     
-    public function with($value, $immediate = false)
-    {
-        if(!is_array($value))
-        {
-            $value = array($value);
-        }
-        
-        $this->with = $value;
-        $this->immediate = $immediate;
-        return $this;
-    }
     
     public function where($column)
     {
@@ -154,117 +140,5 @@ abstract class BaseQuery
     {
         $this->query->distinct();
         return $this;
-    }
-    
-    protected function prepareQuery()
-    {
-        if($this->prepared === null)
-        {
-            $this->prepared = array(
-                'sql' => (string) $this->query,
-                'params' => $this->compiler->getParams(),
-            );
-        }
-        
-        return $this->prepared;
-    }
-    
-    protected function prepareResults(array &$results)
-    {
-        if(!empty($results) && !empty($this->with))
-        {
-            $attr = $this->getWithAttributes();
-            $prepared = $this->prepareQuery();
-            
-            foreach($attr['with'] as $with => $callback)
-            {
-                if(!method_exists($this->model, $with))
-                {
-                    continue;
-                }
-                
-                $loader = $this->model->{$with}()->getLazyLoader(array(
-                    'query' => $this->query,
-                    'params' => $prepared['params'],
-                    'callback' => $callback,
-                    'with' => $attr['extra'][$with],
-                    'immediate' => $this->immediate,
-                ));
-                
-                if($loader === null)
-                {
-                    continue;
-                }
-                
-                foreach($results as $result)
-                {
-                    $result->setLazyLoader($with, $loader);
-                }
-            }
-        }
-    }
-    
-    protected function getWithAttributes()
-    {
-        $with = array();
-        $extra = array();
-        
-        foreach($this->with as $key => $value)
-        {
-            $fullName = $value;
-            $callback = null;
-            
-            if($value instanceof Closure)
-            {
-                $fullName = $key;
-                $callback = $value;
-            }
-            
-            $fullName = explode('.', $fullName);
-            $name = array_shift($fullName);
-            $fullName = implode('.', $fullName);
-            
-            if($fullName == '')
-            {
-                if(!isset($with[$name]))
-                {
-                    $with[$name] = $callback;
-                    
-                    if(!isset($extra[$name]))
-                    {
-                        $extra[$name] = array();
-                    }
-                }
-            }
-            else
-            {
-                if(!isset($extra[$name]))
-                {
-                    $extra[$name] = array();
-                }
-                
-                $t = &$extra[$name];
-                
-                if(isset($t[$fullName]) || in_array($fullName, $t))
-                {
-                    continue;
-                }
-                
-                if($callback === null)
-                {
-                    $t[] = $fullName;
-                }
-                else
-                {
-                    $t[$fullName] = $callback;
-                }
-            }
-            
-        }
-        
-        return array(
-            'with' => $with,
-            'extra' => $extra,
-        );
     }
 }

@@ -23,7 +23,7 @@ namespace Opis\Database\ORM;
 use Opis\Database\Model;
 use Opis\Database\Connection;
 
-class LazyLoader
+class LazyLoader extends BaseLoader
 {
     protected $connection;
     protected $model;
@@ -38,7 +38,7 @@ class LazyLoader
     protected $params;
     protected $immediate;
     
-    public function __construct(Connection $connection, Select $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
+    public function __construct(Connection $connection, $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
     {
         $this->connection = $connection;
         $this->modelClass = $model;
@@ -60,117 +60,20 @@ class LazyLoader
     protected function &getResults()
     {
         if($this->results === null)
-        {echo (string) $this->query->obpk($this->fk); print_r($this->query->getCompiler()->getParams());
+        {
+            $model = $this->modelClass;
+            $this->model = new $model;
+            
             $results = $this->connection
-                            ->query((string) $this->query->obpk($this->fk), $this->query->getCompiler()->getParams())
+                            ->query((string) $this->query, $this->params)
                             ->fetchClass($this->modelClass, array($this->readonly))
                             ->all();
                             
-            $this->prepareResults($results);
+            $this->prepareResults($this->model, $results);
             $this->results = &$results;
         }
         
         return $this->results;
-    }
-    
-    protected function prepareResults(array &$results)
-    {
-        if(!empty($results) && !empty($this->with))
-        {
-            $model = $this->modelClass;
-            $this->model = new $model;
-            $attr = $this->getWithAttributes();
-            
-            foreach($attr['with'] as $with => $callback)
-            {
-                if(!method_exists($this->model, $with))
-                {
-                    continue;
-                }
-                
-                $loader = $this->model->{$with}()->getLazyLoader(array(
-                    'query' => $this->query,
-                    'params' => $this->params,
-                    'callback' => $callback,
-                    'with' => $attr['extra'][$with],
-                    'immediate' => $this->immediate,
-                ));
-                
-                if($loader === null)
-                {
-                    continue;
-                }
-                
-                foreach($results as $result)
-                {
-                    $result->setLazyLoader($with, $loader);
-                }
-            }
-        }
-    }
-    
-    protected function getWithAttributes()
-    {
-        $with = array();
-        $extra = array();
-        
-        foreach($this->with as $key => $value)
-        {
-            $fullName = $value;
-            $callback = null;
-            
-            if($value instanceof Closure)
-            {
-                $fullName = $key;
-                $callback = $value;
-            }
-            
-            $fullName = explode('.', $fullName);
-            $name = array_shift($fullName);
-            $fullName = implode('.', $fullName);
-            
-            if($fullName == '')
-            {
-                if(!isset($with[$name]))
-                {
-                    $with[$name] = $callback;
-                    
-                    if(!isset($extra[$name]))
-                    {
-                        $extra[$name] = array();
-                    }
-                }
-            }
-            else
-            {
-                if(!isset($extra[$name]))
-                {
-                    $extra[$name] = array();
-                }
-                
-                $t = &$extra[$name];
-                
-                if(isset($t[$fullName]) || in_array($fullName, $t))
-                {
-                    continue;
-                }
-                
-                if($callback === null)
-                {
-                    $t[] = $fullName;
-                }
-                else
-                {
-                    $t[$fullName] = $callback;
-                }
-            }
-            
-        }
-        
-        return array(
-            'with' => $with,
-            'extra' => $extra,
-        );
     }
     
     protected function getFirst(Model $model, $with)
