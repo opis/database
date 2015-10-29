@@ -50,7 +50,7 @@ class LazyLoader
         $this->query = $query;
         $this->params = $params;
         $this->immediate = $immediate;
-        
+        print_r($this->getWithAttributes());
         if($immediate)
         {
             $this->getResults();
@@ -81,11 +81,16 @@ class LazyLoader
             $this->model = new $model;
             $attr = $this->getWithAttributes();
             
-            foreach($attr['with'] as $with)
+            foreach($attr['with'] as $with => $callback)
             {
                 if(!method_exists($this->model, $with))
                 {
                     continue;
+                }
+                
+                if($callback !== null)
+                {
+                    $callback($this->query);
                 }
                 
                 $loader = $this->model->{$with}()->getLazyLoader($this->query, $this->params,
@@ -109,28 +114,54 @@ class LazyLoader
         $with = array();
         $extra = array();
         
-        foreach($this->with as $value)
+        foreach($this->with as $key => $value)
         {
-            $value = explode('.', $value);
-            $name = array_shift($value);
+            $fullName = $value;
+            $callback = null;
             
-            if(!isset($extra[$name]))
+            if($value instanceof Closure)
             {
-                $extra[$name] = array();
-                $with[] = $name;
+                $fullName = $key;
+                $callback = $value;
             }
             
-            if(!empty($value))
+            $fullName = explode('.', $fullName);
+            $name = array_shift($fullName);
+            $trail = implode('.', $fullName);
+            
+            if($fullName == '')
             {
-                $extra[$name][] = implode('.', $value);
+                if(!isset($with[$name]))
+                {
+                    $with[$name] = $callback;
+                }
+            }
+            else
+            {
+                if(!isset($extra[$name]))
+                {
+                    $extra[$name] = array();
+                }
+                
+                $t = &$extra[$name];
+                
+                if(isset($t[$fullName]) || in_array($fullName, $t))
+                {
+                    continue;
+                }
+                
+                if($callback === null)
+                {
+                    $t[] = $fullName;
+                }
+                else
+                {
+                    $t[$fullName] = $callback;
+                }
             }
             
         }
-        
-        foreach($extra as &$value)
-        {
-            $value = array_unique($value);
-        }
+
         
         return array(
             'with' => $with,
