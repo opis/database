@@ -81,7 +81,7 @@ class Expression
     
     public function group(Closure $closure)
     {
-        $expresion = new Expression();
+        $expresion = new Expression($this->compiler);
         $closure($expresion);
         return $this->addExpression('group', $expresion);
     }
