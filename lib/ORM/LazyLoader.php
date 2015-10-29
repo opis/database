@@ -50,7 +50,7 @@ class LazyLoader
         $this->query = $query;
         $this->params = $params;
         $this->immediate = $immediate;
-        print_r($this->getWithAttributes());
+        
         if($immediate)
         {
             $this->getResults();
@@ -60,9 +60,9 @@ class LazyLoader
     protected function &getResults()
     {
         if($this->results === null)
-        {
+        {echo (string) $this->query->obpk($this->fk); print_r($this->query->getCompiler()->getParams());
             $results = $this->connection
-                            ->query((string) $this->query->obpk($this->fk), $this->params)
+                            ->query((string) $this->query->obpk($this->fk), $this->query->getCompiler()->getParams())
                             ->fetchClass($this->modelClass, array($this->readonly))
                             ->all();
                             
@@ -88,13 +88,13 @@ class LazyLoader
                     continue;
                 }
                 
-                if($callback !== null)
-                {
-                    $callback($this->query);
-                }
-                
-                $loader = $this->model->{$with}()->getLazyLoader($this->query, $this->params,
-                                                                 $attr['extra'][$with], $this->immediate);
+                $loader = $this->model->{$with}()->getLazyLoader(array(
+                    'query' => $this->query,
+                    'params' => $this->params,
+                    'callback' => $callback,
+                    'with' => $attr['extra'][$with],
+                    'immediate' => $this->immediate,
+                ));
                 
                 if($loader === null)
                 {
@@ -127,13 +127,18 @@ class LazyLoader
             
             $fullName = explode('.', $fullName);
             $name = array_shift($fullName);
-            $trail = implode('.', $fullName);
+            $fullName = implode('.', $fullName);
             
             if($fullName == '')
             {
                 if(!isset($with[$name]))
                 {
                     $with[$name] = $callback;
+                    
+                    if(!isset($extra[$name]))
+                    {
+                        $extra[$name] = array();
+                    }
                 }
             }
             else
@@ -161,7 +166,6 @@ class LazyLoader
             }
             
         }
-
         
         return array(
             'with' => $with,

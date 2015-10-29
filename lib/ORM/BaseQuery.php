@@ -183,13 +183,13 @@ abstract class BaseQuery
                     continue;
                 }
                 
-                if($callback !== null)
-                {
-                    $callback($this->query);
-                }
-                
-                $loader = $this->model->{$with}()->getLazyLoader($this->query, $prepared['params'],
-                                                                 $attr['extra'][$with], $this->immediate);
+                $loader = $this->model->{$with}()->getLazyLoader(array(
+                    'query' => $this->query,
+                    'params' => $prepared['params'],
+                    'callback' => $callback,
+                    'with' => $attr['extra'][$with],
+                    'immediate' => $this->immediate,
+                ));
                 
                 if($loader === null)
                 {
@@ -222,13 +222,18 @@ abstract class BaseQuery
             
             $fullName = explode('.', $fullName);
             $name = array_shift($fullName);
-            $trail = implode('.', $fullName);
+            $fullName = implode('.', $fullName);
             
             if($fullName == '')
             {
                 if(!isset($with[$name]))
                 {
                     $with[$name] = $callback;
+                    
+                    if(!isset($extra[$name]))
+                    {
+                        $extra[$name] = array();
+                    }
                 }
             }
             else
@@ -256,7 +261,6 @@ abstract class BaseQuery
             }
             
         }
-
         
         return array(
             'with' => $with,

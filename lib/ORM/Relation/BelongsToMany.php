@@ -64,19 +64,25 @@ class BelongsToMany extends Relation
         return $this->junctionKey;
     }
     
-    public function getLazyLoader(Select $query, array $params, array $with, $immediate)
+    public function getLazyLoader(array $options)
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
+        $query = $options['query'];
+        $params = $options['params'];
+        $with = $options['with'];
+        $callback = $options['callback'];
+        $immediate = $options['immediate'];
+        $compiler = $query->getCompiler();
         
         $junctionTable = $this->getJunctionTable();
         $junctionKey = $this->getJunctionKey();
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
         
-        $select = new Select($this->compiler, $junctionTable);
+        $select = new Select($compiler, $junctionTable);
         
-        $expr = new Expression($this->compiler);
+        $expr = new Expression($compiler);
         $expr->op($query->select($pk));
         
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
@@ -86,6 +92,11 @@ class BelongsToMany extends Relation
                })
                ->where($junctionTable . '.' .$fk)->in(array($expr))
                ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
+        
+        if($callback !== null)
+        {
+            $callback($select);
+        }
         
         return new LazyLoader($this->connection, $select, $params, $with, $immediate,
                               $this->isReadOnly, $this->hasMany(),

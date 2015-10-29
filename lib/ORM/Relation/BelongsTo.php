@@ -38,17 +38,28 @@ class BelongsTo extends Relation
         return $this->getForeignKey();
     }
     
-    public function getLazyLoader(Select $query, array $params, array $with, $immediate)
+    public function getLazyLoader(array $options)
     {        
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
+        $query = $options['query'];
+        $params = $options['params'];
+        $with = $options['with'];
+        $callback = $options['callback'];
+        $immediate = $options['immediate'];
+        $compiler = $query->getCompiler();
         
-        $select = new Select($this->compiler, $this->model->getTable());
+        $select = new Select($compiler, $this->model->getTable());
         
-        $expr = new Expression($this->compiler);
+        $expr = new Expression($compiler);
         $expr->op($query->select($fk));
         
         $select->where($pk)->in(array($expr));
+        
+        if($callback !== null)
+        {
+            $callback($select);
+        }
         
         return new LazyLoader($this->connection, $select, $params, $with, $immediate,
                               $this->isReadOnly, $this->hasMany(),
