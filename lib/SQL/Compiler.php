@@ -274,6 +274,23 @@ class Compiler
         
         foreach($ordering as $order)
         {
+            if($order['nulls'] !== null)
+            {
+                foreach($order['columns'] as $column)
+                {
+                    $column = $this->columns(array($column));
+                    
+                    if($order['nulls'] == 'NULLS FIRST')
+                    {
+                        $sql[] = '(CASE WHEN ' . $column . ' IS NULL THEN 0 ELSE 1 END)';
+                    }
+                    else
+                    {
+                        $sql[] = '(CASE WHEN ' . $column . ' IS NULL THEN 1 ELSE 0 END)';
+                    }
+                }
+            }
+            
             $sql[] = $this->columns($order['columns']) . ' ' . $order['order'];
         }
         

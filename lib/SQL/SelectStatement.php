@@ -163,17 +163,36 @@ class SelectStatement extends WhereJoinCondition
         return $this;
     }
     
-    public function orderBy($columns, $order = 'ASC')
+    public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
         if(!is_array($columns))
         {
             $columns = array($columns);
         }
         
+        $order = strtoupper($order);
+        
+        if($order !== 'ASC' && $order !== 'DESC')
+        {
+            $order = 'ASC';
+        }
+        
+        if($nulls !== null)
+        {
+            $nulls = strtoupper($nulls);
+            
+            if($nulls !== 'NULLS FIRST' && $nulls !== 'NULLS LAST')
+            {
+                $nulls = null;
+            }
+        }
+        
         $this->order[] = array(
             'columns' => $columns,
-            'order' => strtoupper($order),
+            'order' => $order,
+            'nulls' => $nulls,
         );
+        
         return $this;
     }
     

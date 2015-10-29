@@ -71,9 +71,9 @@ class Query extends WhereJoinCondition
         return $this->buildSelect()->orHaving($column, $value);
     }
     
-    public function orderBy($columns, $order = 'ASC')
+    public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
-        return $this->buildSelect()->orderBy($columns, $order);
+        return $this->buildSelect()->orderBy($columns, $order, $nulls);
     }
     
     public function limit($value)

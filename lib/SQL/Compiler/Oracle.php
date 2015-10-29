@@ -51,6 +51,30 @@ class Oracle extends Compiler
         return implode('.', $wrapped);
     }
     
+    protected function handleOrderings(array $ordering)
+    {
+        if(empty($ordering))
+        {
+            return '';
+        }
+        
+        $sql = array();
+        
+        foreach($ordering as $order)
+        {
+            if($order['nulls'] !== null)
+            {
+                $sql[] = $this->columns($order['columns']) . ' ' . $order['order'] . ' ' . $order['nulls'];
+            }
+            else
+            {
+                $sql[] = $this->columns($order['columns']) . ' ' . $order['order'];
+            }
+        }
+        
+        return ' ORDER BY ' . implode(', ', $sql);
+    }
+    
     /**
      * Compiles a SELECT query.
      *
