@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v3.0.0
+### v3.0.0, 2015.10.29
 
 * Removed deprecated `Opis\Database\Schema\AlterTable::addPrimary` method
 * Removed deprecated `Opis\Database\Schema\AlterTable::addUnique` method
