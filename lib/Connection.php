@@ -561,6 +561,12 @@ class Connection implements Serializable
         return $result;
     }
     
+    /**
+     * Implementation of Serializable::serialize
+     *
+     * @return  string
+     */
+    
     public function serialize()
     {
         return serialize(array(
@@ -572,6 +578,12 @@ class Connection implements Serializable
             'dsn' => $this->dsn,
         ));
     }
+    
+    /**
+     * Implementation of Serializable::unserialize
+     *
+     * @param   string  $data   Serialized data
+     */
     
     public function unserialize($data)
     {
