@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.0.1, 2015.11.09
+
+* The second argument of the `Opis\Database\Connection::column` method is now optional.
+
 ### v3.0.0, 2015.10.29
 
 * Removed deprecated `Opis\Database\Schema\AlterTable::addPrimary` method
