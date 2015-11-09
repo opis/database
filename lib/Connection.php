@@ -552,7 +552,7 @@ class Connection implements Serializable
      * @return  mixed
      */
     
-    public function column($sql, array $params)
+    public function column($sql, array $params = array())
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
