@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v3.1.0
+### v3.1.0, 2015.11.20
 
 * Added `Opis\Database\ResultSet::column` method.
 See [issue #10](https://github.com/opis/database/issues/10)
