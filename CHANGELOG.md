@@ -2,8 +2,10 @@ CHANGELOG
 -----------
 ### v3.1.0
 
-* Added `Opis\Database\ResultSet::column` method. See issue #10
-* The `Opis\Database\Model::getConnection` method is not abstract anymore. See issue #11
+* Added `Opis\Database\ResultSet::column` method.
+See [issue #10](https://github.com/opis/database/issues/10)
+* The `Opis\Database\Model::getConnection` method is not abstract anymore.
+See issue [issue #11](https://github.com/opis/database/issues/11)
 
 ### v3.0.1, 2015.11.09
 
