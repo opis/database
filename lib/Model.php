@@ -215,7 +215,11 @@ abstract class Model
      * @return  \Opis\Database\Connection
      */
     
-    public static abstract function getConnection();
+    public static function getConnection() {
+      throw new \BadMethodCallException(
+        "You need to overide Model::getConnection before using this method."
+      );
+    }
     
     /**
      * Creates a new record
