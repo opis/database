@@ -11,6 +11,9 @@
             "email": "marius.sarca@gmail.com"
         }
     ],
+    "scripts": {
+      "test": "phpunit tests"
+    },
     "require": {
         "php": ">=5.3.0"
     },
