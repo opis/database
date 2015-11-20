@@ -143,6 +143,19 @@ class ResultSet
     }
     
     /**
+     * Return a column
+     *
+     * @param   int $col    0-indexed number of the column you wish to retrieve
+     * 
+     * @return  mixed
+     */
+    
+    public function column($col = 0)
+    {
+        return $this->statement->fetchColumn($col);
+    }
+    
+    /**
      * Fetch each result as an associative array
      *
      * @return \Opis\Database\ResultSet
