@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### v3.2.0
+
+* `Opis\Database\Model::getConnection` method was moved to `Opis\Database\ModelInterface::getConnection`
+* `Model` class implements `ModelInterface` interface and you must provide an implementation
+for the `Opis\Database\ModelInterface::getConnection` method
+
 ### v3.1.0, 2015.11.20
 
 * Added `Opis\Database\ResultSet::column` method.
