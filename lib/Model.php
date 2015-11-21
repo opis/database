@@ -221,14 +221,20 @@ abstract class Model implements ModelInterface
     /**
      * Creates a new record
      *
-     * @param   array   $columns    A column-value mapped array
+     * @param   array                       $columns    A column-value mapped array
+     * @param   \Opis\Database\Connection   $connection (optional) Database connection
      *
      * @return  \Opis\Database\Model
      */
     
-    public static function create(array $columns)
+    public static function create(array $columns, Connection $connection = null)
     {
-        $item = new static();
+        if($connection === null)
+        {
+            $connection = static::getConnection();
+        }
+        
+        $item = new static(false, $connection);
         $item->assign($columns);
         $item->save();
         return $item;
