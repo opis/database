@@ -5,6 +5,9 @@ CHANGELOG
 * `Opis\Database\Model::getConnection` method was moved to `Opis\Database\ModelInterface::getConnection`
 * `Model` class implements `ModelInterface` interface and you must provide an implementation
 for the `Opis\Database\ModelInterface::getConnection` method
+* Added `Opis\Database\Model::using` method
+* Added an optional `Opis\Database\Connection` argument to the `Opis\Database\Model::create` method
+* The constructor of the `Opis\Database\Model` class accepts an optional `Opis\Database\Connection` argument
 
 ### v3.1.0, 2015.11.20
 
