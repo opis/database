@@ -244,14 +244,13 @@ abstract class Model implements ModelInterface
      * Returns an instance of a model that use the given connection
      *
      * @param   \Opis\Database\Connection   $connection Database connection
-     * @param   boolean                     $readonly   (optional) Read-only model
      *
      * @return  \Opis\Database\Model
      */
     
-    public static function using(Connection $connection, $readonly = false)
+    public static function using(Connection $connection)
     {
-        return new static($readonly, $connection);
+        return new static(false, $connection);
     }
     
     /**
