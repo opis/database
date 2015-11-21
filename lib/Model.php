@@ -27,7 +27,7 @@ use Opis\Database\ORM\Relation\HasMany;
 use Opis\Database\ORM\Relation\BelongsTo;
 use Opis\Database\ORM\Relation\BelongsToMany;
 
-abstract class Model
+abstract class Model implements ModelInterface
 {
     /**
      * Autoincrement primary key type
@@ -207,18 +207,6 @@ abstract class Model
         $this->loaded = true;
         $this->readonly = $readonly;
         $this->mapGetSet = array_flip($this->mapColumns);
-    }
-    
-    /**
-     * Database connection
-     *
-     * @return  \Opis\Database\Connection
-     */
-    
-    public static function getConnection() {
-      throw new \BadMethodCallException(
-        "You need to overide Model::getConnection before using this method."
-      );
     }
     
     /**
@@ -742,4 +730,15 @@ abstract class Model
         return call_user_func_array(array(new static(), $name), $arguments);
     }
     
+}
+
+interface ModelInterface
+{
+    /**
+     * Returns a connection
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
+    public static function getConnection();
 }
