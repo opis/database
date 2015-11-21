@@ -29,7 +29,7 @@ class HasMany extends Relation
         $this->query->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()});
         
         return $this->query()
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
                     ->all();
     }
 }

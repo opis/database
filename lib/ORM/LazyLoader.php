@@ -66,7 +66,7 @@ class LazyLoader extends BaseLoader
             
             $results = $this->connection
                             ->query((string) $this->query, $this->params)
-                            ->fetchClass($this->modelClass, array($this->readonly))
+                            ->fetchClass($this->modelClass, array($this->readonly, $this->connection))
                             ->all();
                             
             $this->prepareResults($this->model, $results);

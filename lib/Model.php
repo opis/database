@@ -192,6 +192,14 @@ abstract class Model implements ModelInterface
     
     protected $dateFormat;
     
+    /**
+     * Database connection
+     *
+     * @var \Opis\Database\Connection
+     */
+    
+    protected $dbcon;
+    
     
     /**
      * Constructor
@@ -202,9 +210,10 @@ abstract class Model implements ModelInterface
      * @param   boolean $readonly   Indicates if this is a read-only model
      */
     
-    public final function __construct($readonly = false)
+    public final function __construct($readonly = false, Connection $connection = null)
     {
         $this->loaded = true;
+        $this->dbcon = $connection;
         $this->readonly = $readonly;
         $this->mapGetSet = array_flip($this->mapColumns);
     }
@@ -223,6 +232,20 @@ abstract class Model implements ModelInterface
         $item->assign($columns);
         $item->save();
         return $item;
+    }
+    
+    /**
+     * Returns an instance of a model that use the given connection
+     *
+     * @param   \Opis\Database\Connection   $connection Database connection
+     * @param   boolean                     $readonly   (optional) Read-only model
+     *
+     * @return  \Opis\Database\Model
+     */
+    
+    public static function using(Connection $connection, $readonly = false)
+    {
+        return new static($readonly, $connection);
     }
     
     /**
@@ -496,7 +519,7 @@ abstract class Model implements ModelInterface
     
     public function hasOne($model, $foreignKey = null)
     {
-        return new HasOne(static::getConnection(), $this, new $model, $foreignKey);
+        return new HasOne($this->getDatabaseConnection(), $this, new $model, $foreignKey);
     }
     
     /**
@@ -510,7 +533,7 @@ abstract class Model implements ModelInterface
     
     public function hasMany($model, $foreignKey = null)
     {
-        return new HasMany(static::getConnection(), $this, new $model, $foreignKey);
+        return new HasMany($this->getDatabaseConnection(), $this, new $model, $foreignKey);
     }
     
     /**
@@ -524,7 +547,7 @@ abstract class Model implements ModelInterface
     
     public function belongsTo($model, $foreignKey = null)
     {
-        return new BelongsTo(static::getConnection(), $this, new $model, $foreignKey);
+        return new BelongsTo($this->getDatabaseConnection(), $this, new $model, $foreignKey);
     }
     
     /**
@@ -538,7 +561,7 @@ abstract class Model implements ModelInterface
     
     public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
-        return new BelongsToMany(static::getConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
+        return new BelongsToMany($this->getDatabaseConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
     }
     
     /**
@@ -609,7 +632,7 @@ abstract class Model implements ModelInterface
     {
         if($this->database === null)
         {
-            $this->database = new Database(static::getConnection());
+            $this->database = new Database($this->getDatabaseConnection());
         }
         
         return $this->database;
@@ -690,7 +713,23 @@ abstract class Model implements ModelInterface
     
     protected function queryBuilder()
     {
-        return new Query(static::getConnection(), $this);
+        return new Query($this->getDatabaseConnection(), $this);
+    }
+    
+    /**
+     * Returns a database connection object
+     *
+     * @return  \Opis\Database\Connection
+     */
+    
+    protected function getDatabaseConnection()
+    {
+        if($this->dbcon === null)
+        {
+            $this->dbcon = static::getConnection();
+        }
+        
+        return $this->dbcon;
     }
     
     /**

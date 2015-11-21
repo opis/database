@@ -79,7 +79,7 @@ class BelongsTo extends Relation
         $this->query->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
         
         return $this->query()
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly))
+                    ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
                     ->first();
     }
 }
