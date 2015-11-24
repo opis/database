@@ -361,10 +361,11 @@ class Connection implements Serializable
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
-                    $this->compiler = new \Opis\Database\Schema\Compiler\SQLServer($this);
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\SQLServer($this);
                     break;
                 case 'sqlite':
-                    $this->complier = new \Opis\Database\Schema\Compiler\SQLite($this);
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\SQLite($this);
+                    break;
                 default:
                     throw new \Exception('Schema not supported yet');
             }

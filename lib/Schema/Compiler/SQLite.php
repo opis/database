@@ -22,7 +22,7 @@ namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\CreateTable;
 
 class SQLite extends Compiler
 {
@@ -40,7 +40,7 @@ class SQLite extends Compiler
     {
         return 'DATETIME';
     }
-    
+
     protected function handleEngine(CreateTable $schema)
     {   
         return '';
