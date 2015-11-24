@@ -29,8 +29,12 @@ class SQLite extends Compiler
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
     protected $autoincrement = 'AUTOINCREMENT';
-    
-    
+
+    protected function handleTypeInteger(BaseColumn $column)
+    {
+        return 'INTEGER';
+    }
+
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'DATETIME';
