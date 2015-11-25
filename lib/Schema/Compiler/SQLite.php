@@ -22,15 +22,19 @@ namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\CreateTable;
 
 class SQLite extends Compiler
 {
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
     protected $autoincrement = 'AUTOINCREMENT';
-    
-    
+
+    protected function handleTypeInteger(BaseColumn $column)
+    {
+        return 'INTEGER';
+    }
+
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'DATETIME';
@@ -40,7 +44,7 @@ class SQLite extends Compiler
     {
         return 'DATETIME';
     }
-    
+
     protected function handleEngine(CreateTable $schema)
     {   
         return '';
