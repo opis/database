@@ -21,7 +21,6 @@
 namespace Opis\Database;
 
 use Closure;
-use PDOException;
 use Opis\Database\Schema\CreateTable;
 use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
