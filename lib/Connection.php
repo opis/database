@@ -52,10 +52,10 @@ class Connection implements Serializable
     /** @var    \PDO    The PDO object associated with this connection */
     protected $pdo;
     
-    /** @var    \Opis\Database\Compiler The compiler associated with this connection */
+    /** @var    SQL\Compiler The compiler associated with this connection */
     protected $compiler;
     
-    /** @var    \Opis\Database\Schema\Compiler The schema compiler associated with this connection */
+    /** @var    Schema\Compiler The schema compiler associated with this connection */
     protected $schemaCompiler;
     
     /** @var    string  The DSN for this connection */
@@ -64,7 +64,7 @@ class Connection implements Serializable
     /** @var    string  Driver's name */
     protected $driver;
     
-    /** @var    \Opis\Database\Schema   Schema instance */
+    /** @var    Schema   Schema instance */
     protected $schema;
     
     /** @var    array  Compiler options */
@@ -94,7 +94,7 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      *
-     * @return  \Opis\Database\Connection
+     * @return  Connection
      */
     
     public function logQueries($value = true)
@@ -110,7 +110,7 @@ class Connection implements Serializable
      * @param   string  $query SQL command
      * @param   array   $params (optional) Params
      *
-     * @return \Opis\Database\Connection
+     * @return Connection
      */
     
     public function initCommand($query, array $params = array())
@@ -128,7 +128,7 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      *
-     * @return  \Opis\Database\Connection
+     * @return  Connection
      */
     
     public function username($username)
@@ -136,13 +136,12 @@ class Connection implements Serializable
         $this->username = $username;
         return $this;
     }
-    
+
     /**
      * Set the password
      *
-     * @param   string  $password   Password
-     *
-     * @return  \Opis\Database\Connection
+     * @param  string $password Password
+     * @return $this
      */
     
     public function password($password)
@@ -150,14 +149,13 @@ class Connection implements Serializable
         $this->password = $password;
         return $this;
     }
-    
-    
+
+
     /**
      * Set PDO connection options
      *
-     * @param   array   $options    PDO options
-     *
-     * @return  \Opis\Database\Compiler
+     * @param   array $options PDO options
+     * @return $this
      */
     
     public function options(array $options)
@@ -166,17 +164,16 @@ class Connection implements Serializable
         {
             $this->option($name, $value);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Set a PDO connection option
      *
-     * @param   string  $name   Option
-     * @param   int     $value  Value
-     *
-     * @return  \Opis\Database\Connection
+     * @param   string $name Option
+     * @param   int $value Value
+     * @return $this
      */
     
     public function option($name, $value)
@@ -184,13 +181,12 @@ class Connection implements Serializable
         $this->options[$name] = $value;
         return $this;
     }
-    
+
     /**
      * Use persistent connections
      *
-     * @param   bool    $value  (optional) Value
-     * 
-     * @return  \Opis\Database\Connection
+     * @param   bool $value (optional) Value
+     * @return $this
      */
     
     public function persistent($value = true)
@@ -202,8 +198,7 @@ class Connection implements Serializable
      * Set date format
      *
      * @param   string  $format Date format
-     *
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function setDateFormat($format)
@@ -216,8 +211,7 @@ class Connection implements Serializable
      * Set identifier wrapper
      *
      * @param   string  $wrapper    Identifier wrapper
-     *
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function setWrapperFormat($wrapper)
@@ -256,7 +250,7 @@ class Connection implements Serializable
     /**
      * Returns the schema associated with this connection
      *
-     * @return  \Opis\Database\Schema
+     * @return  Schema
      */
     
     public function schema()
@@ -294,7 +288,7 @@ class Connection implements Serializable
     /**
      * Returns an instance of the compiler associated with this connection
      *
-     * @return \Opis\Database\SQL\Compiler
+     * @return SQL\Compiler
      */
     
     public function compiler()
@@ -328,7 +322,7 @@ class Connection implements Serializable
                     $this->compiler = new \Opis\Database\SQL\Compiler\NuoDB();
                     break;
                 default:
-                    $this->compiler = new \Opis\Database\SQL\Compiler();
+                    $this->compiler = new SQL\Compiler();
             }
             
             $this->compiler->setOptions($this->compilerOptions);
@@ -336,11 +330,11 @@ class Connection implements Serializable
         
         return $this->compiler;
     }
-    
+
     /**
      * Returns an instance of the schema compiler associated with this connection
-     *
-     * @return \Opis\Database\Schema\Compiler
+     * @return Schema\Compiler
+     * @throws \Exception
      */
     
     public function schemaCompiler()
@@ -494,7 +488,7 @@ class Connection implements Serializable
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
      *
-     * @return  \Opis\Database\ResultSet
+     * @return  ResultSet
      */
     
     public function query($sql, array $params = array())
@@ -602,7 +596,7 @@ class Connection implements Serializable
      * @param   string  $password   (optional) Password
      * @param   string  $driver     (optional) Driver's name
      *
-     * @return  \Opis\Database\Connection
+     * @return  Connection
      */
     
     public static function create($dsn, $username = null, $password = null, $driver = null)
