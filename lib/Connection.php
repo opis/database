@@ -20,10 +20,8 @@
 
 namespace Opis\Database;
 
-use Closure;
 use PDO;
 use PDOException;
-use RuntimeException;
 use Serializable;
 
 class Connection implements Serializable
