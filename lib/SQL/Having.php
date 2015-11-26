@@ -30,13 +30,23 @@ class Having
     protected $aggregate;
     
     protected $separator;
-    
+
+    /**
+     * Having constructor.
+     * @param Compiler $compiler
+     * @param HavingClause $clause
+     */
     public function __construct(Compiler $compiler, HavingClause $clause)
     {
         $this->compiler = $compiler;
         $this->havingClause = $clause;
     }
-    
+
+    /**
+     * @param $value
+     * @param $operator
+     * @param $iscolumn
+     */
     protected function addCondition($value, $operator, $iscolumn)
     {
         if($iscolumn && is_string($value))
@@ -47,61 +57,104 @@ class Having
         
         $this->havingClause->addCondition($this->aggregate, $value, $operator, $this->separator);
     }
-    
-    
+
+
+    /**
+     * @param $aggregate
+     * @param $separator
+     * @return $this
+     */
     public function init($aggregate, $separator)
     {
         $this->aggregate = $aggregate;
         $this->separator = $separator;
         return $this;
     }
-    
-    
+
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function eq($value, $iscolumn = false)
     {
         $this->addCondition($value, '=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function ne($value, $iscolumn = false)
     {
         $this->addCondition($value, '!=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function lt($value, $iscolumn = false)
     {
         $this->addCondition($value, '<', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function gt($value, $iscolumn = false)
     {
         $this->addCondition($value, '>', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function lte($value, $iscolumn = false)
     {
         $this->addCondition($value, '<=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     */
     public function gte($value, $iscolumn = false)
     {
         $this->addCondition($value, '>=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     */
     public function in($value)
     {
         $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, false);
     }
-    
+
+    /**
+     * @param $value
+     */
     public function notIn($value)
     {
         $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, true);
     }
-    
+
+    /**
+     * @param $value1
+     * @param $value2
+     */
     public function between($value1, $value2)
     {
         $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, false);
     }
-    
+
+    /**
+     * @param $value1
+     * @param $value2
+     */
     public function notBetween($value1, $value2)
     {
          $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, true);

@@ -28,12 +28,20 @@ class HavingClause
     protected $conditions = array();
     
     protected $compiler;
-    
+
+    /**
+     * HavingClause constructor.
+     * @param Compiler $compiler
+     */
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
-    
+
+    /**
+     * @param Closure $callback
+     * @param $separator
+     */
     public function addGroupCondition(Closure $callback, $separator)
     {
         $having = new HavingCondition($this->compiler);
@@ -46,7 +54,13 @@ class HavingClause
         );
         
     }
-    
+
+    /**
+     * @param $aggregate
+     * @param $value
+     * @param $operator
+     * @param $separator
+     */
     public function addCondition($aggregate, $value, $operator, $separator)
     {
         if($value instanceof Closure)
@@ -64,7 +78,13 @@ class HavingClause
             'separator' => $separator,
         );
     }
-    
+
+    /**
+     * @param $aggregate
+     * @param $value
+     * @param $separator
+     * @param $not
+     */
     public function addInCondition($aggregate, $value, $separator, $not)
     {
         
@@ -92,7 +112,14 @@ class HavingClause
         }
         
     }
-    
+
+    /**
+     * @param $aggregate
+     * @param $value1
+     * @param $value2
+     * @param $separator
+     * @param $not
+     */
     public function addBetweenCondition($aggregate, $value1, $value2, $separator, $not)
     {
         
@@ -106,7 +133,10 @@ class HavingClause
         );
         
     }
-    
+
+    /**
+     * @return array
+     */
     public function getHavingConditions()
     {
         return $this->conditions;

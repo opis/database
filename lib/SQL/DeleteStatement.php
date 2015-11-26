@@ -27,7 +27,13 @@ class DeleteStatement extends WhereJoinCondition
     protected $from;
     
     protected $sql;
-    
+
+    /**
+     * DeleteStatement constructor.
+     * @param Compiler $compiler
+     * @param WhereClause $from
+     * @param WhereClause|null $clause
+     */
     public function __construct(Compiler $compiler, $from, WhereClause $clause = null)
     {
         parent::__construct($compiler, $clause);
@@ -39,17 +45,26 @@ class DeleteStatement extends WhereJoinCondition
         
         $this->from = $from;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getTables()
     {
         return $this->tables;
     }
-    
+
+    /**
+     * @return array|WhereClause
+     */
     public function getFrom()
     {
         return $this->from;
     }
-    
+
+    /**
+     * @param array $tables
+     */
     public function delete($tables = array())
     {
         if(!is_array($tables))
@@ -58,7 +73,10 @@ class DeleteStatement extends WhereJoinCondition
         }
         $this->tables = $tables;
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if($this->sql === null)

@@ -24,18 +24,31 @@ class AlterColumn extends BaseColumn
 {
     
     protected $table;
-    
+
+    /**
+     * AlterColumn constructor.
+     * @param AlterTable $table
+     * @param null $name
+     * @param null $type
+     */
     public function __construct(AlterTable $table, $name, $type = null)
     {
         $this->table = $table;
         parent::__construct($name, $type);
     }
-    
+
+    /**
+     * @return AlterTable
+     */
     public function getTable()
     {
         return $this->table;
     }
-    
+
+    /**
+     * @param $value
+     * @return $this|BaseColumn
+     */
     public function defaultValue($value)
     {
         if($this->get('handleDefault', true))
@@ -45,7 +58,10 @@ class AlterColumn extends BaseColumn
         
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function autoincrement()
     {
         return $this->set('autoincrement', true);

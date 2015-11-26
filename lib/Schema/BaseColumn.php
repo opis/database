@@ -28,7 +28,12 @@ class BaseColumn
     protected $type;
     
     protected $properties = array();
-    
+
+    /**
+     * BaseColumn constructor.
+     * @param $name
+     * @param null $type
+     */
     public function __construct($name, $type = null)
     {
         $this->name = $name;
@@ -39,39 +44,67 @@ class BaseColumn
     {
         return $this->name;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getType()
     {
         return $this->type;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getProperties()
     {
         return $this->properties;
     }
-    
+
+    /**
+     * @param $type
+     * @return $this
+     */
     public function setType($type)
     {
         $this->type = $type;
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     public function set($name, $value)
     {
         $this->properties[$name] = $value;
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @return bool
+     */
     public function has($name)
     {
         return isset($this->properties[$name]);
     }
-    
+
+    /**
+     * @param $name
+     * @param null $default
+     * @return null
+     */
     public function get($name, $default = null)
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : $default;
     }
-    
+
+    /**
+     * @param $value
+     * @return $this|BaseColumn
+     */
     public function size($value)
     {
         $value = strtolower($value);
@@ -92,22 +125,37 @@ class BaseColumn
     {
         return $this->set('nullable', true);
     }
-    
+
+    /**
+     * @return BaseColumn
+     */
     public function notNull()
     {
         return $this->set('nullable', false);
     }
-    
+
+    /**
+     * @param $comment
+     * @return BaseColumn
+     */
     public function description($comment)
     {
         return $this->set('description', $comment);
     }
-    
+
+    /**
+     * @param $value
+     * @return BaseColumn
+     */
     public function defaultValue($value)
     {
         return $this->set('default', $value);
     }
-    
+
+    /**
+     * @param bool|true $value
+     * @return BaseColumn
+     */
     public function unsigned($value = true)
     {
         return $this->set('unisgned', $value);

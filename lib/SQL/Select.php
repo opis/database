@@ -25,57 +25,103 @@ use Opis\Database\Connection;
 class Select extends SelectStatement
 {
     protected $connection;
-    
+
+    /**
+     * Select constructor.
+     * @param Connection $connection
+     * @param Compiler $compiler
+     * @param null|WhereClause $tables
+     * @param $joins
+     * @param WhereClause|null $clause
+     */
     public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $tables, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }
-    
+
+    /**
+     * @param $table
+     * @param null $database
+     * @return $this
+     */
     public function into($table, $database = null)
     {
         $this->intoTable = $table;
         $this->intoDatabase = $database;
         return $this;
     }
-    
+
+    /**
+     * @param array $columns
+     * @return \Opis\Database\ResultSet
+     */
     public function select($columns = array())
     {
         parent::select($columns);
         return $this->connection->query((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function column($name)
     {
         parent::column($name);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param string $column
+     * @param bool|false $distinct
+     * @return mixed
+     */
     public function count($column = '*',  $distinct = false)
     {
         parent::count($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     * @return mixed
+     */
     public function avg($column, $distinct = false)
     {
         parent::avg($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     * @return mixed
+     */
     public function sum($column, $distinct  = false)
     {
         parent::sum($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     * @return mixed
+     */
     public function min($column, $distinct = false)
     {
         parent::min($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     * @return mixed
+     */
     public function max($column, $distinct = false)
     {
         parent::max($column, $distinct);

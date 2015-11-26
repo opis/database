@@ -30,31 +30,55 @@ class SQLite extends Compiler
     
     protected $autoincrement = 'AUTOINCREMENT';
 
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeInteger(BaseColumn $column)
     {
         return 'INTEGER';
     }
 
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'DATETIME';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
     }
 
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleEngine(CreateTable $schema)
     {   
         return '';
     }
-    
+
+    /**
+     * @param $dsn
+     * @return string
+     */
     public function currentDatabase($dsn)
     {
         return substr($dsn, strpos($dsn, ':') + 1);
     }
-    
+
+    /**
+     * @param $database
+     * @return array
+     */
     public function getTables($database)
     {
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' .  $this->wrap('sqlite_master')
@@ -65,7 +89,12 @@ class SQLite extends Compiler
             'params' => array('table'),
         );
     }
-    
+
+    /**
+     * @param $database
+     * @param $table
+     * @return array
+     */
     public function getColumns($database, $table)
     {
         return array(
@@ -73,7 +102,12 @@ class SQLite extends Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $old
+     * @param $new
+     * @return array
+     */
     public function renameTable($old, $new)
     {
         return array(

@@ -26,20 +26,35 @@ class Where
     protected $column;
     protected $separator;
     protected $whereClause;
-    
+
+    /**
+     * Where constructor.
+     * @param WhereCondition $condition
+     */
     public function __construct(WhereCondition $condition)
     {
         $this->condition = $condition;
         $this->whereClause = $condition->getWhereClause();
     }
-    
+
+    /**
+     * @param $column
+     * @param $separator
+     * @return $this
+     */
     public function init($column, $separator)
     {
         $this->column = $column;
         $this->separator = $separator;
         return $this;
     }
-    
+
+    /**
+     * @param $value
+     * @param $operator
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     protected function addCondition($value, $operator, $iscolumn = false)
     {
         if($iscolumn && is_string($value))
@@ -52,128 +67,240 @@ class Where
         $this->whereClause->addCondition($this->column, $value, $operator, $this->separator);
         return $this->condition;
     }
-    
+
+    /**
+     * @param $value1
+     * @param $value2
+     * @param $not
+     * @return WhereCondition
+     */
     protected function addBetweenCondition($value1, $value2, $not)
     {
         $this->whereClause->addBetweenCondition($this->column, $value1, $value2, $this->separator, $not);
         return $this->condition;
     }
-    
+
+    /**
+     * @param $pattern
+     * @param $not
+     * @return WhereCondition
+     */
     protected function addLikeCondition($pattern, $not)
     {
         $this->whereClause->addLikeCondition($this->column, $pattern, $this->separator, $not);
         return $this->condition;
     }
-    
+
+    /**
+     * @param $value
+     * @param $not
+     * @return WhereCondition
+     */
     protected function addInCondition($value, $not)
     {
         $this->whereClause->addInCondition($this->column, $value, $this->separator, $not);
         return $this->condition;
     }
-    
+
+    /**
+     * @param $not
+     * @return WhereCondition
+     */
     public function addNullCondition($not)
     {
         $this->whereClause->addNullCondition($this->column, $this->separator, $not);
         return $this->condition;
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function is($value, $iscolumn = false)
     {
         return $this->addCondition($value, '=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function isNot($value, $iscolumn = false)
     {
         return $this->addCondition($value, '!=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function lessThan($value, $iscolumn = false)
     {
         return $this->addCondition($value, '<', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function greaterThan($value, $iscolumn = false)
     {
         return $this->addCondition($value, '>', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function atLeast($value, $iscolumn = false)
     {
         return $this->addCondition($value, '>=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function atMost($value, $iscolumn = false)
     {
         return $this->addCondition($value, '<=', $iscolumn);
     }
-    
+
+    /**
+     * @param $value1
+     * @param $value2
+     * @return WhereCondition
+     */
     public function between($value1, $value2)
     {
         return $this->addBetweenCondition($value1, $value2, false);
     }
-    
+
+    /**
+     * @param $value1
+     * @param $value2
+     * @return WhereCondition
+     */
     public function notBetween($value1, $value2)
     {
         return $this->addBetweenCondition($value1, $value2, true);
     }
-    
+
+    /**
+     * @param $value
+     * @return WhereCondition
+     */
     public function like($value)
     {
         return $this->addLikeCondition($value, false);
     }
-    
+
+    /**
+     * @param $value
+     * @return WhereCondition
+     */
     public function notLike($value)
     {
         return $this->addLikeCondition($value, true);
     }
-    
+
+    /**
+     * @param $value
+     * @return WhereCondition
+     */
     public function in($value)
     {
         return $this->addInCondition($value, false);
     }
-    
+
+    /**
+     * @param $value
+     * @return WhereCondition
+     */
     public function notIn($value)
     {
         return $this->addInCondition($value, true);
     }
-    
+
+    /**
+     * @return WhereCondition
+     */
     public function isNull()
     {
         return $this->addNullCondition(false);
     }
-    
+
+    /**
+     * @return WhereCondition
+     */
     public function notNull()
     {
         return $this->addNullCondition(true);
     }
     
     //Aliases
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function eq($value, $iscolumn = false)
     {
         return $this->is($value, $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function ne($value, $iscolumn = false)
     {
         return $this->isNot($value, $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function lt($value, $iscolumn = false)
     {
         return $this->lessThan($value, $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function gt($value, $iscolumn = false)
     {
         return $this->greaterThan($value, $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function gte($value, $iscolumn = false)
     {
         return $this->atLeast($value, $iscolumn);
     }
-    
+
+    /**
+     * @param $value
+     * @param bool|false $iscolumn
+     * @return WhereCondition
+     */
     public function lte($value, $iscolumn = false)
     {
         return $this->atMost($value, $iscolumn);

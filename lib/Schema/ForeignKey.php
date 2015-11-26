@@ -29,12 +29,21 @@ class ForeignKey
     protected $actions = array();
     
     protected $columns;
-    
+
+    /**
+     * ForeignKey constructor.
+     * @param $columns
+     */
     public function __construct($columns)
     {
         $this->columns = $columns;
     }
-    
+
+    /**
+     * @param $on
+     * @param $action
+     * @return $this
+     */
     protected function addAction($on, $action)
     {
         $action = strtoupper($action);
@@ -62,18 +71,29 @@ class ForeignKey
     {
         return $this->columns;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getActions()
     {
         return $this->actions;
     }
-    
+
+    /**
+     * @param $table
+     * @return $this
+     */
     public function references($table)
     {
         $this->refTable = $table;
         return $this;
     }
-    
+
+    /**
+     * @param $columns
+     * @return $this
+     */
     public function on($columns)
     {
         if(!is_array($columns))
@@ -84,12 +104,20 @@ class ForeignKey
         $this->refColumns = $columns;
         return $this;
     }
-    
+
+    /**
+     * @param $action
+     * @return ForeignKey
+     */
     public function onDelete($action)
     {
         return $this->addAction('ON DELETE', $action);
     }
-    
+
+    /**
+     * @param $action
+     * @return ForeignKey
+     */
     public function onUpdate($action)
     {
         return $this->addAction('ON UPDATE', $action);

@@ -38,22 +38,39 @@ class Compiler
     protected $autoincrement = 'AUTO_INCREMENT';
     
     protected $connection;
-    
+
+    /**
+     * Compiler constructor.
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
-    
+
+    /**
+     * @param $name
+     * @return string
+     */
     protected function wrap($name)
     {
         return sprintf($this->wrapper, $name);
     }
-    
+
+    /**
+     * @param array $value
+     * @param string $separator
+     * @return string
+     */
     protected function wrapArray(array $value, $separator = ', ')
     {
         return implode($separator, array_map(array($this, 'wrap'), $value));
     }
-    
+
+    /**
+     * @param $value
+     * @return int|string
+     */
     protected function value($value)
     {   
         if(is_numeric($value))
@@ -73,7 +90,11 @@ class Compiler
         
         return 'NULL';
     }
-    
+
+    /**
+     * @param BaseColumn[] $columns
+     * @return string
+     */
     protected function handleColumns(array $columns)
     {
         $sql = array();
@@ -88,7 +109,11 @@ class Compiler
         
         return implode(",\n", $sql);
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleColumnType(BaseColumn $column)
     {
         $type  = 'handleType' . ucfirst($column->getType());
@@ -101,7 +126,11 @@ class Compiler
         
         return $result;
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleColumnModifiers(BaseColumn $column)
     {
         $line = '';
@@ -121,77 +150,137 @@ class Compiler
         
         return $line;
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeInteger(BaseColumn $column)
     {
         return 'INT';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeFloat(BaseColumn $column)
     {
         return 'FLOAT';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDouble(BaseColumn $column)
     {
         return 'DOUBLE';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDecimal(BaseColumn $column)
     {
         return 'DECIMAL';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeBoolean(BaseColumn $column)
     {
         return 'BOOLEAN';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'BLOB';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeText(BaseColumn $column)
     {
         return 'TEXT';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeString(BaseColumn $column)
     {
         return 'VARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeFixed(BaseColumn $column)
     {
         return 'CHAR(' . $this->value($column->get('length', 255)) . ')';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'TIME';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'TIMESTAMP';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDate(BaseColumn $column)
     {
         return 'DATE';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDateTime(BaseColumn $column)
     {
         return 'DATETIME';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleModifierUnsigned(BaseColumn $column)
     {
         return $column->get('unisgned', false) ? 'UNSIGNED' : '';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleModifierNullable(BaseColumn $column)
     {
         if($column->get('nullable', true))
@@ -201,12 +290,20 @@ class Compiler
         
         return 'NOT NULL';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleModifierDefault(BaseColumn $column)
     {
         return null === $column->get('default') ? '' : 'DEFAULT ' . $this->value($column->get('default'));
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleModifierAutoincrement(BaseColumn $column)
     {
         if($column->getType() !== 'integer' || !in_array($column->get('size', 'normal'), $this->serials))
@@ -216,7 +313,11 @@ class Compiler
         
         return $column->get('autoincrement', false) ? $this->autoincrement : '';
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handlePrimaryKey(CreateTable $schema)
     {
         
@@ -227,7 +328,11 @@ class Compiler
         
         return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . $this->wrapArray($pk['columns']) . ')';
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleUniqueKeys(CreateTable $schema)
     {
         
@@ -247,7 +352,11 @@ class Compiler
         
         return ",\n" . implode(",\n", $sql);
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return array
+     */
     protected function handleIndexKeys(CreateTable $schema)
     {
         $indexes = $schema->getIndexes();
@@ -267,7 +376,11 @@ class Compiler
         
         return $sql;
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleForeignKeys(CreateTable $schema)
     {
         $keys = $schema->getForeignKeys();
@@ -294,7 +407,11 @@ class Compiler
         
         return ",\n" . implode(",\n", $sql);
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleEngine(CreateTable $schema)
     {
         if(null !== $engine = $schema->getEngine())
@@ -304,64 +421,124 @@ class Compiler
         
         return '';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropPrimaryKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropUniqueKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropIndex(AlterTable $table, $data)
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data);
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropForeignKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropColumn(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP COLUMN ' . $this->wrap($data);
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return null
+     */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return null;
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleModifyColumn(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY COLUMN ' . $this->handleColumns(array($data));
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddColumn(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD COLUMN ' . $this->handleColumns(array($data));
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddPrimary(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
         . $this->wrap($data['name']) . ' PRIMARY KEY (' . $this->wrapArray($data['columns']) . ')';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddUnique(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
         . $this->wrap($data['name']) . ' UNIQUE (' . $this->wrapArray($data['columns']) . ')';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddIndex(AlterTable $table, $data)
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' ('. $this->wrapArray($data['columns']) . ')';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddForeign(AlterTable $table, $data)
     {
         $key = $data['foreign'];
@@ -369,26 +546,43 @@ class Compiler
         . $this->wrap($data['name']) . ' FOREIGN KEY (' . $this->wrapArray($key->getColumns()) . ') '
         . 'REFERENCES ' . $this->wrap($key->getReferencedTable()) . '(' . $this->wrapArray($key->getReferencedColumns()) . ')';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleSetDefaultValue(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
         . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
-        
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropDefaultValue(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
         . $this->wrap($data) . ' DROP DEFAULT';
     }
-    
+
+    /**
+     * @return array
+     */
     public function getParams()
     {
         $params = $this->params;
         $this->params = array();
         return $params;
     }
-    
+
+    /**
+     * @param $dsn
+     * @return array
+     */
     public function currentDatabase($dsn)
     {   
         return array(
@@ -396,7 +590,12 @@ class Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $old
+     * @param $new
+     * @return array
+     */
     public function renameTable($old, $new)
     {
         return array(
@@ -404,7 +603,11 @@ class Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $database
+     * @return array
+     */
     public function getTables($database)
     {
         $sql = 'SELECT ' . $this->wrap('table_name') . ' FROM ' . $this->wrap('information_schema')
@@ -417,7 +620,12 @@ class Compiler
         );
         
     }
-    
+
+    /**
+     * @param $database
+     * @param $table
+     * @return array
+     */
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
@@ -431,7 +639,11 @@ class Compiler
             'params' => array($database, $table),
         );
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return array
+     */
     public function create(CreateTable $schema)
     {
         $sql  = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
@@ -459,7 +671,11 @@ class Compiler
         
         return $commands;
     }
-    
+
+    /**
+     * @param AlterTable $schema
+     * @return array
+     */
     public function alter(AlterTable $schema)
     {
         $commands = array();
@@ -482,7 +698,11 @@ class Compiler
         
         return $commands;
     }
-    
+
+    /**
+     * @param $table
+     * @return array
+     */
     public function drop($table)
     {   
         return array(
@@ -490,7 +710,11 @@ class Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $table
+     * @return array
+     */
     public function truncate($table)
     {
         return array(

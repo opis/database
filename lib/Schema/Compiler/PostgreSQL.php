@@ -29,7 +29,11 @@ class PostgreSQL extends Compiler
 {
     
     protected $modifiers = array('nullable', 'default');
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeInteger(BaseColumn $column)
     {
         $autoincrement = $column->get('autoincrement', false);
@@ -48,17 +52,29 @@ class PostgreSQL extends Compiler
         return $autoincrement ? 'SERIAL' : 'INTEGER';
         
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeFloat(BaseColumn $column)
     {
         return 'REAL';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDouble(BaseColumn $column)
     {
         return 'DOUBLE PRECISION';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDecimal(BaseColumn $column)
     {
         if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
@@ -68,27 +84,47 @@ class PostgreSQL extends Compiler
         
         return 'DECIMAL';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'BYTEA';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'TIME(0) WITHOUT TIME ZONE';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeDateTime(BaseColumn $column)
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return array
+     */
     protected function handleIndexKeys(CreateTable $schema)
     {
         $indexes = $schema->getIndexes();
@@ -109,28 +145,52 @@ class PostgreSQL extends Compiler
         
         return $sql;
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
                 . $this->wrap($data['from']) . ' TO ' . $this->wrap($data['column']->getName()); 
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleAddIndex(AlterTable $table, $data)
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' ('. $this->wrapArray($data['columns']) . ')';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleDropIndex(AlterTable $table, $data)
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleEngine(CreateTable $schema)
     {
         return '';
     }
-    
+
+    /**
+     * @param $database
+     * @param $table
+     * @return array
+     */
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
@@ -144,7 +204,11 @@ class PostgreSQL extends Compiler
             'params' => array($database, $table),
         );
     }
-    
+
+    /**
+     * @param $dsn
+     * @return array
+     */
     public function currentDatabase($dsn)
     {
         return array(
@@ -152,7 +216,12 @@ class PostgreSQL extends Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $old
+     * @param $new
+     * @return array
+     */
     public function renameTable($old, $new)
     {
         return array(

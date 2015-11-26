@@ -31,52 +31,85 @@ class AggregateExpression
     protected $column;
     
     protected $separator;
-    
+
+    /**
+     * AggregateExpression constructor.
+     * @param Compiler $compiler
+     * @param HavingClause $clause
+     */
     public function __construct(Compiler $compiler, HavingClause $clause)
     {
         $this->compiler = $compiler;
         $this->havingClause = $clause;
         $this->having = new Having($this->compiler, $this->havingClause);
     }
-    
+
+    /**
+     * @return Expression
+     */
     protected function expression()
     {
         return new Expression($this->compiler);
     }
-    
-    
+
+
+    /**
+     * @param $column
+     * @param $separator
+     * @return $this
+     */
     public function init($column, $separator)
     {
         $this->column = $column;
         $this->separator = $separator;
         return $this;
     }
-    
-    
+
+
+    /**
+     * @param bool|false $distinct
+     * @return $this
+     */
     public function count($distinct = false)
     {
         $value = $this->expression()->count($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
-    
+
+    /**
+     * @param bool|false $distinct
+     * @return $this
+     */
     public function avg($distinct = false)
     {
         $value = $this->expression()->avg($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
-    
+
+    /**
+     * @param bool|false $distinct
+     * @return $this
+     */
     public function sum($distinct  = false)
     {
         $value = $this->expression()->sum($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
-    
+
+    /**
+     * @param bool|false $distinct
+     * @return $this
+     */
     public function min($distinct = false)
     {
         $value = $this->expression()->min($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
-    
+
+    /**
+     * @param bool|false $distinct
+     * @return $this
+     */
     public function max($distinct = false)
     {
         $value = $this->expression()->max($this->column, $distinct);

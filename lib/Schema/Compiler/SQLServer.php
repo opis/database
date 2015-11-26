@@ -32,7 +32,11 @@ class SQLServer extends Compiler
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
     protected $autoincrement = 'IDENTITY';
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeInteger(BaseColumn $column)
     {
         switch($column->get('size', 'normal'))
@@ -49,48 +53,86 @@ class SQLServer extends Compiler
         
         return 'INTEGER';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeBoolean(BaseColumn $column)
     {
         return 'BIT';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeString(BaseColumn $column)
     {
         return 'NVARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeFixed(BaseColumn $column)
     {
         return 'NCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeText(BaseColumn $column)
     {
         return 'NVARCHAR(max)';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'VARBINARY(max)';
     }
-    
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
     }
-    
+
+    /**
+     * @param AlterTable $table
+     * @param $data
+     * @return string
+     */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
                 . $this->wrap($data['column']->getName()) . ', COLUMN';
     }
-    
+
+    /**
+     * @param CreateTable $schema
+     * @return string
+     */
     protected function handleEngine(CreateTable $schema)
     {
         return '';
     }
-    
+
+    /**
+     * @param $old
+     * @param $new
+     * @return array
+     */
     public function renameTable($old, $new)
     {
         return array(
@@ -98,7 +140,11 @@ class SQLServer extends Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $dsn
+     * @return array
+     */
     public function currentDatabase($dsn)
     {
         return array(
@@ -106,7 +152,12 @@ class SQLServer extends Compiler
             'params' => array(),
         );
     }
-    
+
+    /**
+     * @param $database
+     * @param $table
+     * @return array
+     */
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
