@@ -44,7 +44,7 @@ class Where
     {
         if($iscolumn && is_string($value))
         {
-            $value = function($expr) use ($value){
+            $value = function(Expression $expr) use ($value){
                 $expr->column($value);
             };
         }
