@@ -22,7 +22,7 @@ namespace Opis\Database\SQL;
 
 class Where
 {
-    /** @var Query|WhereCondition */
+    /** @var Query|Update|WhereCondition */
     protected $condition;
     protected $column;
     protected $separator;
@@ -30,7 +30,7 @@ class Where
 
     /**
      * Where constructor.
-     * @param WhereCondition|Query $condition
+     * @param WhereCondition|Query|Update $condition
      */
     public function __construct(WhereCondition $condition)
     {
@@ -54,7 +54,7 @@ class Where
      * @param $value
      * @param $operator
      * @param bool|false $iscolumn
-     * @return WhereCondition|Query
+     * @return WhereCondition|Query|Update
      */
     protected function addCondition($value, $operator, $iscolumn = false)
     {
@@ -73,7 +73,7 @@ class Where
      * @param $value1
      * @param $value2
      * @param $not
-     * @return WhereCondition|Query
+     * @return WhereCondition|Query|Update
      */
     protected function addBetweenCondition($value1, $value2, $not)
     {
@@ -84,7 +84,7 @@ class Where
     /**
      * @param $pattern
      * @param $not
-     * @return WhereCondition|Query
+     * @return WhereCondition|Query|Update
      */
     protected function addLikeCondition($pattern, $not)
     {
@@ -95,7 +95,7 @@ class Where
     /**
      * @param $value
      * @param $not
-     * @return WhereCondition|Query
+     * @return WhereCondition|Query|Update
      */
     protected function addInCondition($value, $not)
     {
@@ -105,7 +105,7 @@ class Where
 
     /**
      * @param $not
-     * @return WhereCondition|Query
+     * @return WhereCondition|Query|Update
      */
     public function addNullCondition($not)
     {
@@ -116,7 +116,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function is($value, $iscolumn = false)
     {
@@ -126,7 +126,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function isNot($value, $iscolumn = false)
     {
@@ -136,7 +136,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function lessThan($value, $iscolumn = false)
     {
@@ -146,7 +146,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function greaterThan($value, $iscolumn = false)
     {
@@ -156,7 +156,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function atLeast($value, $iscolumn = false)
     {
@@ -166,7 +166,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function atMost($value, $iscolumn = false)
     {
@@ -176,7 +176,7 @@ class Where
     /**
      * @param $value1
      * @param $value2
-     * @return Query
+     * @return Query|Update
      */
     public function between($value1, $value2)
     {
@@ -186,7 +186,7 @@ class Where
     /**
      * @param $value1
      * @param $value2
-     * @return Query
+     * @return Query|Update
      */
     public function notBetween($value1, $value2)
     {
@@ -195,7 +195,7 @@ class Where
 
     /**
      * @param $value
-     * @return Query
+     * @return Query|Update
      */
     public function like($value)
     {
@@ -204,7 +204,7 @@ class Where
 
     /**
      * @param $value
-     * @return Query
+     * @return Query|Update
      */
     public function notLike($value)
     {
@@ -213,7 +213,7 @@ class Where
 
     /**
      * @param $value
-     * @return Query
+     * @return Query|Update
      */
     public function in($value)
     {
@@ -222,7 +222,7 @@ class Where
 
     /**
      * @param $value
-     * @return Query
+     * @return Query|Update
      */
     public function notIn($value)
     {
@@ -230,7 +230,7 @@ class Where
     }
 
     /**
-     * @return Query
+     * @return Query|Update
      */
     public function isNull()
     {
@@ -238,7 +238,7 @@ class Where
     }
 
     /**
-     * @return Query
+     * @return Query|Update
      */
     public function notNull()
     {
@@ -250,7 +250,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function eq($value, $iscolumn = false)
     {
@@ -260,7 +260,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function ne($value, $iscolumn = false)
     {
@@ -270,7 +270,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function lt($value, $iscolumn = false)
     {
@@ -280,7 +280,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function gt($value, $iscolumn = false)
     {
@@ -290,7 +290,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function gte($value, $iscolumn = false)
     {
@@ -300,7 +300,7 @@ class Where
     /**
      * @param $value
      * @param bool|false $iscolumn
-     * @return Query
+     * @return Query|Update
      */
     public function lte($value, $iscolumn = false)
     {
