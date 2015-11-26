@@ -67,7 +67,7 @@ class Connection implements Serializable
     /** @var    \Opis\Database\Schema   Schema instance */
     protected $schema;
     
-    /** @var    arrray  Compiler options */
+    /** @var    array  Compiler options */
     protected $compilerOptions = array();
     
     /**
