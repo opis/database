@@ -20,8 +20,6 @@
 
 namespace Opis\Database\SQL;
 
-use Closure;
-
 class Where
 {
     protected $condition;
