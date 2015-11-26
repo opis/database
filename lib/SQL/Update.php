@@ -46,13 +46,13 @@ class Update extends UpdateStatement
         {
             if(is_numeric($k))
             {
-                $values[$v] = function($expr) use($sign, $v, $value){
+                $values[$v] = function(Expression $expr) use($sign, $v, $value){
                   $expr->column($v)->{$sign}->value($value);  
                 };
             }
             else
             {
-                $values[$k] = function($expr) use($sign, $k, $v){
+                $values[$k] = function(Expression $expr) use($sign, $k, $v){
                     $expr->column($k)->{$sign}->value($v);
                 };
             }
