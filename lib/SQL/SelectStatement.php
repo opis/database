@@ -148,26 +148,6 @@ class SelectStatement extends WhereJoinCondition
     }
 
     /**
-     * @param $aggregate
-     * @param $value
-     * @param $operator
-     * @param $separator
-     * @return $this
-     */
-    protected function addHavingClause($aggregate, $value, $operator, $separator)
-    {
-        $column = new AggregateExpression($this->compiler);
-        $aggregate($column);
-        $this->have[] = array(
-            'column' => $column->getExpression(),
-            'value' => $value,
-            'operator' => $operator,
-            'separator' => $separator,
-        );
-        return $this;
-    }
-
-    /**
      * @return ColumnExpression
      */
     protected function expression()
