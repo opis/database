@@ -199,7 +199,7 @@ class ColumnExpression
      */
     public function round($column, $decimals = 0, $alias = null)
     {
-        return $this->column($this->expression()->format($column, $format), $alias);
+        return $this->column($this->expression()->format($column, $decimals), $alias);
     }
 
     /**
