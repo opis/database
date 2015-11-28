@@ -8,6 +8,9 @@ for the `Opis\Database\ModelInterface::getConnection` method
 * Added `Opis\Database\Model::using` method
 * Added an optional `Opis\Database\Connection` argument to the `Opis\Database\Model::create` method
 * The constructor of the `Opis\Database\Model` class accepts an optional `Opis\Database\Connection` argument
+* Removed unused artifacts `Opis\Database\SQL\WhereInterface` and `Opis\Database\SQL\SelectStatement::addHavingClause`.
+See [issue #19](https://github.com/opis/database/issues/19) and [issue #18](https://github.com/opis/database/issues/18).
+* Various bugfixes. See [issue #20](https://github.com/opis/database/issues/20) and [issue #21](https://github.com/opis/database/pull/21).
 
 ### v3.1.0, 2015.11.20
 
