@@ -26,7 +26,11 @@ use Opis\Database\SQL\Expression;
 
 class Oracle extends Compiler
 {
-    
+
+    /**
+     * @param $value
+     * @return string
+     */
     protected function wrap($value)
     {
         if($value instanceof Expression)
@@ -50,7 +54,11 @@ class Oracle extends Compiler
         
         return implode('.', $wrapped);
     }
-    
+
+    /**
+     * @param array $ordering
+     * @return string
+     */
     protected function handleOrderings(array $ordering)
     {
         if(empty($ordering))
@@ -74,13 +82,13 @@ class Oracle extends Compiler
         
         return ' ORDER BY ' . implode(', ', $sql);
     }
-    
+
     /**
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\SelectStatament    $select  Query object.
-     * @return  array
+     * @param SelectStatement $select Query object.
+     * @return array
      */
 
     public function select(SelectStatement $select)

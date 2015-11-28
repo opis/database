@@ -21,7 +21,6 @@
 namespace Opis\Database;
 
 use Closure;
-use PDOException;
 use Opis\Database\Schema\CreateTable;
 use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
@@ -139,16 +138,17 @@ class Schema
         
         return $this->tableList;
     }
-    
+
     /**
      * Get a list with all columns that belong to the specified table
      *
      * @access  public
      *
-     * @param   boolean $clear  (optional) Refresh column list
-     * @param   boolean $names  (optional) Return only the column names
-     *
-     * @return  array
+     * @param $table
+     * @param   boolean $clear (optional) Refresh column list
+     * @param   boolean $names (optional) Return only the column names
+     * @return array
+     * @throws \Exception
      */
     
     public function getColumns($table, $clear = false, $names = true)

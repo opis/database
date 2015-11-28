@@ -25,14 +25,26 @@ use Opis\Database\Connection;
 class Delete extends DeleteStatement
 {
     protected $connection;
-    
+
+    /**
+     * Delete constructor.
+     * @param Connection $connection
+     * @param Compiler $compiler
+     * @param null|WhereClause $from
+     * @param $joins
+     * @param WhereClause|null $clause
+     */
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $from, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }
-    
+
+    /**
+     * @param array $tables
+     * @return int
+     */
     public function delete($tables = array())
     {
         parent::delete($tables);

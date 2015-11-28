@@ -46,8 +46,14 @@ class SelectStatement extends WhereJoinCondition
     protected $intoDatabase = null;
     
     protected $sql;
-    
-    
+
+
+    /**
+     * SelectStatement constructor.
+     * @param Compiler $compiler
+     * @param WhereClause $tables
+     * @param WhereClause|null $clause
+     */
     public function __construct(Compiler $compiler, $tables, WhereClause $clause = null)
     {
         parent::__construct($compiler, $clause);
@@ -60,57 +66,94 @@ class SelectStatement extends WhereJoinCondition
         $this->tables = $tables;
         $this->have = new HavingCondition($this->compiler);
     }
-    
+
+    /**
+     * @return array
+     */
     public function getHavingConditions()
     {
         return $this->have->getHavingConditions();
     }
-    
+
+    /**
+     * @return array
+     */
     public function getOrderClauses()
     {
         return $this->order;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getGroupClauses()
     {
         return $this->group;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getLimit()
     {
         return $this->limitValue;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getOffset()
     {
         return $this->offsetValue;
     }
-    
+
+    /**
+     * @return array|WhereClause
+     */
     public function getTables()
     {
         return $this->tables;
     }
-    
+
+    /**
+     * @return bool
+     */
     public function isDistinct()
     {
         return $this->distinct;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getIntoTable()
     {
         return $this->intoTable;
     }
-    
+
+    /**
+     * @return null
+     */
     public function getIntoDatabase()
     {
         return $this->intoDatabase;
     }
-    
+
+    /**
+     * @param $aggregate
+     * @param $value
+     * @param $operator
+     * @param $separator
+     * @return $this
+     */
     protected function addHavingClause($aggregate, $value, $operator, $separator)
     {
         $column = new AggregateExpression($this->compiler);
@@ -123,18 +166,29 @@ class SelectStatement extends WhereJoinCondition
         );
         return $this;
     }
-    
+
+    /**
+     * @return ColumnExpression
+     */
     protected function expression()
     {
         return new ColumnExpression($this->compiler);
     }
-    
+
+    /**
+     * @param bool|true $value
+     * @return $this
+     */
     public function distinct($value = true)
     {
         $this->distinct = $value;
         return $this;
     }
-    
+
+    /**
+     * @param $columns
+     * @return $this
+     */
     public function groupBy($columns)
     {
         if(!is_array($columns))
@@ -144,25 +198,46 @@ class SelectStatement extends WhereJoinCondition
         $this->group = $columns;
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return $this
+     */
     public function having($column, Closure $value = null)
     {
         $this->have->having($column, $value);
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return $this
+     */
     public function andHaving($column, Closure $value = null)
     {
         $this->have->andHaving($column, $value);
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return $this
+     */
     public function orHaving($column, Closure $value = null)
     {
         $this->have->orHaving($column, $value);
         return $this;
     }
-    
+
+    /**
+     * @param $columns
+     * @param string $order
+     * @param null $nulls
+     * @return $this
+     */
     public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
         if(!is_array($columns))
@@ -195,19 +270,31 @@ class SelectStatement extends WhereJoinCondition
         
         return $this;
     }
-    
+
+    /**
+     * @param $value
+     * @return $this
+     */
     public function limit($value)
     {
         $this->limitValue = (int) $value;
         return $this;
     }
-    
+
+    /**
+     * @param $value
+     * @return $this
+     */
     public function offset($value)
     {
         $this->offsetValue = (int) $value;
         return $this;
     }
-    
+
+    /**
+     * @param array $columns
+     * @return $this
+     */
     public function select($columns = array())
     {
         $expr = $this->expression();
@@ -228,37 +315,63 @@ class SelectStatement extends WhereJoinCondition
         
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     */
     public function column($name)
     {
         $this->columns = $this->expression()->column($name)->getColumns();
     }
-    
+
+    /**
+     * @param string $column
+     * @param bool|false $distinct
+     */
     public function count($column = '*',  $distinct = false)
     {
         $this->columns = $this->expression()->count($column, null, $distinct)->getColumns();
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     */
     public function avg($column, $distinct = false)
     {
         $this->columns = $this->expression()->avg($column, null, $distinct)->getColumns();
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     */
     public function sum($column, $distinct  = false)
     {
         $this->columns = $this->expression()->sum($column, null, $distinct)->getColumns();
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     */
     public function min($column, $distinct = false)
     {
         $this->columns = $this->expression()->min($column, null, $distinct)->getColumns();
     }
-    
+
+    /**
+     * @param $column
+     * @param bool|false $distinct
+     */
     public function max($column, $distinct = false)
     {
         $this->columns = $this->expression()->max($column, null, $distinct)->getColumns();
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if($this->sql === null)

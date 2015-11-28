@@ -26,13 +26,24 @@ class Update extends UpdateStatement
 {
     
     protected $connection;
-    
+
+    /**
+     * Update constructor.
+     * @param Connection $connection
+     * @param WhereClause $table
+     */
     public function __construct(Connection $connection, $table)
     {
         parent::__construct($connection->compiler(), $table);
         $this->connection = $connection;
     }
-    
+
+    /**
+     * @param $sign
+     * @param $columns
+     * @param $value
+     * @return int
+     */
     protected function incrementOrDecrement($sign, $columns, $value)
     {
         if(!is_array($columns))
@@ -46,13 +57,13 @@ class Update extends UpdateStatement
         {
             if(is_numeric($k))
             {
-                $values[$v] = function($expr) use($sign, $v, $value){
+                $values[$v] = function(Expression $expr) use($sign, $v, $value){
                   $expr->column($v)->{$sign}->value($value);  
                 };
             }
             else
             {
-                $values[$k] = function($expr) use($sign, $k, $v){
+                $values[$k] = function(Expression $expr) use($sign, $k, $v){
                     $expr->column($k)->{$sign}->value($v);
                 };
             }
@@ -61,17 +72,31 @@ class Update extends UpdateStatement
         return $this->set($values);
         
     }
-    
+
+    /**
+     * @param $column
+     * @param int $value
+     * @return int
+     */
     public function increment($column, $value = 1)
     {
         return $this->incrementOrDecrement('+', $column, $value);
     }
-    
+
+    /**
+     * @param $column
+     * @param int $value
+     * @return int
+     */
     public function decrement($column, $value = 1)
     {
         return $this->incrementOrDecrement('-', $column, $value);
     }
-    
+
+    /**
+     * @param array $columns
+     * @return int
+     */
     public function set(array $columns)
     {
         parent::set($columns);

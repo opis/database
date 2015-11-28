@@ -28,12 +28,21 @@ class WhereClause
     protected $conditions = array();
     
     protected $compiler;
-    
+
+    /**
+     * WhereClause constructor.
+     * @param Compiler $compiler
+     */
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
-    
+
+    /**
+     * @param Closure $callback
+     * @param $separator
+     * @return $this
+     */
     public function addConditionGroup(Closure $callback, $separator)
     {
         $condition = new WhereCondition($this->compiler);
@@ -45,7 +54,14 @@ class WhereClause
         );
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param $value
+     * @param $operator
+     * @param $separator
+     * @return $this
+     */
     public function addCondition($column, $value, $operator, $separator)
     {
         if($value instanceof Closure)
@@ -73,7 +89,14 @@ class WhereClause
         
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param $pattern
+     * @param $separator
+     * @param $not
+     * @return $this
+     */
     public function addLikeCondition($column, $pattern, $separator, $not)
     {
         $this->conditions[] = array(
@@ -85,7 +108,15 @@ class WhereClause
         );
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param $value1
+     * @param $value2
+     * @param $separator
+     * @param $not
+     * @return $this
+     */
     public function addBetweenCondition($column, $value1, $value2, $separator, $not)
     {
         $this->conditions[] = array(
@@ -99,7 +130,14 @@ class WhereClause
         
         return $this;   
     }
-    
+
+    /**
+     * @param $column
+     * @param $value
+     * @param $separator
+     * @param $not
+     * @return $this
+     */
     public function addInCondition($column, $value, $separator, $not)
     {
         if($value instanceof Closure)
@@ -126,7 +164,13 @@ class WhereClause
         }
         return $this;
     }
-    
+
+    /**
+     * @param $column
+     * @param $separator
+     * @param $not
+     * @return $this
+     */
     public function addNullCondition($column, $separator, $not)
     {
         $this->conditions[] = array(
@@ -137,7 +181,13 @@ class WhereClause
         );
         return $this;
     }
-    
+
+    /**
+     * @param $closure
+     * @param $separator
+     * @param $not
+     * @return $this
+     */
     public function addExistsCondition($closure, $separator, $not)
     {
         $select = new Subquery($this->compiler);
@@ -152,7 +202,10 @@ class WhereClause
         
         return $this;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getWhereConditions()
     {
         return $this->conditions;

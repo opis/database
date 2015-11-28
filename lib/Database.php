@@ -80,7 +80,7 @@ class Database
      *
      * @param   string|array    $tables Table name or an array of tables
      *
-     * @return  Opis\Database\SQL\Query
+     * @return  \Opis\Database\SQL\Query
      */
     
     public function from($tables)

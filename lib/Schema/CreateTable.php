@@ -38,12 +38,21 @@ class CreateTable
     protected $engine;
     
     protected $autoincrement;
-    
+
+    /**
+     * CreateTable constructor.
+     * @param $table
+     */
     public function __construct($table)
     {
         $this->table = $table;
     }
-    
+
+    /**
+     * @param $name
+     * @param $type
+     * @return CreateColumn
+     */
     protected function addColumn($name, $type)
     {
         $column = new CreateColumn($this, $name, $type);
@@ -55,7 +64,10 @@ class CreateTable
     {
         return $this->table;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
@@ -65,17 +77,26 @@ class CreateTable
     {
         return $this->primaryKey;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getUniqueKeys()
     {
         return $this->uniqueKeys;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getIndexes()
     {
         return $this->indexes;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getForeignKeys()
     {
         return $this->foreignKeys;
@@ -90,13 +111,22 @@ class CreateTable
     {
         return $this->autoincrement;
     }
-    
+
+    /**
+     * @param $name
+     * @return $this
+     */
     public function engine($name)
     {
         $this->engine = $name;
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @param null $columns
+     * @return $this
+     */
     public function primary($name, $columns = null)
     {
         if($columns === null)
@@ -115,7 +145,12 @@ class CreateTable
         
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @param null $columns
+     * @return $this
+     */
     public function unique($name, $columns = null)
     {
         
@@ -132,7 +167,12 @@ class CreateTable
         
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @param null $columns
+     * @return $this
+     */
     public function index($name, $columns = null)
     {
         if($columns === null)
@@ -148,7 +188,12 @@ class CreateTable
         
         return $this;
     }
-    
+
+    /**
+     * @param $name
+     * @param null $columns
+     * @return ForeignKey
+     */
     public function foreign($name, $columns = null)
     {
         if($columns === null)
@@ -165,7 +210,11 @@ class CreateTable
         $this->foreignKeys[$name] = $foreign;
         return $foreign;
     }
-    
+
+    /**
+     * @param CreateColumn $column
+     * @return $this|CreateTable
+     */
     public function autoincrement(CreateColumn $column)
     {
         if($column->getType() !== 'integer')
@@ -176,67 +225,123 @@ class CreateTable
         $this->autoincrement = $column->set('autoincrement', true);
         return $this->primary($column->getName());
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function integer($name)
     {
         return $this->addColumn($name, 'integer');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function float($name)
     {
         return $this->addColumn($name, 'float');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function double($name)
     {
         return $this->addColumn($name, 'double');
     }
-    
+
+    /**
+     * @param $name
+     * @param null $maximum
+     * @param null $decimal
+     * @return $this
+     */
     public function decimal($name, $maximum = null, $decimal = null)
     {
         return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function boolean($name)
     {
         return $this->addColumn($name, 'boolean');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function binary($name)
     {
         return $this->addColumn($name, 'binary');
     }
-    
+
+    /**
+     * @param $name
+     * @param int $length
+     * @return $this
+     */
     public function string($name, $length = 255)
     {
         return $this->addColumn($name, 'string')->set('length', $length);
     }
-    
+
+    /**
+     * @param $name
+     * @param int $length
+     * @return $this
+     */
     public function fixed($name, $length = 255)
     {
         return $this->addColumn($name, 'fixed')->set('length', $length);
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function text($name)
     {
         return $this->addColumn($name, 'text');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function time($name)
     {
         return $this->addColumn($name, 'time');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function timestamp($name)
     {
         return $this->addColumn($name, 'timestamp');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function date($name)
     {
         return $this->addColumn($name, 'date');
     }
-    
+
+    /**
+     * @param $name
+     * @return CreateColumn
+     */
     public function dateTime($name)
     {
         return $this->addColumn($name, 'dateTime');

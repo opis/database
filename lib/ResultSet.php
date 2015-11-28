@@ -81,7 +81,12 @@ class ResultSet
         }
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
-    
+
+    /**
+     * @param bool|false $uniq
+     * @param null $callable
+     * @return array
+     */
     public function allGroup($uniq = false, $callable = null)
     {
         $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
@@ -177,37 +182,58 @@ class ResultSet
         $this->statement->setFetchMode(PDO::FETCH_OBJ);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function fetchNamed()
     {
         $this->statement->setFetchMode(PDO::FETCH_NAMED);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function fetchNum()
     {
         $this->statement->setFetchMode(PDO::FETCH_NUM);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function fetchBoth()
     {
         $this->statement->setFetchMode(PDO::FETCH_BOTH);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function fetchKeyPair()
     {
         $this->statement->setFetchMode(PDO::FETCH_KEY_PAIR);
         return $this;
     }
-    
+
+    /**
+     * @param $class
+     * @param array $ctorargs
+     * @return $this
+     */
     public function fetchClass($class, array $ctorargs = array())
     {
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
         return $this;
     }
-  
+
+    /**
+     * @param Closure $func
+     * @return $this
+     */
     public function fetchCustom(\Closure $func)
     {
       $func($this->statement);

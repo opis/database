@@ -97,7 +97,11 @@ class SQLServer extends Compiler
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
         
     }
-    
+
+    /**
+     * @param UpdateStatement $update
+     * @return string
+     */
     public function update(UpdateStatement $update)
     {
         $joins = $this->handleJoins($update->getJoinClauses());

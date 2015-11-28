@@ -25,7 +25,14 @@ use Closure;
 class Join
 {
     protected $conditions = array();
-    
+
+    /**
+     * @param $column1
+     * @param $column2
+     * @param $operator
+     * @param $separator
+     * @return $this
+     */
     protected function addJoinCondition($column1, $column2, $operator, $separator)
     {
         if($column1 instanceof Closure)
@@ -51,22 +58,43 @@ class Join
         
         return $this;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getJoinConditions()
     {
         return $this->conditions;
     }
-    
+
+    /**
+     * @param $column1
+     * @param null $column2
+     * @param string $operator
+     * @return Join
+     */
     public function on($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'AND');
     }
-    
+
+    /**
+     * @param $column1
+     * @param null $column2
+     * @param string $operator
+     * @return Join
+     */
     public function andOn($column1, $column2 = null, $operator = '=')
     {
         return $this->on($column1, $column2, $operator);
     }
-    
+
+    /**
+     * @param $column1
+     * @param null $column2
+     * @param string $operator
+     * @return Join
+     */
     public function orOn($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'OR');

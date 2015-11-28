@@ -35,7 +35,11 @@ class InsertStatement
     protected $autoincrement;
     
     protected $sql;
-    
+
+    /**
+     * InsertStatement constructor.
+     * @param Compiler $compiler
+     */
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
@@ -45,17 +49,27 @@ class InsertStatement
     {
         return $this->tables;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getValues()
     {
         return $this->values;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
     }
-    
+
+    /**
+     * @param array $values
+     * @return $this
+     */
     public function insert(array $values)
     {
         foreach($values as $column => $value)
@@ -79,13 +93,20 @@ class InsertStatement
         
         return $this;
     }
-    
+
+    /**
+     * @param $table
+     * @return $this
+     */
     public function into($table)
     {
         $this->tables = array((string) $table);
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if($this->sql === null)

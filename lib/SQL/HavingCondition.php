@@ -32,7 +32,12 @@ class HavingCondition
     protected $compiler;
     
     protected $aggregate;
-    
+
+    /**
+     * HavingCondition constructor.
+     * @param Compiler $compiler
+     * @param HavingClause|null $clause
+     */
     public function __construct(Compiler $compiler, HavingClause $clause = null)
     {
         $this->compiler = $compiler;
@@ -46,7 +51,13 @@ class HavingCondition
         
         $this->aggregate = new AggregateExpression($this->compiler, $this->havingClause);
     }
-    
+
+    /**
+     * @param $column
+     * @param $value
+     * @param $separator
+     * @return $this
+     */
     protected function addCondition($column, $value, $separator)
     {
         if($column instanceof Closure)
@@ -60,22 +71,40 @@ class HavingCondition
         
         return $this;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getHavingConditions()
     {
         return $this->havingClause->getHavingConditions();
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return HavingCondition
+     */
     public function having($column, Closure $value = null)
     {
         return $this->addCondition($column, $value, 'AND');
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return HavingCondition
+     */
     public function andHaving($column, Closure $value = null)
     {
         return $this->having($column, $value);
     }
-    
+
+    /**
+     * @param $column
+     * @param Closure|null $value
+     * @return HavingCondition
+     */
     public function orHaving($column, Closure $value = null)
     {
         return $this->addCondition($column, $value, 'OR');

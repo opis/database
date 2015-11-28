@@ -29,7 +29,13 @@ class UpdateStatement extends WhereJoinCondition
     protected $columns = array();
     
     protected $sql;
-    
+
+    /**
+     * UpdateStatement constructor.
+     * @param Compiler $compiler
+     * @param WhereClause $table
+     * @param WhereClause|null $clause
+     */
     public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
     {
         if(!is_array($table))
@@ -41,18 +47,28 @@ class UpdateStatement extends WhereJoinCondition
         
         parent::__construct($compiler, $clause);
     }
-    
+
+    /**
+     * @return array|WhereClause
+     */
     public function getTables()
     {
         return $this->tables;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
     }
-    
-    
+
+
+    /**
+     * @param array $columns
+     * @return $this
+     */
     public function set(array $columns)
     {
         foreach($columns as $column => $value)
@@ -77,7 +93,10 @@ class UpdateStatement extends WhereJoinCondition
         }
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if($this->sql === null)

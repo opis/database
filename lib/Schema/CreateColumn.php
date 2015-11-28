@@ -24,37 +24,58 @@ class CreateColumn extends BaseColumn
 {
     
     protected $table;
-    
+
+    /**
+     * CreateColumn constructor.
+     * @param CreateTable $table
+     * @param null $name
+     * @param $type
+     */
     public function __construct(CreateTable $table, $name, $type)
     {
         $this->table = $table;
         parent::__construct($name, $type);
     }
-    
+
+    /**
+     * @return CreateTable
+     */
     public function getTable()
     {
         return $this->table;
     }
-    
-    
+
+
+    /**
+     * @return $this
+     */
     public function autoincrement()
     {
         $this->table->autoincrement($this);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function primary()
     {
         $this->table->primary($this->name);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function unique()
     {
         $this->table->unique($this->name);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     public function index()
     {
         $this->table->index($this->name);
