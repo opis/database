@@ -24,22 +24,27 @@ use Closure;
 
 class ColumnExpression
 {
+    /** @var    \Opis\Database\SQL\Compiler */
     protected $compiler;
     
+    /** @var    array */
     protected $columns = array();
 
     /**
-     * ColumnExpression constructor.
-     * @param Compiler $compiler
+     * Constructor
+     * 
+     * @param \Opis\Database\SQL\Compiler   $compiler
      */
+    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
 
     /**
-     * @return Expression
+     * @return \Opis\Database\SQL\Expression
      */
+    
     protected function expression()
     {
         return new Expression($this->compiler);
@@ -48,16 +53,21 @@ class ColumnExpression
     /**
      * @return array
      */
+    
     public function getColumns()
     {
         return $this->columns;
     }
 
     /**
-     * @param $name
-     * @param null $alias
-     * @return $this
+     * Add a column
+     * 
+     * @param   string  $name   Column's name
+     * @param   string  $alias  (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function column($name, $alias = null)
     {
         if($name instanceof Closure)
@@ -75,9 +85,13 @@ class ColumnExpression
     }
 
     /**
-     * @param array $columns
-     * @return $this
+     * Add multiple columns at once
+     * 
+     * @param   array   $columns    Columns
+     * 
+     * @return  $this
      */
+    
     public function columns(array $columns)
     {
         foreach($columns as $name => $alias)
@@ -95,128 +109,176 @@ class ColumnExpression
     }
 
     /**
-     * @param string $column
-     * @param null $alias
-     * @param bool|false $distinct
-     * @return ColumnExpression
+     * Add a `COUNT` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Column's alias
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function count($column = '*', $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->count($column, $distinct), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @param bool|false $distinct
-     * @return ColumnExpression
+     * Add an `AVG` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function avg($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->avg($column, $distinct), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @param bool|false $distinct
-     * @return ColumnExpression
+     * Add a `SUM` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function sum($column, $alias = null, $distinct  = false)
     {
         return $this->column($this->expression()->sum($column, $distinct), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @param bool|false $distinct
-     * @return ColumnExpression
+     * Add a `MIN` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function min($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->min($column, $distinct), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @param bool|false $distinct
-     * @return ColumnExpression
+     * Add a `MAX` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function max($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->max($column, $distinct), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `UCASE` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function ucase($column, $alias = null)
     {
         return $this->column($this->expression()->ucase($column), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `LCASE` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function lcase($column, $alias = null)
     {
         return $this->column($this->expression()->lcase($column), $alias);
     }
 
     /**
-     * @param $column
-     * @param int $start
-     * @param null $alias
-     * @param int $length
-     * @return ColumnExpression
+     * Add a `MID` expression
+     * 
+     * @param   string  $column     Column
+     * @param   int     $start      (optional) Substring start  
+     * @param   string  $alias      (optional) Alias
+     * @param   int     $length     (optional) Substring length
+     * 
+     * @return  $this
      */
+    
     public function mid($column, $start = 1, $alias = null, $length = 0)
     {
         return $this->column($this->expression()->mid($column, $start, $length), $alias);
     }
 
     /**
-     * @param $column
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `LEN` expression
+     * 
+     * @param   string  $column     Column
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function len($column, $alias = null)
     {
         return $this->column($this->expression()->len($column), $alias);
     }
 
     /**
-     * @param $column
-     * @param int $decimals
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `FORMAT` expression
+     * 
+     * @param   string  $column     Column
+     * @param   int     $decimals   (optional) Decimals
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function round($column, $decimals = 0, $alias = null)
     {
         return $this->column($this->expression()->format($column, $decimals), $alias);
     }
 
     /**
-     * @param $column
-     * @param $format
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `FORMAT` expression
+     * 
+     * @param   string  $column     Column
+     * @param   int     $format     Decimals
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function format($column, $format, $alias = null)
     {
         return $this->column($this->expression()->format($column, $format), $alias);
     }
 
     /**
-     * @param null $alias
-     * @return ColumnExpression
+     * Add a `NOW` expression
+     * 
+     * @param   string  $alias      (optional) Alias
+     * 
+     * @return  $this
      */
+    
     public function now($alias = null)
     {
         return $this->column($this->expression()->now(), $alias);
