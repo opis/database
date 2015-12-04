@@ -94,7 +94,7 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      *
-     * @return  Connection
+     * @return  \Opis\Database\Connection
      */
     
     public function logQueries($value = true)
@@ -110,7 +110,7 @@ class Connection implements Serializable
      * @param   string  $query SQL command
      * @param   array   $params (optional) Params
      *
-     * @return Connection
+     * @return \Opis\Database\Connection
      */
     
     public function initCommand($query, array $params = array())
@@ -128,7 +128,7 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      *
-     * @return  Connection
+     * @return  \Opis\Database\Connection
      */
     
     public function username($username)
@@ -140,8 +140,9 @@ class Connection implements Serializable
     /**
      * Set the password
      *
-     * @param  string $password Password
-     * @return $this
+     * @param   string  $password   Password
+     * 
+     * @return  \Opis\Database\Connection
      */
     
     public function password($password)
@@ -154,8 +155,9 @@ class Connection implements Serializable
     /**
      * Set PDO connection options
      *
-     * @param   array $options PDO options
-     * @return $this
+     * @param   array   $options    PDO options
+     * 
+     * @return  \Opis\Database\Connection
      */
     
     public function options(array $options)
@@ -171,9 +173,10 @@ class Connection implements Serializable
     /**
      * Set a PDO connection option
      *
-     * @param   string $name Option
-     * @param   int $value Value
-     * @return $this
+     * @param   string  $name   Option
+     * @param   int     $value  Value
+     * 
+     * @return \Opis\Database\Connection
      */
     
     public function option($name, $value)
@@ -185,8 +188,9 @@ class Connection implements Serializable
     /**
      * Use persistent connections
      *
-     * @param   bool $value (optional) Value
-     * @return $this
+     * @param   bool    $value  (optional) Value
+     * 
+     * @return  \Opis\Database\Connection
      */
     
     public function persistent($value = true)
@@ -198,7 +202,8 @@ class Connection implements Serializable
      * Set date format
      *
      * @param   string  $format Date format
-     * @return  $this
+     * 
+     * @return  \Opis\Database\Connection
      */
     
     public function setDateFormat($format)
@@ -211,7 +216,8 @@ class Connection implements Serializable
      * Set identifier wrapper
      *
      * @param   string  $wrapper    Identifier wrapper
-     * @return  $this
+     * 
+     * @return  \Opis\Database\Connection
      */
     
     public function setWrapperFormat($wrapper)
@@ -250,7 +256,7 @@ class Connection implements Serializable
     /**
      * Returns the schema associated with this connection
      *
-     * @return  Schema
+     * @return  \Opis\Database\Schema
      */
     
     public function schema()
@@ -288,7 +294,7 @@ class Connection implements Serializable
     /**
      * Returns an instance of the compiler associated with this connection
      *
-     * @return SQL\Compiler
+     * @return  \Opis\Database\SQL\Compiler
      */
     
     public function compiler()
@@ -333,8 +339,10 @@ class Connection implements Serializable
 
     /**
      * Returns an instance of the schema compiler associated with this connection
-     * @return Schema\Compiler
-     * @throws \Exception
+     *
+     * @throws  \Exception
+     * 
+     * @return  \Opis\Database\Schema\Compiler
      */
     
     public function schemaCompiler()
@@ -379,10 +387,8 @@ class Connection implements Serializable
     
     /**
      * Returns the query log for this database.
-     *
-     * @access public
      * 
-     * @return array
+     * @return  array
      */
 
     public function getLog()
@@ -415,7 +421,7 @@ class Connection implements Serializable
      * @param   string  $query  SQL query
      * @param   array   $params Query paramaters
      * 
-     * @return string
+     * @return  string
      */
 
     protected function replaceParams($query, array $params)
@@ -596,7 +602,7 @@ class Connection implements Serializable
      * @param   string  $password   (optional) Password
      * @param   string  $driver     (optional) Driver's name
      *
-     * @return  Connection
+     * @return  \Opis\Database\Connection
      */
     
     public static function create($dsn, $username = null, $password = null, $driver = null)
