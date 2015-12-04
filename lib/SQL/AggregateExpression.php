@@ -22,21 +22,28 @@ namespace Opis\Database\SQL;
 
 class AggregateExpression
 {
+    /** @var    \Opis\Database\SQL\Compiler */
     protected $compiler;
     
+    /** @var    \Opis\Database\SQL\HavingClause */
     protected $havingClause;
     
+    /** @var    \Opis\Database\SQL\Having */
     protected $having;
     
+    /** @var    string */
     protected $column;
     
+    /** @var    string */
     protected $separator;
 
     /**
-     * AggregateExpression constructor.
-     * @param Compiler $compiler
-     * @param HavingClause $clause
+     * Constructor
+     * 
+     * @param   \Opis\Database\SQL\Compiler     $compiler
+     * @param   \Opis\Database\SQL\HavingClause $clause
      */
+    
     public function __construct(Compiler $compiler, HavingClause $clause)
     {
         $this->compiler = $compiler;
@@ -45,19 +52,21 @@ class AggregateExpression
     }
 
     /**
-     * @return Expression
+     * @return \Opis\Database\SQL\Expression
      */
+    
     protected function expression()
     {
         return new Expression($this->compiler);
     }
 
-
     /**
-     * @param $column
-     * @param $separator
-     * @return $this
+     * @param   string  $column
+     * @param   string  $separator
+     * 
+     * @return  $this
      */
+    
     public function init($column, $separator)
     {
         $this->column = $column;
@@ -67,9 +76,11 @@ class AggregateExpression
 
 
     /**
-     * @param bool|false $distinct
-     * @return $this
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function count($distinct = false)
     {
         $value = $this->expression()->count($this->column, $distinct);
@@ -77,9 +88,11 @@ class AggregateExpression
     }
 
     /**
-     * @param bool|false $distinct
-     * @return $this
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function avg($distinct = false)
     {
         $value = $this->expression()->avg($this->column, $distinct);
@@ -87,9 +100,11 @@ class AggregateExpression
     }
 
     /**
-     * @param bool|false $distinct
-     * @return $this
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function sum($distinct  = false)
     {
         $value = $this->expression()->sum($this->column, $distinct);
@@ -97,9 +112,11 @@ class AggregateExpression
     }
 
     /**
-     * @param bool|false $distinct
-     * @return $this
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function min($distinct = false)
     {
         $value = $this->expression()->min($this->column, $distinct);
@@ -107,9 +124,11 @@ class AggregateExpression
     }
 
     /**
-     * @param bool|false $distinct
-     * @return $this
+     * @param   bool    $distinct   (optional) Distinct column
+     * 
+     * @return  $this
      */
+    
     public function max($distinct = false)
     {
         $value = $this->expression()->max($this->column, $distinct);
