@@ -27,29 +27,22 @@ class WhereJoinCondition extends WhereCondition
     protected $joins = array();
 
     /**
-     * WhereJoinCondition constructor.
-     * @param Compiler $compiler
-     * @param WhereClause|null $clause
+     * Constructor
+     * 
+     * @param   \Opis\Database\SQL\Compiler     $compiler   Compiler
+     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
      */
+    
     public function __construct(Compiler $compiler, WhereClause $clause = null)
     {
         parent::__construct($compiler, $clause);
     }
-
-    /**
-     * @return array
-     */
+    
     public function getJoinClauses()
     {
         return $this->joins;
     }
 
-    /**
-     * @param $type
-     * @param $table
-     * @param $closure
-     * @return $this
-     */
     protected function addJoinClause($type, $table, $closure)
     {
         $join = new Join();
@@ -70,41 +63,21 @@ class WhereJoinCondition extends WhereCondition
         return $this;
     }
 
-    /**
-     * @param $table
-     * @param Closure $closure
-     * @return $this
-     */
     public function join($table, Closure $closure)
     {
         return $this->addJoinClause('INNER', $table, $closure);
     }
-
-    /**
-     * @param $table
-     * @param Closure $closure
-     * @return $this
-     */
+    
     public function leftJoin($table, Closure $closure)
     {
         return $this->addJoinClause('LEFT', $table, $closure);
     }
 
-    /**
-     * @param $table
-     * @param Closure $closure
-     * @return $this
-     */
     public function rightJoin($table, Closure $closure)
     {
         return $this->addJoinClause('RIGHT', $table, $closure);
     }
 
-    /**
-     * @param $table
-     * @param Closure $closure
-     * @return $this
-     */
     public function fullJoin($table, Closure $closure)
     {
         return $this->addJoinClause('FULL', $table, $closure);
