@@ -22,18 +22,23 @@ namespace Opis\Database\SQL;
 
 class DeleteStatement extends WhereJoinCondition
 {
+    /** @var    array */
     protected $tables;
     
+    /** @var    array */
     protected $from;
     
+    /** @var    string */
     protected $sql;
 
     /**
-     * DeleteStatement constructor.
-     * @param Compiler $compiler
-     * @param WhereClause $from
-     * @param WhereClause|null $clause
+     * Constructor
+     * 
+     * @param   \Opis\Database\SQL\Compiler     $compiler
+     * @param   string|array                    $from
+     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
      */
+    
     public function __construct(Compiler $compiler, $from, WhereClause $clause = null)
     {
         parent::__construct($compiler, $clause);
@@ -47,24 +52,29 @@ class DeleteStatement extends WhereJoinCondition
     }
 
     /**
-     * @return array
+     * @return  array
      */
+    
     public function getTables()
     {
         return $this->tables;
     }
 
     /**
-     * @return array|WhereClause
+     * @return  array
      */
+    
     public function getFrom()
     {
         return $this->from;
     }
 
     /**
-     * @param array $tables
+     * Delete records
+     * 
+     * @param   string|array    $tables
      */
+    
     public function delete($tables = array())
     {
         if(!is_array($tables))
@@ -75,8 +85,9 @@ class DeleteStatement extends WhereJoinCondition
     }
 
     /**
-     * @return string
+     * @return  string
      */
+    
     public function __toString()
     {
         if($this->sql === null)

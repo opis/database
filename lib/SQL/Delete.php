@@ -24,16 +24,19 @@ use Opis\Database\Connection;
 
 class Delete extends DeleteStatement
 {
+    /** @var \Opis\Database\Connection */
     protected $connection;
 
     /**
-     * Delete constructor.
-     * @param Connection $connection
-     * @param Compiler $compiler
-     * @param null|WhereClause $from
-     * @param $joins
-     * @param WhereClause|null $clause
+     * Constructor
+     * 
+     * @param   \Opis\Database\Connection       $connection
+     * @param   \Opis\Database\SQL\Compiler     $compiler
+     * @param   string|array                    $from
+     * @param   array                           $joins
+     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
      */
+    
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $from, $clause);
@@ -42,9 +45,13 @@ class Delete extends DeleteStatement
     }
 
     /**
-     * @param array $tables
-     * @return int
+     * Delete records
+     * 
+     * @param   string|array    $tables (optional)
+     * 
+     * @return  int
      */
+    
     public function delete($tables = array())
     {
         parent::delete($tables);
