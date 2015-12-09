@@ -27,13 +27,15 @@ class Select extends SelectStatement
     protected $connection;
 
     /**
-     * Select constructor.
-     * @param Connection $connection
-     * @param Compiler $compiler
-     * @param null|WhereClause $tables
-     * @param $joins
-     * @param WhereClause|null $clause
+     * Constructor
+     * 
+     * @param   Connection  $connection
+     * @param   Compiler    $compiler
+     * @param   array       $tables
+     * @param   array       $joins
+     * @param   WhereClause $clause     (optional)
      */
+    
     public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $tables, $clause);
@@ -42,10 +44,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $table
-     * @param null $database
-     * @return $this
+     * @param   string  $table
+     * @param   string  $database   (optional)
+     * 
+     * @return  $this
      */
+    
     public function into($table, $database = null)
     {
         $this->intoTable = $table;
@@ -54,9 +58,11 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param array $columns
-     * @return \Opis\Database\ResultSet
+     * @param   string|array\Closure    $columns    (optional)
+     * 
+     * @return  \Opis\Database\ResultSet
      */
+    
     public function select($columns = array())
     {
         parent::select($columns);
@@ -64,9 +70,11 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $name
-     * @return mixed
+     * @param   string  $name
+     * 
+     * @return  mixed|false
      */
+    
     public function column($name)
     {
         parent::column($name);
@@ -74,10 +82,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param string $column
-     * @param bool|false $distinct
-     * @return mixed
+     * @param   string  $column     (optional)
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  int
      */
+    
     public function count($column = '*',  $distinct = false)
     {
         parent::count($column, $distinct);
@@ -85,10 +95,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return mixed
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  int|float
      */
+    
     public function avg($column, $distinct = false)
     {
         parent::avg($column, $distinct);
@@ -96,10 +108,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return mixed
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  int|float
      */
+    
     public function sum($column, $distinct  = false)
     {
         parent::sum($column, $distinct);
@@ -107,10 +121,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return mixed
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  int|float
      */
+    
     public function min($column, $distinct = false)
     {
         parent::min($column, $distinct);
@@ -118,10 +134,12 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return mixed
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  int|float
      */
+    
     public function max($column, $distinct = false)
     {
         parent::max($column, $distinct);

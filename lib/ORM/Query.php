@@ -25,8 +25,19 @@ use Opis\Database\Connection;
 
 class Query extends BaseQuery
 {
+    /** @var    Model */
     protected $model;
+    
+    /** @var    Connection */
     protected $connection;
+    
+    
+    /**
+     * Constructor
+     *
+     * @param   Connection  $connection
+     * @param   Model       $model
+     */
     
     public function __construct(Connection $connection, Model $model)
     {
@@ -40,6 +51,11 @@ class Query extends BaseQuery
         parent::__construct($compiler, $query, $whereCondition);
     }
     
+    /**
+     *  @param  array   &$columns   (optional)
+     *
+     *  @return \Opis\Database\ResultSet
+     */
     
     protected function query(array &$columns = array())
     {
@@ -54,20 +70,42 @@ class Query extends BaseQuery
                                         $this->query->getCompiler()->getParams());
     }
     
+    /**
+     * @return  mixed
+     */
+    
     protected function execute()
     {
         return $this->connection->column((string) $this->query, $this->compiler->getParams());
     }
+    
+    /**
+     * @param   array   $tables (optional)
+     *
+     * @return  int
+     */
     
     public function delete(array $tables = array())
     {
         return $this->query->toDelete($this->connection)->delete($tables);
     }
     
+    /**
+     * @param   array   $columns
+     *
+     * @return  int
+     */
+    
     public function update(array $columns)
     {
         return $this->query->toUpdate($this->connection)->update($columns);
     }
+    
+    /**
+     * @param   string  $name
+     *
+     * @return  mixed
+     */
     
     public function column($name)
     {
@@ -75,29 +113,64 @@ class Query extends BaseQuery
         return $this->execute();
     }
     
+    /**
+     * @param   string  $column     (optional)
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    
     public function count($column = '*',  $distinct = false)
     {
         $this->query->count($column, $distinct);
         return $this->execute();
     }
+        
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
     
     public function avg($column, $distinct = false)
     {
         $this->query->avg($column, $distinct);
         return $this->execute();
     }
+            
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
     
     public function sum($column, $distinct  = false)
     {
         $this->query->sum($column, $distinct);
         return $this->execute();
     }
+            
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
     
     public function min($column, $distinct = false)
     {
         $this->query->min($column, $distinct);
         return $this->execute();
     }
+            
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
     
     public function max($column, $distinct = false)
     {
@@ -105,12 +178,24 @@ class Query extends BaseQuery
         return $this->execute();
     }
     
+    /**
+     * @param   array   $columns    (optional)
+     *
+     * @return  Model|false
+     */
+    
     public function first(array $columns = array())
     {
         return $this->query()
                     ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
                     ->first();
     }
+    
+    /**
+     * @param   array   $columns    (optional)
+     *
+     * @return  array
+     */
     
     public function all(array $columns = array())
     {
@@ -122,6 +207,13 @@ class Query extends BaseQuery
         
         return $results;
     }
+        
+    /**
+     * @param   mixed   $id
+     * @param   array   $columns    (optional)
+     *
+     * @return  Model|false
+     */
     
     public function find($id, array $columns = array())
     {
@@ -129,10 +221,23 @@ class Query extends BaseQuery
         return $this->first($columns);
     }
     
+    /**
+     * @param   array   $columns    (optional)
+     *
+     * @return  array
+     */
+    
     public function findAll(array $columns = array())
     {
         return $this->findMany(array(), $columns);
     }
+        
+    /**
+     * @param   array|null  $ids        (optional)
+     * @param   array       $columns    (optional)
+     *
+     * @return  array
+     */
     
     public function findMany(array $ids = null, array $columns = array())
     {

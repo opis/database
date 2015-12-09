@@ -22,15 +22,17 @@ namespace Opis\Database\Schema;
 
 class CreateColumn extends BaseColumn
 {
-    
+    /** @var    string */
     protected $table;
 
     /**
-     * CreateColumn constructor.
-     * @param CreateTable $table
-     * @param null $name
-     * @param $type
+     * Constructor
+     * 
+     * @param   CreateTable $table
+     * @param   string      $name
+     * @param   string      $type
      */
+    
     public function __construct(CreateTable $table, $name, $type)
     {
         $this->table = $table;
@@ -38,17 +40,18 @@ class CreateColumn extends BaseColumn
     }
 
     /**
-     * @return CreateTable
+     * @return  string
      */
+    
     public function getTable()
     {
         return $this->table;
     }
 
-
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function autoincrement()
     {
         $this->table->autoincrement($this);
@@ -56,8 +59,9 @@ class CreateColumn extends BaseColumn
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function primary()
     {
         $this->table->primary($this->name);
@@ -65,8 +69,9 @@ class CreateColumn extends BaseColumn
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function unique()
     {
         $this->table->unique($this->name);
@@ -74,8 +79,9 @@ class CreateColumn extends BaseColumn
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function index()
     {
         $this->table->index($this->name);

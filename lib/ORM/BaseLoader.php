@@ -25,8 +25,18 @@ use Opis\Database\Model;
 
 abstract class BaseLoader
 {
+    /** @var    array */
     protected $with = array();
+    
+    /** @var    bool */
     protected $immediate = false;
+    
+    /**
+     * @param   mixed   $value
+     * @param   bool    $immediate  (optional)
+     *
+     * @return  $this
+     */
     
     public function with($value, $immediate = false)
     {
@@ -39,6 +49,11 @@ abstract class BaseLoader
         $this->immediate = $immediate;
         return $this;
     }
+    
+    /**
+     * @param   Model   $model
+     * @param   array   &$result
+     */
     
     protected function prepareResults(Model $model, array &$results)
     {
@@ -79,6 +94,10 @@ abstract class BaseLoader
             }
         }
     }
+    
+    /**
+     * @return  array
+     */
     
     protected function getWithAttributes()
     {

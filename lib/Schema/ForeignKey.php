@@ -22,28 +22,36 @@ namespace Opis\Database\Schema;
 
 class ForeignKey
 {
+    /** @var    string */
     protected $refTable;
     
+    /** @var    array */
     protected $refColumns;
     
+    /** @var    array */
     protected $actions = array();
     
+    /** @var    array */
     protected $columns;
 
     /**
-     * ForeignKey constructor.
-     * @param $columns
+     * Constructor
+     * 
+     * @param   array   $columns
      */
+    
     public function __construct($columns)
     {
         $this->columns = $columns;
     }
 
     /**
-     * @param $on
-     * @param $action
-     * @return $this
+     * @param   string  $on
+     * @param   string  $action
+     * 
+     * @return  $this
      */
+    
     protected function addAction($on, $action)
     {
         $action = strtoupper($action);
@@ -57,15 +65,27 @@ class ForeignKey
         return $this;
     }
     
+    /**
+     * @return  string
+     */
+    
     public function getReferencedTable()
     {
         return $this->refTable;
     }
     
+    /**
+     * @return  array
+     */
+    
     public function getReferencedColumns()
     {
         return $this->refColumns;
     }
+    
+    /**
+     * @return  array
+     */
     
     public function getColumns()
     {
@@ -73,7 +93,7 @@ class ForeignKey
     }
 
     /**
-     * @return array
+     * @return  array
      */
     public function getActions()
     {
@@ -81,9 +101,11 @@ class ForeignKey
     }
 
     /**
-     * @param $table
-     * @return $this
+     * @param   string  $table
+     * 
+     * @return  $this
      */
+    
     public function references($table)
     {
         $this->refTable = $table;
@@ -91,8 +113,9 @@ class ForeignKey
     }
 
     /**
-     * @param $columns
-     * @return $this
+     * @param   string|array $columns
+     * 
+     * @return  $this
      */
     public function on($columns)
     {
@@ -106,18 +129,22 @@ class ForeignKey
     }
 
     /**
-     * @param $action
-     * @return ForeignKey
+     * @param   string  $action
+     * 
+     * @return  $this
      */
+    
     public function onDelete($action)
     {
         return $this->addAction('ON DELETE', $action);
     }
 
     /**
-     * @param $action
-     * @return ForeignKey
+     * @param   string  $action
+     * 
+     * @return  $this
      */
+    
     public function onUpdate($action)
     {
         return $this->addAction('ON UPDATE', $action);

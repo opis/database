@@ -28,10 +28,23 @@ use Opis\Database\ORM\LazyLoader;
 
 class BelongsToMany extends Relation
 {
-    
+    /** @var    string */
     protected $junctionTable;
     
+    /** @var    string */
     protected $junctionKey;
+    
+    
+    /**
+     * Constructor
+     *
+     * @param   Connection  $connection
+     * @param   Model       $owner
+     * @param   Model       $model
+     * @param   string|null $foreignKey     (optional)
+     * @param   string|null $junctionTable  (optional)
+     * @param   string|null $junctionKey    (optional)
+     */
     
     public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
@@ -40,6 +53,10 @@ class BelongsToMany extends Relation
         
         parent::__construct($connection, $owner, $model, $foreignKey);
     }
+    
+    /**
+     * @return  string
+     */
     
     protected function getJunctionTable()
     {
@@ -53,6 +70,10 @@ class BelongsToMany extends Relation
         return $this->junctionTable;
     }
     
+    /**
+     * @return  string
+     */
+    
     protected function getJunctionKey()
     {
         if($this->junctionKey === null)
@@ -62,6 +83,12 @@ class BelongsToMany extends Relation
         
         return $this->junctionKey;
     }
+    
+    /**
+     * @param   array   $options
+     *
+     * @return  LazyLoader
+     */
     
     public function getLazyLoader(array $options)
     {
@@ -100,6 +127,10 @@ class BelongsToMany extends Relation
                               $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $linkKey, $pk);
     }
+        
+    /**
+     * @return  Model
+     */
     
     public function getResult()
     {

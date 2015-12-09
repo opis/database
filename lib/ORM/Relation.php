@@ -25,10 +25,27 @@ use Opis\Database\Connection;
 
 abstract class Relation extends BaseQuery
 {
+    /** @var    Model */
     protected $model;
+    
+    /** @var    string */
     protected $foreignKey;
+    
+    /** @var    Connection */
     protected $connection;
+    
+    /** @var    Model */
     protected $owner;
+    
+    
+    /**
+     * Constructor
+     *
+     * @param   Connection  $connection
+     * @param   Model       $owner
+     * @param   Model       $model
+     * @param   string|null $foreignKey (optional)
+     */
     
     public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null)
     {        
@@ -44,15 +61,32 @@ abstract class Relation extends BaseQuery
         parent::__construct($compiler, $query, $whereCondition);
     }
     
+    /**
+     * @return  bool
+     */
+    
     protected function hasMany()
     {
         return true;
     }
     
+    /**
+     * @param   Model   $model
+     * @param   string  $name
+     *
+     * @return  string
+     */
+    
     public function getRelatedColumn(Model $model, $name)
     {
         return $name;
     }
+    
+    /**
+     * @param   array   $options
+     *
+     * @return  LazyLoader
+     */
     
     public function getLazyLoader(array $options)
     {        
@@ -81,6 +115,10 @@ abstract class Relation extends BaseQuery
                               get_class($this->model), $fk, $pk);
     }
     
+    /**
+     * @return  string
+     */
+    
     public function getForeignKey()
     {
         if($this->foreignKey === null)
@@ -90,6 +128,12 @@ abstract class Relation extends BaseQuery
         
         return $this->foreignKey;
     }
+    
+    /**
+     * @param   array   &$columns   (optional)
+     *
+     * @return  \Opis\Database\ResultSet
+     */
     
     protected function query(array &$columns = array())
     {
@@ -104,12 +148,24 @@ abstract class Relation extends BaseQuery
                                         $this->query->getCompiler()->getParams());
     }
     
+    /**
+     * @param   array   $columns    (optional)
+     *
+     * @return  Model|false
+     */
+    
     public function first(array $columns = array())
     {
         return $this->query($columns)
                     ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
                     ->first();
     }
+        
+    /**
+     * @param   array   $columns    (optional)
+     *
+     * @return  array
+     */
     
     public function all(array $columns = array())
     {
@@ -122,15 +178,27 @@ abstract class Relation extends BaseQuery
         return $results;
     }
     
+    /**
+     * @return  Model
+     */
+    
     public function getModel()
     {
         return $this->model;
     }
     
+    /**
+     * @return  Model
+     */
+    
     public function getOwner()
     {
         return $this->owner;
     }
+    
+    /**
+     * @return  Model
+     */
     
     public abstract function getResult();
 }

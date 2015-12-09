@@ -22,20 +22,25 @@ namespace Opis\Database\SQL;
 
 class Having
 {
-    
+    /** @var    Compiler */
     protected $compiler;
     
+    /** @var    HavingClause */
     protected $havingClause;
     
+    /** @var    string */
     protected $aggregate;
     
+    /** @var    string */
     protected $separator;
 
     /**
-     * Having constructor.
-     * @param Compiler $compiler
-     * @param HavingClause $clause
+     * Constructor
+     * 
+     * @param   Compiler        $compiler
+     * @param   HavingClause    $clause
      */
+    
     public function __construct(Compiler $compiler, HavingClause $clause)
     {
         $this->compiler = $compiler;
@@ -43,10 +48,11 @@ class Having
     }
 
     /**
-     * @param $value
-     * @param $operator
-     * @param $iscolumn
+     * @param   mixed   $value
+     * @param   string  $operator
+     * @param   boolean $iscolumn
      */
+    
     protected function addCondition($value, $operator, $iscolumn)
     {
         if($iscolumn && is_string($value))
@@ -60,10 +66,12 @@ class Having
 
 
     /**
-     * @param $aggregate
-     * @param $separator
-     * @return $this
+     * @param   string  $aggregate
+     * @param   string  $separator
+     * 
+     * @return  $this
      */
+    
     public function init($aggregate, $separator)
     {
         $this->aggregate = $aggregate;
@@ -73,88 +81,98 @@ class Having
 
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function eq($value, $iscolumn = false)
     {
         $this->addCondition($value, '=', $iscolumn);
     }
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function ne($value, $iscolumn = false)
     {
         $this->addCondition($value, '!=', $iscolumn);
     }
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function lt($value, $iscolumn = false)
     {
         $this->addCondition($value, '<', $iscolumn);
     }
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function gt($value, $iscolumn = false)
     {
         $this->addCondition($value, '>', $iscolumn);
     }
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function lte($value, $iscolumn = false)
     {
         $this->addCondition($value, '<=', $iscolumn);
     }
 
     /**
-     * @param $value
-     * @param bool|false $iscolumn
+     * @param   mixed   $value
+     * @param   bool    $iscolumn (optional)
      */
+    
     public function gte($value, $iscolumn = false)
     {
         $this->addCondition($value, '>=', $iscolumn);
     }
 
     /**
-     * @param $value
+     * @param   array|Closure   $value
      */
+    
     public function in($value)
     {
         $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, false);
     }
 
     /**
-     * @param $value
+     * @param   array|Closure   $value
      */
+    
     public function notIn($value)
     {
         $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, true);
     }
 
     /**
-     * @param $value1
-     * @param $value2
+     * @param   int $value1
+     * @param   int $value2
      */
+    
     public function between($value1, $value2)
     {
         $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, false);
     }
 
     /**
-     * @param $value1
-     * @param $value2
+     * @param   int $value1
+     * @param   int $value2
      */
+    
     public function notBetween($value1, $value2)
     {
          $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, true);

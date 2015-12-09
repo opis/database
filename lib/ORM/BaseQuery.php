@@ -26,10 +26,25 @@ use Opis\Database\SQL\SelectStatement;
 
 abstract class BaseQuery extends BaseLoader
 {
+    /** @var    SelectStatement */
     protected $query;
+    
+    /** @var    WhereCondition */
     protected $whereCondition;
+    
+    /** @var    bool */
     protected $isReadOnly = false;
+    
+    /** @var    Compiler */
     protected $compiler;
+    
+    /**
+     * Constructor
+     *
+     * @param   Compiler        $compiler
+     * @param   SelectStatement $query
+     * @param   WhereCondition  $whereCondition
+     */
     
     public function __construct(Compiler $compiler, SelectStatement $query, WhereCondition $whereCondition)
     {
@@ -38,51 +53,104 @@ abstract class BaseQuery extends BaseLoader
         $this->whereCondition = $whereCondition;
     }
     
+    /**
+     * @param   string  $column
+     *
+     * @return  WhereCondition
+     */
     
     public function where($column)
     {
         return $this->whereCondition->setColumn($column, 'where');
     }
+        
+    /**
+     * @param   string  $column
+     *
+     * @return  WhereCondition
+     */
     
     public function andWhere($column)
     {
         return $this->where($column);
     }
+        
+    /**
+     * @param   string  $column
+     *
+     * @return  WhereCondition
+     */
     
     public function orWhere($column)
     {
         return $this->whereCondition->setColumn($column, 'orWhere');
     }
+        
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function whereExists(Closure $select)
     {
         $this->query->whereExists($select);
         return $this;
     }
+            
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function andWhereExists(Closure $select)
     {
         $this->query->andWhereExists($select);
         return $this;
     }
+            
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function orWhereExists(Closure $select)
     {
         $this->query->orWhereExists($select);
         return $this;
     }
+            
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function whereNotExists(Closure $select)
     {
         $this->query->whereNotExists($select);
         return $this;
     }
+            
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function andWhereNotExists(Closure $select)
     {   
         $this->query->andWhereNotExists($select);
         return $this;
     }
+            
+    /**
+     * @param   Closure $select
+     *
+     * @return  $this
+     */
     
     public function orWhereNotExists(Closure $select)
     {
@@ -90,23 +158,49 @@ abstract class BaseQuery extends BaseLoader
         return $this;
     }
     
+    /**
+     * @param   string|array    $columns
+     * @param   string          $order      (optional)
+     *
+     * @return  $this
+     */
+    
     public function orderBy($columns, $order = 'ASC')
     {
         $this->query->orderBy($columns, $order);
         return $this;
     }
     
+    /**
+     * @param   int $value
+     *
+     * @return  $this
+     */
+    
     public function limit($value)
     {
         $this->query->limit($value);
         return $this;
     }
+        
+    /**
+     * @param   int $value
+     *
+     * @return  $this
+     */
     
     public function offset($value)
     {
         $this->query->offset($value);
         return $this;
     }
+        
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
     
     public function join($table, Closure $closure)
     {
@@ -114,6 +208,13 @@ abstract class BaseQuery extends BaseLoader
         $this->isReadOnly = true;
         return $this;
     }
+            
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
     
     public function leftJoin($table, Closure $closure)
     {
@@ -121,6 +222,13 @@ abstract class BaseQuery extends BaseLoader
         $this->isReadOnly = true;
         return $this;
     }
+            
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
     
     public function rightJoin($table, Closure $closure)
     {
@@ -128,6 +236,13 @@ abstract class BaseQuery extends BaseLoader
         $this->isReadOnly = true;
         return $this;
     }
+            
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
     
     public function fullJoin($table, Closure $closure)
     {
@@ -135,6 +250,10 @@ abstract class BaseQuery extends BaseLoader
         $this->isReadOnly = true;
         return $this;
     }
+            
+    /**
+     * @return  $this
+     */
     
     public function distinct()
     {

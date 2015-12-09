@@ -24,14 +24,16 @@ use Opis\Database\Connection;
 
 class Update extends UpdateStatement
 {
-    
+    /** @var    Connection */
     protected $connection;
 
     /**
-     * Update constructor.
-     * @param Connection $connection
-     * @param WhereClause $table
+     * Constructor
+     * 
+     * @param   Connection      $connection
+     * @param   string|array    $table
      */
+    
     public function __construct(Connection $connection, $table)
     {
         parent::__construct($connection->compiler(), $table);
@@ -39,11 +41,13 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param $sign
-     * @param $columns
-     * @param $value
-     * @return int
+     * @param   string          $sign
+     * @param   string|array    $columns
+     * @param   int             $value
+     * 
+     * @return  int
      */
+    
     protected function incrementOrDecrement($sign, $columns, $value)
     {
         if(!is_array($columns))
@@ -70,33 +74,38 @@ class Update extends UpdateStatement
         }
         
         return $this->set($values);
-        
     }
 
     /**
-     * @param $column
-     * @param int $value
-     * @return int
+     * @param   string|array    $column
+     * @param   int             $value  (optional)
+     * 
+     * @return  int
      */
+    
     public function increment($column, $value = 1)
     {
         return $this->incrementOrDecrement('+', $column, $value);
     }
 
     /**
-     * @param $column
-     * @param int $value
-     * @return int
+     * @param   string|array    $column
+     * @param   int             $value  (optional)
+     * 
+     * @return  int
      */
+    
     public function decrement($column, $value = 1)
     {
         return $this->incrementOrDecrement('-', $column, $value);
     }
 
     /**
-     * @param array $columns
-     * @return int
+     * @param   array   $columns
+     * 
+     * @return  int
      */
+    
     public function set(array $columns)
     {
         parent::set($columns);

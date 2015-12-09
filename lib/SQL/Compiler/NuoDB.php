@@ -24,15 +24,14 @@ use Opis\Database\SQL\Compiler;
 
 class NuoDB extends Compiler
 {
-
     /** @var string Wrapper used to escape table and column names. */
     protected $wrapper = '"%s"';
 
     /**
      * Compiles LIMIT clauses.
      *
-     * @access  protected
      * @param   int        $limit  Limit
+     * 
      * @return  string
      */
 
@@ -44,8 +43,8 @@ class NuoDB extends Compiler
     /**
      * Compiles OFFSET clauses.
      * 
-     * @access  protected
      * @param   int        $offset  Limit
+     * 
      * @return  string
      */
 

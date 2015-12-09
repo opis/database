@@ -24,10 +24,19 @@ use Opis\Database\ORM\Relation;
 
 class HasOne extends Relation
 {
+        
+    /**
+     * @return  bool
+     */
+    
     public function hasMany()
     {
         return false;
     }
+        
+    /**
+     * @return  Model
+     */
     
     public function getResult()
     {

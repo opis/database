@@ -24,24 +24,28 @@ use Closure;
 
 class HavingClause
 {
-    
+    /** @var    array */
     protected $conditions = array();
     
+    /** @var    Compiler */
     protected $compiler;
 
     /**
-     * HavingClause constructor.
-     * @param Compiler $compiler
+     * Constructor
+     * 
+     * @param   Compiler    $compiler
      */
+    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
 
     /**
-     * @param Closure $callback
-     * @param $separator
+     * @param   Closure $callback
+     * @param   string  $separator
      */
+    
     public function addGroupCondition(Closure $callback, $separator)
     {
         $having = new HavingCondition($this->compiler);
@@ -56,11 +60,12 @@ class HavingClause
     }
 
     /**
-     * @param $aggregate
-     * @param $value
-     * @param $operator
-     * @param $separator
+     * @param   string  $aggregate
+     * @param   mixed   $value
+     * @param   string  $operator
+     * @param   string  $separator
      */
+    
     public function addCondition($aggregate, $value, $operator, $separator)
     {
         if($value instanceof Closure)
@@ -80,11 +85,12 @@ class HavingClause
     }
 
     /**
-     * @param $aggregate
-     * @param $value
-     * @param $separator
-     * @param $not
+     * @param   string  $aggregate
+     * @param   mixed   $value
+     * @param   string  $separator
+     * @param   bool    $not
      */
+    
     public function addInCondition($aggregate, $value, $separator, $not)
     {
         
@@ -114,12 +120,13 @@ class HavingClause
     }
 
     /**
-     * @param $aggregate
-     * @param $value1
-     * @param $value2
-     * @param $separator
-     * @param $not
+     * @param   string  $aggregate
+     * @param   int     $value1
+     * @param   int     $value2
+     * @param   string  $separator
+     * @param   bool    $not
      */
+    
     public function addBetweenCondition($aggregate, $value1, $value2, $separator, $not)
     {
         

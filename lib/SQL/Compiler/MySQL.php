@@ -24,23 +24,26 @@ use Opis\Database\SQL\Compiler;
 
 class MySQL extends Compiler
 {
-    
     /** @var string Wrapper used to escape table and column names. */
     protected $wrapper = '`%s`';
 
     /**
-     * @param array $func
-     * @return string
+     * @param   array   $func
+     * 
+     * @return  string
      */
+    
     protected function sqlFunctionROUND(array $func)
     {
         return 'FORMAT(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
     }
 
     /**
-     * @param array $func
-     * @return string
+     * @param   array   $func
+     * 
+     * @return  string
      */
+    
     protected function sqlFunctionLEN(array $func)
     {
         return 'LENGTH(' . $this->wrap($func['column']) . ')';

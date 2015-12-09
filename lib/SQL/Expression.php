@@ -24,33 +24,41 @@ use Closure;
 
 class Expression
 {
-    
+    /** @var    array */
     protected $expressions = array();
     
+    /** @var    Compiler */
     protected $compiler;
 
     /**
-     * Expression constructor.
-     * @param Compiler $compiler
+     * Constructor
+     * 
+     * @param   Compiler    $compiler
      */
+    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
-
+    
     /**
-     * @return array
+     * Returns an array of expressions
+     * 
+     * @return  array
      */
+    
     public function getExpressions()
     {
         return $this->expressions;
     }
 
     /**
-     * @param $type
-     * @param $value
-     * @return $this
+     * @param   string  $type
+     * @param   mixed   $value
+     * 
+     * @return  $this
      */
+    
     protected function addExpression($type, $value)
     {
         $this->expressions[] = array(
@@ -62,12 +70,14 @@ class Expression
     }
 
     /**
-     * @param $type
-     * @param $name
-     * @param $column
-     * @param array $arguments
-     * @return Expression
+     * @param   string          $type
+     * @param   string          $name
+     * @param   Closure|string  $column
+     * @param   array           $arguments  (optional)
+     * 
+     * @return  $this
      */
+    
     protected function addFunction($type, $name, $column, $arguments = array())
     {
         if($column instanceof Closure)
@@ -84,36 +94,43 @@ class Expression
 
 
     /**
-     * @param $value
-     * @return Expression
+     * @param   mixed   $value
+     * 
+     * @return  $this
      */
+    
     public function column($value)
     {
         return $this->addExpression('column', $value);
     }
 
     /**
-     * @param $value
-     * @return Expression
+     * @param   mixed   $value
+     * 
+     * @return  $this
      */
+    
     public function op($value)
     {
         return $this->addExpression('op', $value);
     }
 
     /**
-     * @param $value
-     * @return Expression
+     * @param   mixed   $value
+     * @return  $this
      */
+    
     public function value($value)
     {
         return $this->addExpression('value', $value);
     }
 
     /**
-     * @param Closure $closure
-     * @return Expression
+     * @param   Closure $closure
+     * 
+     * @return  $this
      */
+    
     public function group(Closure $closure)
     {
         $expresion = new Expression($this->compiler);
@@ -122,9 +139,11 @@ class Expression
     }
 
     /**
-     * @param $tables
-     * @return SelectStatement
+     * @param   array|string    $tables
+     * 
+     * @return  SelectStatement
      */
+    
     public function from($tables)
     {
         $subquery = new Subquery($this->compiler);
@@ -133,10 +152,12 @@ class Expression
     }
 
     /**
-     * @param string $column
-     * @param bool|false $distinct
-     * @return Expression
+     * @param   string  $column     (optional)
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  $this
      */
+    
     public function count($column = '*', $distinct = false)
     {
         if(!is_array($column))
@@ -148,96 +169,115 @@ class Expression
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return Expression
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  $this
      */
+    
     public function sum($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'SUM', $column, array('distinct' => $distinct));
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return Expression
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  $this
      */
+    
     public function avg($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'AVG', $column, array('distinct' => $distinct));
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return Expression
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  $this
      */
+    
     public function max($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'MAX', $column, array('distinct' => $distinct));
     }
 
     /**
-     * @param $column
-     * @param bool|false $distinct
-     * @return Expression
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     * 
+     * @return  $this
      */
+    
     public function min($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'MIN', $column, array('distinct' => $distinct));
     }
 
     /**
-     * @param $column
-     * @return Expression
+     * @param   string  $column
+     * 
+     * @return  $this
      */
+    
     public function ucase($column)
     {
         return $this->addFunction('sqlFunction', 'UCASE', $column);
     }
 
     /**
-     * @param $column
-     * @return Expression
+     * @param   string  $column
+     * 
+     * @return  $this
      */
+    
     public function lcase($column)
     {
         return $this->addFunction('sqlFunction', 'LCASE', $column);
     }
 
     /**
-     * @param $column
-     * @param int $start
-     * @param int $length
-     * @return Expression
+     * @param   string  $column
+     * @param   int     $start  (optional)
+     * @param   int     $length (optional)
+     * 
+     * @return  $this
      */
+    
     public function mid($column, $start = 1, $length = 0)
     {
         return $this->addFunction('sqlFunction', 'MID', $column, array('start' => $start, 'lenght' => $length));
     }
 
     /**
-     * @param $column
-     * @return Expression
+     * @param   string  $column
+     * 
+     * @return  $this
      */
+    
     public function len($column)
     {
         return $this->addFunction('sqlFunction', 'LEN', $column);
     }
 
     /**
-     * @param $column
-     * @param int $decimals
-     * @return Expression
+     * @param   string  $column
+     * @param   int     $decimals   (optional)
+     * 
+     * @return  $this
      */
+    
     public function round($column, $decimals = 0)
     {
         return $this->addFunction('sqlFunction', 'ROUND', $column, array('decimals' => $decimals));
     }
 
     /**
-     * @return Expression
+     * @return  $this
      */
+    
     public function now()
     {
         return $this->addFunction('sqlFunction', 'NOW', '');
@@ -254,9 +294,11 @@ class Expression
     }
 
     /**
-     * @param $value
-     * @return Expression
+     * @param   mixed   $value
+     * 
+     * @return  $this
      */
+    
     public function __get($value)
     {
         return $this->addExpression('op', $value);

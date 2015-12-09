@@ -24,17 +24,17 @@ use Opis\Database\Connection;
 
 class Delete extends DeleteStatement
 {
-    /** @var \Opis\Database\Connection */
+    /** @var    Connection */
     protected $connection;
 
     /**
      * Constructor
      * 
-     * @param   \Opis\Database\Connection       $connection
-     * @param   \Opis\Database\SQL\Compiler     $compiler
-     * @param   string|array                    $from
-     * @param   array                           $joins
-     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
+     * @param   Connection      $connection
+     * @param   Compiler        $compiler
+     * @param   string|array    $from
+     * @param   array           $joins
+     * @param   WhereClause     $clause     (optional)
      */
     
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)

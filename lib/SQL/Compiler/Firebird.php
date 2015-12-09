@@ -25,15 +25,15 @@ use Opis\Database\SQL\SelectStatement;
 
 class Firebird extends Compiler
 {
-	/**
-	 * Compiles LIMIT clauses.
-	 *
-	 * @access  protected
-	 * @param   int        $limit   Limit
-	 * @param   int        $offset  Offset
-	 * @return  string
-	 */
 
+    /**
+     * Handle limits
+     * 
+     * @param   int|null    $limit
+     * 
+     * @return  string
+     */
+    
 	protected function handleLimit($limit, $offset = null)
 	{
 	    return ($limit === null) ? '' : ' TO ' . ($limit + (($offset === null) ? 0 : $offset));

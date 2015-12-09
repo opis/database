@@ -27,13 +27,13 @@ class DB2 extends Compiler
 {
 
     /**
-     * Compiles a SELECT query.
-     *
-     * @access  public
-     * @param   \Opis\Database\SQL\SelectStatement    $select  Select statement object.
-     * @return  array
+     * Returns the SQL for a select statement
+     * 
+     * @param   \Opis\Database\SQL\SelectStatement  $select
+     * 
+     * @return  string
      */
-
+    
     public function select(SelectStatement $select)
     {
         $limit = $select->getLimit();

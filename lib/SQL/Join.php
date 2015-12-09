@@ -24,15 +24,18 @@ use Closure;
 
 class Join
 {
+    /** @var    array */
     protected $conditions = array();
 
     /**
-     * @param $column1
-     * @param $column2
-     * @param $operator
-     * @param $separator
+     * @param   string  $column1
+     * @param   string  $column2
+     * @param   string  $operator
+     * @param   string  $separator
+     * 
      * @return $this
      */
+    
     protected function addJoinCondition($column1, $column2, $operator, $separator)
     {
         if($column1 instanceof Closure)
@@ -60,41 +63,48 @@ class Join
     }
 
     /**
-     * @return array
+     * @return  array
      */
+    
     public function getJoinConditions()
     {
         return $this->conditions;
     }
 
     /**
-     * @param $column1
-     * @param null $column2
-     * @param string $operator
-     * @return Join
+     * @param   string  $column1
+     * @param   string  $column2    (optional)
+     * @param   string  $operator   (optional)
+     * 
+     * @return  $this
      */
+    
     public function on($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'AND');
     }
 
     /**
-     * @param $column1
-     * @param null $column2
-     * @param string $operator
-     * @return Join
+     * @param   string  $column1
+     * @param   string  $column2    (optional)
+     * @param   string  $operator   (optional)
+     * 
+     * @return  $this
      */
+    
     public function andOn($column1, $column2 = null, $operator = '=')
     {
         return $this->on($column1, $column2, $operator);
     }
 
     /**
-     * @param $column1
-     * @param null $column2
-     * @param string $operator
-     * @return Join
+     * @param   string  $column1
+     * @param   string  $column2    (optional)
+     * @param   string  $operator   (optional)
+     * 
+     * @return  $this
      */
+    
     public function orOn($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'OR');

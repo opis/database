@@ -21,8 +21,8 @@
 namespace Opis\Database;
 
 use PDO;
-use PDOStatement;
 use Closure;
+use PDOStatement;
 
 class ResultSet
 {
@@ -56,7 +56,7 @@ class ResultSet
     /**
      * Count affected rows
      *
-     * @return int
+     * @return  int
      */
     
     public function count()
@@ -70,7 +70,7 @@ class ResultSet
      * @param   callable    $callable   (optional) Callback function
      * @param   int         $fetchStyle (optional) PDO fetch style
      *
-     * @return array
+     * @return  array
      */
     
     public function all($callable = null, $fetchStyle = 0)
@@ -83,10 +83,12 @@ class ResultSet
     }
 
     /**
-     * @param bool|false $uniq
-     * @param null $callable
-     * @return array
+     * @param   bool        $uniq       (optional)
+     * @param   callable    $callable   (optional)
+     * 
+     * @return  array
      */
+    
     public function allGroup($uniq = false, $callable = null)
     {
         $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
@@ -163,7 +165,7 @@ class ResultSet
     /**
      * Fetch each result as an associative array
      *
-     * @return \Opis\Database\ResultSet
+     * @return  $this
      */
     public function fetchAssoc()
     {
@@ -174,7 +176,7 @@ class ResultSet
     /**
      * Fetch each result as an stdobject
      *
-     * @return \Opis\Database\ResultSet
+     * @return  $this
      */
     
     public function fetchObject()
@@ -184,8 +186,9 @@ class ResultSet
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function fetchNamed()
     {
         $this->statement->setFetchMode(PDO::FETCH_NAMED);
@@ -193,8 +196,9 @@ class ResultSet
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function fetchNum()
     {
         $this->statement->setFetchMode(PDO::FETCH_NUM);
@@ -202,8 +206,9 @@ class ResultSet
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function fetchBoth()
     {
         $this->statement->setFetchMode(PDO::FETCH_BOTH);
@@ -211,8 +216,9 @@ class ResultSet
     }
 
     /**
-     * @return $this
+     * @return  $this
      */
+    
     public function fetchKeyPair()
     {
         $this->statement->setFetchMode(PDO::FETCH_KEY_PAIR);
@@ -220,10 +226,12 @@ class ResultSet
     }
 
     /**
-     * @param $class
-     * @param array $ctorargs
-     * @return $this
+     * @param   string  $class
+     * @param   array   $ctorargs   (optional)
+     * 
+     * @return  $this
      */
+    
     public function fetchClass($class, array $ctorargs = array())
     {
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
@@ -231,10 +239,12 @@ class ResultSet
     }
 
     /**
-     * @param Closure $func
-     * @return $this
+     * @param   Closure $func
+     * 
+     * @return  $this
      */
-    public function fetchCustom(\Closure $func)
+    
+    public function fetchCustom(Closure $func)
     {
       $func($this->statement);
       return $this;

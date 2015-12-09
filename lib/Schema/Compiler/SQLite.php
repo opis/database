@@ -26,59 +26,74 @@ use Opis\Database\Schema\CreateTable;
 
 class SQLite extends Compiler
 {
+    /** @var    array */
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
+    /** @var    string */
     protected $autoincrement = 'AUTOINCREMENT';
 
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeInteger(BaseColumn $column)
     {
         return 'INTEGER';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'DATETIME';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
     }
 
     /**
-     * @param CreateTable $schema
-     * @return string
+     * @param   CreateTable     $schema
+     * 
+     * @return  string
      */
+    
     protected function handleEngine(CreateTable $schema)
     {   
         return '';
     }
 
     /**
-     * @param $dsn
-     * @return string
+     * @param   string  $dsn
+     * 
+     * @return  string
      */
+    
     public function currentDatabase($dsn)
     {
         return substr($dsn, strpos($dsn, ':') + 1);
     }
 
     /**
-     * @param $database
-     * @return array
+     * @param   string  $database
+     * 
+     * @return  array
      */
+    
     public function getTables($database)
     {
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' .  $this->wrap('sqlite_master')
@@ -91,10 +106,12 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param $database
-     * @param $table
-     * @return array
+     * @param   string  $database
+     * @param   string  $table
+     * 
+     * @return  array
      */
+    
     public function getColumns($database, $table)
     {
         return array(
@@ -104,10 +121,12 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param $old
-     * @param $new
-     * @return array
+     * @param   string  $old
+     * @param   string  $new
+     * 
+     * @return  array
      */
+    
     public function renameTable($old, $new)
     {
         return array(

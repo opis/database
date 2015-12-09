@@ -24,14 +24,16 @@ use Opis\Database\Connection;
 
 class Insert extends InsertStatement
 {
-    
+    /** @var    Connection */
     protected $connection;
 
     /**
-     * Insert constructor.
-     * @param Connection $connection
-     * @param array $values
+     * Constructor
+     * 
+     * @param   Connection  $connection
+     * @param   array       $values
      */
+    
     public function __construct(Connection $connection, array $values)
     {
         parent::__construct($connection->compiler());
@@ -40,9 +42,11 @@ class Insert extends InsertStatement
     }
 
     /**
-     * @param $table
-     * @return mixed
+     * @param   string  $table
+     * 
+     * @return  boolean
      */
+    
     public function into($table)
     {
         parent::into($table);

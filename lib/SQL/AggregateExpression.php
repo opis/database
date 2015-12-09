@@ -22,13 +22,13 @@ namespace Opis\Database\SQL;
 
 class AggregateExpression
 {
-    /** @var    \Opis\Database\SQL\Compiler */
+    /** @var    Compiler */
     protected $compiler;
     
-    /** @var    \Opis\Database\SQL\HavingClause */
+    /** @var    HavingClause */
     protected $havingClause;
     
-    /** @var    \Opis\Database\SQL\Having */
+    /** @var    Having */
     protected $having;
     
     /** @var    string */
@@ -40,8 +40,8 @@ class AggregateExpression
     /**
      * Constructor
      * 
-     * @param   \Opis\Database\SQL\Compiler     $compiler
-     * @param   \Opis\Database\SQL\HavingClause $clause
+     * @param   Compiler        $compiler
+     * @param   HavingClause    $clause
      */
     
     public function __construct(Compiler $compiler, HavingClause $clause)
@@ -52,7 +52,7 @@ class AggregateExpression
     }
 
     /**
-     * @return \Opis\Database\SQL\Expression
+     * @return  Expression
      */
     
     protected function expression()

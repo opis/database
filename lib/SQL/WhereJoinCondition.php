@@ -24,13 +24,14 @@ use Closure;
 
 class WhereJoinCondition extends WhereCondition
 {
+    /** @var    array */
     protected $joins = array();
 
     /**
      * Constructor
      * 
-     * @param   \Opis\Database\SQL\Compiler     $compiler   Compiler
-     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
+     * @param   Compiler    $compiler
+     * @param   WhereClause $clause     (optional)
      */
     
     public function __construct(Compiler $compiler, WhereClause $clause = null)
@@ -38,11 +39,23 @@ class WhereJoinCondition extends WhereCondition
         parent::__construct($compiler, $clause);
     }
     
+    /**
+     * @return  array
+     */
+    
     public function getJoinClauses()
     {
         return $this->joins;
     }
 
+    /**
+     *  @param  string          $type
+     *  @param  string|array    $table
+     *  @param  Closure         $closure
+     *
+     *  @return $this
+     */
+    
     protected function addJoinClause($type, $table, $closure)
     {
         $join = new Join();
@@ -62,22 +75,50 @@ class WhereJoinCondition extends WhereCondition
         
         return $this;
     }
-
+    
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
+    
     public function join($table, Closure $closure)
     {
         return $this->addJoinClause('INNER', $table, $closure);
     }
     
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
+    
     public function leftJoin($table, Closure $closure)
     {
         return $this->addJoinClause('LEFT', $table, $closure);
     }
-
+    
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
+    
     public function rightJoin($table, Closure $closure)
     {
         return $this->addJoinClause('RIGHT', $table, $closure);
     }
-
+    
+    /**
+     * @param   string  $table
+     * @param   Closure $closure
+     *
+     * @return  $this
+     */
+    
     public function fullJoin($table, Closure $closure)
     {
         return $this->addJoinClause('FULL', $table, $closure);

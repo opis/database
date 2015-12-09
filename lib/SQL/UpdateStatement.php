@@ -24,18 +24,23 @@ use Closure;
 
 class UpdateStatement extends WhereJoinCondition
 {
+    /** @var    array */
     protected $tables;
     
+    /** @var    array */
     protected $columns = array();
     
+    /** @var    string */
     protected $sql;
 
     /**
-     * UpdateStatement constructor.
-     * @param Compiler $compiler
-     * @param WhereClause $table
-     * @param WhereClause|null $clause
+     * Constructor
+     * 
+     * @param   Compiler        $compiler
+     * @param   array|string    $table
+     * @param   WhereClause     $clause     (optional)
      */
+    
     public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
     {
         if(!is_array($table))
@@ -49,26 +54,29 @@ class UpdateStatement extends WhereJoinCondition
     }
 
     /**
-     * @return array|WhereClause
+     * @return  array
      */
+    
     public function getTables()
     {
         return $this->tables;
     }
 
     /**
-     * @return array
+     * @return  array
      */
+    
     public function getColumns()
     {
         return $this->columns;
     }
 
-
     /**
-     * @param array $columns
-     * @return $this
+     * @param   array   $columns
+     * 
+     * @return  $this
      */
+    
     public function set(array $columns)
     {
         foreach($columns as $column => $value)
@@ -95,8 +103,9 @@ class UpdateStatement extends WhereJoinCondition
     }
 
     /**
-     * @return string
+     * @return  string
      */
+    
     public function __toString()
     {
         if($this->sql === null)

@@ -24,7 +24,7 @@ use Closure;
 
 class ColumnExpression
 {
-    /** @var    \Opis\Database\SQL\Compiler */
+    /** @var    Compiler */
     protected $compiler;
     
     /** @var    array */
@@ -33,7 +33,7 @@ class ColumnExpression
     /**
      * Constructor
      * 
-     * @param \Opis\Database\SQL\Compiler   $compiler
+     * @param   Compiler   $compiler
      */
     
     public function __construct(Compiler $compiler)
@@ -42,7 +42,7 @@ class ColumnExpression
     }
 
     /**
-     * @return \Opis\Database\SQL\Expression
+     * @return  Expression
      */
     
     protected function expression()
@@ -62,8 +62,8 @@ class ColumnExpression
     /**
      * Add a column
      * 
-     * @param   string  $name   Column's name
-     * @param   string  $alias  (optional) Alias
+     * @param   string|Closure  $name   Column's name
+     * @param   string          $alias  (optional) Alias
      * 
      * @return  $this
      */

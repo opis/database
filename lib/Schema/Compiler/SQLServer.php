@@ -27,16 +27,22 @@ use Opis\Database\Schema\CreateTable;
 
 class SQLServer extends Compiler
 {
+    /** @var    string */
     protected $wrapper = '[%s]';
     
+    /** @var    array */
     protected $modifiers = array('nullable', 'default', 'autoincrement');
     
+    /** @var    string */
     protected $autoincrement = 'IDENTITY';
 
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeInteger(BaseColumn $column)
     {
         switch($column->get('size', 'normal'))
@@ -53,66 +59,80 @@ class SQLServer extends Compiler
         
         return 'INTEGER';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeBoolean(BaseColumn $column)
     {
         return 'BIT';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeString(BaseColumn $column)
     {
         return 'NVARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeFixed(BaseColumn $column)
     {
         return 'NCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeText(BaseColumn $column)
     {
         return 'NVARCHAR(max)';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'VARBINARY(max)';
     }
-
+    
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @param   BaseColumn  $column
+     * 
+     * @return  string
      */
+    
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
     }
 
     /**
-     * @param AlterTable $table
-     * @param $data
-     * @return string
+     * @param   AlterTable  $table
+     * @param   mixed       $data
+     * 
+     * @return  string
      */
+    
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
@@ -120,19 +140,23 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param CreateTable $schema
-     * @return string
+     * @param   CreateTable $schema
+     * 
+     * @return  string
      */
+    
     protected function handleEngine(CreateTable $schema)
     {
         return '';
     }
 
     /**
-     * @param $old
-     * @param $new
-     * @return array
+     * @param   string  $old
+     * @param   string  $new
+     * 
+     * @return  array
      */
+    
     public function renameTable($old, $new)
     {
         return array(
@@ -142,9 +166,11 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param $dsn
-     * @return array
+     * @param   string  $dsn
+     * 
+     * @return  array
      */
+    
     public function currentDatabase($dsn)
     {
         return array(
@@ -154,10 +180,12 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param $database
-     * @param $table
-     * @return array
+     * @param   string  $database
+     * @param   string  $table
+     * 
+     * @return  array
      */
+    
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')

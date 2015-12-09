@@ -94,7 +94,7 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      *
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function logQueries($value = true)
@@ -110,7 +110,7 @@ class Connection implements Serializable
      * @param   string  $query SQL command
      * @param   array   $params (optional) Params
      *
-     * @return \Opis\Database\Connection
+     * @return  $this
      */
     
     public function initCommand($query, array $params = array())
@@ -128,7 +128,7 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      *
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function username($username)
@@ -142,7 +142,7 @@ class Connection implements Serializable
      *
      * @param   string  $password   Password
      * 
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function password($password)
@@ -157,7 +157,7 @@ class Connection implements Serializable
      *
      * @param   array   $options    PDO options
      * 
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function options(array $options)
@@ -176,7 +176,7 @@ class Connection implements Serializable
      * @param   string  $name   Option
      * @param   int     $value  Value
      * 
-     * @return \Opis\Database\Connection
+     * @return  $this
      */
     
     public function option($name, $value)
@@ -190,7 +190,7 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      * 
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function persistent($value = true)
@@ -203,7 +203,7 @@ class Connection implements Serializable
      *
      * @param   string  $format Date format
      * 
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function setDateFormat($format)
@@ -217,7 +217,7 @@ class Connection implements Serializable
      *
      * @param   string  $wrapper    Identifier wrapper
      * 
-     * @return  \Opis\Database\Connection
+     * @return  $this
      */
     
     public function setWrapperFormat($wrapper)
@@ -609,5 +609,5 @@ class Connection implements Serializable
     {
         return new static($dsn, $username, $password, $driver);
     }
-
+    
 }

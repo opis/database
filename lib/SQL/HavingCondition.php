@@ -24,20 +24,25 @@ use Closure;
 
 class HavingCondition
 {
-    
+    /** @var    HavingClause */
     protected $havingClause;
     
+    /** @var    array */
     protected $conditions = array();
     
+    /** @var    Compiler */
     protected $compiler;
     
+    /** @var    AggregateExpression */
     protected $aggregate;
 
     /**
-     * HavingCondition constructor.
-     * @param Compiler $compiler
-     * @param HavingClause|null $clause
+     * Constructor
+     * 
+     * @param   Compiler        $compiler
+     * @param   HavingClause    $clause     (optional)
      */
+    
     public function __construct(Compiler $compiler, HavingClause $clause = null)
     {
         $this->compiler = $compiler;
@@ -53,11 +58,13 @@ class HavingCondition
     }
 
     /**
-     * @param $column
-     * @param $value
-     * @param $separator
-     * @return $this
+     * @param   string  $column
+     * @param   mixed   $value
+     * @param   string  $separator
+     * 
+     * @return  $this
      */
+    
     protected function addCondition($column, $value, $separator)
     {
         if($column instanceof Closure)
@@ -75,36 +82,43 @@ class HavingCondition
     /**
      * @return array
      */
+    
     public function getHavingConditions()
     {
         return $this->havingClause->getHavingConditions();
     }
 
     /**
-     * @param $column
-     * @param Closure|null $value
-     * @return HavingCondition
+     * @param   string  $column
+     * @param   Closure $value  (optional)
+     * 
+     * @return  $this
      */
+    
     public function having($column, Closure $value = null)
     {
         return $this->addCondition($column, $value, 'AND');
     }
 
     /**
-     * @param $column
-     * @param Closure|null $value
-     * @return HavingCondition
+     * @param   string  $column
+     * @param   Closure $value  (optional)
+     * 
+     * @return  $this
      */
+    
     public function andHaving($column, Closure $value = null)
     {
         return $this->having($column, $value);
     }
 
     /**
-     * @param $column
-     * @param Closure|null $value
-     * @return HavingCondition
+     * @param   string  $column
+     * @param   Closure $value  (optional)
+     * 
+     * @return  $this
      */
+    
     public function orHaving($column, Closure $value = null)
     {
         return $this->addCondition($column, $value, 'OR');

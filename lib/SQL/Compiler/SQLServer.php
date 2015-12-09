@@ -38,8 +38,9 @@ class SQLServer extends Compiler
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\SelectStatement    $select  Query object.
-     * @return  array
+     * @param   SelectStatement $select
+     * 
+     * @return  string
      */
 
     public function select(SelectStatement $select)
@@ -99,9 +100,11 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param UpdateStatement $update
-     * @return string
+     * @param   UpdateStatement $update
+     * 
+     * @return  string
      */
+    
     public function update(UpdateStatement $update)
     {
         $joins = $this->handleJoins($update->getJoinClauses());

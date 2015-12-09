@@ -27,7 +27,18 @@ use Opis\Database\SQL\UpdateStatement;
 
 class Update extends UpdateStatement
 {
+    /** @var    Connection */
     protected $connection;
+    
+    /**
+     * Constructor
+     *
+     * @param   Connection          $connection
+     * @param   Compiler            $compiler
+     * @param   string              $from
+     * @param   array               $joins
+     * @param   WhereClause|null    $clause     (optional)
+     */
     
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
@@ -35,6 +46,12 @@ class Update extends UpdateStatement
         $this->connection = $connection;
         $this->joins = $joins;
     }
+    
+    /**
+     * @param   array   $columns
+     *
+     * @return  int
+     */
     
     public function update(array $columns)
     {

@@ -24,26 +24,35 @@ use Closure;
 
 class InsertStatement
 {
+    /** @var    array */
     protected $tables;
     
+    /** @var    Compiler */
     protected $compiler;
     
+    /** @var    array */
     protected $columns = array();
     
+    /** @var    array */
     protected $values = array();
     
-    protected $autoincrement;
-    
+    /** @var    string */
     protected $sql;
 
     /**
-     * InsertStatement constructor.
-     * @param Compiler $compiler
+     * Constructor
+     * 
+     * @param   Compiler    $compiler
      */
+    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
+    
+    /**
+     * @return  array
+     */
     
     public function getTables()
     {
@@ -51,25 +60,29 @@ class InsertStatement
     }
 
     /**
-     * @return array
+     * @return  array
      */
+    
     public function getValues()
     {
         return $this->values;
     }
 
     /**
-     * @return array
+     * @return  array
      */
+    
     public function getColumns()
     {
         return $this->columns;
     }
 
     /**
-     * @param array $values
-     * @return $this
+     * @param   array   $values
+     * 
+     * @return  $this
      */
+    
     public function insert(array $values)
     {
         foreach($values as $column => $value)
@@ -95,9 +108,11 @@ class InsertStatement
     }
 
     /**
-     * @param $table
-     * @return $this
+     * @param   string  $table
+     * 
+     * @return  $this
      */
+    
     public function into($table)
     {
         $this->tables = array((string) $table);
@@ -105,8 +120,9 @@ class InsertStatement
     }
 
     /**
-     * @return string
+     * @return  string
      */
+    
     public function __toString()
     {
         if($this->sql === null)

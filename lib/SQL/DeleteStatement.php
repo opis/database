@@ -34,9 +34,9 @@ class DeleteStatement extends WhereJoinCondition
     /**
      * Constructor
      * 
-     * @param   \Opis\Database\SQL\Compiler     $compiler
-     * @param   string|array                    $from
-     * @param   \Opis\Database\SQL\WhereClause  $clause     (optional)
+     * @param   Compiler        $compiler
+     * @param   string|array    $from
+     * @param   WhereClause     $clause     (optional)
      */
     
     public function __construct(Compiler $compiler, $from, WhereClause $clause = null)

@@ -28,9 +28,11 @@ class Oracle extends Compiler
 {
 
     /**
-     * @param $value
-     * @return string
+     * @param   mixed   $value
+     * 
+     * @return  string
      */
+    
     protected function wrap($value)
     {
         if($value instanceof Expression)
@@ -56,9 +58,11 @@ class Oracle extends Compiler
     }
 
     /**
-     * @param array $ordering
-     * @return string
+     * @param   array   $ordering
+     * 
+     * @return  string
      */
+    
     protected function handleOrderings(array $ordering)
     {
         if(empty($ordering))
@@ -86,9 +90,9 @@ class Oracle extends Compiler
     /**
      * Compiles a SELECT query.
      *
-     * @access  public
-     * @param SelectStatement $select Query object.
-     * @return array
+     * @param   SelectStatement $select
+     * 
+     * @return  string
      */
 
     public function select(SelectStatement $select)

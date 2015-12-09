@@ -27,15 +27,32 @@ use Opis\Database\ORM\LazyLoader;
 
 class BelongsTo extends Relation
 {
+    /**
+     * @return  bool
+     */
+    
     public function hasMany()
     {
         return false;
     }
     
+    /**
+     * @param   Model   $model
+     * @param   string  $name
+     *
+     * @return  string
+     */
+    
     public function getRelatedColumn(Model $model, $name)
     {
         return $this->getForeignKey();
     }
+        
+    /**
+     * @param   array   $options
+     *
+     * @return  LazyLoader
+     */
     
     public function getLazyLoader(array $options)
     {        
@@ -63,6 +80,10 @@ class BelongsTo extends Relation
                               $this->isReadOnly, $this->hasMany(),
                               get_class($this->model), $pk, $fk);
     }
+        
+    /**
+     * @return  string
+     */
     
     public function getForeignKey()
     {
@@ -73,6 +94,10 @@ class BelongsTo extends Relation
         
         return $this->foreignKey;
     }
+        
+    /**
+     * @return  Model
+     */
     
     public function getResult()
     {

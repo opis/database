@@ -22,23 +22,29 @@ namespace Opis\Database\SQL;
 
 class Subquery
 {
+    /** @var    Compiler */
     protected $compiler;
     
+    /** @var    SelectStatement */
     protected $select;
 
     /**
-     * Subquery constructor.
-     * @param Compiler $compiler
+     * Constructor
+     * 
+     * @param   Compiler    $compiler
      */
+    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
 
     /**
-     * @param $tables
-     * @return SelectStatement
+     * @param   string|array    $tables
+     * 
+     * @return  SelectStatement
      */
+    
     public function from($tables)
     {
         $this->select = new SelectStatement($this->compiler, $tables);
@@ -46,8 +52,9 @@ class Subquery
     }
 
     /**
-     * @return string
+     * @return  string
      */
+    
     public function __toString()
     {
         return (string) $this->select;

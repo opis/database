@@ -25,18 +25,57 @@ use Opis\Database\Connection;
 
 class LazyLoader extends BaseLoader
 {
+    /** @var    Connection */
     protected $connection;
+    
+    /** @var    Model */
     protected $model;
+    
+    /** @var    string */
     protected $fk;
+    
+    /** @var    string */
     protected $pk;
+    
+    /** @var    array */
     protected $results;
+    
+    /** @var    bool */
     protected $hasMany;
+    
+    /** @var    string */
     protected $query;
+    
+    /** @var    bool */
     protected $readonly;
+    
+    /** @var    array */
     protected $with;
+    
+    /** @var    string */
     protected $modelClass;
+    
+    /** @var    array */
     protected $params;
+    
+    /** @var    bool */
     protected $immediate;
+    
+    
+    /**
+     * Constructor
+     *
+     * @param   Connection  $connection
+     * @param   string      $query
+     * @param   array       $params
+     * @param   array       $with
+     * @param   bool        $immediate
+     * @param   bool        $readonly
+     * @param   bool        $hasMany
+     * @param   Model       $model
+     * @param   string      $fk
+     * @param   string      $pk
+     */
     
     public function __construct(Connection $connection, $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
     {
@@ -57,6 +96,10 @@ class LazyLoader extends BaseLoader
         }
     }
     
+    /**
+     * @return  array
+     */
+    
     protected function &getResults()
     {
         if($this->results === null)
@@ -76,6 +119,13 @@ class LazyLoader extends BaseLoader
         return $this->results;
     }
     
+    /**
+     * @param   Mode    $model
+     * @param   string  $with
+     *
+     * @return  Model
+     */
+    
     protected function getFirst(Model $model, $with)
     {
         $results = &$this->getResults();
@@ -90,6 +140,13 @@ class LazyLoader extends BaseLoader
         
         return $model->{$with}()->getResult();
     }
+    
+    /**
+     * @param   Model   $model
+     * @param   string  $with
+     *
+     * @return  array
+     */
     
     protected function getAll(Model $model, $with)
     {
@@ -107,6 +164,13 @@ class LazyLoader extends BaseLoader
         
         return $all;
     }
+    
+    /**
+     * @param   Model   $model
+     * @param   string  $with
+     *
+     * @return  array|Model
+     */
     
     public function getResult(Model $model, $with)
     {
