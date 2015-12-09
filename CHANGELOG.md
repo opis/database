@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v3.2.0
+### v3.2.0, 2015.12.09
 
 * `Opis\Database\Model::getConnection` method was moved to `Opis\Database\ModelInterface::getConnection`
 * `Model` class implements `ModelInterface` interface and you must provide an implementation
@@ -11,6 +11,7 @@ for the `Opis\Database\ModelInterface::getConnection` method
 * Removed unused artifacts `Opis\Database\SQL\WhereInterface` and `Opis\Database\SQL\SelectStatement::addHavingClause`.
 See [issue #19](https://github.com/opis/database/issues/19) and [issue #18](https://github.com/opis/database/issues/18).
 * Various bugfixes. See [issue #20](https://github.com/opis/database/issues/20) and [issue #21](https://github.com/opis/database/pull/21).
+* Fixed CS
 
 ### v3.1.0, 2015.11.20
 
