@@ -80,7 +80,7 @@ class Transaction
     
     public function onError(Closure $callback)
     {
-        $this->errorCallback = $error;
+        $this->errorCallback = $callback;
         return $this;
     }
     
