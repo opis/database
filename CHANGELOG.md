@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### v3.2.1, 2015.12.19
+
+* Fixed a bug in `Opis\Database\Transaction::onError`
+* Moved `Opis\Database\ModelInterface` into a separate file
+* Fixed CS
+
 ### v3.2.0, 2015.12.09
 
 * `Opis\Database\Model::getConnection` method was moved to `Opis\Database\ModelInterface::getConnection`
