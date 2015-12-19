@@ -42,8 +42,6 @@ class Schema
     /**
      * Constructor
      *
-     * @access public
-     *
      * @param   \Opis\Database\Connection   $connection Connection.
      */
     public function __construct(Connection $connection)
@@ -53,8 +51,6 @@ class Schema
 
     /**
      * Get the name of the currently used database
-     *
-     * @access  public
      *
      * @return  string
      */
@@ -77,8 +73,6 @@ class Schema
     /**
      * Check if the specified table exists
      *
-     * @access  public
-     * 
      * @param   string  $table  Table name
      * @param   boolean $clear  (optional) Refresh table list
      *
@@ -92,8 +86,6 @@ class Schema
 
     /**
      * Get a list with all tables that belong to the currently used database
-     *
-     * @access  public
      *
      * @param   boolean $clear  (optional) Refresh table list
      *
@@ -130,13 +122,11 @@ class Schema
     /**
      * Get a list with all columns that belong to the specified table
      *
-     * @access  public
-     *
-     * @param $table
+     * @param   string  $table
      * @param   boolean $clear (optional) Refresh column list
      * @param   boolean $names (optional) Return only the column names
+     * 
      * @return array
-     * @throws \Exception
      */
     public function getColumns($table, $clear = false, $names = true)
     {
@@ -178,8 +168,6 @@ class Schema
     /**
      * Creates a new table
      *
-     * @access  public
-     *
      * @param   string      $table      Table name
      * @param   \Closure    $callback   A callback that will define table's fields and indexes
      */
@@ -202,8 +190,6 @@ class Schema
     /**
      * Alters a table's definition
      *
-     * @access  public
-     *
      * @param   string      $table      Table name
      * @param   \Closure    $callback   A callback that will add or remove fields or indexes
      */
@@ -225,8 +211,6 @@ class Schema
     /**
      * Change a table's name
      *
-     * @access  public
-     * 
      * @param   string  $table  The table
      * @param   string  $name   The new name of the table
      */
@@ -240,8 +224,6 @@ class Schema
 
     /**
      * Deletes a table
-     *
-     * @access  public
      *
      * @param   string  $table  Table name
      */
@@ -260,8 +242,6 @@ class Schema
 
     /**
      * Deletes all records from a table
-     *
-     * @access  public
      *
      * @param   string  $table  Table name
      */

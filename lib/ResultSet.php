@@ -32,8 +32,6 @@ class ResultSet
     /**
      * Constructor
      *
-     * @access public
-     * 
      * @param   \PDOStatement   $statement  The PDOStatement associated with this result set.
      */
     public function __construct(PDOStatement $statement)
@@ -43,8 +41,6 @@ class ResultSet
 
     /**
      * Destructor
-     *
-     * @access public
      */
     public function __destruct()
     {

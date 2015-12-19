@@ -37,8 +37,6 @@ class Database
     /**
      * Constructor
      *
-     * @access  public
-     * 
      * @param   \Opis\Database\Connection   $connection Connection instance.
      */
     public function __construct(Connection $connection)
@@ -48,8 +46,6 @@ class Database
 
     /**
      * Database connection
-     *
-     * @access  public
      *
      * @return   \Opis\Database\Connection
      */
@@ -61,8 +57,6 @@ class Database
     /**
      * Returns the query log for this database.
      *
-     * @access public
-     * 
      * @return array
      */
     public function getLog()
@@ -72,8 +66,6 @@ class Database
 
     /**
      * Execute a query in order to fetch or to delete records.
-     *
-     * @access  public
      *
      * @param   string|array    $tables Table name or an array of tables
      *
@@ -87,8 +79,6 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @access  public
-     *
      * @param   array  $values  An array of values.
      *
      * @return  \Opis\Database\SQL\Insert
@@ -101,8 +91,6 @@ class Database
     /**
      * Update records.
      *
-     * @access  public
-     *
      * @param   string  $table  Table name
      *
      * @return  \Opis\Database\SQL\Update
@@ -114,8 +102,6 @@ class Database
 
     /**
      * The associated schema instance.
-     *
-     * @access  public
      *
      * @return  \Opis\Database\Schema
      */
@@ -131,8 +117,6 @@ class Database
     /**
      * Initiate a new transaction
      *
-     * @access  public
-     * 
      * @param   \Closure    $queries    A callback that will be called when the transaction will begin
      * 
      * @return  \Opis\Database\Transaction

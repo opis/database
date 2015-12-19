@@ -40,8 +40,6 @@ class Transaction
     /**
      * Constructor
      *
-     * @access  public
-     * 
      * @param   \Opis\Database\Database $database       Current database
      * @param   \Closure                $transaction    Transaction callback
      */
@@ -53,8 +51,6 @@ class Transaction
 
     /**
      * Add callback that will be called if transaction succeeded
-     *
-     * @access  public
      *
      * @param   \Closure    $callback   The callback
      *
@@ -69,8 +65,6 @@ class Transaction
     /**
      * Add callback that will be called if transaction fails
      *
-     * @access  public
-     *
      * @param   \Closure    $callback   The callback
      *
      * @return  \Opis\Database\Transaction  Self reference
@@ -84,8 +78,6 @@ class Transaction
     /**
      * Get the callback that needs to be called if transaction succeeded
      *
-     * @access  public
-     *
      * @return  \Closure
      */
     public function getOnSuccessCallback()
@@ -95,8 +87,6 @@ class Transaction
 
     /**
      * Get the callback that needs to be called if transaction fails
-     *
-     * @access  public
      *
      * @return  \Closure
      */
@@ -108,8 +98,6 @@ class Transaction
     /**
      * Get the database for the current transaction
      *
-     * @access  public
-     *
      * @return  \Opis\Database\Database
      */
     public function database()
@@ -120,8 +108,6 @@ class Transaction
     /**
      * Get the PDO object associated with the current transaction
      *
-     * @access  public
-     *
      * @return  \PDO
      */
     public function pdo()
@@ -131,8 +117,6 @@ class Transaction
 
     /**
      * Begin the transaction
-     *
-     * @access  public
      */
     public function begin()
     {
@@ -141,8 +125,6 @@ class Transaction
 
     /**
      * Commit all changes
-     *
-     * @access  public
      */
     public function commit()
     {
@@ -151,8 +133,6 @@ class Transaction
 
     /**
      * Roll back all changes
-     *
-     * @access  public
      */
     public function rollBack()
     {
@@ -161,8 +141,6 @@ class Transaction
 
     /**
      * Run the current transaction
-     *
-     * @access  public
      *
      * @return  mixed
      */

@@ -183,8 +183,7 @@ abstract class Model implements ModelInterface
      * Constructor
      *
      * @final
-     * @access public
-     *
+     * 
      * @param   boolean $readonly   Indicates if this is a read-only model
      */
     final public function __construct($readonly = false, Connection $connection = null)

@@ -73,8 +73,6 @@ class Connection implements Serializable
     /**
      * Constructor
      * 
-     * @access public
-     *
      * @param   string  $dsn        The DSN string
      * @param   string  $username   (optional) Username
      * @param   string  $password   (optional) Password
@@ -367,8 +365,6 @@ class Connection implements Serializable
     /**
      * Log a query.
      *
-     * @access  protected
-     * 
      * @param   string  $query  SQL query
      * @param   array   $params Query parameters
      * @param   int     $start  Start time in microseconds
@@ -383,8 +379,6 @@ class Connection implements Serializable
     /**
      * Replace placeholders with parameteters.
      *
-     * @access  protected
-     * 
      * @param   string  $query  SQL query
      * @param   array   $params Query paramaters
      * 
@@ -403,8 +397,6 @@ class Connection implements Serializable
     /**
      * Prepares a query.
      *
-     * @access  protected
-     * 
      * @param   string  $query  SQL query
      * @param   array   $params Query parameters
      * 
@@ -423,8 +415,6 @@ class Connection implements Serializable
 
     /**
      * Executes a prepared query and returns TRUE on success or FALSE on failure.
-     *
-     * @access  protected
      *
      * @param   array   $prepared   Prepared query
      *
@@ -448,8 +438,6 @@ class Connection implements Serializable
     /**
      * Execute a query
      *
-     * @access  public
-     *
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
      *
@@ -465,12 +453,10 @@ class Connection implements Serializable
     /**
      * Execute a non-query SQL command
      *
-     * @access  public
-     *
      * @param   string  $sql    SQL Command
      * @param   array   $params (optional) Command params
      *
-     * @return  mixed Command result
+     * @return  mixed   Command result
      */
     public function command($sql, array $params = array())
     {
@@ -479,8 +465,6 @@ class Connection implements Serializable
 
     /**
      * Execute a query and return the number of affected rows
-     *
-     * @access  public
      *
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
@@ -498,8 +482,6 @@ class Connection implements Serializable
 
     /**
      * Execute a query and fetch the first column
-     *
-     * @access  public
      *
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
