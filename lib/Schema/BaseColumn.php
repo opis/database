@@ -24,10 +24,10 @@ class BaseColumn
 {
     /** @var    string */
     protected $name;
-    
+
     /** @var    string */
     protected $type;
-    
+
     /** @var    array */
     protected $properties = array();
 
@@ -37,17 +37,15 @@ class BaseColumn
      * @param   string      $name
      * @param   string|null $type   (optional)
      */
-    
     public function __construct($name, $type = null)
     {
         $this->name = $name;
         $this->type = $type;
     }
-    
+
     /**
      * @return  string
      */
-    
     public function getName()
     {
         return $this->name;
@@ -56,7 +54,6 @@ class BaseColumn
     /**
      * @return  string|null
      */
-    
     public function getType()
     {
         return $this->type;
@@ -65,7 +62,6 @@ class BaseColumn
     /**
      * @return  array
      */
-    
     public function getProperties()
     {
         return $this->properties;
@@ -76,7 +72,6 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function setType($type)
     {
         $this->type = $type;
@@ -89,7 +84,6 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function set($name, $value)
     {
         $this->properties[$name] = $value;
@@ -101,7 +95,6 @@ class BaseColumn
      * 
      * @return  bool
      */
-    
     public function has($name)
     {
         return isset($this->properties[$name]);
@@ -113,7 +106,6 @@ class BaseColumn
      * 
      * @return  mixed|null
      */
-    
     public function get($name, $default = null)
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : $default;
@@ -124,25 +116,22 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function size($value)
     {
         $value = strtolower($value);
-        
-        if(!in_array($value, array('tiny', 'small', 'normal', 'medium', 'big')))
-        {
+
+        if (!in_array($value, array('tiny', 'small', 'normal', 'medium', 'big'))) {
             return $this;
         }
-        
+
         return $this->set('size', $value);
     }
-    
+
     /**
      * @deprecated  2.1.0   No longer used
      *
      * @return  $this
      */
-    
     public function nullable()
     {
         return $this->set('nullable', true);
@@ -151,7 +140,6 @@ class BaseColumn
     /**
      * @return  $this
      */
-    
     public function notNull()
     {
         return $this->set('nullable', false);
@@ -162,7 +150,6 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function description($comment)
     {
         return $this->set('description', $comment);
@@ -173,7 +160,6 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function defaultValue($value)
     {
         return $this->set('default', $value);
@@ -184,10 +170,8 @@ class BaseColumn
      * 
      * @return  $this
      */
-    
     public function unsigned($value = true)
     {
         return $this->set('unisgned', $value);
     }
-    
 }

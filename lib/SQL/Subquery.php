@@ -24,7 +24,7 @@ class Subquery
 {
     /** @var    Compiler */
     protected $compiler;
-    
+
     /** @var    SelectStatement */
     protected $select;
 
@@ -33,7 +33,6 @@ class Subquery
      * 
      * @param   Compiler    $compiler
      */
-    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
@@ -44,7 +43,6 @@ class Subquery
      * 
      * @return  SelectStatement
      */
-    
     public function from($tables)
     {
         $this->select = new SelectStatement($this->compiler, $tables);
@@ -54,10 +52,8 @@ class Subquery
     /**
      * @return  string
      */
-    
     public function __toString()
     {
         return (string) $this->select;
     }
-    
 }

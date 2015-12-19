@@ -26,7 +26,7 @@ class ColumnExpression
 {
     /** @var    Compiler */
     protected $compiler;
-    
+
     /** @var    array */
     protected $columns = array();
 
@@ -35,7 +35,6 @@ class ColumnExpression
      * 
      * @param   Compiler   $compiler
      */
-    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
@@ -44,7 +43,6 @@ class ColumnExpression
     /**
      * @return  Expression
      */
-    
     protected function expression()
     {
         return new Expression($this->compiler);
@@ -53,7 +51,6 @@ class ColumnExpression
     /**
      * @return array
      */
-    
     public function getColumns()
     {
         return $this->columns;
@@ -67,16 +64,14 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function column($name, $alias = null)
     {
-        if($name instanceof Closure)
-        {
+        if ($name instanceof Closure) {
             $expression = $this->expression();
             $name($expression);
             $name = $expression;
         }
-        
+
         $this->columns[] = array(
             'name' => $name,
             'alias' => $alias,
@@ -91,17 +86,12 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function columns(array $columns)
     {
-        foreach($columns as $name => $alias)
-        {
-            if(is_string($name))
-            {
+        foreach ($columns as $name => $alias) {
+            if (is_string($name)) {
                 $this->column($name, $alias);
-            }
-            else
-            {
+            } else {
                 $this->column($alias, null);
             }
         }
@@ -117,7 +107,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function count($column = '*', $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->count($column, $distinct), $alias);
@@ -132,7 +121,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function avg($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->avg($column, $distinct), $alias);
@@ -147,8 +135,7 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
-    public function sum($column, $alias = null, $distinct  = false)
+    public function sum($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->sum($column, $distinct), $alias);
     }
@@ -162,7 +149,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function min($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->min($column, $distinct), $alias);
@@ -177,7 +163,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function max($column, $alias = null, $distinct = false)
     {
         return $this->column($this->expression()->max($column, $distinct), $alias);
@@ -191,7 +176,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function ucase($column, $alias = null)
     {
         return $this->column($this->expression()->ucase($column), $alias);
@@ -205,7 +189,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function lcase($column, $alias = null)
     {
         return $this->column($this->expression()->lcase($column), $alias);
@@ -221,7 +204,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function mid($column, $start = 1, $alias = null, $length = 0)
     {
         return $this->column($this->expression()->mid($column, $start, $length), $alias);
@@ -235,7 +217,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function len($column, $alias = null)
     {
         return $this->column($this->expression()->len($column), $alias);
@@ -250,7 +231,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function round($column, $decimals = 0, $alias = null)
     {
         return $this->column($this->expression()->format($column, $decimals), $alias);
@@ -265,7 +245,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function format($column, $format, $alias = null)
     {
         return $this->column($this->expression()->format($column, $format), $alias);
@@ -278,7 +257,6 @@ class ColumnExpression
      * 
      * @return  $this
      */
-    
     public function now($alias = null)
     {
         return $this->column($this->expression()->now(), $alias);

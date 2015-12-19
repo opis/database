@@ -32,28 +32,22 @@ class Oracle extends Compiler
      * 
      * @return  string
      */
-    
     protected function wrap($value)
     {
-        if($value instanceof Expression)
-        {
+        if ($value instanceof Expression) {
             return $this->handleExpressions($value->getExpressions());
         }
-        
+
         $wrapped = array();
-        
-        foreach(explode('.', $value) as $segment)
-        {
-            if($segment == '*')
-            {
+
+        foreach (explode('.', $value) as $segment) {
+            if ($segment == '*') {
                 $wrapped[] = $segment;
-            }
-            else
-            {
+            } else {
                 $wrapped[] = sprintf($this->wrapper, strtoupper($segment));
             }
         }
-        
+
         return implode('.', $wrapped);
     }
 
@@ -62,28 +56,22 @@ class Oracle extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleOrderings(array $ordering)
     {
-        if(empty($ordering))
-        {
+        if (empty($ordering)) {
             return '';
         }
-        
+
         $sql = array();
-        
-        foreach($ordering as $order)
-        {
-            if($order['nulls'] !== null)
-            {
+
+        foreach ($ordering as $order) {
+            if ($order['nulls'] !== null) {
                 $sql[] = $this->columns($order['columns']) . ' ' . $order['order'] . ' ' . $order['nulls'];
-            }
-            else
-            {
+            } else {
                 $sql[] = $this->columns($order['columns']) . ' ' . $order['order'];
             }
         }
-        
+
         return ' ORDER BY ' . implode(', ', $sql);
     }
 
@@ -94,18 +82,16 @@ class Oracle extends Compiler
      * 
      * @return  string
      */
-
     public function select(SelectStatement $select)
     {
         $limit = $select->getLimit();
         $offset = $select->getOffset();
-        
-        if($limit === null && $offset === null)
-        {
+
+        if ($limit === null && $offset === null) {
             return parent::select($select);
         }
-        
-        $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+
+        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
@@ -114,15 +100,14 @@ class Oracle extends Compiler
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
         $sql .= $this->handleHavings($select->getHavingConditions());
-        
-        if($offset === null)
-        {
+
+        if ($offset === null) {
             return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
         }
-        
+
         $limit += $offset;
         $offset++;
-        
+
         return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
     }
 }

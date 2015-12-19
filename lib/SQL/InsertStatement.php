@@ -26,16 +26,16 @@ class InsertStatement
 {
     /** @var    array */
     protected $tables;
-    
+
     /** @var    Compiler */
     protected $compiler;
-    
+
     /** @var    array */
     protected $columns = array();
-    
+
     /** @var    array */
     protected $values = array();
-    
+
     /** @var    string */
     protected $sql;
 
@@ -44,16 +44,14 @@ class InsertStatement
      * 
      * @param   Compiler    $compiler
      */
-    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
-    
+
     /**
      * @return  array
      */
-    
     public function getTables()
     {
         return $this->tables;
@@ -62,7 +60,6 @@ class InsertStatement
     /**
      * @return  array
      */
-    
     public function getValues()
     {
         return $this->values;
@@ -71,7 +68,6 @@ class InsertStatement
     /**
      * @return  array
      */
-    
     public function getColumns()
     {
         return $this->columns;
@@ -82,28 +78,23 @@ class InsertStatement
      * 
      * @return  $this
      */
-    
     public function insert(array $values)
     {
-        foreach($values as $column => $value)
-        {
+        foreach ($values as $column => $value) {
             $this->columns[] = array(
                 'name' => $column,
                 'alias' => null,
             );
-            
-            if($value instanceof Closure)
-            {
+
+            if ($value instanceof Closure) {
                 $expression = new Expression($this->compiler);
                 $value($expression);
                 $this->values[] = $expression;
-            }
-            else
-            {
+            } else {
                 $this->values[] = $value;
             }
         }
-        
+
         return $this;
     }
 
@@ -112,7 +103,6 @@ class InsertStatement
      * 
      * @return  $this
      */
-    
     public function into($table)
     {
         $this->tables = array((string) $table);
@@ -122,11 +112,9 @@ class InsertStatement
     /**
      * @return  string
      */
-    
     public function __toString()
     {
-        if($this->sql === null)
-        {
+        if ($this->sql === null) {
             $this->sql = $this->compiler->insert($this);
         }
         return $this->sql;

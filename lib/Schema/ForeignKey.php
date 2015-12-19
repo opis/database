@@ -24,13 +24,13 @@ class ForeignKey
 {
     /** @var    string */
     protected $refTable;
-    
+
     /** @var    array */
     protected $refColumns;
-    
+
     /** @var    array */
     protected $actions = array();
-    
+
     /** @var    array */
     protected $columns;
 
@@ -39,7 +39,6 @@ class ForeignKey
      * 
      * @param   array   $columns
      */
-    
     public function __construct($columns)
     {
         $this->columns = $columns;
@@ -51,42 +50,37 @@ class ForeignKey
      * 
      * @return  $this
      */
-    
     protected function addAction($on, $action)
     {
         $action = strtoupper($action);
-        
-        if(!in_array($action, array('RESTRICT', 'CASCADE', 'NO ACTION', 'SET NULL')))
-        {
+
+        if (!in_array($action, array('RESTRICT', 'CASCADE', 'NO ACTION', 'SET NULL'))) {
             return $this;
         }
-        
+
         $this->actions[$on] = $action;
         return $this;
     }
-    
+
     /**
      * @return  string
      */
-    
     public function getReferencedTable()
     {
         return $this->refTable;
     }
-    
+
     /**
      * @return  array
      */
-    
     public function getReferencedColumns()
     {
         return $this->refColumns;
     }
-    
+
     /**
      * @return  array
      */
-    
     public function getColumns()
     {
         return $this->columns;
@@ -105,7 +99,6 @@ class ForeignKey
      * 
      * @return  $this
      */
-    
     public function references($table)
     {
         $this->refTable = $table;
@@ -119,11 +112,10 @@ class ForeignKey
      */
     public function on($columns)
     {
-        if(!is_array($columns))
-        {
+        if (!is_array($columns)) {
             $columns = array($columns);
         }
-        
+
         $this->refColumns = $columns;
         return $this;
     }
@@ -133,7 +125,6 @@ class ForeignKey
      * 
      * @return  $this
      */
-    
     public function onDelete($action)
     {
         return $this->addAction('ON DELETE', $action);
@@ -144,10 +135,8 @@ class ForeignKey
      * 
      * @return  $this
      */
-    
     public function onUpdate($action)
     {
         return $this->addAction('ON UPDATE', $action);
     }
-    
 }

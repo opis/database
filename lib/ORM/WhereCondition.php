@@ -24,51 +24,47 @@ class WhereCondition
 {
     /** @var    BaseQuery */
     protected $builder;
-    
+
     /** @var    Select */
     protected $query;
-    
+
     /** @var    string */
     protected $method;
-    
+
     /** @var    string */
     protected $column;
-    
-    
+
     /**
      * Constructor
      *
      * @param   BaseQuery   $builder
      * @param   Select      $query
      */
-    
     public function __construct(BaseQuery $builder, Select $query)
     {
         $this->builder = $builder;
         $this->query = $query;
     }
-    
+
     /**
      * @param   string  $column
      * @param   string  $method
      *
      * @return  $this
      */
-    
     public function setColumn($column, $method)
     {
         $this->column = $column;
         $this->method = $method;
         return $this;
     }
-    
+
     /**
      * @param   string  $name
      * @param   array   $arguments
      *
      * @return  BaseQuery
      */
-    
     public function __call($name, $arguments)
     {
         $where = $this->query->{$this->method}($this->column);

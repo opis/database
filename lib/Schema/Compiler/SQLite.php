@@ -28,39 +28,35 @@ class SQLite extends Compiler
 {
     /** @var    array */
     protected $modifiers = array('nullable', 'default', 'autoincrement');
-    
+
     /** @var    string */
     protected $autoincrement = 'AUTOINCREMENT';
 
-    
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeInteger(BaseColumn $column)
     {
         return 'INTEGER';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'DATETIME';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
@@ -71,9 +67,8 @@ class SQLite extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleEngine(CreateTable $schema)
-    {   
+    {
         return '';
     }
 
@@ -82,7 +77,6 @@ class SQLite extends Compiler
      * 
      * @return  string
      */
-    
     public function currentDatabase($dsn)
     {
         return substr($dsn, strpos($dsn, ':') + 1);
@@ -93,12 +87,11 @@ class SQLite extends Compiler
      * 
      * @return  array
      */
-    
     public function getTables($database)
     {
-        $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' .  $this->wrap('sqlite_master')
-                . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
-        
+        $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
+            . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
+
         return array(
             'sql' => $sql,
             'params' => array('table'),
@@ -111,11 +104,10 @@ class SQLite extends Compiler
      * 
      * @return  array
      */
-    
     public function getColumns($database, $table)
     {
         return array(
-            'sql' => 'PRAGMA table_info('. $this->wrap($table) . ')',
+            'sql' => 'PRAGMA table_info(' . $this->wrap($table) . ')',
             'params' => array(),
         );
     }
@@ -126,13 +118,11 @@ class SQLite extends Compiler
      * 
      * @return  array
      */
-    
     public function renameTable($old, $new)
     {
         return array(
-            'sql' => 'ALTER TABLE ' .$this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
             'params' => array(),
         );
     }
-    
 }

@@ -27,41 +27,40 @@ class LazyLoader extends BaseLoader
 {
     /** @var    Connection */
     protected $connection;
-    
+
     /** @var    Model */
     protected $model;
-    
+
     /** @var    string */
     protected $fk;
-    
+
     /** @var    string */
     protected $pk;
-    
+
     /** @var    array */
     protected $results;
-    
+
     /** @var    bool */
     protected $hasMany;
-    
+
     /** @var    string */
     protected $query;
-    
+
     /** @var    bool */
     protected $readonly;
-    
+
     /** @var    array */
     protected $with;
-    
+
     /** @var    string */
     protected $modelClass;
-    
+
     /** @var    array */
     protected $params;
-    
+
     /** @var    bool */
     protected $immediate;
-    
-    
+
     /**
      * Constructor
      *
@@ -76,7 +75,6 @@ class LazyLoader extends BaseLoader
      * @param   string      $fk
      * @param   string      $pk
      */
-    
     public function __construct(Connection $connection, $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
     {
         $this->connection = $connection;
@@ -89,97 +87,85 @@ class LazyLoader extends BaseLoader
         $this->query = $query;
         $this->params = $params;
         $this->immediate = $immediate;
-        
-        if($immediate)
-        {
+
+        if ($immediate) {
             $this->getResults();
         }
     }
-    
+
     /**
      * @return  array
      */
-    
     protected function &getResults()
     {
-        if($this->results === null)
-        {
+        if ($this->results === null) {
             $model = $this->modelClass;
             $this->model = new $model;
-            
+
             $results = $this->connection
-                            ->query((string) $this->query, $this->params)
-                            ->fetchClass($this->modelClass, array($this->readonly, $this->connection))
-                            ->all();
-                            
+                ->query((string) $this->query, $this->params)
+                ->fetchClass($this->modelClass, array($this->readonly, $this->connection))
+                ->all();
+
             $this->prepareResults($this->model, $results);
             $this->results = &$results;
         }
-        
+
         return $this->results;
     }
-    
+
     /**
      * @param   Mode    $model
      * @param   string  $with
      *
      * @return  Model
      */
-    
     protected function getFirst(Model $model, $with)
     {
         $results = &$this->getResults();
-        
-        foreach($results as $result)
-        {
-            if($result->{$this->fk} == $model->{$this->pk})
-            {
+
+        foreach ($results as $result) {
+            if ($result->{$this->fk} == $model->{$this->pk}) {
                 return $result;
             }
         }
-        
+
         return $model->{$with}()->getResult();
     }
-    
+
     /**
      * @param   Model   $model
      * @param   string  $with
      *
      * @return  array
      */
-    
     protected function getAll(Model $model, $with)
     {
         $results = &$this->getResults();
-        
+
         $all = array();
-        
-        foreach($results as $result)
-        {
-            if($result->{$this->fk} == $model->{$this->pk})
-            {
+
+        foreach ($results as $result) {
+            if ($result->{$this->fk} == $model->{$this->pk}) {
                 $all[] = $result;
             }
         }
-        
+
         return $all;
     }
-    
+
     /**
      * @param   Model   $model
      * @param   string  $with
      *
      * @return  array|Model
      */
-    
     public function getResult(Model $model, $with)
     {
-        if($this->hasMany)
-        {
+        if ($this->hasMany) {
             return $this->getAll($model, $with);
         }
-        
+
         return $this->getFirst($model, $with);
     }
-    
 }

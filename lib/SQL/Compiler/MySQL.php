@@ -32,10 +32,9 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function sqlFunctionROUND(array $func)
     {
-        return 'FORMAT(' . $this->wrap($func['column']). ', ' . $this->param($func['decimals']) . ')';
+        return 'FORMAT(' . $this->wrap($func['column']) . ', ' . $this->param($func['decimals']) . ')';
     }
 
     /**
@@ -43,7 +42,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function sqlFunctionLEN(array $func)
     {
         return 'LENGTH(' . $this->wrap($func['column']) . ')';

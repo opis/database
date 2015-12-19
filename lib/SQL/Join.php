@@ -35,11 +35,9 @@ class Join
      * 
      * @return $this
      */
-    
     protected function addJoinCondition($column1, $column2, $operator, $separator)
     {
-        if($column1 instanceof Closure)
-        {
+        if ($column1 instanceof Closure) {
             $join = new Join();
             $column1($join);
             $this->conditions[] = array(
@@ -47,9 +45,7 @@ class Join
                 'join' => $join,
                 'separator' => $separator,
             );
-        }
-        else
-        {
+        } else {
             $this->conditions[] = array(
                 'type' => 'joinColumn',
                 'column1' => $column1,
@@ -58,14 +54,13 @@ class Join
                 'separator' => $separator,
             );
         }
-        
+
         return $this;
     }
 
     /**
      * @return  array
      */
-    
     public function getJoinConditions()
     {
         return $this->conditions;
@@ -78,7 +73,6 @@ class Join
      * 
      * @return  $this
      */
-    
     public function on($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'AND');
@@ -91,7 +85,6 @@ class Join
      * 
      * @return  $this
      */
-    
     public function andOn($column1, $column2 = null, $operator = '=')
     {
         return $this->on($column1, $column2, $operator);
@@ -104,10 +97,8 @@ class Join
      * 
      * @return  $this
      */
-    
     public function orOn($column1, $column2 = null, $operator = '=')
     {
         return $this->addJoinCondition($column1, $column2, $operator, 'OR');
     }
-    
 }

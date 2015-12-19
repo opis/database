@@ -33,39 +33,36 @@ class Firebird extends Compiler
      * 
      * @return  string
      */
-    
-	protected function handleLimit($limit, $offset = null)
-	{
-	    return ($limit === null) ? '' : ' TO ' . ($limit + (($offset === null) ? 0 : $offset));
-	}
+    protected function handleLimit($limit, $offset = null)
+    {
+        return ($limit === null) ? '' : ' TO ' . ($limit + (($offset === null) ? 0 : $offset));
+    }
 
-	/**
-	 * Compiles OFFSET clause.
-	 *
-	 * @access  protected
-	 * @param   int        $limit   Offset
-	 * @param   int        $offset  Limit
-	 * @return  string
-	 */
+    /**
+     * Compiles OFFSET clause.
+     *
+     * @access  protected
+     * @param   int        $limit   Offset
+     * @param   int        $offset  Limit
+     * @return  string
+     */
+    protected function hanleOffset($offset, $limit = null)
+    {
+        return ($offset === null) ? ($limit === null) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
+    }
 
-	protected function hanleOffset($offset, $limit = null)
-	{
-	    return ($offset === null) ? ($limit === null) ? '' :' ROWS 1 ' : ' ROWS ' . ($offset + 1);
-	}
-
-	/**
-	 * Compiles a SELECT query.
-	 *
-	 * @access  public
-	 * @param   \Opis\Database\SQL\SelectStatement    $select  Select object.
-	 * @return  array
-	 */
-
-	public function select(SelectStatement $select)
-	{
-        $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+    /**
+     * Compiles a SELECT query.
+     *
+     * @access  public
+     * @param   \Opis\Database\SQL\SelectStatement    $select  Select object.
+     * @return  array
+     */
+    public function select(SelectStatement $select)
+    {
+        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
-		$sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
+        $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
         $sql .= $this->handleJoins($select->getJoinClauses());
@@ -73,9 +70,9 @@ class Firebird extends Compiler
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleOrderings($select->getOrderClauses());
         $sql .= $this->handleHavings($select->getHavingConditions());
-		$sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
-		$sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
-		
-		return $sql;
-	}
+        $sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
+        $sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
+
+        return $sql;
+    }
 }

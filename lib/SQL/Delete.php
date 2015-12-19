@@ -36,7 +36,6 @@ class Delete extends DeleteStatement
      * @param   array           $joins
      * @param   WhereClause     $clause     (optional)
      */
-    
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $from, $clause);
@@ -51,11 +50,9 @@ class Delete extends DeleteStatement
      * 
      * @return  int
      */
-    
     public function delete($tables = array())
     {
         parent::delete($tables);
         return $this->connection->count((string) $this, $this->compiler->getParams());
     }
-    
 }

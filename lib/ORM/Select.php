@@ -28,81 +28,73 @@ class Select extends SelectStatement
 {
     /** @var    bool */
     protected $locked = false;
-    
+
     /**
      * @return  \Opis\Database\SQL\Compiler
      */
-    
     public function getCompiler()
     {
         return $this->compiler;
     }
-    
+
     /**
      * @return  bool
      */
-    
     public function isLocked()
     {
         return $this->locked;
     }
-    
+
     /**
      * @param   string|array    $tables
      *
      * @return  $this
      */
-    
     public function from($tables)
     {
-        if(!is_array($tables))
-        {
+        if (!is_array($tables)) {
             $tables = array($tables);
         }
-        
+
         $this->tables = $tables;
         return $this;
     }
-    
+
     /**
      * @return  $this
      */
-    
     public function lock()
     {
         $this->locked = true;
         return $this;
     }
-    
+
     /**
      * @param   array   $columns    (optional)
      *
      * @return  $this
      */
-    
     public function select($columns = array())
     {
         $this->sql = null;
         return parent::select($columns);
     }
-    
+
     /**
      * @param   Connection  $connection
      *
      * @return  Delete
      */
-    
     public function toDelete(Connection $connection)
     {
         return new Delete($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
     }
-        
+
     /**
      * @param   Connection  $connection
      *
      * @return  Update
      */
-    
     public function toUpdate(Connection $connection)
     {
         return new Update($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);

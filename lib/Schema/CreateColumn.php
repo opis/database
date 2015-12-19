@@ -32,7 +32,6 @@ class CreateColumn extends BaseColumn
      * @param   string      $name
      * @param   string      $type
      */
-    
     public function __construct(CreateTable $table, $name, $type)
     {
         $this->table = $table;
@@ -42,7 +41,6 @@ class CreateColumn extends BaseColumn
     /**
      * @return  string
      */
-    
     public function getTable()
     {
         return $this->table;
@@ -51,7 +49,6 @@ class CreateColumn extends BaseColumn
     /**
      * @return  $this
      */
-    
     public function autoincrement()
     {
         $this->table->autoincrement($this);
@@ -61,7 +58,6 @@ class CreateColumn extends BaseColumn
     /**
      * @return  $this
      */
-    
     public function primary()
     {
         $this->table->primary($this->name);
@@ -71,7 +67,6 @@ class CreateColumn extends BaseColumn
     /**
      * @return  $this
      */
-    
     public function unique()
     {
         $this->table->unique($this->name);
@@ -81,11 +76,9 @@ class CreateColumn extends BaseColumn
     /**
      * @return  $this
      */
-    
     public function index()
     {
         $this->table->index($this->name);
         return $this;
     }
-
 }

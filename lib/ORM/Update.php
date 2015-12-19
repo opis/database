@@ -29,7 +29,7 @@ class Update extends UpdateStatement
 {
     /** @var    Connection */
     protected $connection;
-    
+
     /**
      * Constructor
      *
@@ -39,20 +39,18 @@ class Update extends UpdateStatement
      * @param   array               $joins
      * @param   WhereClause|null    $clause     (optional)
      */
-    
     public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $from, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }
-    
+
     /**
      * @param   array   $columns
      *
      * @return  int
      */
-    
     public function update(array $columns)
     {
         parent::set($columns);

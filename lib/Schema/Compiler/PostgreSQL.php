@@ -35,13 +35,11 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeInteger(BaseColumn $column)
     {
         $autoincrement = $column->get('autoincrement', false);
-        
-        switch($column->get('size', 'normal'))
-        {
+
+        switch ($column->get('size', 'normal')) {
             case 'tiny':
             case 'small':
                 return $autoincrement ? 'SMALLSERIAL' : 'SMALLINT';
@@ -50,9 +48,8 @@ class PostgreSQL extends Compiler
             case 'big':
                 return $autoincrement ? 'BIGSERIAL' : 'BIGINT';
         }
-        
+
         return $autoincrement ? 'SERIAL' : 'INTEGER';
-        
     }
 
     /**
@@ -60,7 +57,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeFloat(BaseColumn $column)
     {
         return 'REAL';
@@ -71,7 +67,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeDouble(BaseColumn $column)
     {
         return 'DOUBLE PRECISION';
@@ -82,14 +77,12 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeDecimal(BaseColumn $column)
     {
-        if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
-        {
+        if (null !== $m = $column->get('M') && null !== $p = $column->get('P')) {
             return 'DECIMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
         }
-        
+
         return 'DECIMAL';
     }
 
@@ -98,7 +91,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'BYTEA';
@@ -109,7 +101,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeTime(BaseColumn $column)
     {
         return 'TIME(0) WITHOUT TIME ZONE';
@@ -120,7 +111,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
@@ -131,7 +121,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeDateTime(BaseColumn $column)
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
@@ -142,25 +131,22 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleIndexKeys(CreateTable $schema)
     {
         $indexes = $schema->getIndexes();
-        
-        if(empty($indexes))
-        {
+
+        if (empty($indexes)) {
             return array();
         }
-        
+
         $sql = array();
-        
+
         $table = $schema->getTableName();
-        
-        foreach($indexes as $name => $columns)
-        {
+
+        foreach ($indexes as $name => $columns) {
             $sql[] = 'CREATE INDEX ' . $this->wrap($table . '_' . $name) . ' ON ' . $this->wrap($table) . '(' . $this->wrapArray($columns) . ')';
         }
-        
+
         return $sql;
     }
 
@@ -170,11 +156,10 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
-                . $this->wrap($data['from']) . ' TO ' . $this->wrap($data['column']->getName()); 
+            . $this->wrap($data['from']) . ' TO ' . $this->wrap($data['column']->getName());
     }
 
     /**
@@ -183,10 +168,9 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleAddIndex(AlterTable $table, $data)
     {
-        return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' ('. $this->wrapArray($data['columns']) . ')';
+        return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
     /**
@@ -195,7 +179,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropIndex(AlterTable $table, $data)
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
@@ -206,7 +189,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleEngine(CreateTable $schema)
     {
         return '';
@@ -218,15 +200,14 @@ class PostgreSQL extends Compiler
      * 
      * @return  array
      */
-    
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
-                . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
-                . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
-                . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
-                . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
-        
+            . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
+            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+
         return array(
             'sql' => $sql,
             'params' => array($database, $table),
@@ -238,7 +219,6 @@ class PostgreSQL extends Compiler
      * 
      * @return  array
      */
-    
     public function currentDatabase($dsn)
     {
         return array(
@@ -253,13 +233,11 @@ class PostgreSQL extends Compiler
      * 
      * @return  array
      */
-    
     public function renameTable($old, $new)
     {
         return array(
-            'sql' => 'ALTER TABLE ' .$this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
             'params' => array(),
         );
     }
-    
 }

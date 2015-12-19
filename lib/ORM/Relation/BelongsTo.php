@@ -27,84 +27,76 @@ use Opis\Database\ORM\LazyLoader;
 
 class BelongsTo extends Relation
 {
+
     /**
      * @return  bool
      */
-    
     public function hasMany()
     {
         return false;
     }
-    
+
     /**
      * @param   Model   $model
      * @param   string  $name
      *
      * @return  string
      */
-    
     public function getRelatedColumn(Model $model, $name)
     {
         return $this->getForeignKey();
     }
-        
+
     /**
      * @param   array   $options
      *
      * @return  LazyLoader
      */
-    
     public function getLazyLoader(array $options)
-    {        
+    {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        
+
         $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        
+
         $select = new Select($this->compiler, $this->model->getTable());
-        
+
         $select->where($pk)->in($ids);
-        
-        if($callback !== null)
-        {
+
+        if ($callback !== null) {
             $callback($select);
         }
-        
+
         $query = (string) $select;
         $params = $select->getCompiler()->getParams();
-        
-        return new LazyLoader($this->connection, $query, $params, $with, $immediate,
-                              $this->isReadOnly, $this->hasMany(),
-                              get_class($this->model), $pk, $fk);
+
+        return new LazyLoader($this->connection, $query, $params, $with, $immediate, $this->isReadOnly, $this->hasMany(), get_class($this->model), $pk, $fk);
     }
-        
+
     /**
      * @return  string
      */
-    
     public function getForeignKey()
     {
-        if($this->foreignKey === null)
-        {
+        if ($this->foreignKey === null) {
             $this->foreignKey = $this->model->getForeignKey();
         }
-        
+
         return $this->foreignKey;
     }
-        
+
     /**
      * @return  Model
      */
-    
     public function getResult()
     {
         $this->query->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
-        
+
         return $this->query()
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-                    ->first();
+                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->first();
     }
 }

@@ -33,25 +33,22 @@ class DB2 extends Compiler
      * 
      * @return  string
      */
-    
     public function select(SelectStatement $select)
     {
         $limit = $select->getLimit();
         $offset = $select->getOffset();
-        
-        if($limit === null && $offset === null)
-        {
+
+        if ($limit === null && $offset === null) {
             return parent::select($select);
         }
-        
+
         $order = trim($this->handleOrderings($select->getOrderClauses()));
-        
-        if(empty($order))
-        {
+
+        if (empty($order)) {
             $order = 'ORDER BY (SELECT 0)';
         }
-        
-        $sql  = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+
+        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
         $sql .= ' FROM ';
@@ -60,14 +57,13 @@ class DB2 extends Compiler
         $sql .= $this->handleWheres($select->getWhereConditions());
         $sql .= $this->handleGroupings($select->getGroupClauses());
         $sql .= $this->handleHavings($select->getHavingConditions());
-        
-        if($offset === null)
-        {
+
+        if ($offset === null) {
             $offset = 0;
         }
         $limit += $offset;
         $offset++;
-        
-        return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' .$limit;
+
+        return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' . $limit;
     }
 }

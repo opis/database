@@ -27,17 +27,16 @@ abstract class Relation extends BaseQuery
 {
     /** @var    Model */
     protected $model;
-    
+
     /** @var    string */
     protected $foreignKey;
-    
+
     /** @var    Connection */
     protected $connection;
-    
+
     /** @var    Model */
     protected $owner;
-    
-    
+
     /**
      * Constructor
      *
@@ -46,159 +45,142 @@ abstract class Relation extends BaseQuery
      * @param   Model       $model
      * @param   string|null $foreignKey (optional)
      */
-    
     public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null)
-    {        
+    {
         $this->connection = $connection;
         $this->model = $model;
         $this->foreignKey = $foreignKey;
         $this->owner = $owner;
-        
+
         $compiler = $connection->compiler();
         $query = new Select($compiler, $model->getTable());
         $whereCondition = new WhereCondition($this, $query);
-        
+
         parent::__construct($compiler, $query, $whereCondition);
     }
-    
+
     /**
      * @return  bool
      */
-    
     protected function hasMany()
     {
         return true;
     }
-    
+
     /**
      * @param   Model   $model
      * @param   string  $name
      *
      * @return  string
      */
-    
     public function getRelatedColumn(Model $model, $name)
     {
         return $name;
     }
-    
+
     /**
      * @param   array   $options
      *
      * @return  LazyLoader
      */
-    
     public function getLazyLoader(array $options)
-    {        
+    {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        
+
         $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        
+
         $select = new Select($this->compiler, $this->model->getTable());
-        
+
         $select->where($fk)->in($ids);
-        
-        if($callback !== null)
-        {
+
+        if ($callback !== null) {
             $callback($select);
         }
-        
+
         $query = (string) $select;
         $params = $select->getCompiler()->getParams();
-        
-        return new LazyLoader($this->connection, $query, $params,
-                              $with, $immediate, $this->isReadOnly, $this->hasMany(),
-                              get_class($this->model), $fk, $pk);
+
+        return new LazyLoader($this->connection, $query, $params, $with, $immediate, $this->isReadOnly, $this->hasMany(), get_class($this->model), $fk, $pk);
     }
-    
+
     /**
      * @return  string
      */
-    
     public function getForeignKey()
     {
-        if($this->foreignKey === null)
-        {
+        if ($this->foreignKey === null) {
             $this->foreignKey = $this->owner->getForeignKey();
         }
-        
+
         return $this->foreignKey;
     }
-    
+
     /**
      * @param   array   &$columns   (optional)
      *
      * @return  \Opis\Database\ResultSet
      */
-    
     protected function query(array &$columns = array())
     {
         $pk = $this->model->getPrimaryKey();
-        
-        if(!$this->query->isLocked() && !empty($columns))
-        {
+
+        if (!$this->query->isLocked() && !empty($columns)) {
             $columns[] = $pk;
         }
-        
-        return $this->connection->query((string) $this->query->select($columns),
-                                        $this->query->getCompiler()->getParams());
+
+        return $this->connection->query((string) $this->query->select($columns), $this->query->getCompiler()->getParams());
     }
-    
+
     /**
      * @param   array   $columns    (optional)
      *
      * @return  Model|false
      */
-    
     public function first(array $columns = array())
     {
         return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-                    ->first();
+                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->first();
     }
-        
+
     /**
      * @param   array   $columns    (optional)
      *
      * @return  array
      */
-    
     public function all(array $columns = array())
     {
         $results = $this->query($columns)
-                        ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-                        ->all();
-                        
+            ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+            ->all();
+
         $this->prepareResults($this->model, $results);
-        
+
         return $results;
     }
-    
+
     /**
      * @return  Model
      */
-    
     public function getModel()
     {
         return $this->model;
     }
-    
+
     /**
      * @return  Model
      */
-    
     public function getOwner()
     {
         return $this->owner;
     }
-    
+
     /**
      * @return  Model
      */
-    
-    public abstract function getResult();
+    abstract public function getResult();
 }

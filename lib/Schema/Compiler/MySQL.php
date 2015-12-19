@@ -34,11 +34,9 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeInteger(BaseColumn $column)
     {
-        switch($column->get('size', 'normal'))
-        {
+        switch ($column->get('size', 'normal')) {
             case 'tiny':
                 return 'TINYINT';
             case 'small':
@@ -48,7 +46,7 @@ class MySQL extends Compiler
             case 'big':
                 return 'BIGINT';
         }
-        
+
         return 'INT';
     }
 
@@ -57,14 +55,12 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeDecimal(BaseColumn $column)
     {
-        if(null !== $m = $column->get('M') && null !== $p = $column->get('P'))
-        {
+        if (null !== $m = $column->get('M') && null !== $p = $column->get('P')) {
             return 'DECIMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
         }
-        
+
         return 'DECIMAL';
     }
 
@@ -73,7 +69,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeBoolean(BaseColumn $column)
     {
         return 'TINYINT(1)';
@@ -84,11 +79,9 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeText(BaseColumn $column)
     {
-        switch($column->get('size', 'normal'))
-        {
+        switch ($column->get('size', 'normal')) {
             case 'tiny':
             case 'small':
                 return 'TINYTEXT';
@@ -97,7 +90,7 @@ class MySQL extends Compiler
             case 'big':
                 return 'LONGTEXT';
         }
-        
+
         return 'TEXT';
     }
 
@@ -106,11 +99,9 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleTypeBinary(BaseColumn $column)
     {
-        switch($column->get('size', 'normal'))
-        {
+        switch ($column->get('size', 'normal')) {
             case 'tiny':
             case 'small':
                 return 'TINYBLOB';
@@ -119,7 +110,7 @@ class MySQL extends Compiler
             case 'big':
                 return 'LONGBLOB';
         }
-        
+
         return 'BLOB';
     }
 
@@ -129,7 +120,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropPrimaryKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
@@ -141,7 +131,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropUniqueKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
@@ -153,7 +142,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropIndex(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
@@ -165,7 +153,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropForeignKey(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
@@ -177,11 +164,10 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleSetDefaultValue(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
-        . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
+            . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
     /**
@@ -190,7 +176,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleDropDefaultValue(AlterTable $table, $data)
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
@@ -202,7 +187,6 @@ class MySQL extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         $table_name = $table->getTableName();
@@ -210,9 +194,8 @@ class MySQL extends Compiler
         $new_name = $data['column']->getName();
         $columns = $this->connection->schema()->getColumns($table_name, false, false);
         $column_type = isset($columns[$column_name]) ? $columns[$column_name]['type'] : 'integer';
-        
-        return 'ALTER TABLE ' . $this->wrap($table_name) . ' CHANGE '. $this->wrap($column_name)
-        . ' '.  $this->wrap($new_name) . ' ' . $column_type;
+
+        return 'ALTER TABLE ' . $this->wrap($table_name) . ' CHANGE ' . $this->wrap($column_name)
+            . ' ' . $this->wrap($new_name) . ' ' . $column_type;
     }
-    
 }

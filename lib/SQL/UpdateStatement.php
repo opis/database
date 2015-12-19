@@ -26,10 +26,10 @@ class UpdateStatement extends WhereJoinCondition
 {
     /** @var    array */
     protected $tables;
-    
+
     /** @var    array */
     protected $columns = array();
-    
+
     /** @var    string */
     protected $sql;
 
@@ -40,23 +40,20 @@ class UpdateStatement extends WhereJoinCondition
      * @param   array|string    $table
      * @param   WhereClause     $clause     (optional)
      */
-    
     public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
     {
-        if(!is_array($table))
-        {
+        if (!is_array($table)) {
             $table = array($table);
         }
-        
+
         $this->tables = $table;
-        
+
         parent::__construct($compiler, $clause);
     }
 
     /**
      * @return  array
      */
-    
     public function getTables()
     {
         return $this->tables;
@@ -65,7 +62,6 @@ class UpdateStatement extends WhereJoinCondition
     /**
      * @return  array
      */
-    
     public function getColumns()
     {
         return $this->columns;
@@ -76,23 +72,18 @@ class UpdateStatement extends WhereJoinCondition
      * 
      * @return  $this
      */
-    
     public function set(array $columns)
     {
-        foreach($columns as $column => $value)
-        {
-            if($value instanceof Closure)
-            {
+        foreach ($columns as $column => $value) {
+            if ($value instanceof Closure) {
                 $expr = new Expression($this->compiler);
                 $value($expr);
-                
+
                 $this->columns[] = array(
                     'column' => $column,
                     'value' => $expr,
                 );
-            }
-            else
-            {
+            } else {
                 $this->columns[] = array(
                     'column' => $column,
                     'value' => $value,
@@ -105,14 +96,12 @@ class UpdateStatement extends WhereJoinCondition
     /**
      * @return  string
      */
-    
     public function __toString()
     {
-        if($this->sql === null)
-        {
+        if ($this->sql === null) {
             $this->sql = $this->compiler->update($this);
         }
-        
+
         return $this->sql;
     }
 }

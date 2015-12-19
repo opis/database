@@ -30,11 +30,10 @@ class BelongsToMany extends Relation
 {
     /** @var    string */
     protected $junctionTable;
-    
+
     /** @var    string */
     protected $junctionKey;
-    
-    
+
     /**
      * Constructor
      *
@@ -45,93 +44,83 @@ class BelongsToMany extends Relation
      * @param   string|null $junctionTable  (optional)
      * @param   string|null $junctionKey    (optional)
      */
-    
     public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         $this->junctionTable = $junctionTable;
         $this->junctionKey = $junctionKey;
-        
+
         parent::__construct($connection, $owner, $model, $foreignKey);
     }
-    
+
     /**
      * @return  string
      */
-    
     protected function getJunctionTable()
     {
-        if($this->junctionTable === null)
-        {
+        if ($this->junctionTable === null) {
             $table = array($this->owner->getTable(), $this->model->getTable());
             sort($table);
             $this->junctionTable = implode('_', $table);
         }
-        
+
         return $this->junctionTable;
     }
-    
+
     /**
      * @return  string
      */
-    
     protected function getJunctionKey()
     {
-        if($this->junctionKey === null)
-        {
+        if ($this->junctionKey === null) {
             $this->junctionKey = $this->model->getForeignKey();
         }
-        
+
         return $this->junctionKey;
     }
-    
+
     /**
      * @param   array   $options
      *
      * @return  LazyLoader
      */
-    
     public function getLazyLoader(array $options)
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
-        
+
         $ids = $options['ids'];
         $with = $options['with'];
         $callback = $options['callback'];
         $immediate = $options['immediate'];
-        
+
         $junctionTable = $this->getJunctionTable();
         $junctionKey = $this->getJunctionKey();
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
-        
+
         $select = new Select($this->compiler, $junctionTable);
-        
+
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
-        
-        $select->join($joinTable, function($join) use($junctionTable, $junctionKey, $joinTable, $joinColumn){
-                    $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
-               })
-               ->where($junctionTable . '.' .$fk)->in($ids)
-               ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
-        
-        if($callback !== null)
-        {
+
+        $select->join($joinTable, function ($join) use ($junctionTable, $junctionKey, $joinTable, $joinColumn) {
+                $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
+            })
+            ->where($junctionTable . '.' . $fk)->in($ids)
+            ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
+
+        if ($callback !== null) {
             $callback($select);
         }
-        
+
         $query = (string) $select;
         $params = $select->getCompiler()->getParams();
-        
-        return new LazyLoader($this->connection, $query, $params, $with, $immediate,
-                              $this->isReadOnly, $this->hasMany(),
-                              get_class($this->model), $linkKey, $pk);
+
+        return new LazyLoader($this->connection, $query, $params, $with, $immediate, $this->isReadOnly, $this->hasMany(), get_class($this->model), $linkKey, $pk);
     }
-        
+
     /**
      * @return  Model
      */
-    
     public function getResult()
     {
         $self = $this;
@@ -140,19 +129,19 @@ class BelongsToMany extends Relation
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
         $foreignKey = $this->getForeignKey();
-        
+
         $this->query
-             ->from($junctionTable)
-             ->join($joinTable, function($join) use($junctionTable, $junctionKey, $joinTable, $joinColumn){
+            ->from($junctionTable)
+            ->join($joinTable, function ($join) use ($junctionTable, $junctionKey, $joinTable, $joinColumn) {
                 $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
-             })
-             ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
-             ->lock();
-             
+            })
+            ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
+            ->lock();
+
         $columns = array($joinTable . '.*');
-        
+
         return $this->query($columns)
-                    ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-                    ->all();
+                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->all();
     }
 }

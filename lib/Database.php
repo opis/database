@@ -30,10 +30,10 @@ class Database
 {
     /** @var    \Opis\Database\Connection   Connection instance. */
     protected $connection;
-    
+
     /** @var    \Opis\Database\Schema       Schema instance. */
     protected $schema;
-    
+
     /**
      * Constructor
      *
@@ -41,12 +41,11 @@ class Database
      * 
      * @param   \Opis\Database\Connection   $connection Connection instance.
      */
-    
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
-    
+
     /**
      * Database connection
      *
@@ -54,12 +53,11 @@ class Database
      *
      * @return   \Opis\Database\Connection
      */
-    
     public function getConnection()
     {
         return $this->connection;
     }
-    
+
     /**
      * Returns the query log for this database.
      *
@@ -67,12 +65,11 @@ class Database
      * 
      * @return array
      */
-
     public function getLog()
     {
         return $this->connection->getLog();
     }
-    
+
     /**
      * Execute a query in order to fetch or to delete records.
      *
@@ -82,12 +79,11 @@ class Database
      *
      * @return  \Opis\Database\SQL\Query
      */
-    
     public function from($tables)
     {
         return new QueryCommand($this->connection, $tables);
     }
-    
+
     /**
      * Insert new records into a table.
      *
@@ -97,12 +93,11 @@ class Database
      *
      * @return  \Opis\Database\SQL\Insert
      */
-    
     public function insert(array $values)
     {
         return new InsertCommand($this->connection, $values);
     }
-    
+
     /**
      * Update records.
      *
@@ -112,12 +107,11 @@ class Database
      *
      * @return  \Opis\Database\SQL\Update
      */
-    
     public function update($table)
     {
         return new UpdateCommand($this->connection, $table);
     }
-    
+
     /**
      * The associated schema instance.
      *
@@ -125,18 +119,15 @@ class Database
      *
      * @return  \Opis\Database\Schema
      */
-    
     public function schema()
     {
-        if($this->schema === null)
-        {
+        if ($this->schema === null) {
             $this->schema = $this->connection->schema();
         }
-        
+
         return $this->schema;
     }
-    
-    
+
     /**
      * Initiate a new transaction
      *
@@ -146,7 +137,6 @@ class Database
      * 
      * @return  \Opis\Database\Transaction
      */
-
     public function transaction(Closure $queries)
     {
         return new Transaction($this, $queries);

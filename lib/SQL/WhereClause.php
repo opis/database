@@ -24,9 +24,7 @@ use Closure;
 
 class WhereClause
 {
-    
     protected $conditions = array();
-    
     protected $compiler;
 
     /**
@@ -64,8 +62,7 @@ class WhereClause
      */
     public function addCondition($column, $value, $operator, $separator)
     {
-        if($value instanceof Closure)
-        {
+        if ($value instanceof Closure) {
             $expr = new Expression($this->compiler);
             $value($expr);
             $this->conditions[] = array(
@@ -75,9 +72,7 @@ class WhereClause
                 'operator' => $operator,
                 'separator' => $separator,
             );
-        }
-        else
-        {
+        } else {
             $this->conditions[] = array(
                 'type' => 'whereColumn',
                 'column' => $column,
@@ -86,7 +81,7 @@ class WhereClause
                 'separator' => $separator,
             );
         }
-        
+
         return $this;
     }
 
@@ -127,8 +122,8 @@ class WhereClause
             'separator' => $separator,
             'not' => $not,
         );
-        
-        return $this;   
+
+        return $this;
     }
 
     /**
@@ -140,8 +135,7 @@ class WhereClause
      */
     public function addInCondition($column, $value, $separator, $not)
     {
-        if($value instanceof Closure)
-        {
+        if ($value instanceof Closure) {
             $select = new Subquery($this->compiler);
             $value($select);
             $this->conditions[] = array(
@@ -151,9 +145,7 @@ class WhereClause
                 'separator' => $separator,
                 'not' => $not,
             );
-        }
-        else
-        {
+        } else {
             $this->conditions[] = array(
                 'type' => 'whereIn',
                 'column' => $column,
@@ -192,14 +184,14 @@ class WhereClause
     {
         $select = new Subquery($this->compiler);
         $closure($select);
-        
+
         $this->conditions[] = array(
             'type' => 'whereExists',
             'subquery' => $select,
             'separator' => $separator,
             'not' => $not,
         );
-        
+
         return $this;
     }
 

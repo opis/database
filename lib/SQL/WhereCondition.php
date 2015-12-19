@@ -24,11 +24,8 @@ use Closure;
 
 class WhereCondition
 {
-    
     protected $whereClause;
-    
     protected $where;
-    
     protected $compiler;
 
     /**
@@ -39,12 +36,11 @@ class WhereCondition
     public function __construct(Compiler $compiler, WhereClause $clause = null)
     {
         $this->compiler = $compiler;
-        
-        if($clause === null)
-        {
+
+        if ($clause === null) {
             $clause = new WhereClause($compiler);
         }
-        
+
         $this->whereClause = $clause;
         $this->where = new Where($this);
     }
@@ -72,12 +68,11 @@ class WhereCondition
      */
     protected function addWhereCondition($column, $separator)
     {
-        if($column instanceof Closure)
-        {
+        if ($column instanceof Closure) {
             $this->whereClause->addConditionGroup($column, $separator);
             return $this;
         }
-        
+
         return $this->where->init($column, $separator);
     }
 
@@ -161,7 +156,7 @@ class WhereCondition
      * @return WhereCondition
      */
     public function andWhereNotExists(Closure $select)
-    {   
+    {
         return $this->whereNotExists($select);
     }
 
@@ -173,5 +168,4 @@ class WhereCondition
     {
         return $this->addExistsCondition($select, 'OR', true);
     }
-    
 }

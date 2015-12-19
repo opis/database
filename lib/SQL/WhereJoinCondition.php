@@ -33,16 +33,14 @@ class WhereJoinCondition extends WhereCondition
      * @param   Compiler    $compiler
      * @param   WhereClause $clause     (optional)
      */
-    
     public function __construct(Compiler $compiler, WhereClause $clause = null)
     {
         parent::__construct($compiler, $clause);
     }
-    
+
     /**
      * @return  array
      */
-    
     public function getJoinClauses()
     {
         return $this->joins;
@@ -55,70 +53,64 @@ class WhereJoinCondition extends WhereCondition
      *
      *  @return $this
      */
-    
     protected function addJoinClause($type, $table, $closure)
     {
         $join = new Join();
-        
+
         $closure($join);
-        
-        if(!is_array($table))
-        {
+
+        if (!is_array($table)) {
             $table = array($table);
         }
-        
+
         $this->joins[] = array(
             'type' => $type,
             'table' => $table,
             'join' => $join,
         );
-        
+
         return $this;
     }
-    
+
     /**
      * @param   string  $table
      * @param   Closure $closure
      *
      * @return  $this
      */
-    
     public function join($table, Closure $closure)
     {
         return $this->addJoinClause('INNER', $table, $closure);
     }
-    
+
     /**
      * @param   string  $table
      * @param   Closure $closure
      *
      * @return  $this
      */
-    
     public function leftJoin($table, Closure $closure)
     {
         return $this->addJoinClause('LEFT', $table, $closure);
     }
-    
+
     /**
      * @param   string  $table
      * @param   Closure $closure
      *
      * @return  $this
      */
-    
     public function rightJoin($table, Closure $closure)
     {
         return $this->addJoinClause('RIGHT', $table, $closure);
     }
-    
+
     /**
      * @param   string  $table
      * @param   Closure $closure
      *
      * @return  $this
      */
-    
     public function fullJoin($table, Closure $closure)
     {
         return $this->addJoinClause('FULL', $table, $closure);

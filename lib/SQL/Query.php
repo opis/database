@@ -27,7 +27,7 @@ class Query extends WhereJoinCondition
 {
     /** @var    Connection */
     protected $connection;
-    
+
     /** @var    array */
     protected $tables;
 
@@ -37,18 +37,16 @@ class Query extends WhereJoinCondition
      * @param   Connection  $connection
      * @param   array       $tables
      */
-    
     public function __construct(Connection $connection, $tables)
     {
         parent::__construct($connection->compiler());
-        $this->tables =  $tables;
+        $this->tables = $tables;
         $this->connection = $connection;
     }
 
     /**
      * @return  Select
      */
-    
     protected function buildSelect()
     {
         return new Select($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
@@ -57,7 +55,6 @@ class Query extends WhereJoinCondition
     /**
      * @return  Delete
      */
-    
     protected function buildDelete()
     {
         return new Delete($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
@@ -68,7 +65,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function distinct($value = true)
     {
         return $this->buildSelect()->distinct($value);
@@ -79,7 +75,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function groupBy($columns)
     {
         return $this->buildSelect()->groupBy($columns);
@@ -91,7 +86,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function having($column, Closure $value = null)
     {
         return $this->buildSelect()->having($column, $value);
@@ -103,7 +97,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function andHaving($column, Closure $value = null)
     {
         return $this->buildSelect()->andHaving($column, $value);
@@ -115,7 +108,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function orHaving($column, Closure $value = null)
     {
         return $this->buildSelect()->orHaving($column, $value);
@@ -128,7 +120,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
         return $this->buildSelect()->orderBy($columns, $order, $nulls);
@@ -139,7 +130,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function limit($value)
     {
         return $this->buildSelect()->limit($value);
@@ -150,7 +140,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function offset($value)
     {
         return $this->buildSelect()->offset($value);
@@ -162,18 +151,16 @@ class Query extends WhereJoinCondition
      * 
      * @return  Select
      */
-    
     public function into($table, $database = null)
     {
         return $this->buildSelect()->into($table, $database);
     }
-    
+
     /**
      * @param   array   $columns    (optional)
      * 
      * @return  \Opis\Database\ResultSet
      */
-    
     public function select($columns = array())
     {
         return $this->buildSelect()->select($columns);
@@ -184,7 +171,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  mixed|false
      */
-    
     public function column($name)
     {
         return $this->buildSelect()->column($name);
@@ -196,8 +182,7 @@ class Query extends WhereJoinCondition
      * 
      * @return  int
      */
-    
-    public function count($column = '*',  $distinct = false)
+    public function count($column = '*', $distinct = false)
     {
         return $this->buildSelect()->count($column, $distinct);
     }
@@ -208,7 +193,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  int|float
      */
-    
     public function avg($column, $distinct = false)
     {
         return $this->buildSelect()->avg($column, $distinct);
@@ -220,8 +204,7 @@ class Query extends WhereJoinCondition
      * 
      * @return  int|float
      */
-    
-    public function sum($column, $distinct  = false)
+    public function sum($column, $distinct = false)
     {
         return $this->buildSelect()->sum($column, $distinct);
     }
@@ -232,7 +215,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  int|float
      */
-    
     public function min($column, $distinct = false)
     {
         return $this->buildSelect()->min($column, $distinct);
@@ -244,7 +226,6 @@ class Query extends WhereJoinCondition
      * 
      * @return  int|float
      */
-    
     public function max($column, $distinct = false)
     {
         return $this->buildSelect()->max($column, $distinct);
@@ -255,10 +236,8 @@ class Query extends WhereJoinCondition
      * 
      * @return  int
      */
-    
     public function delete($tables = array())
     {
         return $this->buildDelete()->delete($tables);
     }
-    
 }

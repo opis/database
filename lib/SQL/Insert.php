@@ -33,7 +33,6 @@ class Insert extends InsertStatement
      * @param   Connection  $connection
      * @param   array       $values
      */
-    
     public function __construct(Connection $connection, array $values)
     {
         parent::__construct($connection->compiler());
@@ -46,11 +45,9 @@ class Insert extends InsertStatement
      * 
      * @return  boolean
      */
-    
     public function into($table)
     {
         parent::into($table);
         return $this->connection->command((string) $this, $this->compiler->getParams());
     }
-    
 }

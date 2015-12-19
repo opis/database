@@ -26,7 +26,7 @@ class Expression
 {
     /** @var    array */
     protected $expressions = array();
-    
+
     /** @var    Compiler */
     protected $compiler;
 
@@ -35,18 +35,16 @@ class Expression
      * 
      * @param   Compiler    $compiler
      */
-    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
     }
-    
+
     /**
      * Returns an array of expressions
      * 
      * @return  array
      */
-    
     public function getExpressions()
     {
         return $this->expressions;
@@ -58,14 +56,13 @@ class Expression
      * 
      * @return  $this
      */
-    
     protected function addExpression($type, $value)
     {
         $this->expressions[] = array(
             'type' => $type,
             'value' => $value,
         );
-        
+
         return $this;
     }
 
@@ -77,28 +74,24 @@ class Expression
      * 
      * @return  $this
      */
-    
     protected function addFunction($type, $name, $column, $arguments = array())
     {
-        if($column instanceof Closure)
-        {
+        if ($column instanceof Closure) {
             $expression = new Expression($this->compiler);
             $column($expression);
             $column = $expression;
         }
-        
+
         $func = array_merge(array('type' => $type, 'name' => $name, 'column' => $column), $arguments);
-        
+
         return $this->addExpression('function', $func);
     }
-
 
     /**
      * @param   mixed   $value
      * 
      * @return  $this
      */
-    
     public function column($value)
     {
         return $this->addExpression('column', $value);
@@ -109,7 +102,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function op($value)
     {
         return $this->addExpression('op', $value);
@@ -119,7 +111,6 @@ class Expression
      * @param   mixed   $value
      * @return  $this
      */
-    
     public function value($value)
     {
         return $this->addExpression('value', $value);
@@ -130,7 +121,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function group(Closure $closure)
     {
         $expresion = new Expression($this->compiler);
@@ -143,7 +133,6 @@ class Expression
      * 
      * @return  SelectStatement
      */
-    
     public function from($tables)
     {
         $subquery = new Subquery($this->compiler);
@@ -157,11 +146,9 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function count($column = '*', $distinct = false)
     {
-        if(!is_array($column))
-        {
+        if (!is_array($column)) {
             $column = array($column);
         }
         $distinct = $distinct || (count($column) > 1);
@@ -174,7 +161,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function sum($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'SUM', $column, array('distinct' => $distinct));
@@ -186,7 +172,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function avg($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'AVG', $column, array('distinct' => $distinct));
@@ -198,7 +183,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function max($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'MAX', $column, array('distinct' => $distinct));
@@ -210,7 +194,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function min($column, $distinct = false)
     {
         return $this->addFunction('aggregateFunction', 'MIN', $column, array('distinct' => $distinct));
@@ -221,7 +204,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function ucase($column)
     {
         return $this->addFunction('sqlFunction', 'UCASE', $column);
@@ -232,7 +214,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function lcase($column)
     {
         return $this->addFunction('sqlFunction', 'LCASE', $column);
@@ -245,7 +226,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function mid($column, $start = 1, $length = 0)
     {
         return $this->addFunction('sqlFunction', 'MID', $column, array('start' => $start, 'lenght' => $length));
@@ -256,7 +236,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function len($column)
     {
         return $this->addFunction('sqlFunction', 'LEN', $column);
@@ -268,7 +247,6 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function round($column, $decimals = 0)
     {
         return $this->addFunction('sqlFunction', 'ROUND', $column, array('decimals' => $decimals));
@@ -277,7 +255,6 @@ class Expression
     /**
      * @return  $this
      */
-    
     public function now()
     {
         return $this->addFunction('sqlFunction', 'NOW', '');
@@ -298,10 +275,8 @@ class Expression
      * 
      * @return  $this
      */
-    
     public function __get($value)
     {
         return $this->addExpression('op', $value);
     }
-    
 }

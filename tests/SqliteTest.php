@@ -1,6 +1,4 @@
 <?php
-
-
 use Opis\Database\Connection;
 use Opis\Database\Database;
 
@@ -8,6 +6,7 @@ class SqliteTest extends PHPUnit_Framework_TestCase
 {
     /** @var Connection */
     private $con;
+
     /** @var Database */
     private $db;
 

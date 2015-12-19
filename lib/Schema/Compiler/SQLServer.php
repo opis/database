@@ -29,24 +29,21 @@ class SQLServer extends Compiler
 {
     /** @var    string */
     protected $wrapper = '[%s]';
-    
+
     /** @var    array */
     protected $modifiers = array('nullable', 'default', 'autoincrement');
-    
+
     /** @var    string */
     protected $autoincrement = 'IDENTITY';
 
-    
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeInteger(BaseColumn $column)
     {
-        switch($column->get('size', 'normal'))
-        {
+        switch ($column->get('size', 'normal')) {
             case 'tiny':
                 return 'TINYINT';
             case 'small':
@@ -56,71 +53,65 @@ class SQLServer extends Compiler
             case 'big':
                 return 'BIGINT';
         }
-        
+
         return 'INTEGER';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeBoolean(BaseColumn $column)
     {
         return 'BIT';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeString(BaseColumn $column)
     {
         return 'NVARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeFixed(BaseColumn $column)
     {
         return 'NCHAR(' . $this->value($column->get('lenght', 255)) . ')';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeText(BaseColumn $column)
     {
         return 'NVARCHAR(max)';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeBinary(BaseColumn $column)
     {
         return 'VARBINARY(max)';
     }
-    
+
     /**
      * @param   BaseColumn  $column
      * 
      * @return  string
      */
-    
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
@@ -132,11 +123,10 @@ class SQLServer extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleRenameColumn(AlterTable $table, $data)
     {
         return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
-                . $this->wrap($data['column']->getName()) . ', COLUMN';
+            . $this->wrap($data['column']->getName()) . ', COLUMN';
     }
 
     /**
@@ -144,7 +134,6 @@ class SQLServer extends Compiler
      * 
      * @return  string
      */
-    
     protected function handleEngine(CreateTable $schema)
     {
         return '';
@@ -156,7 +145,6 @@ class SQLServer extends Compiler
      * 
      * @return  array
      */
-    
     public function renameTable($old, $new)
     {
         return array(
@@ -170,7 +158,6 @@ class SQLServer extends Compiler
      * 
      * @return  array
      */
-    
     public function currentDatabase($dsn)
     {
         return array(
@@ -185,15 +172,14 @@ class SQLServer extends Compiler
      * 
      * @return  array
      */
-    
     public function getColumns($database, $table)
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
-                . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
-                . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
-                . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
-                . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
-        
+            . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
+            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+
         return array(
             'sql' => $sql,
             'params' => array($database, $table),

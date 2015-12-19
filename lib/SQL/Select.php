@@ -35,7 +35,6 @@ class Select extends SelectStatement
      * @param   array       $joins
      * @param   WhereClause $clause     (optional)
      */
-    
     public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, WhereClause $clause = null)
     {
         parent::__construct($compiler, $tables, $clause);
@@ -49,7 +48,6 @@ class Select extends SelectStatement
      * 
      * @return  $this
      */
-    
     public function into($table, $database = null)
     {
         $this->intoTable = $table;
@@ -62,7 +60,6 @@ class Select extends SelectStatement
      * 
      * @return  \Opis\Database\ResultSet
      */
-    
     public function select($columns = array())
     {
         parent::select($columns);
@@ -74,7 +71,6 @@ class Select extends SelectStatement
      * 
      * @return  mixed|false
      */
-    
     public function column($name)
     {
         parent::column($name);
@@ -87,8 +83,7 @@ class Select extends SelectStatement
      * 
      * @return  int
      */
-    
-    public function count($column = '*',  $distinct = false)
+    public function count($column = '*', $distinct = false)
     {
         parent::count($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -100,7 +95,6 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    
     public function avg($column, $distinct = false)
     {
         parent::avg($column, $distinct);
@@ -113,8 +107,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    
-    public function sum($column, $distinct  = false)
+    public function sum($column, $distinct = false)
     {
         parent::sum($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -126,7 +119,6 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    
     public function min($column, $distinct = false)
     {
         parent::min($column, $distinct);
@@ -139,11 +131,9 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    
     public function max($column, $distinct = false)
     {
         parent::max($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
     }
-    
 }

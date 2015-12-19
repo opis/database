@@ -26,7 +26,7 @@ class HavingClause
 {
     /** @var    array */
     protected $conditions = array();
-    
+
     /** @var    Compiler */
     protected $compiler;
 
@@ -35,7 +35,6 @@ class HavingClause
      * 
      * @param   Compiler    $compiler
      */
-    
     public function __construct(Compiler $compiler)
     {
         $this->compiler = $compiler;
@@ -45,18 +44,16 @@ class HavingClause
      * @param   Closure $callback
      * @param   string  $separator
      */
-    
     public function addGroupCondition(Closure $callback, $separator)
     {
         $having = new HavingCondition($this->compiler);
         $callback($having);
-        
+
         $this->conditions[] = array(
             'type' => 'havingNested',
             'conditions' => $having->getHavingConditions(),
             'separator' => $separator,
         );
-        
     }
 
     /**
@@ -65,16 +62,14 @@ class HavingClause
      * @param   string  $operator
      * @param   string  $separator
      */
-    
     public function addCondition($aggregate, $value, $operator, $separator)
     {
-        if($value instanceof Closure)
-        {
+        if ($value instanceof Closure) {
             $expr = new Expression($this->compiler);
             $value($expr);
             $value = $expr;
         }
-        
+
         $this->conditions[] = array(
             'type' => 'havingCondition',
             'aggregate' => $aggregate,
@@ -90,12 +85,9 @@ class HavingClause
      * @param   string  $separator
      * @param   bool    $not
      */
-    
     public function addInCondition($aggregate, $value, $separator, $not)
     {
-        
-        if($value instanceof Closure)
-        {
+        if ($value instanceof Closure) {
             $select = new Subquery($this->compiler);
             $value($select);
             $this->conditions[] = array(
@@ -105,9 +97,7 @@ class HavingClause
                 'separator' => $separator,
                 'not' => $not,
             );
-        }
-        else
-        {
+        } else {
             $this->conditions[] = array(
                 'type' => 'havingIn',
                 'aggregate' => $aggregate,
@@ -116,7 +106,6 @@ class HavingClause
                 'not' => $not,
             );
         }
-        
     }
 
     /**
@@ -126,10 +115,8 @@ class HavingClause
      * @param   string  $separator
      * @param   bool    $not
      */
-    
     public function addBetweenCondition($aggregate, $value1, $value2, $separator, $not)
     {
-        
         $this->conditions[] = array(
             'type' => 'havingBetween',
             'aggregate' => $aggregate,
@@ -138,7 +125,6 @@ class HavingClause
             'seperator' => $separator,
             'not' => $not,
         );
-        
     }
 
     /**

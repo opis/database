@@ -27,137 +27,114 @@ abstract class BaseLoader
 {
     /** @var    array */
     protected $with = array();
-    
+
     /** @var    bool */
     protected $immediate = false;
-    
+
     /**
      * @param   mixed   $value
      * @param   bool    $immediate  (optional)
      *
      * @return  $this
      */
-    
     public function with($value, $immediate = false)
     {
-        if(!is_array($value))
-        {
+        if (!is_array($value)) {
             $value = array($value);
         }
-        
+
         $this->with = $value;
         $this->immediate = $immediate;
         return $this;
     }
-    
+
     /**
      * @param   Model   $model
      * @param   array   &$result
      */
-    
     protected function prepareResults(Model $model, array &$results)
     {
-        if(!empty($results) && !empty($this->with))
-        {
+        if (!empty($results) && !empty($this->with)) {
             $pk = $model->getPrimaryKey();
             $attr = $this->getWithAttributes();
             $ids = array();
-            
-            foreach($results as $result)
-            {
+
+            foreach ($results as $result) {
                 $ids[] = $result->{$pk};
             }
-            
-            foreach($attr['with'] as $with => $callback)
-            {
-                if(!method_exists($model, $with))
-                {
+
+            foreach ($attr['with'] as $with => $callback) {
+                if (!method_exists($model, $with)) {
                     continue;
                 }
-                
+
                 $loader = $model->{$with}()->getLazyLoader(array(
                     'ids' => $ids,
                     'callback' => $callback,
                     'with' => $attr['extra'][$with],
                     'immediate' => $this->immediate,
                 ));
-                
-                if($loader === null)
-                {
+
+                if ($loader === null) {
                     continue;
                 }
-                
-                foreach($results as $result)
-                {
+
+                foreach ($results as $result) {
                     $result->setLazyLoader($with, $loader);
                 }
             }
         }
     }
-    
+
     /**
      * @return  array
      */
-    
     protected function getWithAttributes()
     {
         $with = array();
         $extra = array();
-        
-        foreach($this->with as $key => $value)
-        {
+
+        foreach ($this->with as $key => $value) {
             $fullName = $value;
             $callback = null;
-            
-            if($value instanceof Closure)
-            {
+
+            if ($value instanceof Closure) {
                 $fullName = $key;
                 $callback = $value;
             }
-            
+
             $fullName = explode('.', $fullName);
             $name = array_shift($fullName);
             $fullName = implode('.', $fullName);
-            
-            if($fullName == '')
-            {
-                if(!isset($with[$name]) || $callback !== null)
-                {
+
+            if ($fullName == '') {
+                if (!isset($with[$name]) || $callback !== null) {
                     $with[$name] = $callback;
-                    
-                    if(!isset($extra[$name]))
-                    {
+
+                    if (!isset($extra[$name])) {
                         $extra[$name] = array();
                     }
                 }
-            }
-            else
-            {
-                if(!isset($extra[$name]))
-                {
+            } else {
+                if (!isset($extra[$name])) {
                     $with[$name] = null;
                     $extra[$name] = array();
                 }
-                
+
                 $t = &$extra[$name];
-                
-                if(isset($t[$fullName]) || in_array($fullName, $t))
-                {
+
+                if (isset($t[$fullName]) || in_array($fullName, $t)) {
                     continue;
                 }
-                
-                if($callback === null)
-                {
+
+                if ($callback === null) {
                     $t[] = $fullName;
-                }
-                else
-                {
+                } else {
                     $t[$fullName] = $callback;
                 }
             }
-            
         }
-        
+
         return array(
             'with' => $with,
             'extra' => $extra,

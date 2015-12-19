@@ -28,42 +28,39 @@ class ResultSet
 {
     /** @var    \PDOStatement   The PDOStatement associated with this result set. */
     protected $statement;
-    
-    /** 
+
+    /**
      * Constructor
      *
      * @access public
      * 
      * @param   \PDOStatement   $statement  The PDOStatement associated with this result set.
      */
-    
     public function __construct(PDOStatement $statement)
     {
         $this->statement = $statement;
     }
-    
+
     /**
      * Destructor
      *
      * @access public
      */
-    
     public function __destruct()
     {
         $this->statement->closeCursor();
     }
-    
+
     /**
      * Count affected rows
      *
      * @return  int
      */
-    
     public function count()
     {
         return $this->statement->rowCount();
     }
-    
+
     /**
      * Fetch all results
      *
@@ -72,11 +69,9 @@ class ResultSet
      *
      * @return  array
      */
-    
     public function all($callable = null, $fetchStyle = 0)
     {
-        if ($callable === null)
-        {
+        if ($callable === null) {
             return $this->statement->fetchAll($fetchStyle);
         }
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
@@ -88,17 +83,15 @@ class ResultSet
      * 
      * @return  array
      */
-    
     public function allGroup($uniq = false, $callable = null)
     {
         $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
-        if ($callable === null)
-        {
+        if ($callable === null) {
             return $this->statement->fetchAll($fetchStyle);
         }
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
-    
+
     /**
      * Fetch first result
      *
@@ -106,49 +99,42 @@ class ResultSet
      *
      * @return  mixed
      */
-    
     public function first($callable = null)
     {
-        if($callable !== null)
-        {
+        if ($callable !== null) {
             $result = $this->statement->fetch(PDO::FETCH_ASSOC);
             $this->statement->closeCursor();
-            if(is_array($result))
-            {
+            if (is_array($result)) {
                 $result = call_user_func_array($callable, $result);
             }
-        }
-        else
-        {
+        } else {
             $result = $this->statement->fetch();
             $this->statement->closeCursor();
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Fetch next result
      *
      * @return  mixed
      */
-    
     public function next()
     {
         return $this->statement->fetch();
     }
-    
+
     /**
      * Close current cursor
      *
      * @return  mixed
      */
-    
     public function flush()
     {
         return $this->statement->closeCursor();
     }
-    
+
     /**
      * Return a column
      *
@@ -156,12 +142,11 @@ class ResultSet
      * 
      * @return  mixed
      */
-    
     public function column($col = 0)
     {
         return $this->statement->fetchColumn($col);
     }
-    
+
     /**
      * Fetch each result as an associative array
      *
@@ -172,13 +157,12 @@ class ResultSet
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
         return $this;
     }
-    
+
     /**
      * Fetch each result as an stdobject
      *
      * @return  $this
      */
-    
     public function fetchObject()
     {
         $this->statement->setFetchMode(PDO::FETCH_OBJ);
@@ -188,7 +172,6 @@ class ResultSet
     /**
      * @return  $this
      */
-    
     public function fetchNamed()
     {
         $this->statement->setFetchMode(PDO::FETCH_NAMED);
@@ -198,7 +181,6 @@ class ResultSet
     /**
      * @return  $this
      */
-    
     public function fetchNum()
     {
         $this->statement->setFetchMode(PDO::FETCH_NUM);
@@ -208,7 +190,6 @@ class ResultSet
     /**
      * @return  $this
      */
-    
     public function fetchBoth()
     {
         $this->statement->setFetchMode(PDO::FETCH_BOTH);
@@ -218,7 +199,6 @@ class ResultSet
     /**
      * @return  $this
      */
-    
     public function fetchKeyPair()
     {
         $this->statement->setFetchMode(PDO::FETCH_KEY_PAIR);
@@ -231,7 +211,6 @@ class ResultSet
      * 
      * @return  $this
      */
-    
     public function fetchClass($class, array $ctorargs = array())
     {
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
@@ -243,11 +222,9 @@ class ResultSet
      * 
      * @return  $this
      */
-    
     public function fetchCustom(Closure $func)
     {
-      $func($this->statement);
-      return $this;
+        $func($this->statement);
+        return $this;
     }
-    
 }
