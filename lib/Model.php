@@ -775,14 +775,3 @@ abstract class Model implements ModelInterface
     }
     
 }
-
-interface ModelInterface
-{
-    /**
-     * Returns a connection
-     *
-     * @return  \Opis\Database\Connection
-     */
-    
-    public static function getConnection();
-}
