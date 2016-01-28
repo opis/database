@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.2.2, 2016.01.29
+
+* Fixed a bug in `Opis\Database\Transaction` class. See [issue #22](https://github.com/opis/database/issues/22).
+
 ### v3.2.1, 2015.12.19
 
 * Fixed a bug in `Opis\Database\Transaction::onError`
