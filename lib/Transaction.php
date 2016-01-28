@@ -167,17 +167,19 @@ class Transaction
             $this->begin();
             $result = $this->run();
             $this->commit();
-
-            if ($this->successCallback !== null) {
-                $this->successCallback($this);
+            $successCallback = $this->successCallback;
+            
+            if ($successCallback !== null) {
+                $successCallback($this);
             }
 
             return $result;
         } catch (PDOException $e) {
             $this->rollBack();
-
-            if ($this->errorCallback !== null) {
-                $this->errorCallback($e, $this);
+            $errorCallback = $this->errorCallback;
+            
+            if ($errorCallback !== null) {
+                $errorCallback($e, $this);
             }
         }
     }
