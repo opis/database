@@ -284,7 +284,7 @@ abstract class Model implements ModelInterface
             $name = $this->mapGetSet[$name];
         }
 
-        if (isset($this->columns[$name])) {
+        if (array_key_exists($name, $this->columns)) {
             $accesor = $getter . 'Accessor';
             $value = $this->columns[$name];
 
@@ -520,13 +520,22 @@ abstract class Model implements ModelInterface
      */
     protected function cast($name, $value)
     {
-        switch ($this->cast[$name]) {
+        $cast = $this->cast[$name];
+        
+        if ($cast[strlen($cast) - 1] === '?') {
+            if ($value === null) {
+                return null;
+            }
+            $cast = rtrim($cast, '?');
+        }
+        
+        switch ($cast) {
             case 'integer':
                 return (int) $value;
             case 'float':
                 return (float) $value;
             case 'boolean':
-                return $value ? true : false;
+                return (bool) $value;
             case 'string':
                 return (string) $value;
             case 'array':
