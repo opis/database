@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v3.2.3, 2016.01.31
+
+* Fixed a bug related to nullable column handling in `Opis\Colibri\Module::__get`
+* Casting types can now be declared nullable by adding a `?` mark at the end of the type name
+
 ### v3.2.2, 2016.01.29
 
 * Fixed a bug in `Opis\Database\Transaction` class. See [issue #22](https://github.com/opis/database/issues/22).
