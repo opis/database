@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v3.3.0, 2016.02.03
+
+* Fixed a possible bug in `Opis\Database\Model::delete` method
+* Added `link` and `unlink` methods to `Opis\Database\ORM\Relation\BelongsToMany` class
+
 ### v3.2.3, 2016.01.31
 
 * Fixed a bug related to nullable column handling in `Opis\Colibri\Module::__get`
