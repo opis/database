@@ -377,9 +377,9 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('This is a new record that was not saved yet');
         }
 
-        $result = $this->database->from($this->getTable())
-            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-            ->delete();
+        $result = $this->database()->from($this->getTable())
+                                   ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                                   ->delete();
         $this->deleted = true;
 
         return (bool) $result;
