@@ -20,7 +20,9 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Exception;
 use Opis\Database\Model;
+use Opis\Database\Database;
 use Opis\Database\Connection;
 use Opis\Database\ORM\Select;
 use Opis\Database\ORM\Relation;
@@ -76,6 +78,75 @@ class BelongsToMany extends Relation
         }
 
         return $this->junctionKey;
+    }
+
+    /**
+     * Link records
+     * 
+     * @param   mixed   $item
+     */
+    public function link($item)
+    {
+        if (!is_array($item)) {
+            $item = array($item);
+        }
+
+        $table = $this->getJunctionTable();
+        $col1 = $this->getForeignKey();
+        $col2 = $this->getJunctionKey();
+        $val1 = $this->owner->{$this->owner->getPrimaryKey()};
+
+        $db = new Database($this->connection);
+
+        foreach ($item as $record) {
+            $val2 = $record;
+            if ($record instanceof $this->model) {
+                $val2 = $record->{$record->getPrimaryKey()};
+            }
+
+            try {
+                $db->insert(array(
+                        $col1 => $val1,
+                        $col2 => $val2,
+                    ))
+                    ->into($table);
+            } catch (Exception $ex) {
+                
+            }
+        }
+    }
+
+    /**
+     * Unlink records
+     * 
+     * @param   mixed   $item
+     */
+    public function unlink($item)
+    {
+        if (!is_array($item)) {
+            $item = array($item);
+        }
+
+        $table = $this->getJunctionTable();
+        $col1 = $this->getForeignKey();
+        $col2 = $this->getJunctionKey();
+        $val1 = $this->owner->{$this->owner->getPrimaryKey()};
+        $val2 = array();
+
+        $db = new Database($this->connection);
+
+        foreach ($item as $record) {
+            if ($record instanceof $this->model) {
+                $val2[] = $record->{$record->getPrimaryKey()};
+                continue;
+            }
+            $val2[] = $record;
+        }
+
+        $db->from($table)
+            ->where($col1)->is($val1)
+            ->andWhere($col2)->in($val2)
+            ->delete();
     }
 
     /**
