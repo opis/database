@@ -243,11 +243,9 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('Readonly');
         }
 
-        if (isset($this->mapGetSet[$name])) {
-            $name = $this->mapGetSet[$name];
-        }
+        $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
-        if ($this->primaryKey == $name) {
+        if ($this->primaryKey == $column) {
             return;
         }
 
@@ -257,16 +255,16 @@ abstract class Model implements ModelInterface
             $value = $this->{$mutator}($value);
         }
 
-        if (isset($this->cast[$name])) {
-            $value = $this->cast($name, $value);
+        if (isset($this->cast[$column])) {
+            $value = $this->cast($column, $value);
         }
 
         if (method_exists($this, $name)) {
             $name = $this->{$name}()->getRelatedColumn($this, $name);
         }
 
-        $this->modified[$name] = true;
-        $this->columns[$name] = $value;
+        $this->modified[$column] = true;
+        $this->columns[$column] = $value;
     }
 
     /**
@@ -278,18 +276,14 @@ abstract class Model implements ModelInterface
      */
     public function __get($name)
     {
-        $getter = $name;
-
-        if (isset($this->mapGetSet[$name])) {
-            $name = $this->mapGetSet[$name];
-        }
+        $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
         if (array_key_exists($name, $this->columns)) {
-            $accesor = $getter . 'Accessor';
-            $value = $this->columns[$name];
+            $accesor = $name . 'Accessor';
+            $value = $this->columns[$column];
 
-            if (isset($this->cast[$name])) {
-                $value = $this->cast($name, $value);
+            if (isset($this->cast[$column])) {
+                $value = $this->cast($column, $value);
             }
 
             if (method_exists($this, $accesor)) {
@@ -299,7 +293,7 @@ abstract class Model implements ModelInterface
             return $value;
         }
 
-        if (isset($this->result[$name])) {
+        if (array_key_exists($name, $this->result)) {
             return $this->result[$name];
         }
 
@@ -378,8 +372,8 @@ abstract class Model implements ModelInterface
         }
 
         $result = $this->database()->from($this->getTable())
-                                   ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-                                   ->delete();
+            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+            ->delete();
         $this->deleted = true;
 
         return (bool) $result;
@@ -521,14 +515,14 @@ abstract class Model implements ModelInterface
     protected function cast($name, $value)
     {
         $cast = $this->cast[$name];
-        
+
         if ($cast[strlen($cast) - 1] === '?') {
             if ($value === null) {
                 return null;
             }
             $cast = rtrim($cast, '?');
         }
-        
+
         switch ($cast) {
             case 'integer':
                 return (int) $value;
