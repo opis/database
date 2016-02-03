@@ -1,8 +1,12 @@
 CHANGELOG
 -----------
+### v3.3.1, 2016.02.03
+
+* Fixed a potential bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
+
 ### v3.3.0, 2016.02.03
 
-* Fixed a possible bug in `Opis\Database\Model::delete` method
+* Fixed a potential bug in `Opis\Database\Model::delete` method
 * Added `link` and `unlink` methods to `Opis\Database\ORM\Relation\BelongsToMany` class
 
 ### v3.2.3, 2016.01.31
