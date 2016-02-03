@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v3.3.1, 2016.02.03
+### v3.3.1, 2016.02.04
 
 * Fixed a bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
 
