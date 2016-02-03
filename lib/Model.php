@@ -278,7 +278,7 @@ abstract class Model implements ModelInterface
     {
         $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
-        if (array_key_exists($name, $this->columns)) {
+        if (array_key_exists($column, $this->columns)) {
             $accesor = $name . 'Accessor';
             $value = $this->columns[$column];
 
