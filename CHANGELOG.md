@@ -2,7 +2,7 @@ CHANGELOG
 -----------
 ### v3.3.1, 2016.02.03
 
-* Fixed a potential bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
+* Fixed a bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
 
 ### v3.3.0, 2016.02.03
 
