@@ -167,7 +167,7 @@ abstract class Model implements ModelInterface
     protected $cast = array();
     
     /**
-     * A list of custom casts
+     * A list of custom cast callbacks
      * 
      * @var array
      */
