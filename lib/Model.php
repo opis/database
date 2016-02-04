@@ -532,7 +532,11 @@ abstract class Model implements ModelInterface
         }
         
         if (isset($this->castType[$cast])) {
-            return call_user_func($this->castType[$cast], $cast, $value);
+            $callback = $this->castType[$cast];
+            if (is_string($callback) && $callback[0] === '@') {
+                $callback = array($this, substr($callback, 1));
+            }
+            return call_user_func($callback, $cast, $value);
         }
         
         switch ($cast) {
