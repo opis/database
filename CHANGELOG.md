@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v3.3.2, 2016.02.04
+
+* Added missing use statement for `DateTime` class in `Opis\Database\Model`
+* Added support for custom cast handling
+
 ### v3.3.1, 2016.02.04
 
 * Fixed a bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
