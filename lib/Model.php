@@ -20,6 +20,7 @@
 
 namespace Opis\Database;
 
+use DateTime;
 use RuntimeException;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation\HasOne;
@@ -164,6 +165,13 @@ abstract class Model implements ModelInterface
      * @var array
      */
     protected $cast = array();
+    
+    /**
+     * A list of custom casts
+     * 
+     * @var array
+     */
+    protected $castType = array();
 
     /**
      * Date format
@@ -522,7 +530,11 @@ abstract class Model implements ModelInterface
             }
             $cast = rtrim($cast, '?');
         }
-
+        
+        if (isset($this->castType[$cast])) {
+            return call_user_func($this->castType[$cast], $cast, $value);
+        }
+        
         switch ($cast) {
             case 'integer':
                 return (int) $value;
@@ -535,7 +547,7 @@ abstract class Model implements ModelInterface
             case 'array':
                 return is_array($value) ? json_encode($value) : json_decode($value, true);
             case 'date':
-                return $value instanceof DateTimeInterface ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
+                return $value instanceof DateTime ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
         }
 
         throw new RuntimeException(vsprintf('Unknown cast type "%s"', array($cast)));
