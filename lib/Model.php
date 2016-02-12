@@ -268,7 +268,7 @@ abstract class Model implements ModelInterface
         }
 
         if (method_exists($this, $name)) {
-            $name = $this->{$name}()->getRelatedColumn($this, $name);
+            $column = $this->{$name}()->getRelatedColumn($this, $column);
         }
 
         $this->modified[$column] = true;
