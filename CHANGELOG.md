@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.3.3, 2016.02.13
+
+* Fixed a bug in `Opis\Database\Model::__set` method
+
 ### v3.3.2, 2016.02.04
 
 * Added missing use statement for `DateTime` class in `Opis\Database\Model`
