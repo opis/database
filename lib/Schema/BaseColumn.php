@@ -174,4 +174,14 @@ class BaseColumn
     {
         return $this->set('unisgned', $value);
     }
+
+    /**
+     * @param   mixed   $value
+     *
+     * @return  $this
+     */
+    public function length($value)
+    {
+    	return $this->set('length', $value);
+    }
 }
