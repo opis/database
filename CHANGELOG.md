@@ -1,5 +1,12 @@
 CHANGELOG
 -----------
+### v3.4.1, 2016.02.22
+
+* Added `isNewRecord` property to `Opis\Database\Model` class in order to fix a bug that might
+occur when using custom values for primary key.
+* The `__set`, `save` and `delete` methods were updated to use the newly added
+`isNewRecord` property.
+
 ### v3.4.0, 2016.02.22
 
 * Added `Opis\Database\Schema\BaseColumn::length` method
