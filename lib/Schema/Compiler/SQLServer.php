@@ -56,6 +56,22 @@ class SQLServer extends Compiler
 
         return 'INTEGER';
     }
+    
+    /**
+     * @param   BaseColumn  $column
+     *
+     * @return  string
+     */
+    protected function handleTypeDecimal(BaseColumn $column)
+    {
+    	if (null !== $l = $column->get('length')) {
+    		if (null === $p = $column->get('precision')) {
+    			return 'DECIMAL (' . $this->value($l) . ')';
+    		}
+    		return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
+    	}
+    	return 'DECIMAL';
+    }
 
     /**
      * @param   BaseColumn  $column

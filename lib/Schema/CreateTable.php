@@ -271,14 +271,14 @@ class CreateTable
 
     /**
      * @param   string      $name
-     * @param   int|null    $maximum    (optional)
-     * @param   int|null    $decimal    (optional)
+     * @param   int|null    $length       (optional)
+     * @param   int|null    $precision    (optional)
      * 
      * @return  CreateColumn
      */
-    public function decimal($name, $maximum = null, $decimal = null)
+    public function decimal($name, $length = null, $precision = null)
     {
-        return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
+        return $this->addColumn($name, 'decimal')->length($length)->set('precision', $precision);
     }
 
     /**
@@ -309,7 +309,7 @@ class CreateTable
      */
     public function string($name, $length = 255)
     {
-        return $this->addColumn($name, 'string')->set('length', $length);
+        return $this->addColumn($name, 'string')->length($length);
     }
 
     /**
@@ -320,7 +320,7 @@ class CreateTable
      */
     public function fixed($name, $length = 255)
     {
-        return $this->addColumn($name, 'fixed')->set('length', $length);
+        return $this->addColumn($name, 'fixed')->length($length);
     }
 
     /**

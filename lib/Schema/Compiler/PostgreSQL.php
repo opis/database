@@ -79,10 +79,12 @@ class PostgreSQL extends Compiler
      */
     protected function handleTypeDecimal(BaseColumn $column)
     {
-        if (null !== $m = $column->get('M') && null !== $p = $column->get('P')) {
-            return 'DECIMAL (' . $this->value($m) . ', ' . $this->value($p) . ')';
+        if (null !== $l = $column->get('length')) {
+        	if (null === $p = $column->get('precision')) {
+        		return 'DECIMAL (' . $this->value($l) . ')';
+        	}
+            return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
         }
-
         return 'DECIMAL';
     }
 
