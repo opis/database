@@ -122,6 +122,13 @@ abstract class Model implements ModelInterface
     protected $readonly = false;
 
     /**
+     * Indicates if the model instance is a new record
+     *
+     * @var boolean
+     */
+    protected $isNewRecord = true;
+
+    /**
      * A list with related models
      *
      * @var array
@@ -165,7 +172,7 @@ abstract class Model implements ModelInterface
      * @var array
      */
     protected $cast = array();
-    
+
     /**
      * A list of custom cast callbacks
      * 
@@ -243,6 +250,7 @@ abstract class Model implements ModelInterface
     public function __set($name, $value)
     {
         if (!$this->loaded) {
+            $this->isNewRecord = false;
             $this->columns[$name] = $value;
             return;
         }
@@ -327,7 +335,7 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('This record was deleted');
         }
 
-        if (!isset($this->columns[$this->primaryKey])) {
+        if ($this->isNewRecord) {
             $self = $this;
 
             $id = $this->database()->transaction(function ($db) use ($self) {
@@ -346,6 +354,7 @@ abstract class Model implements ModelInterface
                 })
                 ->execute();
 
+            $this->isNewRecord = false;
             $this->columns[$this->primaryKey] = $id;
 
             return (bool) $id;
@@ -375,7 +384,7 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('This record was deleted');
         }
 
-        if (!isset($this->columns[$this->primaryKey])) {
+        if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
         }
 
@@ -530,7 +539,7 @@ abstract class Model implements ModelInterface
             }
             $cast = rtrim($cast, '?');
         }
-        
+
         if (isset($this->castType[$cast])) {
             $callback = $this->castType[$cast];
             if (is_string($callback) && $callback[0] === '@') {
@@ -538,7 +547,7 @@ abstract class Model implements ModelInterface
             }
             return call_user_func($callback, $cast, $value);
         }
-        
+
         switch ($cast) {
             case 'integer':
                 return (int) $value;
