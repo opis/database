@@ -1,5 +1,12 @@
 CHANGELOG
 -----------
+### v3.4.0, 2016.02.22
+
+* Added `Opis\Database\Schema\BaseColumn::length` method
+* Updated `Opis\Database\Schema\Compiler\MySQL::handleTypeDecimal` method
+* Updated `Opis\Database\Schema\Compiler\PostgreSQL::handleTypeDecimal` method
+* Added `Opis\Database\Schema\Compiler\SQLServer::handleTypeDecimal` method
+
 ### v3.3.3, 2016.02.13
 
 * Fixed a bug in `Opis\Database\Model::__set` method
