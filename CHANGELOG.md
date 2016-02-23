@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.4.2, 2016.02.23
+
+* Fixed a bug in `Opis\Database\Model::__set` method
+
 ### v3.4.1, 2016.02.22
 
 * Added `isNewRecord` property to `Opis\Database\Model` class in order to fix a bug that might
