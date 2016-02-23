@@ -261,7 +261,7 @@ abstract class Model implements ModelInterface
 
         $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
-        if ($this->primaryKey == $column) {
+        if ($this->primaryKey == $column && $this->primaryKeyType === Model::PRIMARY_KEY_AUTOINCREMENT) {
             return;
         }
 
