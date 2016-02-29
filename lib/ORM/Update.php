@@ -52,7 +52,7 @@ class Update extends UpdateStatement
      */
     public function update(array $columns, $softDelete = false)
     {
-        if ($this->select->supportsSofteDeletes()) {
+        if ($this->select->supportsSoftDeletes()) {
 
             if (!$this->select->isSetInlcudeSoftDeletes()) {
                 $this->where('deleted_at')->isNull();
