@@ -86,7 +86,7 @@ class Select extends SelectStatement
      * 
      * @return  bool
      */
-    public function supportsSofteDeletes()
+    public function supportsSoftDeletes()
     {
         return $this->supportsSoftDeletes;
     }
