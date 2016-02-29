@@ -96,7 +96,23 @@ class Query extends BaseQuery
         }
 
         return $this->query->toUpdate($this->connection)->update(array(
-                'deleted_at' => date($this->compiler->getDateFormat()),
+            'deleted_at' => date($this->compiler->getDateFormat()),
+        ), true);
+    }
+
+    /**
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function restore()
+    {
+        if (!$this->query->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return $this->query->onlySoftDeleted()->toUpdate($this->connection)->update(array(
+            'deleted_at' => null,
         ), true);
     }
 
