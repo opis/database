@@ -21,29 +21,28 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Connection;
-use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\WhereClause;
 use Opis\Database\SQL\UpdateStatement;
 
 class Update extends UpdateStatement
 {
+    /** @var    Select */
+    protected $select;
+
     /** @var    Connection */
     protected $connection;
 
     /**
      * Constructor
      *
-     * @param   Connection          $connection
-     * @param   Compiler            $compiler
-     * @param   string              $from
-     * @param   array               $joins
-     * @param   WhereClause|null    $clause     (optional)
+     * @param   Slect       $select
+     * @param   Connection  $connection
      */
-    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
+    public function __construct(Select $select, Connection $connection)
     {
-        parent::__construct($compiler, $from, $clause);
+        parent::__construct($select->getCompiler(), $select->getTables(), $select->getWhereClause());
+        $this->joins = $select->getJoinClauses();
         $this->connection = $connection;
-        $this->joins = $joins;
+        $this->select = $select;
     }
 
     /**
@@ -53,6 +52,15 @@ class Update extends UpdateStatement
      */
     public function update(array $columns)
     {
+        if ($this->select->supportsSofteDeletes()) {
+
+            if (!$this->select->isSetInlcudeSoftDeletes()) {
+                $this->where('deleted_at')->isNull();
+            } elseif ($this->select->isSetOnlySoftDeleted()) {
+                $this->where('deleted_at')->notNull();
+            }
+        }
+
         parent::set($columns);
         return $this->connection->count((string) $this, $this->compiler->getParams());
     }

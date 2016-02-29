@@ -54,7 +54,7 @@ class Select extends SelectStatement
     public function __construct(Model $model, Compiler $compiler, $tables = null, WhereClause $clause = null)
     {
         $this->model = $model;
-        
+
         if ($tables === null) {
             $tables = $model->getTable();
         }
@@ -65,11 +65,47 @@ class Select extends SelectStatement
     }
 
     /**
+     * 
+     * @return  Model
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
      * @return  \Opis\Database\SQL\Compiler
      */
     public function getCompiler()
     {
         return $this->compiler;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function supportsSofteDeletes()
+    {
+        return $this->supportsSoftDeletes;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function isSetInlcudeSoftDeletes()
+    {
+        return $this->inlcudeSoftDeletes;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function isSetOnlySoftDeleted()
+    {
+        return $this->onlySoftDeleted;
     }
 
     /**
@@ -161,6 +197,6 @@ class Select extends SelectStatement
      */
     public function toUpdate(Connection $connection)
     {
-        return new Update($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        return new Update($this, $connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
     }
 }

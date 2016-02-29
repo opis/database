@@ -420,13 +420,10 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('Soft deletes is not supported for this model');
         }
 
-        $deletedAt = isset($this->mapColumns['deleted_at']) ? $this->mapColumns['deleted_at'] : 'deleted_at';
-        $this->{$deletedAt} = date($this->getDateFormat());
-
         $result = $this->database()->update($this->getTable())
             ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
             ->set(array(
-            'deleted_at' => $this->{$deletedAt},
+            'deleted_at' => date($this->getDateFormat()),
         ));
 
         $this->deleted = true;
