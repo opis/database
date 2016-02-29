@@ -390,7 +390,11 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('This record was already deleted');
         }
 
-        if ($soft && $this->supportsSoftDeletes()) {
+        if ($soft) {
+            if (!$this->supportsSoftDeletes()) {
+                throw new RuntimeException('Soft deletes is not supported for this model');
+            }
+
             $deletedAt = isset($this->mapColumns['deleted_at']) ? $this->mapColumns['deleted_at'] : 'deleted_at';
             $this->{$deletedAt} = date($this->getDateFormat());
             $result = $this->database()->update($this->getTable())
