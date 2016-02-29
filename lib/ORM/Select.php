@@ -169,15 +169,6 @@ class Select extends SelectStatement
     public function select($columns = array())
     {
         $this->sql = null;
-
-        if ($this->supportsSoftDeletes) {
-            if (!$this->inlcudeSoftDeletes) {
-                $this->where('deleted_at')->isNull();
-            } elseif ($this->onlySoftDeleted) {
-                $this->where('deleted_at')->notNull();
-            }
-        }
-
         return parent::select($columns);
     }
 
@@ -199,5 +190,23 @@ class Select extends SelectStatement
     public function toUpdate(Connection $connection)
     {
         return new Update($this, $connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+    }
+
+    /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        if ($this->sql === null) {
+            if ($this->supportsSoftDeletes) {
+                if (!$this->inlcudeSoftDeletes) {
+                    $this->where('deleted_at')->isNull();
+                } elseif ($this->onlySoftDeleted) {
+                    $this->where('deleted_at')->notNull();
+                }
+            }
+            $this->sql = $this->compiler->select($this);
+        }
+        return $this->sql;
     }
 }
