@@ -43,7 +43,7 @@ class Query extends BaseQuery
         $this->connection = $connection;
 
         $compiler = $connection->compiler();
-        $query = new Select($compiler, $model->getTable());
+        $query = new Select($model, $compiler);
         $whereCondition = new WhereCondition($this, $query);
 
         parent::__construct($compiler, $query, $whereCondition);

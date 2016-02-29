@@ -169,7 +169,7 @@ class BelongsToMany extends Relation
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
 
-        $select = new Select($this->compiler, $junctionTable);
+        $select = new Select($this->model, $this->compiler, $junctionTable);
 
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
 

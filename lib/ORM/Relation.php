@@ -53,7 +53,7 @@ abstract class Relation extends BaseQuery
         $this->owner = $owner;
 
         $compiler = $connection->compiler();
-        $query = new Select($compiler, $model->getTable());
+        $query = new Select($this->model, $compiler);
         $whereCondition = new WhereCondition($this, $query);
 
         parent::__construct($compiler, $query, $whereCondition);
@@ -93,7 +93,7 @@ abstract class Relation extends BaseQuery
         $callback = $options['callback'];
         $immediate = $options['immediate'];
 
-        $select = new Select($this->compiler, $this->model->getTable());
+        $select = new Select($this->model, $this->compiler);
 
         $select->where($fk)->in($ids);
 

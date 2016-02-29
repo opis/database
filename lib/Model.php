@@ -375,22 +375,35 @@ abstract class Model implements ModelInterface
 
     /**
      * Deletes this model
-     *
+     * 
+     * @param   boolean $soft   (optional) Soft delete
+     * 
      * @return  boolean
      */
-    public function delete()
+    public function delete($soft = false)
     {
-        if ($this->deleted) {
-            throw new RuntimeException('This record was deleted');
-        }
-
         if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
         }
 
-        $result = $this->database()->from($this->getTable())
-            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-            ->delete();
+        if ($this->deleted) {
+            throw new RuntimeException('This record was already deleted');
+        }
+
+        if ($soft && $this->supportsSoftDeletes()) {
+            $deletedAt = isset($this->mapColumns['deleted_at']) ? $this->mapColumns['deleted_at'] : 'deleted_at';
+            $this->{$deletedAt} = date($this->getDateFormat());
+            $result = $this->database()->update($this->getTable())
+                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                ->set(array(
+                'deleted_at' => $this->{$deletedAt},
+            ));
+        } else {
+            $result = $this->database()->from($this->getTable())
+                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                ->delete();
+        }
+
         $this->deleted = true;
 
         return (bool) $result;
@@ -457,6 +470,16 @@ abstract class Model implements ModelInterface
     public function getForeignKey()
     {
         return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
+    }
+
+    /**
+     * Check if this model supports soft deletes
+     * 
+     * @return  boolean
+     */
+    public function supportsSoftDeletes()
+    {
+        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'array?';
     }
 
     /**

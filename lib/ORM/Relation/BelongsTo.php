@@ -62,7 +62,7 @@ class BelongsTo extends Relation
         $callback = $options['callback'];
         $immediate = $options['immediate'];
 
-        $select = new Select($this->compiler, $this->model->getTable());
+        $select = new Select($this->model, $this->compiler);
 
         $select->where($pk)->in($ids);
 
