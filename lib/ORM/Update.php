@@ -50,7 +50,7 @@ class Update extends UpdateStatement
      *
      * @return  int
      */
-    public function update(array $columns)
+    public function update(array $columns, $softDelete = false)
     {
         if ($this->select->supportsSofteDeletes()) {
 
