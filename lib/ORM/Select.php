@@ -23,6 +23,7 @@ namespace Opis\Database\ORM;
 use Opis\Database\Model;
 use Opis\Database\Connection;
 use Opis\Database\SQL\Delete;
+use Opis\Database\SQL\Compiler;
 use Opis\Database\SQL\WhereClause;
 use Opis\Database\SQL\SelectStatement;
 

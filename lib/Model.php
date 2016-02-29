@@ -501,7 +501,7 @@ abstract class Model implements ModelInterface
      */
     public function supportsSoftDeletes()
     {
-        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'array?';
+        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
     }
 
     /**
