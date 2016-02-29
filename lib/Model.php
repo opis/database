@@ -380,7 +380,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  boolean
      */
-    public function delete($soft = false)
+    public function delete()
     {
         if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
@@ -390,23 +390,44 @@ abstract class Model implements ModelInterface
             throw new RuntimeException('This record was already deleted');
         }
 
-        if ($soft) {
-            if (!$this->supportsSoftDeletes()) {
-                throw new RuntimeException('Soft deletes is not supported for this model');
-            }
+        $result = $this->database()->from($this->getTable())
+            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+            ->delete();
 
-            $deletedAt = isset($this->mapColumns['deleted_at']) ? $this->mapColumns['deleted_at'] : 'deleted_at';
-            $this->{$deletedAt} = date($this->getDateFormat());
-            $result = $this->database()->update($this->getTable())
-                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-                ->set(array(
-                'deleted_at' => $this->{$deletedAt},
-            ));
-        } else {
-            $result = $this->database()->from($this->getTable())
-                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-                ->delete();
+        $this->deleted = true;
+
+        return (bool) $result;
+    }
+
+    /**
+     * Soft-delete a record
+     * 
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function softDelete()
+    {
+        if ($this->isNewRecord) {
+            throw new RuntimeException('This is a new record that was not saved yet');
         }
+
+        if ($this->deleted) {
+            throw new RuntimeException('This record was already deleted');
+        }
+
+        if (!$this->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        $deletedAt = isset($this->mapColumns['deleted_at']) ? $this->mapColumns['deleted_at'] : 'deleted_at';
+        $this->{$deletedAt} = date($this->getDateFormat());
+
+        $result = $this->database()->update($this->getTable())
+            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+            ->set(array(
+            'deleted_at' => $this->{$deletedAt},
+        ));
 
         $this->deleted = true;
 
