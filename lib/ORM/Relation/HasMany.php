@@ -24,14 +24,11 @@ use Opis\Database\ORM\Relation;
 
 class HasMany extends Relation
 {
-
     /**
      * @return  Model
      */
     public function getResult()
     {
-        $this->query->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()});
-
         return $this->query()
                 ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
                 ->all();
