@@ -3,7 +3,9 @@ CHANGELOG
 
 * Added support for soft deletes
 * `Opis\Database\Model::softDelete`, `Opis\Database\Model::supportsSoftDeletes`, `Opis\Database\ORM\Query::softDelete`,
-`Opis\Database\ORM\BaseQuery::withSoftDeleted`, `Opis\Database\ORM\BaseQuery::onlySoftDeleted` methods were added.
+`Opis\Database\ORM\Query::restore`, `Opis\Database\ORM\BaseQuery::withSoftDeleted`, 
+`Opis\Database\ORM\BaseQuery::onlySoftDeleted` methods were added.
+* `Opis\Database\Model::destroy` and `Opis\Database\Model::softDestroy` methods were added
 
 ### v3.4.2, 2016.02.23
 
