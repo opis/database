@@ -189,7 +189,7 @@ class Select extends SelectStatement
      */
     public function toUpdate(Connection $connection)
     {
-        return new Update($this, $connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        return new Update($this, $connection);
     }
 
     /**
