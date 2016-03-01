@@ -230,6 +230,40 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Deletes specified records
+     * 
+     * @param   string|int  $id
+     * 
+     * @return  boolean
+     */
+    public static function destroy($id)
+    {
+        if (!is_array($id)) {
+            $id = array($id);
+        }
+
+        $model = new static();
+        return $model->where($model->getPrimaryKey())->in($id)->delete();
+    }
+
+    /**
+     * Soft delete specified records
+     * 
+     * @param   string|int  $id
+     * 
+     * @return  boolean
+     */
+    public static function softDestroy($id)
+    {
+        if (!is_array($id)) {
+            $id = array($id);
+        }
+
+        $model = new static();
+        return $model->where($model->getPrimaryKey())->in($id)->softDelete();
+    }
+
+    /**
      * Returns an instance of a model that use the given connection
      *
      * @param   \Opis\Database\Connection   $connection Database connection
