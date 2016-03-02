@@ -20,6 +20,7 @@
 
 namespace Opis\Database\ORM;
 
+use RuntimeException;
 use Opis\Database\Model;
 use Opis\Database\Connection;
 
@@ -43,7 +44,7 @@ class Query extends BaseQuery
         $this->connection = $connection;
 
         $compiler = $connection->compiler();
-        $query = new Select($compiler, $model->getTable());
+        $query = new Select($model, $compiler);
         $whereCondition = new WhereCondition($this, $query);
 
         parent::__construct($compiler, $query, $whereCondition);
@@ -81,6 +82,38 @@ class Query extends BaseQuery
     public function delete(array $tables = array())
     {
         return $this->query->toDelete($this->connection)->delete($tables);
+    }
+
+    /**
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function softDelete()
+    {
+        if (!$this->query->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return $this->query->toUpdate($this->connection)->update(array(
+            'deleted_at' => date($this->compiler->getDateFormat()),
+        ), true);
+    }
+
+    /**
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function restore()
+    {
+        if (!$this->query->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return $this->query->onlySoftDeleted()->toUpdate($this->connection)->update(array(
+            'deleted_at' => null,
+        ), true);
     }
 
     /**

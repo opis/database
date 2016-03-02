@@ -169,7 +169,7 @@ class BelongsToMany extends Relation
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
 
-        $select = new Select($this->compiler, $junctionTable);
+        $select = new Select($this->model, $this->compiler, $junctionTable);
 
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
 
@@ -190,9 +190,11 @@ class BelongsToMany extends Relation
     }
 
     /**
-     * @return  Model
+     * Build query
+     * 
+     * @return  Select
      */
-    public function getResult()
+    protected function buildQuery()
     {
         $self = $this;
         $junctionTable = $this->getJunctionTable();
@@ -201,15 +203,21 @@ class BelongsToMany extends Relation
         $joinColumn = $this->model->getPrimaryKey();
         $foreignKey = $this->getForeignKey();
 
-        $this->query
-            ->from($junctionTable)
-            ->join($joinTable, function ($join) use ($junctionTable, $junctionKey, $joinTable, $joinColumn) {
-                $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
-            })
-            ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
-            ->lock();
+        return $this->query
+                ->from($junctionTable)
+                ->join($joinTable, function ($join) use ($junctionTable, $junctionKey, $joinTable, $joinColumn) {
+                    $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
+                })
+                ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
+                ->lock();
+    }
 
-        $columns = array($joinTable . '.*');
+    /**
+     * @return  Model
+     */
+    public function getResult()
+    {
+        $columns = array($this->model->getTable() . '.*');
 
         return $this->query($columns)
                 ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))

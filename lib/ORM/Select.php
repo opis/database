@@ -20,14 +20,59 @@
 
 namespace Opis\Database\ORM;
 
+use Opis\Database\Model;
 use Opis\Database\Connection;
 use Opis\Database\SQL\Delete;
+use Opis\Database\SQL\Compiler;
+use Opis\Database\SQL\WhereClause;
 use Opis\Database\SQL\SelectStatement;
 
 class Select extends SelectStatement
 {
+    /* @var     Model */
+    protected $model;
+
     /** @var    bool */
     protected $locked = false;
+
+    /** @var    bool */
+    protected $supportsSoftDeletes;
+
+    /** @var    bool */
+    protected $inlcudeSoftDeletes = false;
+
+    /** @var    bool */
+    protected $onlySoftDeleted = false;
+
+    /**
+     * Constructor
+     * 
+     * @param   Model           $model
+     * @param   Compiler        $compiler
+     * @param   string|array    $tables         (optional)
+     * @param   boolean         $softdelete     (optional)
+     */
+    public function __construct(Model $model, Compiler $compiler, $tables = null, WhereClause $clause = null)
+    {
+        $this->model = $model;
+
+        if ($tables === null) {
+            $tables = $model->getTable();
+        }
+
+        $this->supportsSoftDeletes = $model->supportsSoftDeletes();
+
+        parent::__construct($compiler, $tables, $clause);
+    }
+
+    /**
+     * 
+     * @return  Model
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * @return  \Opis\Database\SQL\Compiler
@@ -38,11 +83,58 @@ class Select extends SelectStatement
     }
 
     /**
+     * 
+     * @return  bool
+     */
+    public function supportsSoftDeletes()
+    {
+        return $this->supportsSoftDeletes;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function isSetInlcudeSoftDeletes()
+    {
+        return $this->inlcudeSoftDeletes;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function isSetOnlySoftDeleted()
+    {
+        return $this->onlySoftDeleted;
+    }
+
+    /**
      * @return  bool
      */
     public function isLocked()
     {
         return $this->locked;
+    }
+
+    /**
+     * 
+     * @return  $this
+     */
+    public function withSoftDeleted()
+    {
+        $this->inlcudeSoftDeletes = true;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return  $this
+     */
+    public function onlySoftDeleted()
+    {
+        $this->onlySoftDeleted = $this->inlcudeSoftDeletes = true;
+        return $this;
     }
 
     /**
@@ -97,6 +189,24 @@ class Select extends SelectStatement
      */
     public function toUpdate(Connection $connection)
     {
-        return new Update($connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        return new Update($this, $connection);
+    }
+
+    /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        if ($this->sql === null) {
+            if ($this->supportsSoftDeletes) {
+                if (!$this->inlcudeSoftDeletes) {
+                    $this->where('deleted_at')->isNull();
+                } elseif ($this->onlySoftDeleted) {
+                    $this->where('deleted_at')->notNull();
+                }
+            }
+            $this->sql = $this->compiler->select($this);
+        }
+        return $this->sql;
     }
 }

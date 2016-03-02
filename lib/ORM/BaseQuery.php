@@ -242,4 +242,24 @@ abstract class BaseQuery extends BaseLoader
         $this->query->distinct();
         return $this;
     }
+
+    /**
+     * 
+     * @return  $this
+     */
+    public function withSoftDeleted()
+    {
+        $this->query->withSoftDeleted();
+        return $this;
+    }
+
+    /**
+     * 
+     * @return  $this
+     */
+    public function onlySoftDeleted()
+    {
+        $this->query->onlySoftDeleted();
+        return $this;
+    }
 }

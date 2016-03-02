@@ -53,7 +53,7 @@ abstract class Relation extends BaseQuery
         $this->owner = $owner;
 
         $compiler = $connection->compiler();
-        $query = new Select($compiler, $model->getTable());
+        $query = new Select($this->model, $compiler);
         $whereCondition = new WhereCondition($this, $query);
 
         parent::__construct($compiler, $query, $whereCondition);
@@ -93,7 +93,7 @@ abstract class Relation extends BaseQuery
         $callback = $options['callback'];
         $immediate = $options['immediate'];
 
-        $select = new Select($this->compiler, $this->model->getTable());
+        $select = new Select($this->model, $this->compiler);
 
         $select->where($fk)->in($ids);
 
@@ -128,11 +128,144 @@ abstract class Relation extends BaseQuery
     {
         $pk = $this->model->getPrimaryKey();
 
-        if (!$this->query->isLocked() && !empty($columns)) {
+        $query = $this->buildQuery();
+
+        if (!$query->isLocked() && !empty($columns)) {
             $columns[] = $pk;
         }
 
-        return $this->connection->query((string) $this->query->select($columns), $this->query->getCompiler()->getParams());
+        return $this->connection->query((string) $query->select($columns), $query->getCompiler()->getParams());
+    }
+
+    /**
+     * @return  mixed
+     */
+    protected function execute()
+    {
+        return $this->connection->column((string) $this->query, $this->compiler->getParams());
+    }
+
+    /**
+     * @param   array   $tables (optional)
+     *
+     * @return  int
+     */
+    public function delete(array $tables = array())
+    {
+        return $this->buildQuery()->toDelete($this->connection)->delete($tables);
+    }
+
+    /**
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function softDelete()
+    {
+        if (!$this->query->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return $this->buildQuery()->toUpdate($this->connection)->update(array(
+            'deleted_at' => date($this->compiler->getDateFormat()),
+        ), true);
+    }
+
+    /**
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function restore()
+    {
+        if (!$this->query->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return $this->buildQuery()->onlySoftDeleted()->toUpdate($this->connection)->update(array(
+            'deleted_at' => null,
+        ), true);
+    }
+
+    /**
+     * @param   array   $columns
+     *
+     * @return  int
+     */
+    public function update(array $columns)
+    {
+        return $this->buildQuery()->toUpdate($this->connection)->update($columns);
+    }
+
+    /**
+     * @param   string  $name
+     *
+     * @return  mixed
+     */
+    public function column($name)
+    {
+        $this->buildQuery()->column($name);
+        return $this->execute();
+    }
+
+    /**
+     * @param   string  $column     (optional)
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    public function count($column = '*', $distinct = false)
+    {
+        $this->buildQuery()->count($column, $distinct);
+        return $this->execute();
+    }
+
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    public function avg($column, $distinct = false)
+    {
+        $this->buildQuery()->avg($column, $distinct);
+        return $this->execute();
+    }
+
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    public function sum($column, $distinct = false)
+    {
+        $this->buildQuery()->sum($column, $distinct);
+        return $this->execute();
+    }
+
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    public function min($column, $distinct = false)
+    {
+        $this->buildQuery()->min($column, $distinct);
+        return $this->execute();
+    }
+
+    /**
+     * @param   string  $column
+     * @param   bool    $distinct   (optional)
+     *
+     * @return  mixed
+     */
+    public function max($column, $distinct = false)
+    {
+        $this->buildQuery()->max($column, $distinct);
+        return $this->execute();
     }
 
     /**
@@ -177,6 +310,16 @@ abstract class Relation extends BaseQuery
     public function getOwner()
     {
         return $this->owner;
+    }
+
+    /**
+     * Build query
+     * 
+     * @return  Select
+     */
+    protected function buildQuery()
+    {
+        return $this->query->where($this->getForeignKey())->is($this->owner->{$this->owner->getPrimaryKey()});
     }
 
     /**

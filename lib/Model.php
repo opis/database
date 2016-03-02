@@ -230,6 +230,40 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Deletes specified records
+     * 
+     * @param   string|int  $id
+     * 
+     * @return  boolean
+     */
+    public static function destroy($id)
+    {
+        if (!is_array($id)) {
+            $id = array($id);
+        }
+
+        $model = new static();
+        return $model->where($model->getPrimaryKey())->in($id)->delete();
+    }
+
+    /**
+     * Soft delete specified records
+     * 
+     * @param   string|int  $id
+     * 
+     * @return  boolean
+     */
+    public static function softDestroy($id)
+    {
+        if (!is_array($id)) {
+            $id = array($id);
+        }
+
+        $model = new static();
+        return $model->where($model->getPrimaryKey())->in($id)->softDelete();
+    }
+
+    /**
      * Returns an instance of a model that use the given connection
      *
      * @param   \Opis\Database\Connection   $connection Database connection
@@ -375,22 +409,57 @@ abstract class Model implements ModelInterface
 
     /**
      * Deletes this model
-     *
+     * 
+     * @param   boolean $soft   (optional) Soft delete
+     * 
      * @return  boolean
      */
     public function delete()
     {
-        if ($this->deleted) {
-            throw new RuntimeException('This record was deleted');
-        }
-
         if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
+        }
+
+        if ($this->deleted) {
+            throw new RuntimeException('This record was already deleted');
         }
 
         $result = $this->database()->from($this->getTable())
             ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
             ->delete();
+
+        $this->deleted = true;
+
+        return (bool) $result;
+    }
+
+    /**
+     * Soft-delete a record
+     * 
+     * @return  boolean
+     * 
+     * @throws  RuntimeException
+     */
+    public function softDelete()
+    {
+        if ($this->isNewRecord) {
+            throw new RuntimeException('This is a new record that was not saved yet');
+        }
+
+        if ($this->deleted) {
+            throw new RuntimeException('This record was already deleted');
+        }
+
+        if (!$this->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        $result = $this->database()->update($this->getTable())
+            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+            ->set(array(
+            'deleted_at' => date($this->getDateFormat()),
+        ));
+
         $this->deleted = true;
 
         return (bool) $result;
@@ -457,6 +526,16 @@ abstract class Model implements ModelInterface
     public function getForeignKey()
     {
         return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
+    }
+
+    /**
+     * Check if this model supports soft deletes
+     * 
+     * @return  boolean
+     */
+    public function supportsSoftDeletes()
+    {
+        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
     }
 
     /**
