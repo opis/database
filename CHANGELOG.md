@@ -12,6 +12,7 @@ CHANGELOG
 * Added support for timestamps
 * Added `timestamps` and `softDelete` methods to `Opis\Database\Schema\CreateTable`
 * `Opis\Database\Model::getDateFormat` method is now public
+* Added `update` and `updateAll` methods to `Opis\Database\Model` class
 
 ### v3.4.2, 2016.02.23
 
