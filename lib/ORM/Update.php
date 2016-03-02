@@ -52,13 +52,17 @@ class Update extends UpdateStatement
      */
     public function update(array $columns, $softDelete = false)
     {
-        if ($this->select->supportsSoftDeletes()) {
+        if ($softDelete && $this->select->supportsSoftDeletes()) {
 
             if (!$this->select->isSetInlcudeSoftDeletes()) {
                 $this->where('deleted_at')->isNull();
             } elseif ($this->select->isSetOnlySoftDeleted()) {
                 $this->where('deleted_at')->notNull();
             }
+        }
+        
+        if (!$softDelete && $this->select->supportsTimestamps()) {
+            $columns['updated_at'] = date($this->select->getModel()->getDateFormat());
         }
 
         parent::set($columns);

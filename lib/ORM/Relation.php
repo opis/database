@@ -167,7 +167,7 @@ abstract class Relation extends BaseQuery
         }
 
         return $this->buildQuery()->toUpdate($this->connection)->update(array(
-                'deleted_at' => date($this->compiler->getDateFormat()),
+                'deleted_at' => date($this->model->getDateFormat()),
                 ), true);
     }
 
@@ -194,10 +194,6 @@ abstract class Relation extends BaseQuery
      */
     public function update(array $columns)
     {
-        if ($this->query->supportsTimestamps()) {
-            $columns['updated_at'] = date($this->compiler->getDateFormat());
-        }
-        
         return $this->buildQuery()->toUpdate($this->connection)->update($columns);
     }
 

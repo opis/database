@@ -96,7 +96,7 @@ class Query extends BaseQuery
         }
 
         return $this->query->toUpdate($this->connection)->update(array(
-            'deleted_at' => date($this->compiler->getDateFormat()),
+            'deleted_at' => date($this->model->getDateFormat()),
         ), true);
     }
 
@@ -123,10 +123,6 @@ class Query extends BaseQuery
      */
     public function update(array $columns)
     {
-        if ($this->query->supportsTimestamps()) {
-            $columns['updated_at'] = date($this->compiler->getDateFormat());
-        }
-
         return $this->query->toUpdate($this->connection)->update($columns);
     }
 
