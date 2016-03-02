@@ -553,6 +553,20 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Get a DateTime format
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        if ($this->dateFormat === null) {
+            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
+        }
+
+        return $this->dateFormat;
+    }
+
+    /**
      * Check if this model supports soft deletes
      * 
      * @return  boolean
@@ -678,20 +692,6 @@ abstract class Model implements ModelInterface
         }
 
         throw new RuntimeException(vsprintf('Unknown cast type "%s"', array($cast)));
-    }
-
-    /**
-     * Get a DateTime format
-     *
-     * @return string
-     */
-    protected function getDateFormat()
-    {
-        if ($this->dateFormat === null) {
-            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
-        }
-
-        return $this->dateFormat;
     }
 
     /**
