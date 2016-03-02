@@ -129,6 +129,20 @@ abstract class Model implements ModelInterface
     protected $isNewRecord = true;
 
     /**
+     * Indicates if soft deletes are supported
+     *
+     * @var boolean
+     */
+    protected $softDeletes = true;
+
+    /**
+     * Indicates if timestamps are supported
+     *
+     * @var boolean
+     */
+    protected $timestamps = true;
+
+    /**
      * A list with related models
      *
      * @var array
@@ -400,11 +414,11 @@ abstract class Model implements ModelInterface
         }
 
         if (!empty($this->modified)) {
-            
+
             if ($this->supportsTimestamps()) {
                 $this->columns['updated_at'] = date($this->getDateFormat());
             }
-            
+
             $result = $this->database()
                 ->update($this->getTable())
                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
@@ -545,7 +559,7 @@ abstract class Model implements ModelInterface
      */
     public function supportsSoftDeletes()
     {
-        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
+        return $this->softDeletes && isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
     }
 
     /**
@@ -555,7 +569,7 @@ abstract class Model implements ModelInterface
      */
     public function supportsTimestamps()
     {
-        return isset($this->cast['created_at']) && isset($this->cast['updated_at']) &&
+        return $this->timestamps && isset($this->cast['created_at']) && isset($this->cast['updated_at']) &&
             $this->cast['created_at'] === 'date' && $this->cast['updated_at'] === 'date?';
     }
 
