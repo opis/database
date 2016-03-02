@@ -96,7 +96,7 @@ class Query extends BaseQuery
         }
 
         return $this->query->toUpdate($this->connection)->update(array(
-            'deleted_at' => date($this->compiler->getDateFormat()),
+            'deleted_at' => date($this->model->getDateFormat()),
         ), true);
     }
 

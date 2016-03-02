@@ -9,6 +9,10 @@ CHANGELOG
 * The following methods were added to `Opis\Database\ORM\Relation` class: `column`, `count`, `sum`, `avg`, `min`, `max`,
 `update`, `restore`, `delete` and `softDelete`
 * Now you can count, update, delete, soft delete and restore related models
+* Added support for timestamps
+* Added `timestamps` and `softDelete` methods to `Opis\Database\Schema\CreateTable`
+* `Opis\Database\Model::getDateFormat` method is now public
+* Added `update` and `updateAll` methods to `Opis\Database\Model` class
 
 ### v3.4.2, 2016.02.23
 

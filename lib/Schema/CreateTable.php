@@ -159,7 +159,7 @@ class CreateTable
         }
 
         $this->primaryKey = array(
-            'name' => $name,
+            'name'    => $name,
             'columns' => $columns,
         );
 
@@ -372,4 +372,22 @@ class CreateTable
     {
         return $this->addColumn($name, 'dateTime');
     }
+
+    /**
+     * Add soft delete column
+     */
+    public function softDelete()
+    {
+        $this->dateTime('deleted_at');
+    }
+    
+    /**
+     * Add timsetamp columns
+     */
+    public function timestamps()
+    {
+        $this->dateTime('created_at')->notNull();
+        $this->dateTime('updated_at');
+    }
+    
 }

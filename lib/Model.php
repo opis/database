@@ -129,6 +129,20 @@ abstract class Model implements ModelInterface
     protected $isNewRecord = true;
 
     /**
+     * Indicates if soft deletes are supported
+     *
+     * @var boolean
+     */
+    protected $softDeletes = true;
+
+    /**
+     * Indicates if timestamps are supported
+     *
+     * @var boolean
+     */
+    protected $timestamps = true;
+
+    /**
      * A list with related models
      *
      * @var array
@@ -264,6 +278,20 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Update all records
+     * 
+     * @param   array   $columns
+     * 
+     * @return  boolean
+     */
+    public static function updateAll(array $columns)
+    {
+        $model = new static();
+        return $model->queryBuilder()->update($columns);
+    }
+
+
+    /**
      * Returns an instance of a model that use the given connection
      *
      * @param   \Opis\Database\Connection   $connection Database connection
@@ -381,6 +409,11 @@ abstract class Model implements ModelInterface
                         $columns[$this->primaryKey] = $self->generatePrimaryKey();
                     }
 
+                    if ($self->supportsTimestamps()) {
+                        $columns['created_at'] = date($self->getDateFormat());
+                        $columns['updated_at'] = null;
+                    }
+
                     $db->insert($columns)
                     ->into($self->getTable());
 
@@ -395,13 +428,9 @@ abstract class Model implements ModelInterface
         }
 
         if (!empty($this->modified)) {
-            $result = $this->database()
-                ->update($this->getTable())
-                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-                ->set($this->prepareColumns(true));
-
+            $columns = $this->prepareColumns(true);
             $this->modified = array();
-            return (bool) $result;
+            return $this->update($columns);
         }
 
         return true;
@@ -463,6 +492,25 @@ abstract class Model implements ModelInterface
         $this->deleted = true;
 
         return (bool) $result;
+    }
+
+    /**
+     * Update columns
+     * 
+     * @param   array   $columns
+     * 
+     * @return  boolean
+     */
+    public function update(array $columns)
+    {
+        if ($this->supportsTimestamps()) {
+            $columns['updated_at'] = date($this->getDateFormat());
+        }
+        
+        return (bool) $this->database()
+                ->update($this->getTable())
+                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                ->set($columns);
     }
 
     /**
@@ -529,13 +577,38 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Get a DateTime format
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        if ($this->dateFormat === null) {
+            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
+        }
+
+        return $this->dateFormat;
+    }
+
+    /**
      * Check if this model supports soft deletes
      * 
      * @return  boolean
      */
     public function supportsSoftDeletes()
     {
-        return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
+        return $this->softDeletes && isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
+    }
+
+    /**
+     * Check if this model supports timestamps
+     * 
+     * @return  boolean
+     */
+    public function supportsTimestamps()
+    {
+        return $this->timestamps && isset($this->cast['created_at']) && isset($this->cast['updated_at']) &&
+            $this->cast['created_at'] === 'date' && $this->cast['updated_at'] === 'date?';
     }
 
     /**
@@ -643,20 +716,6 @@ abstract class Model implements ModelInterface
         }
 
         throw new RuntimeException(vsprintf('Unknown cast type "%s"', array($cast)));
-    }
-
-    /**
-     * Get a DateTime format
-     *
-     * @return string
-     */
-    protected function getDateFormat()
-    {
-        if ($this->dateFormat === null) {
-            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
-        }
-
-        return $this->dateFormat;
     }
 
     /**
