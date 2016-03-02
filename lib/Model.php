@@ -418,7 +418,7 @@ abstract class Model implements ModelInterface
             if ($this->supportsTimestamps()) {
                 $this->columns['updated_at'] = date($this->getDateFormat());
             }
-
+            
             $result = $this->database()
                 ->update($this->getTable())
                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
@@ -487,6 +487,21 @@ abstract class Model implements ModelInterface
         $this->deleted = true;
 
         return (bool) $result;
+    }
+
+    /**
+     * Update columns
+     * 
+     * @param   array   $columns
+     * 
+     * @return  boolean
+     */
+    public function update(array $columns)
+    {
+        return (bool) $this->database()
+                ->update($this->getTable())
+                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                ->set($columns);
     }
 
     /**
