@@ -123,6 +123,10 @@ class Query extends BaseQuery
      */
     public function update(array $columns)
     {
+        if ($this->query->supportsTimestamps()) {
+            $columns['updated_at'] = date($this->compiler->getDateFormat());
+        }
+
         return $this->query->toUpdate($this->connection)->update($columns);
     }
 

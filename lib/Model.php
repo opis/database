@@ -381,6 +381,11 @@ abstract class Model implements ModelInterface
                         $columns[$this->primaryKey] = $self->generatePrimaryKey();
                     }
 
+                    if ($self->supportsTimestamps()) {
+                        $columns['created_at'] = date($self->getDateFormat());
+                        $columns['updated_at'] = null;
+                    }
+
                     $db->insert($columns)
                     ->into($self->getTable());
 
@@ -395,6 +400,11 @@ abstract class Model implements ModelInterface
         }
 
         if (!empty($this->modified)) {
+            
+            if ($this->supportsTimestamps()) {
+                $this->columns['updated_at'] = date($this->getDateFormat());
+            }
+            
             $result = $this->database()
                 ->update($this->getTable())
                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
@@ -536,6 +546,17 @@ abstract class Model implements ModelInterface
     public function supportsSoftDeletes()
     {
         return isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
+    }
+
+    /**
+     * Check if this model supports timestamps
+     * 
+     * @return  boolean
+     */
+    public function supportsTimestamps()
+    {
+        return isset($this->cast['created_at']) && isset($this->cast['updated_at']) &&
+            $this->cast['created_at'] === 'date' && $this->cast['updated_at'] === 'date?';
     }
 
     /**

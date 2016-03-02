@@ -39,6 +39,9 @@ class Select extends SelectStatement
     protected $supportsSoftDeletes;
 
     /** @var    bool */
+    protected $supportsTimestamps;
+
+    /** @var    bool */
     protected $inlcudeSoftDeletes = false;
 
     /** @var    bool */
@@ -61,6 +64,7 @@ class Select extends SelectStatement
         }
 
         $this->supportsSoftDeletes = $model->supportsSoftDeletes();
+        $this->supportsTimestamps = $model->supportsTimestamps();
 
         parent::__construct($compiler, $tables, $clause);
     }
@@ -89,6 +93,15 @@ class Select extends SelectStatement
     public function supportsSoftDeletes()
     {
         return $this->supportsSoftDeletes;
+    }
+
+    /**
+     * 
+     * @return  bool
+     */
+    public function supportsTimestamps()
+    {
+        return $this->supportsTimestamps;
     }
 
     /**
