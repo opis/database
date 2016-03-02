@@ -278,6 +278,20 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Update all records
+     * 
+     * @param   array   $columns
+     * 
+     * @return  boolean
+     */
+    public static function updateAll(array $columns)
+    {
+        $model = new static();
+        return $model->queryBuilder()->update($columns);
+    }
+
+
+    /**
      * Returns an instance of a model that use the given connection
      *
      * @param   \Opis\Database\Connection   $connection Database connection
@@ -414,18 +428,9 @@ abstract class Model implements ModelInterface
         }
 
         if (!empty($this->modified)) {
-
-            if ($this->supportsTimestamps()) {
-                $this->columns['updated_at'] = date($this->getDateFormat());
-            }
-            
-            $result = $this->database()
-                ->update($this->getTable())
-                ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-                ->set($this->prepareColumns(true));
-
+            $columns = $this->prepareColumns(true);
             $this->modified = array();
-            return (bool) $result;
+            return $this->update($columns);
         }
 
         return true;
@@ -498,6 +503,10 @@ abstract class Model implements ModelInterface
      */
     public function update(array $columns)
     {
+        if ($this->supportsTimestamps()) {
+            $columns['updated_at'] = date($this->getDateFormat());
+        }
+        
         return (bool) $this->database()
                 ->update($this->getTable())
                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
