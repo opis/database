@@ -15,6 +15,7 @@ CHANGELOG
 * Added `timestamps` and `softDelete` methods to `Opis\Database\Schema\CreateTable`
 * `Opis\Database\Model::getDateFormat` method is now public
 * Added `update` and `updateAll` methods to `Opis\Database\Model` class
+* The `Opis\Database\Model::assign` method now returns the current model instance
 
 ### v3.4.2, 2016.02.23
 
