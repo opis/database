@@ -6,6 +6,9 @@ CHANGELOG
 `Opis\Database\ORM\Query::restore`, `Opis\Database\ORM\BaseQuery::withSoftDeleted`, 
 `Opis\Database\ORM\BaseQuery::onlySoftDeleted` methods were added.
 * `Opis\Database\Model::destroy` and `Opis\Database\Model::softDestroy` methods were added
+* The following methods were added to `Opis\Database\ORM\Relation` class: `column`, `count`, `sum`, `avg`, `min`, `max`,
+`update`, `restore`, `delete` and `softDelete`
+* Now you can count, update, delete, soft delete and restore related models
 
 ### v3.4.2, 2016.02.23
 
