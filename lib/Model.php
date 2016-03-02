@@ -517,6 +517,8 @@ abstract class Model implements ModelInterface
      * Mass assign values to this model
      *
      * @param   array   $values A column-value mapped array
+     * 
+     * @return  $this
      */
     public function assign(array $values)
     {
@@ -529,6 +531,8 @@ abstract class Model implements ModelInterface
         foreach ($values as $column => &$value) {
             $this->{$column} = $value;
         }
+        
+        return $this;
     }
 
     /**
