@@ -59,6 +59,11 @@ abstract class BaseQuery extends BaseLoader
      */
     public function where($column)
     {
+        if ($column instanceof Closure) {
+            $this->query->where($column);
+            return $this;
+        }
+
         return $this->whereCondition->setColumn($column, 'where');
     }
 
@@ -79,6 +84,11 @@ abstract class BaseQuery extends BaseLoader
      */
     public function orWhere($column)
     {
+        if ($column instanceof Closure) {
+            $this->query->orWhere($column);
+            return $this;
+        }
+        
         return $this->whereCondition->setColumn($column, 'orWhere');
     }
 
