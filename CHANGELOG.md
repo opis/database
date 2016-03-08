@@ -1,5 +1,8 @@
 CHANGELOG
 -----------
+### v3.5.1, 2016.03.08
+
+* Fixed a bug in `Opis\Database\ORM\BaseQuery` that prevented proper using of grouped conditions
 
 ### v3.5.0, 2016.03.02
 
