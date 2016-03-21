@@ -290,7 +290,6 @@ abstract class Model implements ModelInterface
         return $model->queryBuilder()->update($columns);
     }
 
-
     /**
      * Returns an instance of a model that use the given connection
      *
@@ -338,7 +337,9 @@ abstract class Model implements ModelInterface
         }
 
         if (method_exists($this, $name)) {
+            // This must be reviewed
             $column = $this->{$name}()->getRelatedColumn($this, $column);
+            $this->result[$name] = $value;
         }
 
         $this->modified[$column] = true;
@@ -421,6 +422,7 @@ abstract class Model implements ModelInterface
                 })
                 ->execute();
 
+            $this->modified = array();
             $this->isNewRecord = false;
             $this->columns[$this->primaryKey] = $id;
 
@@ -506,7 +508,7 @@ abstract class Model implements ModelInterface
         if ($this->supportsTimestamps()) {
             $columns['updated_at'] = date($this->getDateFormat());
         }
-        
+
         return (bool) $this->database()
                 ->update($this->getTable())
                 ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
@@ -531,7 +533,7 @@ abstract class Model implements ModelInterface
         foreach ($values as $column => &$value) {
             $this->{$column} = $value;
         }
-        
+
         return $this;
     }
 
