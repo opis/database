@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### v3.6.0, 2016.03.21
+
+* Fixed a bug in `Opis\Database\Model::__set` method
+* Added `throwExceptions` flag on `Opis\Database\Model` class
+* Changed exception message in `Opis\Database\Model::__get`
+
 ### v3.5.1, 2016.03.08
 
 * Fixed a bug in `Opis\Database\ORM\BaseQuery` that prevented proper using of grouped conditions
