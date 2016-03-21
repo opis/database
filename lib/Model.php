@@ -209,6 +209,13 @@ abstract class Model implements ModelInterface
     protected $dbcon;
 
     /**
+     * A flag that indicates if exceptions are thrown
+     * 
+     * @var boolean
+     */
+    protected $throwExceptions = true;
+
+    /**
      * Constructor
      *
      * @final
@@ -419,6 +426,11 @@ abstract class Model implements ModelInterface
                     ->into($self->getTable());
 
                     return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->pdo()->lastInsertId($self->getSequence());
+                })
+                ->onError(function($e) use ($self) {
+                    if ($self->throwExceptions) {
+                        throw $e;
+                    }
                 })
                 ->execute();
 
