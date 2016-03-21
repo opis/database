@@ -391,7 +391,7 @@ abstract class Model implements ModelInterface
             return $this->result[$name] = $this->{$name}()->getResult();
         }
 
-        throw new RuntimeException('Not found');
+        throw new RuntimeException('Unknown property "' . $name . '"');
     }
 
     /**
