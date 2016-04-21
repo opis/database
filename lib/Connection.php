@@ -70,6 +70,9 @@ class Connection implements Serializable
     /** @var    array  Compiler options */
     protected $compilerOptions = array();
 
+    /** @var    array   Schema compiler options */
+    protected $schemaCompilerOptions = array();
+    
     /**
      * Constructor
      * 
@@ -208,6 +211,7 @@ class Connection implements Serializable
     public function setWrapperFormat($wrapper)
     {
         $this->compilerOptions['wrapper'] = $wrapper;
+        $this->schemaCompilerOptions['wrapper'] = $wrapper;
         return $this;
     }
 
@@ -339,6 +343,8 @@ class Connection implements Serializable
                 default:
                     throw new \Exception('Schema not supported yet');
             }
+
+            $this->schemaCompiler->setOptions($this->schemaCompilerOptions);
         }
 
         return $this->schemaCompiler;

@@ -56,6 +56,19 @@ class Compiler
     }
 
     /**
+     * Sets compiler options
+     * 
+     * @param   array   $options
+     */
+    public function setOptions(array $options)
+    {
+        foreach ($options as $name => $value) {
+            $this->{$name} = $value;
+        }
+    }
+
+
+    /**
      * @param   string  $name
      * 
      * @return  string
