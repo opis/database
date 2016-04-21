@@ -218,7 +218,6 @@ class Oracle extends Compiler
             . ' WHERE owner = ? '
             . ' ORDER BY ' . $this->wrap('table_name') . ' ASC';
 
-        echo $sql;
         return array(
             'sql' => $sql,
             'params' => array($database),
@@ -239,7 +238,6 @@ class Oracle extends Compiler
             . ' WHERE LOWER(' . $this->wrap('owner') . ') = ? AND LOWER(' . $this->wrap('table_name') . ') = ? '
             . ' ORDER BY ' . $this->wrap('column_id') . ' ASC';
 
-        echo $sql;
         return array(
             'sql' => $sql,
             'params' => array($database, $table),
