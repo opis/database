@@ -336,6 +336,10 @@ class Connection implements Serializable
                 case 'sqlite':
                     $this->schemaCompiler = new \Opis\Database\Schema\Compiler\SQLite($this);
                     break;
+                case 'oci':
+                case 'oracle':
+                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\Oracle($this);
+                    break;
                 default:
                     throw new \Exception('Schema not supported yet');
             }
