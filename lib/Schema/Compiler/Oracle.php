@@ -172,6 +172,17 @@ class Oracle extends Compiler
     /**
      * @param   AlterTable  $table
      * @param   mixed       $data
+     * 
+     * @return  string
+     */
+    protected function handleAddColumn(AlterTable $table, $data)
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD ' . $this->handleColumns(array($data));
+    }
+
+    /**
+     * @param   AlterTable  $table
+     * @param   mixed       $data
      *
      * @return  string
      */
