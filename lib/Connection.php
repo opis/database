@@ -400,7 +400,18 @@ class Connection implements Serializable
 
         return preg_replace_callback('/\?/', function ($matches) use (&$params, $pdo) {
             $param = array_shift($params);
-            return (is_int($param) || is_float($param)) ? $param : $pdo->quote(is_object($param) ? get_class($param) : $param);
+            $param = is_object($param) ? get_class($param) : $param;
+            $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+            if (is_int($param) || is_float($param)) {
+                return $param;
+            } elseif ($param === null) {
+                return 'NULL';
+            } elseif (in_array($driver, array('oci'))) {
+                return "'" . str_replace("'", "''", $param) . "'";
+            } else {
+                return $pdo->quote($param);
+            }
         }, $query);
     }
 
