@@ -447,7 +447,11 @@ class Connection implements Serializable
             $start = microtime(true);
         }
 
-        $result = $prepared['statement']->execute($prepared['params']);
+        try {
+            $result = $prepared['statement']->execute($prepared['params']);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($prepared['query'], $prepared['params']) . ' ] ', (int) $e->getCode(), $e->getPrevious());
+        }
 
         if ($this->logQueries) {
             $this->log($prepared['query'], $prepared['params'], $start);
