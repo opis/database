@@ -66,6 +66,6 @@ class Update extends UpdateStatement
         }
 
         parent::set($columns);
-        return $this->connection->command((string) $this, $this->compiler->getParams());
+        return $this->connection->count((string) $this, $this->compiler->getParams());
     }
 }
