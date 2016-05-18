@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v3.6.2, 2016.04.19
+
+* Method `Opis\Database\Connection::count` is now deprecated
+and `Opis\Database\Connection::command` method is used instead.
+
 ### v3.6.1, 2016.05.19
 
 * Fixed a bug in `Opis\Database\Model::__set` method
