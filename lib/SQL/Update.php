@@ -99,6 +99,6 @@ class Update extends UpdateStatement
     public function set(array $columns)
     {
         parent::set($columns);
-        return $this->connection->count((string) $this, $this->compiler->getParams());
+        return $this->connection->command((string) $this, $this->compiler->getParams());
     }
 }

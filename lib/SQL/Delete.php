@@ -53,6 +53,6 @@ class Delete extends DeleteStatement
     public function delete($tables = array())
     {
         parent::delete($tables);
-        return $this->connection->count((string) $this, $this->compiler->getParams());
+        return $this->connection->command((string) $this, $this->compiler->getParams());
     }
 }

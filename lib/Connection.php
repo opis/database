@@ -490,7 +490,9 @@ class Connection implements Serializable
 
     /**
      * Execute a query and return the number of affected rows
-     *
+     * 
+     * @deprecated since version 3.6.2
+     * 
      * @param   string  $sql    SQL Query
      * @param   array   $params (optional) Query params
      *
