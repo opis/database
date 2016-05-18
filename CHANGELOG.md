@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.6.1, 2016.05.19
+
+* Fixed a bug in `Opis\Database\Model::__set` method
+
 ### v3.6.0, 2016.03.21
 
 * Fixed a bug in `Opis\Database\Model::__set` method
