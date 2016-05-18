@@ -347,6 +347,9 @@ abstract class Model implements ModelInterface
             // This must be reviewed
             $column = $this->{$name}()->getRelatedColumn($this, $column);
             $this->result[$name] = $value;
+            if ($value instanceof Model) {
+                $value = $value->{$value->primaryKey};
+            }
         }
 
         $this->modified[$column] = true;
