@@ -732,6 +732,8 @@ abstract class Model implements ModelInterface
                 return (string) $value;
             case 'array':
                 return is_array($value) ? json_encode($value) : json_decode($value, true);
+            case 'object':
+                return is_object($value) ? json_encode($value) : json_decode($value);
             case 'date':
                 return $value instanceof DateTime ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
         }
