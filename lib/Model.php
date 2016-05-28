@@ -214,6 +214,13 @@ abstract class Model implements ModelInterface
      * @var boolean
      */
     protected $throwExceptions = true;
+    
+    /**
+     * A flag that indicates if this model needs to be reoaded
+     * 
+     * @var boolean
+     */
+    protected $isDirty = false;
 
     /**
      * Constructor
@@ -326,6 +333,13 @@ abstract class Model implements ModelInterface
         if ($this->readonly) {
             throw new RuntimeException('Readonly');
         }
+        
+        if ($this->isDirty) {
+            $this->isDirty = false;
+            $this->columns = $this->queryBuilder()
+                                  ->find($this->columns[$this->primaryKey])
+                                  ->columns;
+        }
 
         $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
@@ -365,6 +379,13 @@ abstract class Model implements ModelInterface
      */
     public function __get($name)
     {
+        if ($this->isDirty) {
+            $this->isDirty = false;
+            $this->columns = $this->queryBuilder()
+                                  ->find($this->columns[$this->primaryKey])
+                                  ->columns;
+        }
+        
         $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
 
         if (array_key_exists($column, $this->columns)) {
@@ -440,6 +461,7 @@ abstract class Model implements ModelInterface
             $this->modified = array();
             $this->isNewRecord = false;
             $this->columns[$this->primaryKey] = $id;
+            $this->isDirty = true;
 
             return (bool) $id;
         }
@@ -521,7 +543,7 @@ abstract class Model implements ModelInterface
     public function update(array $columns)
     {
         if ($this->supportsTimestamps()) {
-            $columns['updated_at'] = date($this->getDateFormat());
+            $this->columns['updated_at'] = $columns['updated_at'] = date($this->getDateFormat());
         }
 
         return (bool) $this->database()
