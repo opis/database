@@ -1,14 +1,18 @@
 CHANGELOG
 -----------
-### v3.6.4, 2016.04.20
+### v3.6.5, 2016.05.29
+
+* Bugfix
+
+### v3.6.4, 2016.05.20
 
 * Added `object` casting type
 
-### v3.6.3, 2016.04.19
+### v3.6.3, 2016.05.19
 
 * Rollback. `Opis\Database\Connection::count` is no longer deprecated and  is used again.
 
-### v3.6.2, 2016.04.19
+### v3.6.2, 2016.05.19
 
 * Method `Opis\Database\Connection::count` is now deprecated
 and `Opis\Database\Connection::command` method is used instead.
