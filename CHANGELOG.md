@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v3.6.6, 2016.06.07
+
+* Fixed a bug related to PHP 7
+
 ### v3.6.5, 2016.05.29
 
 * Bugfix
