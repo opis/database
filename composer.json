@@ -22,5 +22,10 @@
     },
     "autoload": {
         "psr-4": {"Opis\\Database\\": "lib/"}
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.7.x-dev"
+        }
     }
 }
