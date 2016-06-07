@@ -256,12 +256,12 @@ class Compiler
             return '';
         }
 
-        $sql[] = $this->$wheres[0]['type']($wheres[0]);
+        $sql[] = $this->{$wheres[0]['type']}($wheres[0]);
 
         $count = count($wheres);
 
         for ($i = 1; $i < $count; $i++) {
-            $sql[] = $wheres[$i]['separator'] . ' ' . $this->$wheres[$i]['type']($wheres[$i]);
+            $sql[] = $wheres[$i]['separator'] . ' ' . $this->{$wheres[$i]['type']}($wheres[$i]);
         }
 
         return ($prefix ? ' WHERE ' : '') . implode(' ', $sql);
@@ -307,10 +307,10 @@ class Compiler
      */
     protected function handleJoinCondtitions(array $conditions)
     {
-        $sql[] = $this->$conditions[0]['type']($conditions[0]);
+        $sql[] = $this->{$conditions[0]['type']}($conditions[0]);
         $count = count($conditions);
         for ($i = 1; $i < $count; $i++) {
-            $sql[] = $conditions[$i]['separator'] . ' ' . $this->$conditions[$i]['type']($conditions[$i]);
+            $sql[] = $conditions[$i]['separator'] . ' ' . $this->{$conditions[$i]['type']}($conditions[$i]);
         }
         return implode(' ', $sql);
     }
@@ -329,13 +329,13 @@ class Compiler
             return '';
         }
 
-        $sql[] = $this->$havings[0]['type']($havings[0]);
+        $sql[] = $this->{$havings[0]['type']}($havings[0]);
 
 
         $count = count($havings);
 
         for ($i = 1; $i < $count; $i++) {
-            $sql[] = $havings[$i]['separator'] . ' ' . $this->$havings[$i]['type']($havings[$i]);
+            $sql[] = $havings[$i]['separator'] . ' ' . $this->{$havings[$i]['type']}($havings[$i]);
         }
 
         return ($prefix ? ' HAVING ' : '') . implode(' ', $sql);
