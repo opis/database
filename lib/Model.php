@@ -749,7 +749,7 @@ abstract class Model implements ModelInterface
             case 'float':
                 return (float) $value;
             case 'boolean':
-                return (bool) $value;
+                return is_bool($value) ? (int) $value :  (bool) $value;
             case 'string':
                 return (string) $value;
             case 'array':
