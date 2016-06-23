@@ -19,7 +19,7 @@ The library has support for the following database types: MySQL, PostgreSQL, Mic
 
 ### Requirements
 
-* PHP 5.3.* or higher
+* PHP 7.0.* or higher
 * PDO
 
 ### Installation
@@ -29,20 +29,20 @@ This library is available on [Packagist](https://packagist.org/packages/opis/dat
 ```json
 {
     "require": {
-        "opis/database": "^3.6.7"
+        "opis/database": "4.0.x-dev"
     }
 }
 ```
 
 If you are unable to use [Composer](http://getcomposer.org) you can download the
-[tar.gz](https://github.com/opis/database/archive/3.6.7.tar.gz) or the [zip](https://github.com/opis/database/archive/3.6.7.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
+[tar.gz](https://github.com/opis/database/archive/master.tar.gz) or the [zip](https://github.com/opis/database/archive/master.zip) archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
 
-require_once 'path/to/database-3.6.7/autoload.php';
+require_once 'path/to/database-master/autoload.php';
 
 ```
 
 ### Documentation
 
-Examples and documentation about this library can be found at http://opis.io/database .
+Examples and documentation about this library can be found [here](http://opis.io/database).
