@@ -22,17 +22,12 @@ namespace Opis\Database\SQL;
 
 class Where
 {
-    /** @var    WhereCondition */
-    protected $condition;
-
+    
     /** @var    string */
     protected $column;
 
     /** @var    string */
     protected $separator;
-
-    /** @var    WhereClause */
-    protected $whereClause;
 
     public function __construct(WhereCondition $condition)
     {
