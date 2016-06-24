@@ -27,26 +27,13 @@ class HavingClause
     /** @var    array */
     protected $conditions = array();
 
-    /** @var    Compiler */
-    protected $compiler;
-
-    /**
-     * Constructor
-     * 
-     * @param   Compiler    $compiler
-     */
-    public function __construct(Compiler $compiler)
-    {
-        $this->compiler = $compiler;
-    }
-
     /**
      * @param   Closure $callback
      * @param   string  $separator
      */
     public function addGroupCondition(Closure $callback, $separator)
     {
-        $having = new HavingCondition($this->compiler);
+        $having = new HavingCondition();
         $callback($having);
 
         $this->conditions[] = array(
@@ -65,7 +52,7 @@ class HavingClause
     public function addCondition($aggregate, $value, $operator, $separator)
     {
         if ($value instanceof Closure) {
-            $expr = new Expression($this->compiler);
+            $expr = new Expression();
             $value($expr);
             $value = $expr;
         }
@@ -88,7 +75,7 @@ class HavingClause
     public function addInCondition($aggregate, $value, $separator, $not)
     {
         if ($value instanceof Closure) {
-            $select = new Subquery($this->compiler);
+            $select = new Subquery();
             $value($select);
             $this->conditions[] = array(
                 'type' => 'havingInSelect',

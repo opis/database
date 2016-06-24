@@ -41,12 +41,11 @@ class Where
     }
 
     /**
-     * @param   string  $column
-     * @param   strin   $separator
-     *
-     * @return  $this
+     * @param   string $column
+     * @param   string $separator
+     * @return $this|Where
      */
-    public function init($column, $separator)
+    public function init(string $column, string $separator): self
     {
         $this->column = $column;
         $this->separator = $separator;
@@ -60,7 +59,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    protected function addCondition($value, $operator, $iscolumn = false)
+    protected function addCondition($value, string $operator, bool $iscolumn = false): WhereCondition
     {
         if ($iscolumn && is_string($value)) {
             $value = function ($expr) use ($value) {
@@ -73,13 +72,13 @@ class Where
     }
 
     /**
-     * @param   int     $value1
-     * @param   int     $value2
+     * @param   int|string     $value1
+     * @param   int|string     $value2
      * @param   bool    $not    
      *
      * @return  WhereCondition
      */
-    protected function addBetweenCondition($value1, $value2, $not)
+    protected function addBetweenCondition($value1, $value2, bool $not): WhereCondition
     {
         $this->whereClause->addBetweenCondition($this->column, $value1, $value2, $this->separator, $not);
         return $this->condition;
@@ -91,7 +90,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    protected function addLikeCondition($pattern, $not)
+    protected function addLikeCondition(string $pattern, bool $not): WhereCondition
     {
         $this->whereClause->addLikeCondition($this->column, $pattern, $this->separator, $not);
         return $this->condition;
@@ -103,7 +102,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    protected function addInCondition($value, $not)
+    protected function addInCondition($value, bool $not): WhereCondition
     {
         $this->whereClause->addInCondition($this->column, $value, $this->separator, $not);
         return $this->condition;
@@ -114,7 +113,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function addNullCondition($not)
+    public function addNullCondition(bool $not): WhereCondition
     {
         $this->whereClause->addNullCondition($this->column, $this->separator, $not);
         return $this->condition;
@@ -126,7 +125,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function is($value, $iscolumn = false)
+    public function is($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '=', $iscolumn);
     }
@@ -137,7 +136,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function isNot($value, $iscolumn = false)
+    public function isNot($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '!=', $iscolumn);
     }
@@ -148,7 +147,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function lessThan($value, $iscolumn = false)
+    public function lessThan($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '<', $iscolumn);
     }
@@ -159,7 +158,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function greaterThan($value, $iscolumn = false)
+    public function greaterThan($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '>', $iscolumn);
     }
@@ -170,7 +169,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function atLeast($value, $iscolumn = false)
+    public function atLeast($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '>=', $iscolumn);
     }
@@ -181,29 +180,29 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function atMost($value, $iscolumn = false)
+    public function atMost($value, bool $iscolumn = false): WhereCondition
     {
         return $this->addCondition($value, '<=', $iscolumn);
     }
 
     /**
-     * @param   int $value1
-     * @param   int $value2
+     * @param   int|float|string $value1
+     * @param   int|float|string $value2
      *
      * @return  WhereCondition
      */
-    public function between($value1, $value2)
+    public function between($value1, $value2): WhereCondition
     {
         return $this->addBetweenCondition($value1, $value2, false);
     }
 
     /**
-     * @param   int $value1
-     * @param   int $value2
+     * @param   int|float|string $value1
+     * @param   int|float|string $value2
      *
      * @return  WhereCondition
      */
-    public function notBetween($value1, $value2)
+    public function notBetween($value1, $value2): WhereCondition
     {
         return $this->addBetweenCondition($value1, $value2, true);
     }
@@ -213,7 +212,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function like($value)
+    public function like(string $value): WhereCondition
     {
         return $this->addLikeCondition($value, false);
     }
@@ -223,7 +222,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function notLike($value)
+    public function notLike(string $value): WhereCondition
     {
         return $this->addLikeCondition($value, true);
     }
@@ -233,7 +232,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function in($value)
+    public function in($value): WhereCondition
     {
         return $this->addInCondition($value, false);
     }
@@ -243,7 +242,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function notIn($value)
+    public function notIn($value): WhereCondition
     {
         return $this->addInCondition($value, true);
     }
@@ -251,7 +250,7 @@ class Where
     /**
      * @return  WhereCondition
      */
-    public function isNull()
+    public function isNull(): WhereCondition
     {
         return $this->addNullCondition(false);
     }
@@ -259,7 +258,7 @@ class Where
     /**
      * @return  WhereCondition
      */
-    public function notNull()
+    public function notNull(): WhereCondition
     {
         return $this->addNullCondition(true);
     }
@@ -271,7 +270,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function eq($value, $iscolumn = false)
+    public function eq($value, bool $iscolumn = false): WhereCondition
     {
         return $this->is($value, $iscolumn);
     }
@@ -282,7 +281,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function ne($value, $iscolumn = false)
+    public function ne($value, bool $iscolumn = false): WhereCondition
     {
         return $this->isNot($value, $iscolumn);
     }
@@ -293,7 +292,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function lt($value, $iscolumn = false)
+    public function lt($value, bool $iscolumn = false): WhereCondition
     {
         return $this->lessThan($value, $iscolumn);
     }
@@ -304,7 +303,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function gt($value, $iscolumn = false)
+    public function gt($value, bool $iscolumn = false): WhereCondition
     {
         return $this->greaterThan($value, $iscolumn);
     }
@@ -315,7 +314,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function gte($value, $iscolumn = false)
+    public function gte($value, bool $iscolumn = false): WhereCondition
     {
         return $this->atLeast($value, $iscolumn);
     }
@@ -326,7 +325,7 @@ class Where
      *
      * @return  WhereCondition
      */
-    public function lte($value, $iscolumn = false)
+    public function lte($value, bool $iscolumn = false): WhereCondition
     {
         return $this->atMost($value, $iscolumn);
     }

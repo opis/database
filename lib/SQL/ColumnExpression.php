@@ -24,28 +24,16 @@ use Closure;
 
 class ColumnExpression
 {
-    /** @var    Compiler */
-    protected $compiler;
-
     /** @var    array */
     protected $columns = array();
-
-    /**
-     * Constructor
-     * 
-     * @param   Compiler   $compiler
-     */
-    public function __construct(Compiler $compiler)
-    {
-        $this->compiler = $compiler;
-    }
+    
 
     /**
      * @return  Expression
      */
     protected function expression()
     {
-        return new Expression($this->compiler);
+        return new Expression();
     }
 
     /**

@@ -25,16 +25,6 @@ use Closure;
 class WhereClause
 {
     protected $conditions = array();
-    protected $compiler;
-
-    /**
-     * WhereClause constructor.
-     * @param Compiler $compiler
-     */
-    public function __construct(Compiler $compiler)
-    {
-        $this->compiler = $compiler;
-    }
 
     /**
      * @param Closure $callback
@@ -43,7 +33,7 @@ class WhereClause
      */
     public function addConditionGroup(Closure $callback, $separator)
     {
-        $condition = new WhereCondition($this->compiler);
+        $condition = new WhereCondition();
         $callback($condition);
         $this->conditions[] = array(
             'type' => 'whereNested',
@@ -63,7 +53,7 @@ class WhereClause
     public function addCondition($column, $value, $operator, $separator)
     {
         if ($value instanceof Closure) {
-            $expr = new Expression($this->compiler);
+            $expr = new Expression();
             $value($expr);
             $this->conditions[] = array(
                 'type' => 'whereColumn',
@@ -136,7 +126,7 @@ class WhereClause
     public function addInCondition($column, $value, $separator, $not)
     {
         if ($value instanceof Closure) {
-            $select = new Subquery($this->compiler);
+            $select = new Subquery();
             $value($select);
             $this->conditions[] = array(
                 'type' => 'whereInSelect',
@@ -182,7 +172,7 @@ class WhereClause
      */
     public function addExistsCondition($closure, $separator, $not)
     {
-        $select = new Subquery($this->compiler);
+        $select = new Subquery();
         $closure($select);
 
         $this->conditions[] = array(

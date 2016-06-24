@@ -59,21 +59,20 @@ class SelectStatement extends WhereJoinCondition
 
     /**
      * Constructor
-     * 
-     * @param   Compiler        $compiler
+     *
      * @param   string|array    $tables
      * @param   WhereClause     $clause     (optional)
      */
-    public function __construct(Compiler $compiler, $tables, WhereClause $clause = null)
+    public function __construct($tables, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $clause);
+        parent::__construct($clause);
 
         if (!is_array($tables)) {
             $tables = array($tables);
         }
 
         $this->tables = $tables;
-        $this->have = new HavingCondition($this->compiler);
+        $this->have = new HavingCondition();
     }
 
     /**
@@ -161,7 +160,7 @@ class SelectStatement extends WhereJoinCondition
      */
     protected function expression()
     {
-        return new ColumnExpression($this->compiler);
+        return new ColumnExpression();
     }
 
     /**
@@ -284,7 +283,7 @@ class SelectStatement extends WhereJoinCondition
     }
 
     /**
-     * @param   string|array\Closure    $columns
+     * @param   string|array|\Closure    $columns
      * 
      * @return  $this
      */
@@ -357,15 +356,5 @@ class SelectStatement extends WhereJoinCondition
     {
         $this->columns = $this->expression()->max($column, null, $distinct)->getColumns();
     }
-
-    /**
-     * @return  string
-     */
-    public function __toString()
-    {
-        if ($this->sql === null) {
-            $this->sql = $this->compiler->select($this);
-        }
-        return $this->sql;
-    }
+    
 }

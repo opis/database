@@ -30,14 +30,13 @@ class Select extends SelectStatement
      * Constructor
      * 
      * @param   Connection  $connection
-     * @param   Compiler    $compiler
      * @param   array       $tables
      * @param   array       $joins
      * @param   WhereClause $clause     (optional)
      */
-    public function __construct(Connection $connection, Compiler $compiler, $tables, $joins, WhereClause $clause = null)
+    public function __construct(Connection $connection, $tables, $joins, WhereClause $clause = null)
     {
-        parent::__construct($compiler, $tables, $clause);
+        parent::__construct($tables, $clause);
         $this->connection = $connection;
         $this->joins = $joins;
     }
@@ -56,7 +55,7 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|array\Closure    $columns    (optional)
+     * @param   string|array|\Closure    $columns    (optional)
      * 
      * @return  \Opis\Database\ResultSet
      */

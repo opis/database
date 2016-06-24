@@ -27,19 +27,6 @@ class Expression
     /** @var    array */
     protected $expressions = array();
 
-    /** @var    Compiler */
-    protected $compiler;
-
-    /**
-     * Constructor
-     * 
-     * @param   Compiler    $compiler
-     */
-    public function __construct(Compiler $compiler)
-    {
-        $this->compiler = $compiler;
-    }
-
     /**
      * Returns an array of expressions
      * 
@@ -77,7 +64,7 @@ class Expression
     protected function addFunction($type, $name, $column, $arguments = array())
     {
         if ($column instanceof Closure) {
-            $expression = new Expression($this->compiler);
+            $expression = new Expression();
             $column($expression);
             $column = $expression;
         }
@@ -123,7 +110,7 @@ class Expression
      */
     public function group(Closure $closure)
     {
-        $expresion = new Expression($this->compiler);
+        $expresion = new Expression();
         $closure($expresion);
         return $this->addExpression('group', $expresion);
     }
@@ -135,7 +122,7 @@ class Expression
      */
     public function from($tables)
     {
-        $subquery = new Subquery($this->compiler);
+        $subquery = new Subquery();
         $this->addExpression('subquery', $subquery);
         return $subquery->from($tables);
     }

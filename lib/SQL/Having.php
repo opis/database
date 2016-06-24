@@ -22,9 +22,6 @@ namespace Opis\Database\SQL;
 
 class Having
 {
-    /** @var    Compiler */
-    protected $compiler;
-
     /** @var    HavingClause */
     protected $havingClause;
 
@@ -36,13 +33,11 @@ class Having
 
     /**
      * Constructor
-     * 
-     * @param   Compiler        $compiler
+     *
      * @param   HavingClause    $clause
      */
-    public function __construct(Compiler $compiler, HavingClause $clause)
+    public function __construct(HavingClause $clause)
     {
-        $this->compiler = $compiler;
         $this->havingClause = $clause;
     }
 
@@ -54,7 +49,7 @@ class Having
     protected function addCondition($value, $operator, $iscolumn)
     {
         if ($iscolumn && is_string($value)) {
-            $expr = new Expression($this->compiler);
+            $expr = new Expression();
             $value = $expr->column($value);
         }
 

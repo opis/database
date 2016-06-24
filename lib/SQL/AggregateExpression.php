@@ -22,9 +22,6 @@ namespace Opis\Database\SQL;
 
 class AggregateExpression
 {
-    /** @var    Compiler */
-    protected $compiler;
-
     /** @var    HavingClause */
     protected $havingClause;
 
@@ -39,15 +36,13 @@ class AggregateExpression
 
     /**
      * Constructor
-     * 
-     * @param   Compiler        $compiler
+     *
      * @param   HavingClause    $clause
      */
-    public function __construct(Compiler $compiler, HavingClause $clause)
+    public function __construct(HavingClause $clause)
     {
-        $this->compiler = $compiler;
         $this->havingClause = $clause;
-        $this->having = new Having($this->compiler, $this->havingClause);
+        $this->having = new Having($this->havingClause);
     }
 
     /**
@@ -55,7 +50,7 @@ class AggregateExpression
      */
     protected function expression()
     {
-        return new Expression($this->compiler);
+        return new Expression();
     }
 
     /**

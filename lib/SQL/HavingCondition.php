@@ -30,29 +30,21 @@ class HavingCondition
     /** @var    array */
     protected $conditions = array();
 
-    /** @var    Compiler */
-    protected $compiler;
-
     /** @var    AggregateExpression */
     protected $aggregate;
 
     /**
      * Constructor
      * 
-     * @param   Compiler        $compiler
      * @param   HavingClause    $clause     (optional)
      */
-    public function __construct(Compiler $compiler, HavingClause $clause = null)
+    public function __construct(HavingClause $clause = null)
     {
-        $this->compiler = $compiler;
-
         if ($clause === null) {
-            $clause = new HavingClause($compiler);
+            $clause = new HavingClause();
         }
-
         $this->havingClause = $clause;
-
-        $this->aggregate = new AggregateExpression($this->compiler, $this->havingClause);
+        $this->aggregate = new AggregateExpression($this->havingClause);
     }
 
     /**

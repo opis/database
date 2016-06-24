@@ -26,19 +26,15 @@ class WhereCondition
 {
     protected $whereClause;
     protected $where;
-    protected $compiler;
 
     /**
      * WhereCondition constructor.
-     * @param Compiler $compiler
      * @param WhereClause|null $clause
      */
-    public function __construct(Compiler $compiler, WhereClause $clause = null)
+    public function __construct(WhereClause $clause = null)
     {
-        $this->compiler = $compiler;
-
         if ($clause === null) {
-            $clause = new WhereClause($compiler);
+            $clause = new WhereClause();
         }
 
         $this->whereClause = $clause;

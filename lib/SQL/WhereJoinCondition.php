@@ -29,13 +29,12 @@ class WhereJoinCondition extends WhereCondition
 
     /**
      * Constructor
-     * 
-     * @param   Compiler    $compiler
+     *
      * @param   WhereClause $clause     (optional)
      */
-    public function __construct(Compiler $compiler, WhereClause $clause = null)
+    public function __construct(WhereClause $clause = null)
     {
-        parent::__construct($compiler, $clause);
+        parent::__construct($clause);
     }
 
     /**
