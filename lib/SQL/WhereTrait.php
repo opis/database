@@ -26,56 +26,92 @@ trait WhereTrait
 {
     abstract protected function getSQLStatement(): SQLStatement;
 
-    public function where($column)
-    {
-        return $this->andWhere($column);
-    }
+    abstract protected function getWhereCondition(string $column, string $separator): Where;
 
     /**
      * @param $column
-     * @return $this|Where
+     * @return self|Where
      */
-    public function andWhere($column)
+    public function where($column)
     {
         if($column instanceof  Closure) {
             $this->getSQLStatement()->addWhereConditionGroup($column, 'AND');
             return $this;
         }
+
+        return $this->getWhereCondition($column, 'AND');
     }
 
-    public function orWhere(string $column)
+    /**
+     * @param $column
+     * @return self|Where
+     */
+    public function andWhere($column)
     {
-
+        return $this->where($column);
     }
 
+    /**
+     * @param $column
+     * @return self|Where
+     */
+    public function orWhere($column)
+    {
+        return $this->getWhereCondition($column, 'OR');
+    }
+
+    /**
+     * @param Closure $select
+     * @return self
+     */
     public function whereExists(Closure $select): self
-    {
-        return $this->andWhereExists($select);
-    }
-
-    public function andWhereExists(Closure $select): self
     {
         $this->getSQLStatement()->addWhereExistsCondition($select, 'AND', false);
         return $this;
     }
 
+    /**
+     * @param Closure $select
+     * @return self
+     */
+    public function andWhereExists(Closure $select): self
+    {
+        return $this->andWhereExists($select);
+    }
+
+    /**
+     * @param Closure $select
+     * @return self
+     */
     public function orWhereExists(Closure $select): self
     {
         $this->getSQLStatement()->addWhereExistsCondition($select, 'OR', false);
         return $this;
     }
 
+    /**
+     * @param Closure $select
+     * @return self
+     */
     public function whereNotExists(Closure $select): self
-    {
-        return $this->andWhereNotExists($select);
-    }
-
-    public function andWhereNotExists(Closure $select): self
     {
         $this->getSQLStatement()->addWhereExistsCondition($select, 'AND', true);
         return $this;
     }
 
+    /**
+     * @param Closure $select
+     * @return self
+     */
+    public function andWhereNotExists(Closure $select): self
+    {
+        return $this->andWhereNotExists($select);
+    }
+
+    /**
+     * @param Closure $select
+     * @return self
+     */
     public function orWhereNotExists(Closure $select): self
     {
         $this->getSQLStatement()->addWhereExistsCondition($select, 'OR', true);

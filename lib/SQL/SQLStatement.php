@@ -19,7 +19,6 @@ class SQLStatement
     /**
      * @param Closure $callback
      * @param $separator
-     * @return $this
      */
     public function addWhereConditionGroup(Closure $callback, $separator)
     {
@@ -30,7 +29,6 @@ class SQLStatement
             'clause' => $condition->getWhereClause(),
             'separator' => $separator
         );
-        return $this;
     }
 
     /**
@@ -38,7 +36,6 @@ class SQLStatement
      * @param $value
      * @param string $operator
      * @param string $separator
-     * @return $this
      */
     public function addWhereCondition(string $column, $value, string $operator, string $separator)
     {
@@ -55,8 +52,6 @@ class SQLStatement
             'operator' => $operator,
             'separator' => $separator,
         );
-
-        return $this;
     }
 
     /**
@@ -64,7 +59,6 @@ class SQLStatement
      * @param $pattern
      * @param $separator
      * @param $not
-     * @return $this
      */
     public function addWhereLikeCondition(string $column, string $pattern, string $separator, bool $not)
     {
@@ -75,7 +69,6 @@ class SQLStatement
             'separator' => $separator,
             'not' => $not,
         );
-        return $this;
     }
 
     /**
@@ -84,7 +77,6 @@ class SQLStatement
      * @param $value2
      * @param string $separator
      * @param bool $not
-     * @return $this
      */
     public function addWhereBetweenCondition(string $column, $value1, $value2, string $separator, bool $not)
     {
@@ -96,15 +88,12 @@ class SQLStatement
             'separator' => $separator,
             'not' => $not,
         );
-
-        return $this;
     }
     /**
      * @param $column
      * @param $value
      * @param $separator
      * @param $not
-     * @return $this
      */
     public function addWhereInCondition(string $column, $value, string $separator, bool $not)
     {
@@ -127,14 +116,12 @@ class SQLStatement
                 'not' => $not,
             );
         }
-        return $this;
     }
 
     /**
      * @param string $column
      * @param string $separator
      * @param bool $not
-     * @return $this
      */
     public function addWhereNullCondition(string $column, string $separator, bool $not)
     {
@@ -144,14 +131,12 @@ class SQLStatement
             'separator' => $separator,
             'not' => $not,
         );
-        return $this;
     }
 
     /**
      * @param $closure
      * @param $separator
      * @param $not
-     * @return $this
      */
     public function addWhereExistsCondition(Closure $closure, string $separator, bool $not)
     {
@@ -164,16 +149,12 @@ class SQLStatement
             'separator' => $separator,
             'not' => $not,
         );
-
-        return $this;
     }
 
     /**
      *  @param  string          $type
      *  @param  string|array    $table
      *  @param  Closure         $closure
-     *
-     *  @return $this
      */
     public function addJoinClause(string $type, $table, Closure $closure)
     {
@@ -189,9 +170,8 @@ class SQLStatement
             'table' => $table,
             'join' => $join,
         );
-
-        return $this;
     }
+
     /**
      * @param   Closure $callback
      * @param   string  $separator
