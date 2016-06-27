@@ -20,13 +20,51 @@
 
 namespace Opis\Database\SQL;
 
-use Closure;
 
-trait WhereTrait
+class WhereStatement
 {
-    abstract protected function getSQLStatement(): SQLStatement;
+    protected $sql;
+    protected $where;
 
-    abstract protected function getWhereCondition(string $column, string $separator): Where;
+    public function __construct()
+    {
+        $this->sql = new SQLStatement();
+        $this->where = new Where($this, $this->sql);
+    }
+
+    /**
+     * @param $column
+     * @param string $separator
+     * @return $this|Where
+     */
+    protected function addWhereCondition($column, string $separator ='AND')
+    {
+        if($column instanceof  Closure) {
+            $this->sql->addWhereConditionGroup($column, $separator);
+            return $this;
+        }
+        return $this->where->init($column, $separator);
+    }
+
+    /**
+     * @param Closure $select
+     * @param string $separator
+     * @param bool $not
+     * @return BaseStatement
+     */
+    protected function addWhereExistCondition(Closure $select, string $separator = 'AND', bool $not = false): self
+    {
+        $this->sql->addWhereExistsCondition($select, $separator, $not);
+        return $this;
+    }
+
+    /**
+     * @return SQLStatement
+     */
+    public function getSQLStatement(): SQLStatement
+    {
+        return $this->sql;
+    }
 
     /**
      * @param $column
@@ -34,12 +72,7 @@ trait WhereTrait
      */
     public function where($column)
     {
-        if($column instanceof  Closure) {
-            $this->getSQLStatement()->addWhereConditionGroup($column, 'AND');
-            return $this;
-        }
-
-        return $this->getWhereCondition($column, 'AND');
+        return $this->addWhereCondition($column);
     }
 
     /**
@@ -48,7 +81,7 @@ trait WhereTrait
      */
     public function andWhere($column)
     {
-        return $this->where($column);
+        return $this->addWhereCondition($column);
     }
 
     /**
@@ -57,7 +90,7 @@ trait WhereTrait
      */
     public function orWhere($column)
     {
-        return $this->getWhereCondition($column, 'OR');
+        return $this->addWhereCondition($column, 'OR');
     }
 
     /**
@@ -66,8 +99,7 @@ trait WhereTrait
      */
     public function whereExists(Closure $select): self
     {
-        $this->getSQLStatement()->addWhereExistsCondition($select, 'AND', false);
-        return $this;
+        return $this->addWhereExistCondition($select);
     }
 
     /**
@@ -76,7 +108,7 @@ trait WhereTrait
      */
     public function andWhereExists(Closure $select): self
     {
-        return $this->andWhereExists($select);
+        return $this->addWhereExistCondition($select);
     }
 
     /**
@@ -85,8 +117,7 @@ trait WhereTrait
      */
     public function orWhereExists(Closure $select): self
     {
-        $this->getSQLStatement()->addWhereExistsCondition($select, 'OR', false);
-        return $this;
+        return $this->addWhereExistCondition($select, 'OR');
     }
 
     /**
@@ -95,8 +126,7 @@ trait WhereTrait
      */
     public function whereNotExists(Closure $select): self
     {
-        $this->getSQLStatement()->addWhereExistsCondition($select, 'AND', true);
-        return $this;
+        return $this->addWhereExistCondition($select, 'AND', true);
     }
 
     /**
@@ -105,7 +135,7 @@ trait WhereTrait
      */
     public function andWhereNotExists(Closure $select): self
     {
-        return $this->andWhereNotExists($select);
+        return $this->addWhereExistCondition($select, 'AND', true);
     }
 
     /**
@@ -114,7 +144,6 @@ trait WhereTrait
      */
     public function orWhereNotExists(Closure $select): self
     {
-        $this->getSQLStatement()->addWhereExistsCondition($select, 'OR', true);
-        return $this;
+        return $this->addWhereExistCondition($select, 'OR', true);
     }
 }
