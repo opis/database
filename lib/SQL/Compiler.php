@@ -757,7 +757,7 @@ class Compiler
     public function insert(InsertStatement $insert)
     {
         $columns = $this->handleColumns($insert->getColumns());
-
+        
         $sql = 'INSERT INTO ';
         $sql .= $this->handleTables($insert->getTables());
         $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';

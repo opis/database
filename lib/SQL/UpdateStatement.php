@@ -22,86 +22,30 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class UpdateStatement extends WhereJoinCondition
+class UpdateStatement extends BaseStatement
 {
-    /** @var    array */
-    protected $tables;
-
-    /** @var    array */
-    protected $columns = array();
-
-    /** @var    string */
-    protected $sql;
-
     /**
-     * Constructor
-     * 
-     * @param   Compiler        $compiler
-     * @param   array|string    $table
-     * @param   WhereClause     $clause     (optional)
+     * UpdateStatement constructor.
+     * @param string|array $table
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Compiler $compiler, $table, WhereClause $clause = null)
+    public function __construct($table, SQLStatement $statement = null)
     {
         if (!is_array($table)) {
             $table = array($table);
         }
-
-        $this->tables = $table;
-
-        parent::__construct($compiler, $clause);
+        $statement->addTables($table);
+        parent::__construct($statement);
     }
 
     /**
-     * @return  array
+     * @param   array $columns
+     * @return $this|UpdateStatement|static
      */
-    public function getTables()
+    public function set(array $columns): self
     {
-        return $this->tables;
-    }
-
-    /**
-     * @return  array
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param   array   $columns
-     * 
-     * @return  $this
-     */
-    public function set(array $columns)
-    {
-        foreach ($columns as $column => $value) {
-            if ($value instanceof Closure) {
-                $expr = new Expression($this->compiler);
-                $value($expr);
-
-                $this->columns[] = array(
-                    'column' => $column,
-                    'value' => $expr,
-                );
-            } else {
-                $this->columns[] = array(
-                    'column' => $column,
-                    'value' => $value,
-                );
-            }
-        }
+        $this->sql->addUpdateColumns($columns);
         return $this;
     }
 
-    /**
-     * @return  string
-     */
-    public function __toString()
-    {
-        if ($this->sql === null) {
-            $this->sql = $this->compiler->update($this);
-        }
-
-        return $this->sql;
-    }
 }

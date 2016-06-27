@@ -27,6 +27,8 @@ class SQLStatement
     protected $wheres = [];
     protected $having = [];
     protected $joins = [];
+    protected $tables= [];
+    protected $columns = [];
 
     /**
      * @param Closure $callback
@@ -272,6 +274,33 @@ class SQLStatement
     }
 
     /**
+     * @param array $tables
+     */
+    public function addTables(array $tables)
+    {
+        $this->tables = $tables;
+    }
+
+    /**
+     * @param array $columns
+     */
+    public function addUpdateColumns(array $columns)
+    {
+        foreach ($columns as $column => $value) {
+            if($value instanceof Closure){
+                $expr = new Expression();
+                $value($expr);
+                $value = $expr;
+            }
+
+            $this->columns[] = array(
+                'column' => $column,
+                'value' => $value,
+            );
+        }
+    }
+
+    /**
      * @return array
      */
     public function getWheres(): array
@@ -293,6 +322,19 @@ class SQLStatement
     public function getJoins(): array
     {
         return $this->joins;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTables(): array
+    {
+        return $this->tables;
+    }
+
+    public function getColumns(): array
+    {
+        return $this->columns;
     }
 
 }

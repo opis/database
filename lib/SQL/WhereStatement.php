@@ -20,16 +20,28 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
 
 class WhereStatement
 {
+    /** @var SQLStatement  */
     protected $sql;
+
+    /** @var Where  */
     protected $where;
 
-    public function __construct()
+    /**
+     * WhereStatement constructor.
+     * @param SQLStatement|null $statement
+     */
+    public function __construct(SQLStatement $statement = null)
     {
-        $this->sql = new SQLStatement();
-        $this->where = new Where($this, $this->sql);
+        if($statement === null){
+            $statement = new SQLStatement();
+        }
+
+        $this->sql = $statement;
+        $this->where = new Where($this, $statement);
     }
 
     /**
