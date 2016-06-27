@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2013-2015 Marius Sarca
+ * Copyright 2013-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

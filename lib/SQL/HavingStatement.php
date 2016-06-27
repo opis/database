@@ -22,55 +22,50 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class HavingCondition
+class HavingStatament
 {
-    /** @var    HavingClause */
-    protected $havingClause;
+    /** @var    SQLStatement */
+    protected $sql;
 
-    /** @var    array */
-    protected $conditions = array();
-
-    /** @var    AggregateExpression */
-    protected $aggregate;
+    /** @var    HavingExpression */
+    protected $expression;
 
     /**
-     * Constructor
-     * 
-     * @param   HavingClause    $clause     (optional)
+     * HavingStatament constructor.
+     * @param SQLStatement|null $statement
      */
-    public function __construct(HavingClause $clause = null)
+    public function __construct(SQLStatement $statement = null)
     {
-        if ($clause === null) {
-            $clause = new HavingClause();
+        if ($statement === null) {
+            $statement = new SQLStatement();
         }
-        $this->havingClause = $clause;
-        $this->aggregate = new AggregateExpression($this->havingClause);
+        $this->sql = $statement;
+        $this->expression = new HavingExpression($statement);
     }
 
     /**
-     * @param   string  $column
-     * @param   mixed   $value
+     * @param   string|Closure  $column
+     * @param   Closure   $value
      * @param   string  $separator
      * 
      * @return  $this
      */
-    protected function addCondition($column, $value, $separator)
+    protected function addCondition($column, Closure $value = null, $separator): self
     {
         if ($column instanceof Closure) {
-            $this->havingClause->addGroupCondition($column, $separator);
+            $this->sql->addHavingGroupCondition($column, $separator);
         } else {
-            $value($this->aggregate->init($column, $separator));
+            $value($this->expression->init($column, $separator));
         }
-
         return $this;
     }
 
     /**
-     * @return array
+     * @return SQLStatement
      */
-    public function getHavingConditions()
+    public function getSQLStatement(): SQLStatement
     {
-        return $this->havingClause->getHavingConditions();
+        return $this->sql;
     }
 
     /**
@@ -79,7 +74,7 @@ class HavingCondition
      * 
      * @return  $this
      */
-    public function having($column, Closure $value = null)
+    public function having($column, Closure $value = null): self
     {
         return $this->addCondition($column, $value, 'AND');
     }
@@ -90,7 +85,7 @@ class HavingCondition
      * 
      * @return  $this
      */
-    public function andHaving($column, Closure $value = null)
+    public function andHaving($column, Closure $value = null): self
     {
         return $this->having($column, $value);
     }
@@ -101,7 +96,7 @@ class HavingCondition
      * 
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null)
+    public function orHaving($column, Closure $value = null): self
     {
         return $this->addCondition($column, $value, 'OR');
     }

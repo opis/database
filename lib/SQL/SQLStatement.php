@@ -29,6 +29,13 @@ class SQLStatement
     protected $joins = [];
     protected $tables= [];
     protected $columns = [];
+    protected $order = [];
+    protected $distinct = false;
+    protected $group = [];
+    protected $limit = 0;
+    protected $offset = -1;
+    protected $intoTable;
+    protected $intoDatabase;
 
     /**
      * @param Closure $callback
@@ -192,12 +199,12 @@ class SQLStatement
      */
     public function addHavingGroupCondition(Closure $callback, string $separator)
     {
-        $having = new HavingCondition();
+        $having = new HavingStatament();
         $callback($having);
 
         $this->having[] = array(
             'type' => 'havingNested',
-            'conditions' => $having->getHavingConditions(),
+            'conditions' => $having->getSQLStatement()->getHaving(),
             'separator' => $separator,
         );
     }
@@ -293,11 +300,84 @@ class SQLStatement
                 $value = $expr;
             }
 
-            $this->columns[] = array(
+            $this->columns[] = [
                 'column' => $column,
                 'value' => $value,
-            );
+            ];
         }
+    }
+
+    public function addOrder(array $columns, string $order, string  $nulls = null)
+    {
+        $order = strtoupper($order);
+
+        if ($order !== 'ASC' && $order !== 'DESC') {
+            $order = 'ASC';
+        }
+
+        if ($nulls !== null) {
+            $nulls = strtoupper($nulls);
+
+            if ($nulls !== 'NULLS FIRST' && $nulls !== 'NULLS LAST') {
+                $nulls = null;
+            }
+        }
+
+        $this->order[] = [
+            'columns' => $columns,
+            'order' => $order,
+            'nulls' => $nulls,
+        ];
+    }
+
+    /**
+     * @param array $columns
+     */
+    public function addGroupBy(array $columns)
+    {
+        $this->group = $columns;
+    }
+
+    /**
+     * @param $column
+     * @param null $alias
+     */
+    public function addColumn($column, $alias = null)
+    {
+        $this->columns[] = [
+            'name' => $column,
+            'alias' => $alias,
+        ];
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setDistinct(bool $value)
+    {
+        $this->distinct = $value;
+    }
+
+    /**
+     * @param int $value
+     */
+    public function setLimit(int $value)
+    {
+        $this->limit = $value;
+    }
+
+    /**
+     * @param int $value
+     */
+    public function setOffset(int $value)
+    {
+        $this->offset = $value;
+    }
+
+    public function setInto(string $table, string $database = null)
+    {
+        $this->intoTable = $table;
+        $this->intoDatabase = $database;
     }
 
     /**
@@ -332,9 +412,60 @@ class SQLStatement
         return $this->tables;
     }
 
+    /**
+     * @return array
+     */
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrder(): array
+    {
+        return $this->order;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupBy(): array
+    {
+        return $this->group;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOffset(): int
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIntoTable()
+    {
+        return $this->intoTable;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIntoDatabase()
+    {
+        return $this->intoDatabase;
     }
 
 }

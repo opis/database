@@ -20,10 +20,10 @@
 
 namespace Opis\Database\SQL;
 
-class AggregateExpression
+class HavingExpression
 {
-    /** @var    HavingClause */
-    protected $havingClause;
+    /** @var  SQLStatement */
+    protected $sql;
 
     /** @var    Having */
     protected $having;
@@ -35,31 +35,22 @@ class AggregateExpression
     protected $separator;
 
     /**
-     * Constructor
-     *
-     * @param   HavingClause    $clause
+     * AggregateExpression constructor.
+     * @param SQLStatement $statement
      */
-    public function __construct(HavingClause $clause)
+    public function __construct(SQLStatement $statement)
     {
-        $this->havingClause = $clause;
-        $this->having = new Having($this->havingClause);
+        $this->sql = $statement;
+        $this->having = new Having($statement);
     }
 
-    /**
-     * @return  Expression
-     */
-    protected function expression()
-    {
-        return new Expression();
-    }
 
     /**
-     * @param   string  $column
-     * @param   string  $separator
-     * 
-     * @return  $this
+     * @param string $column
+     * @param string $separator
+     * @return HavingExpression
      */
-    public function init($column, $separator)
+    public function init(string $column, string $separator): self
     {
         $this->column = $column;
         $this->separator = $separator;
@@ -67,57 +58,52 @@ class AggregateExpression
     }
 
     /**
-     * @param   bool    $distinct   (optional) Distinct column
-     * 
-     * @return  $this
+     * @param bool $distinct
+     * @return Having
      */
-    public function count($distinct = false)
+    public function count(bool $distinct = false): Having
     {
-        $value = $this->expression()->count($this->column, $distinct);
+        $value = (new Expression())->count($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
 
     /**
-     * @param   bool    $distinct   (optional) Distinct column
-     * 
-     * @return  $this
+     * @param bool $distinct
+     * @return Having
      */
-    public function avg($distinct = false)
+    public function avg(bool $distinct = false): Having
     {
-        $value = $this->expression()->avg($this->column, $distinct);
+        $value = (new Expression())->avg($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
 
     /**
-     * @param   bool    $distinct   (optional) Distinct column
-     * 
-     * @return  $this
+     * @param bool $distinct
+     * @return Having
      */
-    public function sum($distinct = false)
+    public function sum(bool $distinct = false): Having
     {
-        $value = $this->expression()->sum($this->column, $distinct);
+        $value = (new Expression())->sum($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
 
     /**
-     * @param   bool    $distinct   (optional) Distinct column
-     * 
-     * @return  $this
+     * @param bool $distinct
+     * @return Having
      */
-    public function min($distinct = false)
+    public function min(bool $distinct = false): Having
     {
-        $value = $this->expression()->min($this->column, $distinct);
+        $value = (new Expression())->min($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
 
     /**
-     * @param   bool    $distinct   (optional) Distinct column
-     * 
-     * @return  $this
+     * @param bool $distinct
+     * @return Having
      */
-    public function max($distinct = false)
+    public function max(bool $distinct = false): Having
     {
-        $value = $this->expression()->max($this->column, $distinct);
+        $value = (new Expression())->max($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
 }

@@ -22,8 +22,8 @@ namespace Opis\Database\SQL;
 
 class Having
 {
-    /** @var    HavingClause */
-    protected $havingClause;
+    /** @var  SQLStatement */
+    protected $sql;
 
     /** @var    string */
     protected $aggregate;
@@ -34,11 +34,11 @@ class Having
     /**
      * Constructor
      *
-     * @param   HavingClause    $clause
+     * @param SQLStatement $clause
      */
-    public function __construct(HavingClause $clause)
+    public function __construct(SQLStatement $statement)
     {
-        $this->havingClause = $clause;
+        $this->sql = $statement;
     }
 
     /**
@@ -46,14 +46,14 @@ class Having
      * @param   string  $operator
      * @param   boolean $iscolumn
      */
-    protected function addCondition($value, $operator, $iscolumn)
+    protected function addCondition($value, string $operator, bool $iscolumn)
     {
         if ($iscolumn && is_string($value)) {
             $expr = new Expression();
             $value = $expr->column($value);
         }
 
-        $this->havingClause->addCondition($this->aggregate, $value, $operator, $this->separator);
+        $this->sql->addHavingCondition($this->aggregate, $value, $operator, $this->separator);
     }
 
     /**
@@ -62,7 +62,7 @@ class Having
      * 
      * @return  $this
      */
-    public function init($aggregate, $separator)
+    public function init(string $aggregate, string $separator): self
     {
         $this->aggregate = $aggregate;
         $this->separator = $separator;
@@ -73,7 +73,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function eq($value, $iscolumn = false)
+    public function eq($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '=', $iscolumn);
     }
@@ -82,7 +82,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function ne($value, $iscolumn = false)
+    public function ne($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '!=', $iscolumn);
     }
@@ -91,7 +91,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function lt($value, $iscolumn = false)
+    public function lt($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '<', $iscolumn);
     }
@@ -100,7 +100,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function gt($value, $iscolumn = false)
+    public function gt($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '>', $iscolumn);
     }
@@ -109,7 +109,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function lte($value, $iscolumn = false)
+    public function lte($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '<=', $iscolumn);
     }
@@ -118,7 +118,7 @@ class Having
      * @param   mixed   $value
      * @param   bool    $iscolumn (optional)
      */
-    public function gte($value, $iscolumn = false)
+    public function gte($value, bool $iscolumn = false)
     {
         $this->addCondition($value, '>=', $iscolumn);
     }
@@ -128,7 +128,7 @@ class Having
      */
     public function in($value)
     {
-        $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, false);
+        $this->sql->addHavingInCondition($this->aggregate, $value, $this->separator, false);
     }
 
     /**
@@ -136,24 +136,24 @@ class Having
      */
     public function notIn($value)
     {
-        $this->havingClause->addInCondition($this->aggregate, $value, $this->separator, true);
+        $this->sql->addHavingInCondition($this->aggregate, $value, $this->separator, true);
     }
 
     /**
-     * @param   int $value1
-     * @param   int $value2
+     * @param   string|float|int $value1
+     * @param   string|float|int $value2
      */
     public function between($value1, $value2)
     {
-        $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, false);
+        $this->sql->addHavingBetweenCondition($this->aggregate, $value1, $value2, $this->separator, false);
     }
 
     /**
-     * @param   int $value1
-     * @param   int $value2
+     * @param   string|float|int $value1
+     * @param   string|float|int $value2
      */
     public function notBetween($value1, $value2)
     {
-        $this->havingClause->addBetweenCondition($this->aggregate, $value1, $value2, $this->separator, true);
+        $this->sql->addHavingBetweenCondition($this->aggregate, $value1, $value2, $this->separator, true);
     }
 }

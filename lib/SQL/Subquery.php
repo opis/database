@@ -32,8 +32,7 @@ class Subquery
      */
     public function from($tables)
     {
-        $this->select = new SelectStatement($this->compiler, $tables);
-        return $this->select;
+        return $this->select = new SelectStatement($tables);
     }
 
     /**
