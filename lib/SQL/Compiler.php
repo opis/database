@@ -156,14 +156,10 @@ class Compiler
     {
         return implode(', ', array_map(array($this, 'wrap'), $columns));
     }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    public function quote(string $value): string
+    
+    public function quote(string $value): string 
     {
-        return "'" . str_replace("'", "''", $value) . "'";
+        return "'" . str_replace("'", "''", $va) . "'";
     }
 
     /**
