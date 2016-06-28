@@ -36,10 +36,10 @@ class Subquery
     }
 
     /**
-     * @return SelectStatement
+     * @return SQLStatement
      */
-    public function getSelectStatement(): SelectStatement
+    public function getSQLStatement(): SQLStatement
     {
-        return $this->select;
+        return $this->select->getSQLStatement();
     }
 }

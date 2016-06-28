@@ -20,6 +20,7 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
 use Opis\Database\Connection;
 use Opis\Database\ResultSet;
 
@@ -40,11 +41,11 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|array|\Closure    $columns    (optional)
+     * @param   string|array|Closure    $columns    (optional)
      * 
      * @return  ResultSet
      */
-    public function select($columns = array()): ResultSet
+    public function select($columns = array())
     {
         parent::select($columns);
         $compiler = $this->connection->getCompiler();
@@ -56,7 +57,7 @@ class Select extends SelectStatement
      * 
      * @return  mixed|false
      */
-    public function column($name)
+    public function column(string $name)
     {
         parent::column($name);
         return $this->getColumnResult();
@@ -80,7 +81,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function avg($column, bool $distinct = false)
+    public function avg(string $column, bool $distinct = false)
     {
         parent::avg($column, $distinct);
         return $this->getColumnResult();
@@ -92,7 +93,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function sum($column, bool $distinct = false)
+    public function sum(string $column, bool $distinct = false)
     {
         parent::sum($column, $distinct);
         return $this->getColumnResult();
@@ -104,7 +105,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function min($column, bool $distinct = false)
+    public function min(string $column, bool $distinct = false)
     {
         parent::min($column, $distinct);
         return $this->getColumnResult();
@@ -116,7 +117,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function max($column, bool $distinct = false)
+    public function max(string $column, bool $distinct = false)
     {
         parent::max($column, $distinct);
         return $this->getColumnResult();

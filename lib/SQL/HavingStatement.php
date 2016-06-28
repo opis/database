@@ -22,7 +22,7 @@ namespace Opis\Database\SQL;
 
 use Closure;
 
-class HavingStatament
+class HavingStatement
 {
     /** @var    SQLStatement */
     protected $sql;

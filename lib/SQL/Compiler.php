@@ -159,7 +159,7 @@ class Compiler
     
     public function quote(string $value): string 
     {
-        return "'" . str_replace("'", "''", $va) . "'";
+        return "'" . str_replace("'", "''", $value) . "'";
     }
 
     /**

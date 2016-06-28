@@ -396,10 +396,9 @@ class Connection implements Serializable
      */
     protected function replaceParams($query, array $params)
     {
-        $pdo = $this->pdo();
         $compiler = $this->getCompiler();
 
-        return preg_replace_callback('/\?/', function ($matches) use (&$params, $pdo, $compiler) {
+        return preg_replace_callback('/\?/', function ($matches) use (&$params, $compiler) {
             $param = array_shift($params);
             $param = is_object($param) ? get_class($param) : $param;
 

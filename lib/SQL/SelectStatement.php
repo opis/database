@@ -24,7 +24,7 @@ use Closure;
 
 class SelectStatement extends BaseStatement
 {
-    /** @var    HavingStatament */
+    /** @var    HavingStatement */
     protected $have;
 
     public function __construct($tables, SQLStatement $statement = null)
@@ -36,7 +36,7 @@ class SelectStatement extends BaseStatement
         }
 
         $this->sql->addTables($tables);
-        $this->have = new HavingStatament($this->sql);
+        $this->have = new HavingStatement($this->sql);
     }
 
     /**
@@ -176,7 +176,7 @@ class SelectStatement extends BaseStatement
      * @param   string  $column     (optional)
      * @param   bool    $distinct   (optional)
      */
-    public function count(string $column = '*', bool $distinct = false)
+    public function count($column = '*', bool $distinct = false)
     {
         (new ColumnExpression($this->sql))->count($column, null, $distinct);
     }

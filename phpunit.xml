@@ -1,7 +1,7 @@
 <phpunit bootstrap="./vendor/autoload.php">
     <testsuites>
-        <testsuite name="Opis Database Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="Opis Database SQL Test Suite">
+            <directory suffix="Test.php">./tests/SQL</directory>
         </testsuite>
     </testsuites>
 </phpunit>
