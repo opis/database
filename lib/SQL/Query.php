@@ -23,7 +23,7 @@ namespace Opis\Database\SQL;
 use Closure;
 use Opis\Database\Connection;
 
-class Query extends WhereJoinCondition
+class Query extends BaseStatement
 {
     /** @var    Connection */
     protected $connection;
@@ -37,9 +37,9 @@ class Query extends WhereJoinCondition
      * @param   Connection  $connection
      * @param   array       $tables
      */
-    public function __construct(Connection $connection, $tables)
+    public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
     {
-        parent::__construct($connection->getCompiler());
+        parent::__construct($statement);
         $this->tables = $tables;
         $this->connection = $connection;
     }
@@ -47,17 +47,17 @@ class Query extends WhereJoinCondition
     /**
      * @return  Select
      */
-    protected function buildSelect()
+    protected function buildSelect(): Select
     {
-        return new Select($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        return new Select($this->connection, $this->tables, $this->sql);
     }
 
     /**
      * @return  Delete
      */
-    protected function buildDelete()
+    protected function buildDelete(): Delete
     {
-        return new Delete($this->connection, $this->compiler, $this->tables, $this->joins, $this->whereClause);
+        return new Delete($this->connection, $this->tables, $this->sql);
     }
 
     /**
