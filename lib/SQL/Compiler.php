@@ -33,6 +33,142 @@ class Compiler
     /** @var    array   Query params */
     protected $params = array();
 
+
+    /**
+     * Returns the SQL for a select statement
+     *
+     * @param SQLStatement $select
+     * @return string
+     */
+    public function select(SQLStatement $select): string
+    {
+        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql .= $this->handleColumns($select->getColumns());
+        $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
+        $sql .= ' FROM ';
+        $sql .= $this->handleTables($select->getTables());
+        $sql .= $this->handleJoins($select->getJoins());
+        $sql .= $this->handleWheres($select->getWheres());
+        $sql .= $this->handleGroupings($select->getGroupBy());
+        $sql .= $this->handleOrderings($select->getOrder());
+        $sql .= $this->handleHavings($select->getHaving());
+        $sql .= $this->handleLimit($select->getLimit());
+        $sql .= $this->handleOffset($select->getOffset());
+
+        return $sql;
+    }
+
+    /**
+     * Returns the SQL for an insert statement
+     *
+     * @param SQLStatement $insert
+     * @return string
+     */
+    public function insert(SQLStatement $insert): string
+    {
+        $columns = $this->handleColumns($insert->getColumns());
+
+        $sql  = 'INSERT INTO ';
+        $sql .= $this->handleTables($insert->getTables());
+        $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';
+        $sql .= $this->handleInsertValues($insert->getValues());
+
+        return $sql;
+    }
+
+
+    /**
+     * Returns the SQL for an update statement
+     *
+     * @param SQLStatement $update
+     * @return string
+     */
+    public function update(SQLStatement $update): string
+    {
+        $sql  = 'UPDATE ';
+        $sql .= $this->handleTables($update->getTables());
+        $sql .= $this->handleJoins($update->getJoins());
+        $sql .= $this->handleSetColumns($update->getColumns());
+        $sql .= $this->handleWheres($update->getWheres());
+
+        return $sql;
+    }
+
+    /**
+     * Returns the SQL for a delete statement
+     *
+     * @param SQLStatement $delete
+     * @return string
+     */
+    public function delete(SQLStatement $delete): string
+    {
+        $sql  = 'DELETE ' . $this->handleTables($delete->getTables());
+        $sql .= $sql === 'DELETE ' ? 'FROM ' : ' FROM ';
+        $sql .= $this->handleTables($delete->getFrom());
+        $sql .= $this->handleJoins($delete->getJoins());
+        $sql .= $this->handleWheres($delete->getWheres());
+
+        return $sql;
+    }
+
+    /**
+     * Returns the data format used
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->dateFormat;
+    }
+
+    /**
+     * Sets compiler options
+     *
+     * @param   array   $options
+     */
+    public function setOptions(array $options)
+    {
+        foreach ($options as $name => $value) {
+            $this->{$name} = $value;
+        }
+    }
+
+    /**
+     * Stores an array of params
+     *
+     * @param   array   $params
+     *
+     * @return  string
+     */
+    public function params(array $params)
+    {
+        return implode(', ', array_map(array($this, 'param'), $params));
+    }
+
+    /**
+     * Add an array of columns
+     *
+     * @param   array   $columns
+     *
+     * @return  string
+     */
+    public function columns(array $columns)
+    {
+        return implode(', ', array_map(array($this, 'wrap'), $columns));
+    }
+
+    /**
+     * Return the stored params
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        $params = $this->params;
+        $this->params = array();
+        return $params;
+    }
+
     /**
      * Wrap a value
      * 
@@ -79,54 +215,6 @@ class Compiler
     }
 
     /**
-     * Sets compiler options
-     * 
-     * @param   array   $options
-     */
-    public function setOptions(array $options)
-    {
-        foreach ($options as $name => $value) {
-            $this->{$name} = $value;
-        }
-    }
-
-    /**
-     * Stores an array of params
-     * 
-     * @param   array   $params
-     * 
-     * @return  string
-     */
-    public function params(array $params)
-    {
-        return implode(', ', array_map(array($this, 'param'), $params));
-    }
-
-    /**
-     * Add an array of columns
-     * 
-     * @param   array   $columns
-     * 
-     * @return  string
-     */
-    public function columns(array $columns)
-    {
-        return implode(', ', array_map(array($this, 'wrap'), $columns));
-    }
-
-    /**
-     * Return the stored params
-     * 
-     * @return array
-     */
-    public function getParams()
-    {
-        $params = $this->params;
-        $this->params = array();
-        return $params;
-    }
-
-    /**
      * Handle all expressions
      * 
      * @param   array   $expressions
@@ -155,7 +243,7 @@ class Compiler
                     $sql[] = $this->handleSqlFunction($expr['value']);
                     break;
                 case 'subquery':
-                    $sql[] = '(' . $expr['value'] . ')';
+                    $sql[] = '(' . $this->select($expr['value']->getSQLStatement()) . ')';
                     break;
             }
         }
@@ -234,7 +322,7 @@ class Compiler
      * 
      * @return  string
      */
-    public function handleInto($table, $database)
+    protected function handleInto($table, $database)
     {
         if ($table === null) {
             return '';
@@ -418,7 +506,7 @@ class Compiler
      */
     protected function handleLimit($limit)
     {
-        return ($limit === null) ? '' : ' LIMIT ' . $this->param($limit);
+        return ($limit === 0) ? '' : ' LIMIT ' . $this->param($limit);
     }
 
     /**
@@ -430,7 +518,7 @@ class Compiler
      */
     protected function handleOffset($offset)
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $this->param($offset);
+        return ($offset === -1) ? '' : ' OFFSET ' . $this->param($offset);
     }
 
     /**
@@ -480,7 +568,7 @@ class Compiler
      */
     protected function whereInSelect(array $where)
     {
-        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ' : 'IN ') . '(' . $where['subquery'] . ')';
+        return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ' : 'IN ') . '(' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
 
     /**
@@ -490,7 +578,7 @@ class Compiler
      */
     protected function whereNested(array $where)
     {
-        return '(' . $this->handleWheres($where['clause']->getWhereConditions(), false) . ')';
+        return '(' . $this->handleWheres($where['clause'], false) . ')';
     }
 
     /**
@@ -500,7 +588,7 @@ class Compiler
      */
     protected function whereExists(array $where)
     {
-        return ($where['not'] ? 'NOT EXISTS ' : 'EXISTS ') . '(' . $where['subquery'] . ')';
+        return ($where['not'] ? 'NOT EXISTS ' : 'EXISTS ') . '(' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
 
     /**
@@ -540,7 +628,7 @@ class Compiler
      */
     protected function whereSubquery(array $where)
     {
-        return $this->wrap($where['column']) . ' ' . $where['operator'] . ' (' . $where['subquery'] . ')';
+        return $this->wrap($where['column']) . ' ' . $where['operator'] . ' (' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
 
     /**
@@ -713,92 +801,4 @@ class Compiler
         return 'FORMAT(' . $this->wrap($func['column']) . ', ' . $this->param($func['format']) . ')';
     }
 
-    /**
-     * Returns the data format used
-     * 
-     * @return string
-     */
-    public function getDateFormat()
-    {
-        return $this->dateFormat;
-    }
-
-    /**
-     * Returns the SQL for a select statement
-     * 
-     * @param   \Opis\Database\SQL\SelectStatement  $select
-     * 
-     * @return  string
-     */
-    public function select(SelectStatement $select)
-    {
-        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-        $sql .= $this->handleColumns($select->getColumns());
-        $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
-        $sql .= ' FROM ';
-        $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereConditions());
-        $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleOrderings($select->getOrderClauses());
-        $sql .= $this->handleHavings($select->getHavingConditions());
-        $sql .= $this->handleLimit($select->getLimit());
-        $sql .= $this->handleOffset($select->getOffset());
-        return $sql;
-    }
-
-    /**
-     * Returns the SQL for an insert statement
-     * 
-     * @param   \Opis\Database\SQL\InsertStatement  $insert
-     * 
-     * @return  string
-     */
-    public function insert(InsertStatement $insert)
-    {
-        $columns = $this->handleColumns($insert->getColumns());
-        
-        $sql = 'INSERT INTO ';
-        $sql .= $this->handleTables($insert->getTables());
-        $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';
-        $sql .= $this->handleInsertValues($insert->getValues());
-
-        return $sql;
-    }
-
-    /**
-     * Returns the SQL for a update statement
-     * 
-     * @param   \Opis\Database\SQL\UpdateStatement  $update
-     * 
-     * @return  string
-     */
-    public function update(UpdateStatement $update)
-    {
-        $sql = 'UPDATE ';
-        $sql .= $this->handleTables($update->getTables());
-        $sql .= $this->handleJoins($update->getJoinClauses());
-        $sql .= $this->handleSetColumns($update->getColumns());
-        $sql .= $this->handleWheres($update->getWhereConditions());
-
-        return $sql;
-    }
-
-    /**
-     * Returns the SQL for a delete statement
-     * 
-     * @param   \Opis\Database\SQL\DeleteStatement  $delete
-     * 
-     * @return  string
-     */
-    public function delete(DeleteStatement $delete)
-    {
-        $sql = 'DELETE ' . $this->handleTables($delete->getTables());
-        $sql .= $sql === 'DELETE ' ? 'FROM ' : ' FROM ';
-        $sql .= $this->handleTables($delete->getFrom());
-        $sql .= $this->handleJoins($delete->getJoinClauses());
-        $sql .= $this->handleWheres($delete->getWhereConditions());
-
-        return $sql;
-    }
 }

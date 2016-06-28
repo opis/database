@@ -627,7 +627,7 @@ abstract class Model implements ModelInterface
     public function getDateFormat()
     {
         if ($this->dateFormat === null) {
-            $this->dateFormat = $this->database()->getConnection()->compiler()->getDateFormat();
+            $this->dateFormat = $this->database()->getConnection()->getCompiler()->getDateFormat();
         }
 
         return $this->dateFormat;

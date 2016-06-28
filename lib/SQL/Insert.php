@@ -28,16 +28,14 @@ class Insert extends InsertStatement
     protected $connection;
 
     /**
-     * Constructor
-     * 
-     * @param   Connection  $connection
-     * @param   array       $values
+     * Insert constructor.
+     * @param Connection $connection
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Connection $connection, array $values)
+    public function __construct(Connection $connection, SQLStatement $statement = null)
     {
-        parent::__construct($connection->compiler());
+        parent::__construct($statement);
         $this->connection = $connection;
-        $this->insert($values);
     }
 
     /**
@@ -48,6 +46,7 @@ class Insert extends InsertStatement
     public function into($table)
     {
         parent::into($table);
-        return $this->connection->command((string) $this, $this->compiler->getParams());
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->command($compiler->insert($this->sql), $compiler->getParams());
     }
 }

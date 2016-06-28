@@ -40,12 +40,10 @@ class UpdateStatement extends BaseStatement
 
     /**
      * @param   array $columns
-     * @return $this|UpdateStatement|static
      */
-    public function set(array $columns): self
+    public function set(array $columns)
     {
         $this->sql->addUpdateColumns($columns);
-        return $this;
     }
 
 }

@@ -276,7 +276,7 @@ class Connection implements Serializable
      *
      * @return  \Opis\Database\SQL\Compiler
      */
-    public function compiler()
+    public function getCompiler()
     {
         if ($this->compiler === null) {
             switch ($this->driver()) {

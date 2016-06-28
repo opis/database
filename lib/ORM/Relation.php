@@ -52,7 +52,7 @@ abstract class Relation extends BaseQuery
         $this->foreignKey = $foreignKey;
         $this->owner = $owner;
 
-        $compiler = $connection->compiler();
+        $compiler = $connection->getCompiler();
         $query = new Select($this->model, $compiler);
         $whereCondition = new WhereCondition($this, $query);
 

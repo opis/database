@@ -28,19 +28,15 @@ class Delete extends DeleteStatement
     protected $connection;
 
     /**
-     * Constructor
-     * 
-     * @param   Connection      $connection
-     * @param   Compiler        $compiler
-     * @param   string|array    $from
-     * @param   array           $joins
-     * @param   WhereClause     $clause     (optional)
+     * Delete constructor.
+     * @param Connection $connection
+     * @param string|array $from
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Connection $connection, Compiler $compiler, $from, $joins, WhereClause $clause = null)
+    public function __construct(Connection $connection, $from, SQLStatement $statement = null)
     {
-        parent::__construct($compiler, $from, $clause);
+        parent::__construct($from, $statement);
         $this->connection = $connection;
-        $this->joins = $joins;
     }
 
     /**
@@ -53,6 +49,7 @@ class Delete extends DeleteStatement
     public function delete($tables = array())
     {
         parent::delete($tables);
-        return $this->connection->count((string) $this, $this->compiler->getParams());
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->count($compiler->delete($this->sql), $compiler->getParams());
     }
 }

@@ -40,17 +40,6 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param string $table
-     * @param string|null $database
-     * @return Select
-     */
-    public function into(string $table, string $database = null): self
-    {
-        $this->sql->setInto($table, $database);
-        return $this;
-    }
-
-    /**
      * @param   string|array|\Closure    $columns    (optional)
      * 
      * @return  ResultSet
@@ -58,7 +47,8 @@ class Select extends SelectStatement
     public function select($columns = array()): ResultSet
     {
         parent::select($columns);
-        return $this->connection->query((string) $this, $this->compiler->getParams());
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->query($compiler->select($this->sql), $compiler->getParams());
     }
 
     /**
@@ -69,7 +59,7 @@ class Select extends SelectStatement
     public function column($name)
     {
         parent::column($name);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
     }
 
     /**
@@ -81,7 +71,7 @@ class Select extends SelectStatement
     public function count($column = '*', bool $distinct = false)
     {
         parent::count($column, $distinct);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
     }
 
     /**
@@ -93,7 +83,7 @@ class Select extends SelectStatement
     public function avg($column, bool $distinct = false)
     {
         parent::avg($column, $distinct);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
     }
 
     /**
@@ -105,7 +95,7 @@ class Select extends SelectStatement
     public function sum($column, bool $distinct = false)
     {
         parent::sum($column, $distinct);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
     }
 
     /**
@@ -117,7 +107,7 @@ class Select extends SelectStatement
     public function min($column, bool $distinct = false)
     {
         parent::min($column, $distinct);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
     }
 
     /**
@@ -129,6 +119,12 @@ class Select extends SelectStatement
     public function max($column, bool $distinct = false)
     {
         parent::max($column, $distinct);
-        return $this->connection->column((string) $this, $this->compiler->getParams());
+        return $this->getColumnResult();
+    }
+
+    protected function getColumnResult()
+    {
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->column($compiler->select($this->sql), $compiler->getParams());
     }
 }

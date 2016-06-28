@@ -40,9 +40,20 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   bool    $value  (optional)
-     * 
-     * @return  $this|self
+     * @param string $table
+     * @param string|null $database
+     * @return SelectStatement
+     */
+    public function into(string $table, string $database = null): self
+    {
+        $this->sql->setInto($table, $database);
+        return $this;
+    }
+
+
+    /**
+     * @param bool $value
+     * @return SelectStatement
      */
     public function distinct(bool $value = true): self
     {

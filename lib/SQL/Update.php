@@ -33,9 +33,9 @@ class Update extends UpdateStatement
      * @param   Connection      $connection
      * @param   string|array    $table
      */
-    public function __construct(Connection $connection, $table)
+    public function __construct(Connection $connection, $table, SQLStatement $statement = null)
     {
-        parent::__construct($connection->compiler(), $table);
+        parent::__construct($table, $statement);
         $this->connection = $connection;
     }
 
@@ -46,7 +46,7 @@ class Update extends UpdateStatement
      * 
      * @return  int
      */
-    protected function incrementOrDecrement($sign, $columns, $value)
+    protected function incrementOrDecrement(string $sign, $columns, $value)
     {
         if (!is_array($columns)) {
             $columns = array($columns);
@@ -99,6 +99,7 @@ class Update extends UpdateStatement
     public function set(array $columns)
     {
         parent::set($columns);
-        return $this->connection->count((string) $this, $this->compiler->getParams());
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->count($compiler->update($this->sql), $compiler->getParams());
     }
 }

@@ -39,7 +39,7 @@ class Query extends WhereJoinCondition
      */
     public function __construct(Connection $connection, $tables)
     {
-        parent::__construct($connection->compiler());
+        parent::__construct($connection->getCompiler());
         $this->tables = $tables;
         $this->connection = $connection;
     }

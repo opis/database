@@ -36,6 +36,8 @@ class SQLStatement
     protected $offset = -1;
     protected $intoTable;
     protected $intoDatabase;
+    protected $from = [];
+    protected $values = [];
 
     /**
      * @param Closure $callback
@@ -374,10 +376,30 @@ class SQLStatement
         $this->offset = $value;
     }
 
+    /**
+     * @param string $table
+     * @param string|null $database
+     */
     public function setInto(string $table, string $database = null)
     {
         $this->intoTable = $table;
         $this->intoDatabase = $database;
+    }
+
+    /**
+     * @param array $from
+     */
+    public function setFrom(array $from)
+    {
+        $this->from = $from;
+    }
+
+    /**
+     * @param $value
+     */
+    public function addValue($value)
+    {
+        $this->values[] = $value;
     }
 
     /**
@@ -402,6 +424,14 @@ class SQLStatement
     public function getJoins(): array
     {
         return $this->joins;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDistinct(): bool
+    {
+        return $this->distinct;
     }
 
     /**
@@ -466,6 +496,22 @@ class SQLStatement
     public function getIntoDatabase()
     {
         return $this->intoDatabase;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFrom(): array
+    {
+        return $this->from;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValues(): array
+    {
+        return $this->values;
     }
 
 }

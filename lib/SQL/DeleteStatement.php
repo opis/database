@@ -20,49 +20,23 @@
 
 namespace Opis\Database\SQL;
 
-class DeleteStatement extends WhereJoinCondition
+class DeleteStatement extends BaseStatement
 {
-    /** @var    array */
-    protected $tables;
-
-    /** @var    array */
-    protected $from;
-
-    /** @var    string */
-    protected $sql;
 
     /**
-     * Constructor
-     * 
-     * @param   Compiler        $compiler
-     * @param   string|array    $from
-     * @param   WhereClause     $clause     (optional)
+     * DeleteStatement constructor.
+     * @param string|array $from
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Compiler $compiler, $from, WhereClause $clause = null)
+    public function __construct($from, SQLStatement $statement = null)
     {
-        parent::__construct($compiler, $clause);
+        parent::__construct($statement);
 
         if (!is_array($from)) {
             $from = array($from);
         }
 
-        $this->from = $from;
-    }
-
-    /**
-     * @return  array
-     */
-    public function getTables()
-    {
-        return $this->tables;
-    }
-
-    /**
-     * @return  array
-     */
-    public function getFrom()
-    {
-        return $this->from;
+        $this->sql->setFrom($from);
     }
 
     /**
@@ -75,17 +49,6 @@ class DeleteStatement extends WhereJoinCondition
         if (!is_array($tables)) {
             $tables = array($tables);
         }
-        $this->tables = $tables;
-    }
-
-    /**
-     * @return  string
-     */
-    public function __toString()
-    {
-        if ($this->sql === null) {
-            $this->sql = $this->compiler->delete($this);
-        }
-        return $this->sql;
+        $this->sql->addTables($tables);
     }
 }

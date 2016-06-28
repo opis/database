@@ -24,75 +24,46 @@ use Closure;
 
 class InsertStatement
 {
-    /** @var    array */
-    protected $tables;
 
-    /** @var    Compiler */
-    protected $compiler;
-
-    /** @var    array */
-    protected $columns = array();
-
-    /** @var    array */
-    protected $values = array();
-
-    /** @var    string */
+    /** @var  SQLStatement */
     protected $sql;
 
     /**
-     * Constructor
-     * 
-     * @param   Compiler    $compiler
+     * InsertStatement constructor.
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Compiler $compiler)
+    public function __construct(SQLStatement $statement = null)
     {
-        $this->compiler = $compiler;
+        if($statement === null){
+            $statement = new SQLStatement();
+        }
+        $this->sql = $statement;
     }
 
     /**
-     * @return  array
+     * @return SQLStatement
      */
-    public function getTables()
+    public function getSQLStatement(): SQLStatement
     {
-        return $this->tables;
+        return $this->sql;
     }
 
     /**
-     * @return  array
+     * @param array $values
+     * @return InsertStatement
      */
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    /**
-     * @return  array
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param   array   $values
-     * 
-     * @return  $this
-     */
-    public function insert(array $values)
+    public function insert(array $values): self
     {
         foreach ($values as $column => $value) {
-            $this->columns[] = array(
-                'name' => $column,
-                'alias' => null,
-            );
+            $this->sql->addColumn($column);
 
             if ($value instanceof Closure) {
-                $expression = new Expression($this->compiler);
+                $expression = new Expression();
                 $value($expression);
-                $this->values[] = $expression;
-            } else {
-                $this->values[] = $value;
+                $value = $expression;
             }
+
+            $this->sql->addValue($value);
         }
 
         return $this;
@@ -100,23 +71,9 @@ class InsertStatement
 
     /**
      * @param   string  $table
-     * 
-     * @return  $this
      */
-    public function into($table)
+    public function into(string $table)
     {
-        $this->tables = array((string) $table);
-        return $this;
-    }
-
-    /**
-     * @return  string
-     */
-    public function __toString()
-    {
-        if ($this->sql === null) {
-            $this->sql = $this->compiler->insert($this);
-        }
-        return $this->sql;
+        $this->sql->addTables([$table]);
     }
 }

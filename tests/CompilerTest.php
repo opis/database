@@ -514,7 +514,7 @@ class CompilerTest extends PHPUnit_Framework_TestCase
 class FakeConnection extends Connection
 {
 
-    public function compiler()
+    public function getCompiler()
     {
         if ($this->dsn === 'Compiler') {
             return new \Opis\Database\SQL\Compiler();
