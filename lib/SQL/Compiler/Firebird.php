@@ -21,7 +21,7 @@
 namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\SelectStatement;
+use Opis\Database\SQL\SQLStatement;
 
 class Firebird extends Compiler
 {
@@ -35,7 +35,7 @@ class Firebird extends Compiler
      */
     protected function handleLimit($limit, $offset = null)
     {
-        return ($limit === null) ? '' : ' TO ' . ($limit + (($offset === null) ? 0 : $offset));
+        return ($limit <= 0) ? '' : ' TO ' . ($limit + (($offset < 0) ? 0 : $offset));
     }
 
     /**
@@ -46,30 +46,30 @@ class Firebird extends Compiler
      * @param   int        $offset  Limit
      * @return  string
      */
-    protected function hanleOffset($offset, $limit = null)
+    protected function handleOffset($offset, $limit = null)
     {
-        return ($offset === null) ? ($limit === null) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
+        return ($offset < 0) ? ($limit <= 0) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
     }
 
     /**
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   \Opis\Database\SQL\SelectStatement    $select  Select object.
+     * @param   SQLStatement    $select
      * @return  array
      */
-    public function select(SelectStatement $select)
+    public function select(SQLStatement $select)
     {
-        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereConditions());
-        $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleOrderings($select->getOrderClauses());
-        $sql .= $this->handleHavings($select->getHavingConditions());
+        $sql .= $this->handleJoins($select->getJoins());
+        $sql .= $this->handleWheres($select->getWheres());
+        $sql .= $this->handleGroupings($select->getGroupBy());
+        $sql .= $this->handleOrderings($select->getOrder());
+        $sql .= $this->handleHavings($select->getHaving());
         $sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
         $sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
 

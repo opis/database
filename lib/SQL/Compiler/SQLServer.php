@@ -21,69 +21,63 @@
 namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\SelectStatement;
-use Opis\Database\SQL\UpdateStatement;
+use Opis\Database\SQL\SQLStatement;
 
 class SQLServer extends Compiler
 {
     /** @var string Date format. */
-    protected $dateForamt = 'Y-m-d H:i:s.0000000';
+    protected $dateFormat = 'Y-m-d H:i:s.0000000';
 
     /** @var string Wrapper used to escape table and column names. */
     protected $wrapper = '[%s]';
 
     /**
-     * Compiles a SELECT query.
+     * Compiles a SELECT query
      *
-     * @access  public
-     * @param   SelectStatement $select
-     * 
-     * @return  string
+     * @param SQLStatement $select
+     * @return string
      */
-    public function select(SelectStatement $select)
+    public function select(SQLStatement $select): string
     {
         $limit = $select->getLimit();
-        $offset = $select->getOffset();
 
-        if ($limit === null && $offset === null) {
+        if ($limit <= 0) {
             return parent::select($select);
         }
 
-        if ($offset === null) {
-            $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $offset = $select->getOffset();
+
+        if ($offset < 0) {
+            $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
             $sql .= 'TOP ' . $limit . ' ';
             $sql .= $this->handleColumns($select->getColumns());
             $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
             $sql .= ' FROM ';
             $sql .= $this->handleTables($select->getTables());
-            $sql .= $this->handleJoins($select->getJoinClauses());
-            $sql .= $this->handleWheres($select->getWhereConditions());
-            $sql .= $this->handleGroupings($select->getGroupClauses());
-            $sql .= $this->handleOrderings($select->getOrderClauses());
-            $sql .= $this->handleHavings($select->getHavingConditions());
+            $sql .= $this->handleJoins($select->getJoins());
+            $sql .= $this->handleWheres($select->getWheres());
+            $sql .= $this->handleGroupings($select->getGroupBy());
+            $sql .= $this->handleOrderings($select->getOrder());
+            $sql .= $this->handleHavings($select->getHaving());
 
             return $sql;
         }
 
-        $order = trim($this->handleOrderings($select->getOrderClauses()));
+        $order = trim($this->handleOrderings($select->getOrder()));
 
         if (empty($order)) {
             $order = 'ORDER BY (SELECT 0)';
         }
 
-        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereConditions());
-        $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleHavings($select->getHavingConditions());
-
-        if ($offset === null) {
-            $offset = 0;
-        }
+        $sql .= $this->handleJoins($select->getJoins());
+        $sql .= $this->handleWheres($select->getWheres());
+        $sql .= $this->handleGroupings($select->getGroupBy());
+        $sql .= $this->handleHavings($select->getHaving());
 
         $limit += $offset;
         $offset++;
@@ -92,13 +86,13 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   UpdateStatement $update
+     * @param   SQLStatement $update
      * 
      * @return  string
      */
-    public function update(UpdateStatement $update)
+    public function update(SQLStatement $update): string
     {
-        $joins = $this->handleJoins($update->getJoinClauses());
+        $joins = $this->handleJoins($update->getJoins());
         $tables = $update->getTables();
 
         if ($joins !== '') {
@@ -106,11 +100,11 @@ class SQLServer extends Compiler
             $tables = array_values($tables);
         }
 
-        $sql = 'UPDATE ';
+        $sql  = 'UPDATE ';
         $sql .= $this->handleTables($tables);
         $sql .= $this->handleSetColumns($update->getColumns());
         $sql .= $joins;
-        $sql .= $this->handleWheres($update->getWhereConditions());
+        $sql .= $this->handleWheres($update->getWheres());
 
         return $sql;
     }

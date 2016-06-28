@@ -36,7 +36,7 @@ class NuoDB extends Compiler
      */
     protected function handleLimit($limit)
     {
-        return ($limit === null) ? '' : ' FETCH ' . $limit;
+        return ($limit <= 0) ? '' : ' FETCH ' . $limit;
     }
 
     /**
@@ -48,6 +48,6 @@ class NuoDB extends Compiler
      */
     protected function handleOffset($offset)
     {
-        return ($offset === null) ? '' : ' OFFSET ' . $offset;
+        return ($offset < 0) ? '' : ' OFFSET ' . $offset;
     }
 }

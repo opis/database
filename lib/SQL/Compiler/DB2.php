@@ -21,7 +21,7 @@
 namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\SelectStatement;
+use Opis\Database\SQL\SQLStatement;
 
 class DB2 extends Compiler
 {
@@ -29,38 +29,40 @@ class DB2 extends Compiler
     /**
      * Returns the SQL for a select statement
      * 
-     * @param   \Opis\Database\SQL\SelectStatement  $select
+     * @param   SQLStatement  $select
      * 
      * @return  string
      */
-    public function select(SelectStatement $select)
+    public function select(SQLStatement $select)
     {
         $limit = $select->getLimit();
-        $offset = $select->getOffset();
 
-        if ($limit === null && $offset === null) {
+        if ($limit <= 0) {
             return parent::select($select);
         }
 
-        $order = trim($this->handleOrderings($select->getOrderClauses()));
+        $order = trim($this->handleOrderings($select->getOrder()));
 
         if (empty($order)) {
             $order = 'ORDER BY (SELECT 0)';
         }
 
-        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereConditions());
-        $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleHavings($select->getHavingConditions());
+        $sql .= $this->handleJoins($select->getJoins());
+        $sql .= $this->handleWheres($select->getWheres());
+        $sql .= $this->handleGroupings($select->getGroupBy());
+        $sql .= $this->handleHavings($select->getHaving());
 
-        if ($offset === null) {
+        $offset = $select->getOffset();
+
+        if ($offset < 0) {
             $offset = 0;
         }
+
         $limit += $offset;
         $offset++;
 

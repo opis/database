@@ -21,15 +21,52 @@
 namespace Opis\Database\SQL\Compiler;
 
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\SelectStatement;
 use Opis\Database\SQL\Expression;
+use Opis\Database\SQL\SQLStatement;
 
 class Oracle extends Compiler
 {
 
     /**
-     * @param   mixed   $value
+     * Compiles a SELECT query.
+     *
+     * @param   SQLStatement $select
      * 
+     * @return  string
+     */
+    public function select(SQLStatement $select): string
+    {
+        $limit = $select->getLimit();
+
+        if ($limit <= 0) {
+            return parent::select($select);
+        }
+
+        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql .= $this->handleColumns($select->getColumns());
+        $sql .= ' FROM ';
+        $sql .= $this->handleTables($select->getTables());
+        $sql .= $this->handleJoins($select->getJoins());
+        $sql .= $this->handleWheres($select->getWheres());
+        $sql .= $this->handleGroupings($select->getGroupBy());
+        $sql .= $this->handleOrderings($select->getOrder());
+        $sql .= $this->handleHavings($select->getHaving());
+
+        $offset = $select->getOffset();
+
+        if ($offset < 0) {
+            return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
+        }
+
+        $limit += $offset;
+        $offset++;
+
+        return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
+    }
+
+    /**
+     * @param   mixed   $value
+     *
      * @return  string
      */
     protected function wrap($value)
@@ -53,7 +90,7 @@ class Oracle extends Compiler
 
     /**
      * @param   array   $ordering
-     * 
+     *
      * @return  string
      */
     protected function handleOrderings(array $ordering)
@@ -73,41 +110,5 @@ class Oracle extends Compiler
         }
 
         return ' ORDER BY ' . implode(', ', $sql);
-    }
-
-    /**
-     * Compiles a SELECT query.
-     *
-     * @param   SelectStatement $select
-     * 
-     * @return  string
-     */
-    public function select(SelectStatement $select)
-    {
-        $limit = $select->getLimit();
-        $offset = $select->getOffset();
-
-        if ($limit === null && $offset === null) {
-            return parent::select($select);
-        }
-
-        $sql = $select->isDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-        $sql .= $this->handleColumns($select->getColumns());
-        $sql .= ' FROM ';
-        $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoinClauses());
-        $sql .= $this->handleWheres($select->getWhereConditions());
-        $sql .= $this->handleGroupings($select->getGroupClauses());
-        $sql .= $this->handleOrderings($select->getOrderClauses());
-        $sql .= $this->handleHavings($select->getHavingConditions());
-
-        if ($offset === null) {
-            return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
-        }
-
-        $limit += $offset;
-        $offset++;
-
-        return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
     }
 }
