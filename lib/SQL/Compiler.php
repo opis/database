@@ -158,6 +158,15 @@ class Compiler
     }
 
     /**
+     * @param string $value
+     * @return string
+     */
+    public function quote(string $value): string
+    {
+        return "'" . str_replace("'", "''", $value) . "'";
+    }
+
+    /**
      * Return the stored params
      *
      * @return array

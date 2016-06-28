@@ -397,20 +397,18 @@ class Connection implements Serializable
     protected function replaceParams($query, array $params)
     {
         $pdo = $this->pdo();
+        $compiler = $this->getCompiler();
 
-        return preg_replace_callback('/\?/', function ($matches) use (&$params, $pdo) {
+        return preg_replace_callback('/\?/', function ($matches) use (&$params, $pdo, $compiler) {
             $param = array_shift($params);
             $param = is_object($param) ? get_class($param) : $param;
-            $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
             if (is_int($param) || is_float($param)) {
                 return $param;
             } elseif ($param === null) {
                 return 'NULL';
-            } elseif (in_array($driver, array('oci'))) {
-                return "'" . str_replace("'", "''", $param) . "'";
             } else {
-                return $pdo->quote($param);
+                return $compiler->quote($param);
             }
         }, $query);
     }
