@@ -199,4 +199,109 @@ class WhereTest extends TestCase
                             ->select();
         $this->assertEquals($expected, $actual);
     }
+
+    public function testWhereIsColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" = "foo"';
+        $actual = $this->db->from('users')->where('age')->is('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereIsNotColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" != "foo"';
+        $actual = $this->db->from('users')->where('age')->isNot('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereLTColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" < "foo"';
+        $actual = $this->db->from('users')->where('age')->lessThan('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereLTAltColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" < "foo"';
+        $actual = $this->db->from('users')->where('age')->lt('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereGTColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" > "foo"';
+        $actual = $this->db->from('users')->where('age')->greaterThan('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereGTAltColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" > "foo"';
+        $actual = $this->db->from('users')->where('age')->gt('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereLTEColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" <= "foo"';
+        $actual = $this->db->from('users')->where('age')->atMost('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereLTEAltColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" <= "foo"';
+        $actual = $this->db->from('users')->where('age')->lte('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereGTEColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" >= "foo"';
+        $actual = $this->db->from('users')->where('age')->atLeast('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereGTEAltColumn()
+    {
+        $expected = 'SELECT * FROM "users" WHERE "age" >= "foo"';
+        $actual = $this->db->from('users')->where('age')->gte('foo', true)->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereExists()
+    {
+        $expected = 'SELECT * FROM "users" WHERE EXISTS (SELECT * FROM "orders" WHERE "orders"."name" = "users"."name")';
+        $actual = $this->db->from('users')
+                            ->whereExists(function($query){
+                                $query->from('orders')
+                                    ->where('orders.name')->eq('users.name', true)
+                                    ->select();
+                            })
+                            ->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereExpression1()
+    {
+        $expected = 'SELECT * FROM "numbers" WHERE "c" = "b" + 10';
+        $actual = $this->db->from('numbers')
+            ->where('c')->eq(function($expr){
+                $expr->column('b')->op('+')->value(10);
+            })
+            ->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereExpression2()
+    {
+        $expected = 'SELECT * FROM "numbers" WHERE "c" = "a" + "b"';
+        $actual = $this->db->from('numbers')
+            ->where('c')->eq(function($expr){
+                $expr->column('a')->{'+'}->column('b');
+            })
+            ->select();
+        $this->assertEquals($expected, $actual);
+    }
 }

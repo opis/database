@@ -12,7 +12,7 @@
         }
     ],
     "scripts": {
-      "test": "phpunit tests"
+      "test": "vendor/bin/phpunit"
     },
     "require": {
         "php": ">=7.0.0"
