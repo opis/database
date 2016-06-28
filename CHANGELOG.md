@@ -5,12 +5,28 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## v4.0.x-dev
 ### Added
 - Support for PHP 7.0.x
+- `Opis\Database\SQL\SQLStatement` class
+- `Opis\Database\SQL\BaseStatement` class
+- `Opis\Database\SQL\WhereStatement` class
+- `Opis\Database\SQL\HavingStatement` class
+- `Opis\Database\SQL\HavingExpression` class
 
 ### Removed
 - Support for PHP 5.x
+- `Opis\Database\SQL\WhereCondition` class
+- `Opis\Database\SQL\WhereClause` class
+- `Opis\Database\SQL\WhereJoinCondition` class
+- `Opis\Database\SQL\HavingCondition` class
+- `Opis\Database\SQL\HavingClause` class
+- `Opis\Database\SQL\AggregateExpression` class
 
 ### Changed
-- Nothing
+- `Opis\Database\SQL\Where` class
+- `Opis\Database\SQL\Having` class
+- `Opis\Database\SQL\Expression` class
+- `Opis\Database\SQL\UpdatedStatement` class
+- `Opis\Database\SQL\SelectStatement` class
+- `Opis\Database\SQL\Select` class
 
 ### Fixed
 - Nothing

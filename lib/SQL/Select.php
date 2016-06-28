@@ -21,45 +21,41 @@
 namespace Opis\Database\SQL;
 
 use Opis\Database\Connection;
+use Opis\Database\ResultSet;
 
 class Select extends SelectStatement
 {
     protected $connection;
 
     /**
-     * Constructor
-     * 
-     * @param   Connection  $connection
-     * @param   array       $tables
-     * @param   array       $joins
-     * @param   WhereClause $clause     (optional)
+     * Select constructor.
+     * @param Connection $connection
+     * @param array|string $tables
+     * @param SQLStatement|null $statement
      */
-    public function __construct(Connection $connection, $tables, $joins, WhereClause $clause = null)
+    public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
     {
-        parent::__construct($tables, $clause);
+        parent::__construct($tables, $statement);
         $this->connection = $connection;
-        $this->joins = $joins;
     }
 
     /**
-     * @param   string  $table
-     * @param   string  $database   (optional)
-     * 
-     * @return  $this
+     * @param string $table
+     * @param string|null $database
+     * @return Select
      */
-    public function into($table, $database = null)
+    public function into(string $table, string $database = null): self
     {
-        $this->intoTable = $table;
-        $this->intoDatabase = $database;
+        $this->sql->setInto($table, $database);
         return $this;
     }
 
     /**
      * @param   string|array|\Closure    $columns    (optional)
      * 
-     * @return  \Opis\Database\ResultSet
+     * @return  ResultSet
      */
-    public function select($columns = array())
+    public function select($columns = array()): ResultSet
     {
         parent::select($columns);
         return $this->connection->query((string) $this, $this->compiler->getParams());
@@ -82,7 +78,7 @@ class Select extends SelectStatement
      * 
      * @return  int
      */
-    public function count($column = '*', $distinct = false)
+    public function count($column = '*', bool $distinct = false)
     {
         parent::count($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -94,7 +90,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function avg($column, $distinct = false)
+    public function avg($column, bool $distinct = false)
     {
         parent::avg($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -106,7 +102,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function sum($column, $distinct = false)
+    public function sum($column, bool $distinct = false)
     {
         parent::sum($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -118,7 +114,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function min($column, $distinct = false)
+    public function min($column, bool $distinct = false)
     {
         parent::min($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
@@ -130,7 +126,7 @@ class Select extends SelectStatement
      * 
      * @return  int|float
      */
-    public function max($column, $distinct = false)
+    public function max($column, bool $distinct = false)
     {
         parent::max($column, $distinct);
         return $this->connection->column((string) $this, $this->compiler->getParams());
