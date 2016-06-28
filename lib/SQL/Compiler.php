@@ -261,7 +261,7 @@ class Compiler
     protected function handleSqlFunction(array $func)
     {
         $method = $func['type'] . $func['name'];
-        return $this->$method($func);
+        return $this->{$method}($func);
     }
 
     /**
@@ -668,7 +668,7 @@ class Compiler
      */
     protected function havingInSelect(array $having)
     {
-        return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '(' . $having['subquery'] . ')';
+        return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '(' . $this->select($having['subquery']->getSQLStatement()) . ')';
     }
 
     /**
