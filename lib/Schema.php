@@ -58,7 +58,7 @@ class Schema
     {
         if ($this->currentDatabase === null) {
             $compiler = $this->connection->schemaCompiler();
-            $result = $compiler->currentDatabase($this->connection->dsn());
+            $result = $compiler->currentDatabase($this->connection->getDSN());
 
             if (is_array($result)) {
                 $this->currentDatabase = $this->connection->column($result['sql'], $result['params']);

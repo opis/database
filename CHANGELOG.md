@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\SQL\WhereStatement` class
 - `Opis\Database\SQL\HavingStatement` class
 - `Opis\Database\SQL\HavingExpression` class
+- `Opis\Database\Connection::fromPDO` static method
 
 ### Removed
 - Support for PHP 5.x
@@ -27,6 +28,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\SQL\UpdatedStatement` class
 - `Opis\Database\SQL\SelectStatement` class
 - `Opis\Database\SQL\Select` class
+- The constructor of the `Opis\Database\Connection` class can take now an extra `PDO` object as an argument 
+- `Opis\Database\Connection::pdo` method was renamed to `getPDO`
+- `Opis\Database\Connection::schema` method was renamed to `getSchema`
+- `Opis\Database\Connection::dsn` method was renamed to `getDSN`
 
 ### Fixed
 - Nothing

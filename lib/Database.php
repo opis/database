@@ -21,23 +21,22 @@
 namespace Opis\Database;
 
 use Closure;
-use Opis\Database\Connection;
 use Opis\Database\SQL\Query as QueryCommand;
 use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\Update as UpdateCommand;
 
 class Database
 {
-    /** @var    \Opis\Database\Connection   Connection instance. */
+    /** @var   Connection   Connection instance. */
     protected $connection;
 
-    /** @var    \Opis\Database\Schema       Schema instance. */
+    /** @var    Schema       Schema instance. */
     protected $schema;
 
     /**
      * Constructor
      *
-     * @param   \Opis\Database\Connection   $connection Connection instance.
+     * @param   Connection   $connection Connection instance.
      */
     public function __construct(Connection $connection)
     {
@@ -47,9 +46,9 @@ class Database
     /**
      * Database connection
      *
-     * @return   \Opis\Database\Connection
+     * @return   Connection
      */
-    public function getConnection()
+    public function getConnection(): Connection
     {
         return $this->connection;
     }
@@ -69,9 +68,9 @@ class Database
      *
      * @param   string|array    $tables Table name or an array of tables
      *
-     * @return  \Opis\Database\SQL\Query
+     * @return  QueryCommand
      */
-    public function from($tables)
+    public function from($tables): QueryCommand
     {
         return new QueryCommand($this->connection, $tables);
     }
@@ -81,11 +80,11 @@ class Database
      *
      * @param   array  $values  An array of values.
      *
-     * @return  \Opis\Database\SQL\Insert
+     * @return  InsertCommand
      */
-    public function insert(array $values)
+    public function insert(array $values): InsertCommand
     {
-        return new InsertCommand($this->connection, $values);
+        return (new InsertCommand($this->connection))->insert($values);
     }
 
     /**
@@ -93,9 +92,9 @@ class Database
      *
      * @param   string  $table  Table name
      *
-     * @return  \Opis\Database\SQL\Update
+     * @return  UpdateCommand
      */
-    public function update($table)
+    public function update($table): UpdateCommand
     {
         return new UpdateCommand($this->connection, $table);
     }
@@ -103,12 +102,12 @@ class Database
     /**
      * The associated schema instance.
      *
-     * @return  \Opis\Database\Schema
+     * @return  Schema
      */
-    public function schema()
+    public function schema(): Schema
     {
         if ($this->schema === null) {
-            $this->schema = $this->connection->schema();
+            $this->schema = $this->connection->getSchema();
         }
 
         return $this->schema;
@@ -117,11 +116,11 @@ class Database
     /**
      * Initiate a new transaction
      *
-     * @param   \Closure    $queries    A callback that will be called when the transaction will begin
+     * @param   Closure    $queries    A callback that will be called when the transaction will begin
      * 
-     * @return  \Opis\Database\Transaction
+     * @return  Transaction
      */
-    public function transaction(Closure $queries)
+    public function transaction(Closure $queries): Transaction
     {
         return new Transaction($this, $queries);
     }

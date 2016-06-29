@@ -112,7 +112,7 @@ class Transaction
      */
     public function pdo()
     {
-        return $this->database->getConnection()->pdo();
+        return $this->database->getConnection()->getPDO();
     }
 
     /**

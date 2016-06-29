@@ -80,13 +80,24 @@ class Connection implements Serializable
      * @param   string  $username   (optional) Username
      * @param   string  $password   (optional) Password
      * @param   string  $driver     (optional) Driver's name
+     * @param   PDO     $pdo        (optional) PDO object
      */
-    public function __construct($dsn, $username = null, $password = null, $driver = null)
+    public function __construct(string $dsn = null, string $username = null, string $password = null, string $driver = null, PDO $pdo = null)
     {
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
         $this->driver = $driver;
+        $this->pdo = $pdo;
+    }
+
+    /**
+     * @param PDO $pdo
+     * @return Connection
+     */
+    public static function fromPDO(PDO $pdo): self
+    {
+        return new static(null, null, null, null, $pdo);
     }
 
     /**
@@ -220,7 +231,7 @@ class Connection implements Serializable
      *
      * @return  string
      */
-    public function dsn()
+    public function getDSN()
     {
         return $this->dsn;
     }
@@ -230,10 +241,10 @@ class Connection implements Serializable
      *
      * @return  string
      */
-    public function driver()
+    public function getDriver()
     {
         if ($this->driver === null) {
-            $this->driver = $this->pdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $this->driver = $this->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME);
         }
 
         return $this->driver;
@@ -242,9 +253,9 @@ class Connection implements Serializable
     /**
      * Returns the schema associated with this connection
      *
-     * @return  \Opis\Database\Schema
+     * @return  Schema
      */
-    public function schema()
+    public function getSchema()
     {
         if ($this->schema === null) {
             $this->schema = new Schema($this);
@@ -256,12 +267,12 @@ class Connection implements Serializable
     /**
      * Returns the PDO object associated with this connection
      *
-     * @return \PDO
+     * @return PDO
      */
-    public function pdo()
+    public function getPDO()
     {
         if ($this->pdo == null) {
-            $this->pdo = new PDO($this->dsn(), $this->username, $this->password, $this->options);
+            $this->pdo = new PDO($this->getDSN(), $this->username, $this->password, $this->options);
 
             foreach ($this->commands as $command) {
                 $this->command($command['sql'], $command['params']);
@@ -279,7 +290,7 @@ class Connection implements Serializable
     public function getCompiler()
     {
         if ($this->compiler === null) {
-            switch ($this->driver()) {
+            switch ($this->getDriver()) {
                 case 'mysql':
                     $this->compiler = new \Opis\Database\SQL\Compiler\MySQL();
                     break;
@@ -324,7 +335,7 @@ class Connection implements Serializable
     public function schemaCompiler()
     {
         if ($this->schemaCompiler === null) {
-            switch ($this->driver()) {
+            switch ($this->getDriver()) {
                 case 'mysql':
                     $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL($this);
                     break;
@@ -370,6 +381,68 @@ class Connection implements Serializable
     public function getLog()
     {
         return $this->log;
+    }
+
+    /**
+     * Execute a query
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  ResultSet
+     */
+    public function query($sql, array $params = array())
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        return new ResultSet($prepared['statement']);
+    }
+
+    /**
+     * Execute a non-query SQL command
+     *
+     * @param   string  $sql    SQL Command
+     * @param   array   $params (optional) Command params
+     *
+     * @return  mixed   Command result
+     */
+    public function command($sql, array $params = array())
+    {
+        return $this->execute($this->prepare($sql, $params));
+    }
+
+    /**
+     * Execute a query and return the number of affected rows
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  int
+     */
+    public function count($sql, array $params = array())
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        $result = $prepared['statement']->rowCount();
+        $prepared['statement']->closeCursor();
+        return $result;
+    }
+
+    /**
+     * Execute a query and fetch the first column
+     *
+     * @param   string  $sql    SQL Query
+     * @param   array   $params (optional) Query params
+     *
+     * @return  mixed
+     */
+    public function column($sql, array $params = array())
+    {
+        $prepared = $this->prepare($sql, $params);
+        $this->execute($prepared);
+        $result = $prepared['statement']->fetchColumn();
+        $prepared['statement']->closeCursor();
+        return $result;
     }
 
     /**
@@ -423,7 +496,7 @@ class Connection implements Serializable
     protected function prepare($query, array $params)
     {
         try {
-            $statement = $this->pdo()->prepare($query);
+            $statement = $this->getPDO()->prepare($query);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ', (int) $e->getCode(), $e->getPrevious());
         }
@@ -458,68 +531,6 @@ class Connection implements Serializable
     }
 
     /**
-     * Execute a query
-     *
-     * @param   string  $sql    SQL Query
-     * @param   array   $params (optional) Query params
-     *
-     * @return  ResultSet
-     */
-    public function query($sql, array $params = array())
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        return new ResultSet($prepared['statement']);
-    }
-
-    /**
-     * Execute a non-query SQL command
-     *
-     * @param   string  $sql    SQL Command
-     * @param   array   $params (optional) Command params
-     *
-     * @return  mixed   Command result
-     */
-    public function command($sql, array $params = array())
-    {
-        return $this->execute($this->prepare($sql, $params));
-    }
-
-    /**
-     * Execute a query and return the number of affected rows
-     * 
-     * @param   string  $sql    SQL Query
-     * @param   array   $params (optional) Query params
-     *
-     * @return  int
-     */
-    public function count($sql, array $params = array())
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        $result = $prepared['statement']->rowCount();
-        $prepared['statement']->closeCursor();
-        return $result;
-    }
-
-    /**
-     * Execute a query and fetch the first column
-     *
-     * @param   string  $sql    SQL Query
-     * @param   array   $params (optional) Query params
-     *
-     * @return  mixed
-     */
-    public function column($sql, array $params = array())
-    {
-        $prepared = $this->prepare($sql, $params);
-        $this->execute($prepared);
-        $result = $prepared['statement']->fetchColumn();
-        $prepared['statement']->closeCursor();
-        return $result;
-    }
-
-    /**
      * Implementation of Serializable::serialize
      *
      * @return  string
@@ -548,20 +559,5 @@ class Connection implements Serializable
         foreach ($object as $key => $value) {
             $this->{$key} = $value;
         }
-    }
-
-    /**
-     * Creates a new connection
-     *
-     * @param   string  $dsn        DSN connection string
-     * @param   string  $username   (optional) Username
-     * @param   string  $password   (optional) Password
-     * @param   string  $driver     (optional) Driver's name
-     *
-     * @return  \Opis\Database\Connection
-     */
-    public static function create($dsn, $username = null, $password = null, $driver = null)
-    {
-        return new static($dsn, $username, $password, $driver);
     }
 }
