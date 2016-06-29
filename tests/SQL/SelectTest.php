@@ -29,6 +29,13 @@ class SelectTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testSelectDistinct()
+    {
+        $expected = 'SELECT DISTINCT * FROM "users"';
+        $actual = $this->db->from('users')->distinct()->select();
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testSelectSingleColumn()
     {
         $expected = 'SELECT "name" FROM "users"';
