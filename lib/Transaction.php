@@ -20,30 +20,29 @@
 
 namespace Opis\Database;
 
-use Closure;
+use PDO;
 use PDOException;
 
 class Transaction
 {
-    /** @var    \Opis\Database\Database Database object. */
+    /** @var  Database Database object. */
     protected $database;
 
-    /** @var    \Closure    Transaction callback. */
+    /** @var    callable    Transaction callback. */
     protected $transaction;
 
-    /** @var    \Closure    Success callback. */
+    /** @var    callable    Success callback. */
     protected $successCallback;
 
-    /** @var    \Closure    Error callback. */
+    /** @var    callable    Error callback. */
     protected $errorCallback;
 
     /**
-     * Constructor
-     *
-     * @param   \Opis\Database\Database $database       Current database
-     * @param   \Closure                $transaction    Transaction callback
+     * Transaction constructor.
+     * @param Database $database
+     * @param callable $transaction
      */
-    public function __construct(Database $database, Closure $transaction)
+    public function __construct(Database $database, callable $transaction)
     {
         $this->database = $database;
         $this->transaction = $transaction;
@@ -52,11 +51,11 @@ class Transaction
     /**
      * Add callback that will be called if transaction succeeded
      *
-     * @param   \Closure    $callback   The callback
+     * @param   callable    $callback   The callback
      *
-     * @return  \Opis\Database\Transaction  Self reference
+     * @return Transaction
      */
-    public function onSuccess(Closure $callback)
+    public function onSuccess(callable $callback): self
     {
         $this->successCallback = $callback;
         return $this;
@@ -65,11 +64,11 @@ class Transaction
     /**
      * Add callback that will be called if transaction fails
      *
-     * @param   \Closure    $callback   The callback
+     * @param   callable    $callback   The callback
      *
-     * @return  \Opis\Database\Transaction  Self reference
+     * @return  Transaction
      */
-    public function onError(Closure $callback)
+    public function onError(callable $callback): self
     {
         $this->errorCallback = $callback;
         return $this;
@@ -78,9 +77,9 @@ class Transaction
     /**
      * Get the callback that needs to be called if transaction succeeded
      *
-     * @return  \Closure
+     * @return  callable
      */
-    public function getOnSuccessCallback()
+    public function getOnSuccessCallback(): callable
     {
         return $this->successCallback;
     }
@@ -88,9 +87,9 @@ class Transaction
     /**
      * Get the callback that needs to be called if transaction fails
      *
-     * @return  \Closure
+     * @return  callable
      */
-    public function getOnErrorCallback()
+    public function getOnErrorCallback(): callable
     {
         return $this->errorCallback;
     }
@@ -98,9 +97,9 @@ class Transaction
     /**
      * Get the database for the current transaction
      *
-     * @return  \Opis\Database\Database
+     * @return  Database
      */
-    public function database()
+    public function database(): Database
     {
         return $this->database;
     }
@@ -108,9 +107,9 @@ class Transaction
     /**
      * Get the PDO object associated with the current transaction
      *
-     * @return  \PDO
+     * @return  PDO
      */
-    public function pdo()
+    public function pdo(): PDO
     {
         return $this->database->getConnection()->getPDO();
     }
@@ -153,11 +152,11 @@ class Transaction
     /**
      * Execute the current transaction
      *
-     * @param   \Closure    $execute    (optional) Callback
+     * @param   callable    $execute    (optional) Callback
      *
      * @return  mixed
      */
-    public function execute(Closure $execute = null)
+    public function execute(callable $execute = null)
     {
         if ($execute !== null) {
             return $execute($this, $this->transaction);

@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2013-2015 Marius Sarca
+ * Copyright 2013-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,205 +20,55 @@
 
 namespace Opis\Database\ORM;
 
-use RuntimeException;
 use Opis\Database\Model;
-use Opis\Database\Connection;
+use Opis\Database\SQL\BaseStatement;
+use Opis\Database\SQL\Delete;
+use Opis\Database\SQL\HavingStatement;
+use Opis\Database\SQL\SQLStatement;
+use Opis\Database\SQL\Update;
+use RuntimeException;
 
-class Query extends BaseQuery
+class Query extends BaseStatement
 {
-    /** @var    Model */
+    use LoaderTrait;
+    use SelectTrait {
+        select as protected;
+    }
+
     protected $model;
-
-    /** @var    Connection */
+    protected $have;
     protected $connection;
+    protected $includeSoftDeletes = false;
+    protected $onlySoftDeletes = false;
 
-    /**
-     * Constructor
-     *
-     * @param   Connection  $connection
-     * @param   Model       $model
-     */
-    public function __construct(Connection $connection, Model $model)
+    public function __construct(Model $model, SQLStatement $statement = null)
     {
+        parent::__construct($statement);
         $this->model = $model;
-        $this->connection = $connection;
-
-        $compiler = $connection->getCompiler();
-        $query = new Select($model, $compiler);
-        $whereCondition = new WhereCondition($this, $query);
-
-        parent::__construct($compiler, $query, $whereCondition);
+        $this->connection = $model->getConnection();
+        $this->have = new HavingStatement($this->sql);
     }
 
     /**
-     *  @param  array   &$columns   (optional)
-     *
-     *  @return \Opis\Database\ResultSet
+     * @param array $columns
+     * @return Model|false
      */
-    protected function query(array &$columns = array())
+    public function first(array $columns = [])
     {
-        $pk = $this->model->getPrimaryKey();
-
-        if (!empty($columns)) {
-            $columns[] = $pk;
-        }
-
-        return $this->connection->query((string) $this->query->select($columns), $this->query->getCompiler()->getParams());
+        return $this->query($columns)
+                    ->fetchClass(get_class($this->model), [$this->connection, $this->isReadOnly()])
+                    ->first();
     }
 
     /**
-     * @return  mixed
+     * @param array $columns
+     * @return Model[]
      */
-    protected function execute()
+    public function all(array $columns = []): array
     {
-        return $this->connection->column((string) $this->query, $this->compiler->getParams());
-    }
-
-    /**
-     * @param   array   $tables (optional)
-     *
-     * @return  int
-     */
-    public function delete(array $tables = array())
-    {
-        return $this->query->toDelete($this->connection)->delete($tables);
-    }
-
-    /**
-     * @return  boolean
-     * 
-     * @throws  RuntimeException
-     */
-    public function softDelete()
-    {
-        if (!$this->query->supportsSoftDeletes()) {
-            throw new RuntimeException('Soft deletes is not supported for this model');
-        }
-
-        return $this->query->toUpdate($this->connection)->update(array(
-            'deleted_at' => date($this->model->getDateFormat()),
-        ), true);
-    }
-
-    /**
-     * @return  boolean
-     * 
-     * @throws  RuntimeException
-     */
-    public function restore()
-    {
-        if (!$this->query->supportsSoftDeletes()) {
-            throw new RuntimeException('Soft deletes is not supported for this model');
-        }
-
-        return $this->query->onlySoftDeleted()->toUpdate($this->connection)->update(array(
-            'deleted_at' => null,
-        ), true);
-    }
-
-    /**
-     * @param   array   $columns
-     *
-     * @return  int
-     */
-    public function update(array $columns)
-    {
-        return $this->query->toUpdate($this->connection)->update($columns);
-    }
-
-    /**
-     * @param   string  $name
-     *
-     * @return  mixed
-     */
-    public function column($name)
-    {
-        $this->query->column($name);
-        return $this->execute();
-    }
-
-    /**
-     * @param   string  $column     (optional)
-     * @param   bool    $distinct   (optional)
-     *
-     * @return  mixed
-     */
-    public function count($column = '*', $distinct = false)
-    {
-        $this->query->count($column, $distinct);
-        return $this->execute();
-    }
-
-    /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     *
-     * @return  mixed
-     */
-    public function avg($column, $distinct = false)
-    {
-        $this->query->avg($column, $distinct);
-        return $this->execute();
-    }
-
-    /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     *
-     * @return  mixed
-     */
-    public function sum($column, $distinct = false)
-    {
-        $this->query->sum($column, $distinct);
-        return $this->execute();
-    }
-
-    /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     *
-     * @return  mixed
-     */
-    public function min($column, $distinct = false)
-    {
-        $this->query->min($column, $distinct);
-        return $this->execute();
-    }
-
-    /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     *
-     * @return  mixed
-     */
-    public function max($column, $distinct = false)
-    {
-        $this->query->max($column, $distinct);
-        return $this->execute();
-    }
-
-    /**
-     * @param   array   $columns    (optional)
-     *
-     * @return  Model|false
-     */
-    public function first(array $columns = array())
-    {
-        return $this->query()
-                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-                ->first();
-    }
-
-    /**
-     * @param   array   $columns    (optional)
-     *
-     * @return  array
-     */
-    public function all(array $columns = array())
-    {
-        $results = $this->query($columns)
-            ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
-            ->all();
+        $results =  $this->query($columns)
+                         ->fetchClass(get_class($this->model), [$this->connection, $this->isReadOnly()])
+                         ->all();
 
         $this->prepareResults($this->model, $results);
 
@@ -226,38 +76,164 @@ class Query extends BaseQuery
     }
 
     /**
-     * @param   mixed   $id
-     * @param   array   $columns    (optional)
-     *
-     * @return  Model|false
+     * @param $id
+     * @param array $columns
+     * @return Model|false
      */
-    public function find($id, array $columns = array())
+    public function find($id, array $columns = [])
     {
-        $this->query->where($this->model->getPrimaryKey())->is($id);
-        return $this->first($columns);
+        return $this->where($this->model->getPrimaryKey())->is($id)->first($columns);
     }
 
     /**
-     * @param   array   $columns    (optional)
-     *
-     * @return  array
+     * @param array|null $ids
+     * @param array $columns
+     * @return Model[]
      */
-    public function findAll(array $columns = array())
+    public function findMany(array $ids = null, array $columns = []): array
     {
-        return $this->findMany(array(), $columns);
-    }
-
-    /**
-     * @param   array|null  $ids        (optional)
-     * @param   array       $columns    (optional)
-     *
-     * @return  array
-     */
-    public function findMany(array $ids = null, array $columns = array())
-    {
-        if ($ids !== null && !empty($ids)) {
-            $this->query->where($this->model->getPrimaryKey())->in($ids);
+        if($ids !== null){
+            $this->where($this->model->getPrimaryKey())->in($ids);
         }
         return $this->all($columns);
+    }
+
+    /**
+     * @param array $columns
+     * @return Model[]
+     */
+    public function findAll(array $columns = []): array
+    {
+        return $this->findMany(null, $columns);
+    }
+
+    /**
+     * @return self
+     */
+    public function withSoftDeleted(): self
+    {
+        $this->includeSoftDeletes = true;
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function onlySoftDeleted(): self
+    {
+        $this->onlySoftDeletes = $this->includeSoftDeletes = true;
+        return $this;
+    }
+
+    /**
+     * @param array $tables
+     * @return int
+     */
+    public function delete(array $tables = [])
+    {
+        return (new Delete($this->connection, $this->model->getTable(), $this->sql))->delete($tables);
+    }
+
+    /**
+     * @return int
+     * @throws RuntimeException
+     */
+    public function softDelete()
+    {
+        if (!$this->model->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return (new Update($this->connection, $this->model->getTable(), $this->sql))->set([
+            'deleted_at' => date($this->model->getDateFormat()),
+        ]);
+    }
+
+    /**
+     * @return int
+     * @throws RuntimeException
+     */
+    public function restore()
+    {
+        if (!$this->model->supportsSoftDeletes()) {
+            throw new RuntimeException('Soft deletes is not supported for this model');
+        }
+
+        return (new Update($this->connection, $this->model->getTable(), $this->sql))->set([
+            'deleted_at' => null,
+        ]);
+    }
+
+    /**
+     * @param array $columns
+     * @return int
+     */
+    public function update(array $columns = [])
+    {
+        if($this->model->supportsTimestamps()){
+            $columns['updated_at'] = date($this->model->getDateFormat());
+        }
+
+        return (new Update($this->connection, $this->model->getTable(), $this->sql))->set($columns);
+    }
+
+    /**
+     * @return bool|null
+     */
+    protected function isReadOnly()
+    {
+        return empty($this->sql->getJoins()) ? null : true;
+    }
+
+    /**
+     * @return HavingStatement
+     */
+    protected function getHavingStatement(): HavingStatement
+    {
+        return $this->have;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function executeStatement()
+    {
+        if($this->model->supportsSoftDeletes()){
+            if (!$this->includeSoftDeletes) {
+                $this->where('deleted_at')->isNull();
+            } elseif ($this->onlySoftDeletes) {
+                $this->where('deleted_at')->notNull();
+            }
+        }
+        $this->sql->addTables([$this->model->getTable()]);
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->column($compiler->select($this->sql), $compiler->getParams());
+    }
+
+    /**
+     * @param array $columns
+     * @return \Opis\Database\ResultSet
+     */
+    protected function query($columns = array())
+    {
+        $pk = $this->model->getPrimaryKey();
+
+        if (!empty($columns)) {
+            $columns[] = $pk;
+        }
+
+        if($this->model->supportsSoftDeletes()){
+            if (!$this->includeSoftDeletes) {
+                $this->where('deleted_at')->isNull();
+            } elseif ($this->onlySoftDeletes) {
+                $this->where('deleted_at')->notNull();
+            }
+        }
+
+        $this->sql->addTables([$this->model->getTable()]);
+        $this->select($columns);
+        $compiler = $this->connection->getCompiler();
+
+        return $this->connection->query($compiler->select($this->sql), $compiler->getParams());
     }
 }

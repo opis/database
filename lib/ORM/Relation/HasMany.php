@@ -20,6 +20,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Model;
 use Opis\Database\ORM\Relation;
 
 class HasMany extends Relation
@@ -27,10 +28,10 @@ class HasMany extends Relation
     /**
      * @return  Model
      */
-    public function getResult()
+    public function getResult(): Model
     {
         return $this->query()
-                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->fetchClass(get_class($this->model), [$this->connection])
                 ->all();
     }
 }

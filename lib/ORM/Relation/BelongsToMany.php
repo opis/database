@@ -23,10 +23,9 @@ namespace Opis\Database\ORM\Relation;
 use Exception;
 use Opis\Database\Model;
 use Opis\Database\Database;
-use Opis\Database\Connection;
-use Opis\Database\ORM\Select;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\LazyLoader;
+use Opis\Database\SQL\SelectStatement;
 
 class BelongsToMany extends Relation
 {
@@ -39,19 +38,18 @@ class BelongsToMany extends Relation
     /**
      * Constructor
      *
-     * @param   Connection  $connection
      * @param   Model       $owner
      * @param   Model       $model
      * @param   string|null $foreignKey     (optional)
      * @param   string|null $junctionTable  (optional)
      * @param   string|null $junctionKey    (optional)
      */
-    public function __construct(Connection $connection, Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
+    public function __construct(Model $owner, Model $model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
     {
         $this->junctionTable = $junctionTable;
         $this->junctionKey = $junctionKey;
 
-        parent::__construct($connection, $owner, $model, $foreignKey);
+        parent::__construct($owner, $model, $foreignKey);
     }
 
     /**
@@ -154,7 +152,7 @@ class BelongsToMany extends Relation
      *
      * @return  LazyLoader
      */
-    public function getLazyLoader(array $options)
+    public function getLazyLoader(array $options): LazyLoader
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
@@ -169,7 +167,7 @@ class BelongsToMany extends Relation
         $joinTable = $this->model->getTable();
         $joinColumn = $this->model->getPrimaryKey();
 
-        $select = new Select($this->model, $this->compiler, $junctionTable);
+        $select = new SelectStatement($junctionTable);
 
         $linkKey = 'hidden_' . $junctionTable . '_' . $fk;
 
@@ -177,24 +175,35 @@ class BelongsToMany extends Relation
                 $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
             })
             ->where($junctionTable . '.' . $fk)->in($ids)
-            ->select(array($joinTable . '.*', $junctionTable . '.' . $fk => $linkKey));
+            ->select([$joinTable . '.*', $junctionTable . '.' . $fk => $linkKey]);
 
         if ($callback !== null) {
             $callback($select);
         }
 
-        $query = (string) $select;
-        $params = $select->getCompiler()->getParams();
+        $compiler = $this->connection->getCompiler();
 
-        return new LazyLoader($this->connection, $query, $params, $with, $immediate, $this->isReadOnly, $this->hasMany(), get_class($this->model), $linkKey, $pk);
+        $options = [
+            LazyLoader::QUERY => $compiler->select($select->getSQLStatement()),
+            LazyLoader::PARAMS => $compiler->getParams(),
+            LazyLoader::WITH => $with,
+            LazyLoader::READONLY => null,
+            LazyLoader::HAS_MANY => $this->hasMany(),
+            LazyLoader::MODEL => $this->model,
+            LazyLoader::FKEY => $linkKey,
+            LazyLoader::PKEY => $fk,
+            LazyLoader::IMMEDIATE => $immediate,
+        ];
+
+        return new LazyLoader($this->connection, $options);
     }
 
     /**
      * Build query
      * 
-     * @return  Select
+     * @return  self
      */
-    protected function buildQuery()
+    protected function buildQuery(): self
     {
         $self = $this;
         $junctionTable = $this->getJunctionTable();
@@ -203,24 +212,24 @@ class BelongsToMany extends Relation
         $joinColumn = $this->model->getPrimaryKey();
         $foreignKey = $this->getForeignKey();
 
-        return $this->query
-                ->from($junctionTable)
+        $this->sql->addTables($junctionTable);
+
+        return $this->lock()
                 ->join($joinTable, function ($join) use ($junctionTable, $junctionKey, $joinTable, $joinColumn) {
                     $join->on($junctionTable . '.' . $junctionKey, $joinTable . '.' . $joinColumn);
                 })
-                ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()})
-                ->lock();
+                ->where($junctionTable . '.' . $foreignKey)->is($this->owner->{$this->owner->getPrimaryKey()});
     }
 
     /**
      * @return  Model
      */
-    public function getResult()
+    public function getResult(): Model
     {
         $columns = array($this->model->getTable() . '.*');
 
         return $this->query($columns)
-                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->fetchClass(get_class($this->model), [$this->connection])
                 ->all();
     }
 }

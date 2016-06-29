@@ -21,9 +21,9 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\Model;
-use Opis\Database\ORM\Select;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\LazyLoader;
+use Opis\Database\SQL\SelectStatement;
 
 class BelongsTo extends Relation
 {
@@ -31,7 +31,7 @@ class BelongsTo extends Relation
     /**
      * @return  bool
      */
-    public function hasMany()
+    public function hasMany(): bool
     {
         return false;
     }
@@ -52,7 +52,7 @@ class BelongsTo extends Relation
      *
      * @return  LazyLoader
      */
-    public function getLazyLoader(array $options)
+    public function getLazyLoader(array $options): LazyLoader
     {
         $fk = $this->getForeignKey();
         $pk = $this->owner->getPrimaryKey();
@@ -62,18 +62,28 @@ class BelongsTo extends Relation
         $callback = $options['callback'];
         $immediate = $options['immediate'];
 
-        $select = new Select($this->model, $this->compiler);
-
+        $select = new SelectStatement($this->model->getTable());
         $select->where($pk)->in($ids);
 
         if ($callback !== null) {
             $callback($select);
         }
 
-        $query = (string) $select;
-        $params = $select->getCompiler()->getParams();
+        $compiler = $this->connection->getCompiler();
 
-        return new LazyLoader($this->connection, $query, $params, $with, $immediate, $this->isReadOnly, $this->hasMany(), get_class($this->model), $pk, $fk);
+        $options = [
+            LazyLoader::QUERY => $compiler->select($select->getSQLStatement()),
+            LazyLoader::PARAMS => $compiler->getParams(),
+            LazyLoader::WITH => $with,
+            LazyLoader::READONLY => null,
+            LazyLoader::HAS_MANY => $this->hasMany(),
+            LazyLoader::MODEL => $this->model,
+            LazyLoader::FKEY => $pk,
+            LazyLoader::PKEY => $fk,
+            LazyLoader::IMMEDIATE => $immediate,
+        ];
+
+        return new LazyLoader($this->connection, $options);
     }
 
     /**
@@ -91,20 +101,20 @@ class BelongsTo extends Relation
     /**
      * Build query
      * 
-     * @return  Select
+     * @return  self
      */
-    protected function buildQuery()
+    protected function buildQuery(): self
     {
-        return $this->query->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
+        return $this->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
     }
 
     /**
      * @return  Model
      */
-    public function getResult()
+    public function getResult(): Model
     {
         return $this->query()
-                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->fetchClass(get_class($this->model), [$this->connection])
                 ->first();
     }
 }

@@ -20,6 +20,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Model;
 use Opis\Database\ORM\Relation;
 
 class HasOne extends Relation
@@ -28,7 +29,7 @@ class HasOne extends Relation
     /**
      * @return  bool
      */
-    public function hasMany()
+    public function hasMany(): bool 
     {
         return false;
     }
@@ -36,10 +37,10 @@ class HasOne extends Relation
     /**
      * @return  Model
      */
-    public function getResult()
+    public function getResult(): Model
     {
         return $this->query()
-                ->fetchClass(get_class($this->model), array($this->isReadOnly, $this->connection))
+                ->fetchClass(get_class($this->model), [$this->connection])
                 ->first();
     }
 }

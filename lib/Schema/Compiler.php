@@ -706,7 +706,7 @@ class Compiler
             'sql' => $sql,
             'params' => $this->getParams(),
         );
-
+        
         foreach ($this->handleIndexKeys($schema) as $index) {
             $commands[] = array(
                 'sql' => $index,

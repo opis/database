@@ -169,9 +169,9 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
-     * @return  $this
+     * @param $column
+     * @return $this
+     * @internal param string $name
      */
     public function dropDefaultValue($column)
     {

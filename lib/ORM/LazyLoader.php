@@ -23,13 +23,28 @@ namespace Opis\Database\ORM;
 use Opis\Database\Model;
 use Opis\Database\Connection;
 
-class LazyLoader extends BaseLoader
+class LazyLoader
 {
+    use LoaderTrait;
+
+    const FKEY = 1;
+    const PKEY = 2;
+    const QUERY = 3;
+    const PARAMS = 4;
+    const WITH = 5;
+    const HAS_MANY = 6;
+    const IMMEDIATE = 7;
+    const READONLY = 8;
+    const MODEL = 9;
+
     /** @var    Connection */
     protected $connection;
 
     /** @var    Model */
     protected $model;
+
+    /** @var  array */
+    protected $options;
 
     /** @var    string */
     protected $fk;
@@ -52,9 +67,6 @@ class LazyLoader extends BaseLoader
     /** @var    array */
     protected $with;
 
-    /** @var    string */
-    protected $modelClass;
-
     /** @var    array */
     protected $params;
 
@@ -62,33 +74,24 @@ class LazyLoader extends BaseLoader
     protected $immediate;
 
     /**
-     * Constructor
-     *
-     * @param   Connection  $connection
-     * @param   string      $query
-     * @param   array       $params
-     * @param   array       $with
-     * @param   bool        $immediate
-     * @param   bool        $readonly
-     * @param   bool        $hasMany
-     * @param   Model       $model
-     * @param   string      $fk
-     * @param   string      $pk
+     * LazyLoader constructor.
+     * @param Connection $connection
+     * @param array $options
      */
-    public function __construct(Connection $connection, $query, array $params, array $with, $immediate, $readonly, $hasMany, $model, $fk, $pk)
+    public function __construct(Connection $connection, array $options)
     {
         $this->connection = $connection;
-        $this->modelClass = $model;
-        $this->with = $with;
-        $this->hasMany = $hasMany;
-        $this->fk = $fk;
-        $this->pk = $pk;
-        $this->readonly = $readonly;
-        $this->query = $query;
-        $this->params = $params;
-        $this->immediate = $immediate;
+        $this->model = $options[self::MODEL];
+        $this->with = $options[self::WITH];
+        $this->hasMany = $options[self::HAS_MANY];
+        $this->fk = $options[self::FKEY];
+        $this->pk = $options[self::PKEY];
+        $this->readonly = $options[self::READONLY];
+        $this->query = $options[self::QUERY];
+        $this->params = $options[self::PARAMS];
+        $this->immediate = $options[self::IMMEDIATE];
 
-        if ($immediate) {
+        if ($this->immediate) {
             $this->getResults();
         }
     }
@@ -96,33 +99,31 @@ class LazyLoader extends BaseLoader
     /**
      * @return  array
      */
-    protected function &getResults()
+    protected function getResults()
     {
         if ($this->results === null) {
-            $model = $this->modelClass;
-            $this->model = new $model;
 
             $results = $this->connection
-                ->query((string) $this->query, $this->params)
-                ->fetchClass($this->modelClass, array($this->readonly, $this->connection))
-                ->all();
+                            ->query((string) $this->query, $this->params)
+                            ->fetchClass(get_class($this->model), array($this->connection, $this->readonly))
+                            ->all();
 
             $this->prepareResults($this->model, $results);
-            $this->results = &$results;
+            $this->results = $results;
         }
 
         return $this->results;
     }
 
     /**
-     * @param   Mode    $model
+     * @param   Model    $model
      * @param   string  $with
      *
      * @return  Model
      */
     protected function getFirst(Model $model, $with)
     {
-        $results = &$this->getResults();
+        $results = $this->getResults();
 
         foreach ($results as $result) {
             if ($result->{$this->fk} == $model->{$this->pk}) {

@@ -27,6 +27,11 @@ class SelectStatement extends BaseStatement
     /** @var    HavingStatement */
     protected $have;
 
+    /**
+     * SelectStatement constructor.
+     * @param string|array $tables
+     * @param SQLStatement|null $statement
+     */
     public function __construct($tables, SQLStatement $statement = null)
     {
         parent::__construct($statement);
@@ -81,7 +86,7 @@ class SelectStatement extends BaseStatement
      * 
      * @return  $this
      */
-    public function having($column, Closure $value = null)
+    public function having($column, Closure $value = null): self
     {
         $this->have->having($column, $value);
         return $this;
@@ -93,7 +98,7 @@ class SelectStatement extends BaseStatement
      * 
      * @return  $this
      */
-    public function andHaving($column, Closure $value = null)
+    public function andHaving($column, Closure $value = null): self
     {
         $this->have->andHaving($column, $value);
         return $this;
@@ -105,7 +110,7 @@ class SelectStatement extends BaseStatement
      * 
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null)
+    public function orHaving($column, Closure $value = null): self 
     {
         $this->have->orHaving($column, $value);
         return $this;

@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2013-2015 Marius Sarca
+ * Copyright 2013-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ namespace Opis\Database\ORM;
 use Closure;
 use Opis\Database\Model;
 
-abstract class BaseLoader
+trait LoaderTrait
 {
     /** @var    array */
     protected $with = array();
@@ -31,13 +31,13 @@ abstract class BaseLoader
     /** @var    bool */
     protected $immediate = false;
 
+
     /**
-     * @param   mixed   $value
-     * @param   bool    $immediate  (optional)
-     *
-     * @return  $this
+     * @param $value
+     * @param bool $immediate
+     * @return self
      */
-    public function with($value, $immediate = false)
+    public function with($value, $immediate = false): self
     {
         if (!is_array($value)) {
             $value = array($value);
@@ -50,7 +50,7 @@ abstract class BaseLoader
 
     /**
      * @param   Model   $model
-     * @param   array   &$result
+     * @param   array   &$results
      */
     protected function prepareResults(Model $model, array &$results)
     {
@@ -89,7 +89,7 @@ abstract class BaseLoader
     /**
      * @return  array
      */
-    protected function getWithAttributes()
+    protected function getWithAttributes(): array
     {
         $with = array();
         $extra = array();

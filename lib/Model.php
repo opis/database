@@ -21,6 +21,7 @@
 namespace Opis\Database;
 
 use DateTime;
+use Opis\Database\ORM\LazyLoader;
 use RuntimeException;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation\HasOne;
@@ -28,7 +29,7 @@ use Opis\Database\ORM\Relation\HasMany;
 use Opis\Database\ORM\Relation\BelongsTo;
 use Opis\Database\ORM\Relation\BelongsToMany;
 
-abstract class Model implements ModelInterface
+abstract class Model
 {
     /**
      * Autoincrement primary key type
@@ -220,7 +221,10 @@ abstract class Model implements ModelInterface
      * 
      * @var boolean
      */
-    protected $isDirty = false;
+    protected $dehydrated = false;
+
+    /** @var  \Opis\Database\SQL\Query|null */
+    protected $queryBuilder;
 
     /**
      * Constructor
@@ -229,91 +233,32 @@ abstract class Model implements ModelInterface
      * 
      * @param   boolean $readonly   Indicates if this is a read-only model
      */
-    final public function __construct(Connection $connection, bool $readonly = false)
+    final public function __construct(Connection $connection, bool $readonly = null)
     {
         $this->loaded = true;
         $this->connection = $connection;
-        $this->readonly = $readonly;
-        $this->mapGetSet = array_flip($this->mapColumns);
+        if($readonly !== null) {
+            $this->readonly = $readonly;
+        }
     }
 
     /**
-     * Creates a new record
+     * Handles dynamic method calls into the model
      *
-     * @param   array                       $columns    A column-value mapped array
-     * @param   \Opis\Database\Connection   $connection (optional) Database connection
+     * @param   string  $name       Method's name
+     * @param   string  $arguments  Method's arguments
      *
-     * @return  \Opis\Database\Model
+     * @return  mixed
      */
-    public static function create(array $columns, Connection $connection = null)
+    public function __call($name, array $arguments)
     {
-        if ($connection === null) {
-            $connection = static::getConnection();
+        if (method_exists($this, $name . 'Scope')) {
+            array_unshift($arguments, $this->getQueryBuilder());
+            $this->{$name . 'Scope'}(...$arguments);
+            return $this;
         }
 
-        $item = new static(false, $connection);
-        $item->assign($columns);
-        $item->save();
-        return $item;
-    }
-
-    /**
-     * Deletes specified records
-     * 
-     * @param   string|int  $id
-     * 
-     * @return  boolean
-     */
-    public static function destroy($id)
-    {
-        if (!is_array($id)) {
-            $id = array($id);
-        }
-
-        $model = new static();
-        return $model->where($model->getPrimaryKey())->in($id)->delete();
-    }
-
-    /**
-     * Soft delete specified records
-     * 
-     * @param   string|int  $id
-     * 
-     * @return  boolean
-     */
-    public static function softDestroy($id)
-    {
-        if (!is_array($id)) {
-            $id = array($id);
-        }
-
-        $model = new static();
-        return $model->where($model->getPrimaryKey())->in($id)->softDelete();
-    }
-
-    /**
-     * Update all records
-     * 
-     * @param   array   $columns
-     * 
-     * @return  boolean
-     */
-    public static function updateAll(array $columns)
-    {
-        $model = new static();
-        return $model->queryBuilder()->update($columns);
-    }
-
-    /**
-     * Returns an instance of a model that use the given connection
-     *
-     * @param   \Opis\Database\Connection   $connection Database connection
-     *
-     * @return  \Opis\Database\Model
-     */
-    public static function using(Connection $connection)
-    {
-        return new static(false, $connection);
+        return $this->getQueryBuilder()->{$name}(...$arguments);
     }
 
     /**
@@ -330,18 +275,17 @@ abstract class Model implements ModelInterface
             return;
         }
 
-        if ($this->readonly) {
-            throw new RuntimeException('Readonly');
-        }
-        
-        if ($this->isDirty) {
-            $this->isDirty = false;
-            $this->columns = $this->queryBuilder()
-                                  ->find($this->columns[$this->primaryKey])
-                                  ->columns;
+        if ($this->deleted) {
+            throw new RuntimeException('This record was deleted');
         }
 
-        $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
+        if ($this->readonly) {
+            throw new RuntimeException('This model is readonly');
+        }
+
+        $this->hydrate();
+
+        $column = $this->mapColumns[$name] ?? $name;
 
         if ($this->primaryKey == $column && $this->primaryKeyType === Model::PRIMARY_KEY_AUTOINCREMENT) {
             return;
@@ -354,11 +298,11 @@ abstract class Model implements ModelInterface
         }
 
         if (isset($this->cast[$column])) {
-            $value = $this->cast($column, $value);
+            $value = $this->cast($column, $value, 'set');
         }
 
         if (method_exists($this, $name)) {
-            // This must be reviewed
+            //TODO: This must be reviewed
             $column = $this->{$name}()->getRelatedColumn($this, $column);
             $this->result[$name] = $value;
             if ($value instanceof Model) {
@@ -379,21 +323,20 @@ abstract class Model implements ModelInterface
      */
     public function __get($name)
     {
-        if ($this->isDirty) {
-            $this->isDirty = false;
-            $this->columns = $this->queryBuilder()
-                                  ->find($this->columns[$this->primaryKey])
-                                  ->columns;
+        if ($this->deleted) {
+            throw new RuntimeException('This record was deleted');
         }
-        
-        $column = isset($this->mapGetSet[$name]) ? $this->mapGetSet[$name] : $name;
+
+        $this->hydrate();
+
+        $column = $this->mapColumns[$name] ?? $name;
 
         if (array_key_exists($column, $this->columns)) {
             $accesor = $name . 'Accessor';
             $value = $this->columns[$column];
 
             if (isset($this->cast[$column])) {
-                $value = $this->cast($column, $value);
+                $value = $this->cast($column, $value, 'get');
             }
 
             if (method_exists($this, $accesor)) {
@@ -415,7 +358,7 @@ abstract class Model implements ModelInterface
             return $this->result[$name] = $this->{$name}()->getResult();
         }
 
-        throw new RuntimeException('Unknown property "' . $name . '"');
+        throw new RuntimeException("Unknown property `$name`");
     }
 
     /**
@@ -423,45 +366,22 @@ abstract class Model implements ModelInterface
      *
      * @return  boolean
      */
-    public function save()
+    public function save(): bool
     {
         if ($this->deleted) {
             throw new RuntimeException('This record was deleted');
         }
 
         if ($this->isNewRecord) {
-            $self = $this;
 
-            $id = $this->database()->transaction(function ($db) use ($self) {
-
-                    $columns = $self->prepareColumns();
-                    $customPK = $self->primaryKeyType === Model::PRIMARY_KEY_CUSTOM;
-
-                    if ($customPK) {
-                        $columns[$this->primaryKey] = $self->generatePrimaryKey();
-                    }
-
-                    if ($self->supportsTimestamps()) {
-                        $columns['created_at'] = date($self->getDateFormat());
-                        $columns['updated_at'] = null;
-                    }
-
-                    $db->insert($columns)
-                    ->into($self->getTable());
-
-                    return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->pdo()->lastInsertId($self->getSequence());
-                })
-                ->onError(function($e) use ($self) {
-                    if ($self->throwExceptions) {
-                        throw $e;
-                    }
-                })
+            $id = $this->database()->transaction([$this, 'performSave'])
+                ->onError([$this, 'interceptTransactionError'])
                 ->execute();
 
             $this->modified = array();
             $this->isNewRecord = false;
             $this->columns[$this->primaryKey] = $id;
-            $this->isDirty = true;
+            $this->dehydrated = true;
 
             return (bool) $id;
         }
@@ -482,7 +402,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  boolean
      */
-    public function delete()
+    public function delete(): bool
     {
         if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
@@ -493,8 +413,8 @@ abstract class Model implements ModelInterface
         }
 
         $result = $this->database()->from($this->getTable())
-            ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-            ->delete();
+                                    ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
+                                    ->delete();
 
         $this->deleted = true;
 
@@ -508,7 +428,7 @@ abstract class Model implements ModelInterface
      * 
      * @throws  RuntimeException
      */
-    public function softDelete()
+    public function softDelete(): bool
     {
         if ($this->isNewRecord) {
             throw new RuntimeException('This is a new record that was not saved yet');
@@ -524,9 +444,7 @@ abstract class Model implements ModelInterface
 
         $result = $this->database()->update($this->getTable())
             ->where($this->primaryKey)->is($this->columns[$this->primaryKey])
-            ->set(array(
-            'deleted_at' => date($this->getDateFormat()),
-        ));
+            ->set(['deleted_at' => date($this->getDateFormat())]);
 
         $this->deleted = true;
 
@@ -540,7 +458,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  boolean
      */
-    public function update(array $columns)
+    public function update(array $columns): bool
     {
         if ($this->supportsTimestamps()) {
             $this->columns['updated_at'] = $columns['updated_at'] = date($this->getDateFormat());
@@ -559,7 +477,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  $this
      */
-    public function assign(array $values)
+    public function assign(array $values): self
     {
         if ($this->fillable !== null && is_array($this->fillable)) {
             $values = array_intersect_key($values, array_flip($this->fillable));
@@ -580,7 +498,7 @@ abstract class Model implements ModelInterface
      * @param   string                          $name   Property's name
      * @param   \Opis\Database\ORM\LazyLoader   $value  Lazy loader object
      */
-    public function setLazyLoader($name, $value)
+    public function setLazyLoader(string $name, LazyLoader $value)
     {
         $this->loader[$name] = $value;
     }
@@ -590,7 +508,7 @@ abstract class Model implements ModelInterface
      *
      * @return  string
      */
-    public function getTable()
+    public function getTable(): string
     {
         if ($this->table === null) {
             $this->table = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . 's';
@@ -604,7 +522,7 @@ abstract class Model implements ModelInterface
      *
      * @return  string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKey(): string
     {
         return $this->primaryKey;
     }
@@ -614,7 +532,7 @@ abstract class Model implements ModelInterface
      *
      * @return  string
      */
-    public function getForeignKey()
+    public function getForeignKey(): string
     {
         return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
     }
@@ -624,13 +542,21 @@ abstract class Model implements ModelInterface
      *
      * @return string
      */
-    public function getDateFormat()
+    public function getDateFormat(): string
     {
         if ($this->dateFormat === null) {
-            $this->dateFormat = $this->database()->getConnection()->getCompiler()->getDateFormat();
+            $this->dateFormat = $this->connection->getCompiler()->getDateFormat();
         }
 
         return $this->dateFormat;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
     }
 
     /**
@@ -638,7 +564,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  boolean
      */
-    public function supportsSoftDeletes()
+    public function supportsSoftDeletes(): bool
     {
         return $this->softDeletes && isset($this->cast['deleted_at']) && $this->cast['deleted_at'] === 'date?';
     }
@@ -648,7 +574,7 @@ abstract class Model implements ModelInterface
      * 
      * @return  boolean
      */
-    public function supportsTimestamps()
+    public function supportsTimestamps(): bool
     {
         return $this->timestamps && isset($this->cast['created_at']) && isset($this->cast['updated_at']) &&
             $this->cast['created_at'] === 'date' && $this->cast['updated_at'] === 'date?';
@@ -660,11 +586,11 @@ abstract class Model implements ModelInterface
      * @param   string  $model          Related model
      * @param   string  $foreignKey     (optional) Foreign key
      *
-     * @return  \Opis\Database\ORM\Relation\HasOne
+     * @return  HasOne
      */
-    public function hasOne($model, $foreignKey = null)
+    public function hasOne(string $model, string $foreignKey = null): HasOne
     {
-        return new HasOne($this->getDatabaseConnection(), $this, new $model, $foreignKey);
+        return new HasOne($this, new $model($this->connection), $foreignKey);
     }
 
     /**
@@ -673,11 +599,11 @@ abstract class Model implements ModelInterface
      * @param   string  $model          Related model
      * @param   string  $foreignKey     (optional) Foreign key
      *
-     * @return  \Opis\Database\ORM\Relation\HasMany
+     * @return  HasMany
      */
-    public function hasMany($model, $foreignKey = null)
+    public function hasMany(string $model, string $foreignKey = null): HasMany
     {
-        return new HasMany($this->getDatabaseConnection(), $this, new $model, $foreignKey);
+        return new HasMany($this, new $model($this->connection), $foreignKey);
     }
 
     /**
@@ -686,24 +612,25 @@ abstract class Model implements ModelInterface
      * @param   string  $model          Related model
      * @param   string  $foreignKey     (optional) Foreign key
      *
-     * @return  \Opis\Database\ORM\Relation\BelongsTo
+     * @return  BelongsTo
      */
-    public function belongsTo($model, $foreignKey = null)
+    public function belongsTo(string $model, string $foreignKey = null): BelongsTo
     {
-        return new BelongsTo($this->getDatabaseConnection(), $this, new $model, $foreignKey);
+        return new BelongsTo($this, new $model($this->connection), $foreignKey);
     }
 
     /**
      * Define a Many to Many relation
      *
-     * @param   string  $model          Related model
-     * @param   string  $foreignKey     (optional) Foreign key
-     *
-     * @return  \Opis\Database\ORM\Relation\BelongsToMany
+     * @param string $model
+     * @param string|null $foreignKey
+     * @param string|null $junctionTable
+     * @param string|null $junctionKey
+     * @return BelongsToMany
      */
-    public function belongsToMany($model, $foreignKey = null, $junctionTable = null, $junctionKey = null)
+    public function belongsToMany(string $model, string $foreignKey = null, string $junctionTable = null, string $junctionKey = null): BelongsToMany
     {
-        return new BelongsToMany($this->getDatabaseConnection(), $this, new $model, $foreignKey, $junctionTable, $junctionKey);
+        return new BelongsToMany($this, new $model($this->connection), $foreignKey, $junctionTable, $junctionKey);
     }
 
     /**
@@ -721,10 +648,10 @@ abstract class Model implements ModelInterface
      *
      * @param   string  $name   Column's name
      * @param   mixed   $value  Value to be casted
-     *
+     * @param   string  $ctx    Context(get or set)
      * @return  mixed
      */
-    protected function cast($name, $value)
+    protected function cast(string $name, $value, string $ctx)
     {
         $cast = $this->cast[$name];
 
@@ -740,7 +667,7 @@ abstract class Model implements ModelInterface
             if (is_string($callback) && $callback[0] === '@') {
                 $callback = array($this, substr($callback, 1));
             }
-            return call_user_func($callback, $cast, $value);
+            return call_user_func($callback, $cast, $value, $ctx);
         }
 
         switch ($cast) {
@@ -771,24 +698,10 @@ abstract class Model implements ModelInterface
     protected function database()
     {
         if ($this->database === null) {
-            $this->database = new Database($this->getDatabaseConnection());
+            $this->database = new Database($this->connection);
         }
 
         return $this->database;
-    }
-
-    /**
-     * Sequence's name
-     *
-     * @return  string
-     */
-    protected function getSequence()
-    {
-        if ($this->sequence === null) {
-            $this->sequence = $this->getTable() . '_' . $this->primaryKey . '_seq';
-        }
-
-        return $this->sequence;
     }
 
     /**
@@ -837,60 +750,83 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Sequence's name
+     *
+     * @return  string
+     */
+    protected function getSequence()
+    {
+        if ($this->sequence === null) {
+            $this->sequence = $this->getTable() . '_' . $this->primaryKey . '_seq';
+        }
+
+        return $this->sequence;
+    }
+
+    /**
      * Returns a query builder
      *
+     * @param   bool    $clean
      * @return  \Opis\Database\ORM\Query
      */
-    protected function queryBuilder()
+    protected function getQueryBuilder(bool $clean = false)
     {
-        return new Query($this->getDatabaseConnection(), $this);
-    }
-
-    /**
-     * Returns a database connection object
-     *
-     * @return  \Opis\Database\Connection
-     */
-    protected function getDatabaseConnection()
-    {
-        if ($this->connection === null) {
-            $this->connection = static::getConnection();
+        if($this->queryBuilder === null){
+            $this->queryBuilder = new Query($this);
         }
 
-        return $this->connection;
-    }
+        $qb = $this->queryBuilder;
 
-    /**
-     * Handles dynamic method calls into the model
-     *
-     * @param   string  $name       Method's name
-     * @param   string  $arguments  Method's arguments
-     *
-     * @return  mixed
-     */
-    public function __call($name, array $arguments)
-    {
-        $object = $this->queryBuilder();
-
-        if (method_exists($this, $name . 'Scope')) {
-            array_unshift($arguments, $object);
-            $object = $this;
-            $name .= 'Scope';
+        if($clean){
+            $this->queryBuilder = null;
         }
 
-        return call_user_func_array(array($object, $name), $arguments);
+        return $qb;
     }
 
     /**
-     * Handles dynamic static method calls into the model
-     *
-     * @param   string  $name       Method's name
-     * @param   string  $arguments  Method's arguments
-     *
-     * @return  mixed
+     * @param Database $db
+     * @return mixed|string
      */
-    public static function __callStatic($name, array $arguments)
+    protected function performSave(Database $db)
     {
-        return call_user_func_array(array(new static(), $name), $arguments);
+        $columns = $this->prepareColumns();
+        $customPK = $this->primaryKeyType === Model::PRIMARY_KEY_CUSTOM;
+
+        if ($customPK) {
+            $columns[$this->primaryKey] = $this->generatePrimaryKey();
+        }
+
+        if ($this->supportsTimestamps()) {
+            $columns['created_at'] = date($this->getDateFormat());
+            $columns['updated_at'] = null;
+        }
+
+        $db->insert($columns)->into($this->getTable());
+
+        return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->getPDO()->lastInsertId($this->getSequence());
+    }
+
+
+    /**
+     * @param \PDOException $e
+     * @param Transaction $transaction
+     */
+    protected function interceptTransactionError(\PDOException $e, Transaction $transaction)
+    {
+        if($this->throwExceptions){
+            throw $e;
+        }
+    }
+
+    /**
+     * Hydrate
+     */
+    protected function hydrate()
+    {
+        if($this->dehydrated) {
+            $this->dehydrated = false;
+            $this->columns = $this->getQueryBuilder(true)->find($this->columns[$this->primaryKey])->columns;
+        }
     }
 }

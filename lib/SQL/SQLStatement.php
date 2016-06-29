@@ -201,7 +201,7 @@ class SQLStatement
      */
     public function addHavingGroupCondition(Closure $callback, string $separator)
     {
-        $having = new HavingStatament();
+        $having = new HavingStatement();
         $callback($having);
 
         $this->having[] = array(
