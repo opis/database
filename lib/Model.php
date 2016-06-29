@@ -206,7 +206,7 @@ abstract class Model implements ModelInterface
      *
      * @var \Opis\Database\Connection
      */
-    protected $dbcon;
+    protected $connection;
 
     /**
      * A flag that indicates if exceptions are thrown
@@ -229,10 +229,10 @@ abstract class Model implements ModelInterface
      * 
      * @param   boolean $readonly   Indicates if this is a read-only model
      */
-    final public function __construct($readonly = false, Connection $connection = null)
+    final public function __construct(Connection $connection, bool $readonly = false)
     {
         $this->loaded = true;
-        $this->dbcon = $connection;
+        $this->connection = $connection;
         $this->readonly = $readonly;
         $this->mapGetSet = array_flip($this->mapColumns);
     }
@@ -853,11 +853,11 @@ abstract class Model implements ModelInterface
      */
     protected function getDatabaseConnection()
     {
-        if ($this->dbcon === null) {
-            $this->dbcon = static::getConnection();
+        if ($this->connection === null) {
+            $this->connection = static::getConnection();
         }
 
-        return $this->dbcon;
+        return $this->connection;
     }
 
     /**
