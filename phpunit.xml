@@ -3,5 +3,8 @@
         <testsuite name="Opis Database SQL Test Suite">
             <directory suffix="Test.php">./tests/SQL</directory>
         </testsuite>
+        <testsuite name="Opis Database ORM Test Suite">
+            <directory suffix="Test.php">./tests/ORM</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
