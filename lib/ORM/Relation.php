@@ -137,7 +137,7 @@ abstract class Relation extends BaseStatement
     /**
      * @return  string
      */
-    public function getForeignKey()
+    public function getForeignKey(): string 
     {
         if ($this->foreignKey === null) {
             $this->foreignKey = $this->owner->getForeignKey();

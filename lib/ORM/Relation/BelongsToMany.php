@@ -55,7 +55,7 @@ class BelongsToMany extends Relation
     /**
      * @return  string
      */
-    protected function getJunctionTable()
+    protected function getJunctionTable(): string
     {
         if ($this->junctionTable === null) {
             $table = array($this->owner->getTable(), $this->model->getTable());
@@ -69,7 +69,7 @@ class BelongsToMany extends Relation
     /**
      * @return  string
      */
-    protected function getJunctionKey()
+    protected function getJunctionKey(): string 
     {
         if ($this->junctionKey === null) {
             $this->junctionKey = $this->model->getForeignKey();

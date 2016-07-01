@@ -42,7 +42,7 @@ class BelongsTo extends Relation
      *
      * @return  string
      */
-    public function getRelatedColumn(Model $model, $name)
+    public function getRelatedColumn(Model $model, $name): string
     {
         return $this->getForeignKey();
     }
@@ -89,7 +89,7 @@ class BelongsTo extends Relation
     /**
      * @return  string
      */
-    public function getForeignKey()
+    public function getForeignKey(): string 
     {
         if ($this->foreignKey === null) {
             $this->foreignKey = $this->model->getForeignKey();
