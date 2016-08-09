@@ -20,6 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\SQL\HavingCondition` class
 - `Opis\Database\SQL\HavingClause` class
 - `Opis\Database\SQL\AggregateExpression` class
+- `Opis\Database\Schema\ForeignKey::on` method
 
 ### Changed
 - `Opis\Database\SQL\Where` class
@@ -32,6 +33,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\Connection::pdo` method was renamed to `getPDO`
 - `Opis\Database\Connection::schema` method was renamed to `getSchema`
 - `Opis\Database\Connection::dsn` method was renamed to `getDSN`
+- Added column argument to `Opis\Database\Schema\ForeignKey::references` method
 
 ### Fixed
 - Nothing
