@@ -105,9 +105,9 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      *
-     * @return  $this
+     * @return  Connection
      */
-    public function logQueries($value = true)
+    public function logQueries(bool $value = true): self
     {
         $this->logQueries = $value;
         return $this;
@@ -119,9 +119,9 @@ class Connection implements Serializable
      * @param   string  $query SQL command
      * @param   array   $params (optional) Params
      *
-     * @return  $this
+     * @return  Connection
      */
-    public function initCommand($query, array $params = array())
+    public function initCommand(string $query, array $params = []): self
     {
         $this->commands[] = array(
             'sql' => $query,
@@ -136,9 +136,9 @@ class Connection implements Serializable
      *
      * @param   string  $username   Username
      *
-     * @return  $this
+     * @return  Connection
      */
-    public function username($username)
+    public function username(string $username): self
     {
         $this->username = $username;
         return $this;
@@ -149,9 +149,9 @@ class Connection implements Serializable
      *
      * @param   string  $password   Password
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function password($password)
+    public function password(string $password): self
     {
         $this->password = $password;
         return $this;
@@ -162,9 +162,9 @@ class Connection implements Serializable
      *
      * @param   array   $options    PDO options
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function options(array $options)
+    public function options(array $options): self
     {
         foreach ($options as $name => $value) {
             $this->option($name, $value);
@@ -176,12 +176,12 @@ class Connection implements Serializable
     /**
      * Set a PDO connection option
      *
-     * @param   string  $name   Option
-     * @param   int     $value  Value
+     * @param  mixed $name
+     * @param  mixed $value
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function option($name, $value)
+    public function option($name, $value): self
     {
         $this->options[$name] = $value;
         return $this;
@@ -192,9 +192,9 @@ class Connection implements Serializable
      *
      * @param   bool    $value  (optional) Value
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function persistent($value = true)
+    public function persistent(bool $value = true): self
     {
         return $this->option(PDO::ATTR_PERSISTENT, $value);
     }
@@ -204,9 +204,9 @@ class Connection implements Serializable
      *
      * @param   string  $format Date format
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function setDateFormat($format)
+    public function setDateFormat(string $format): self
     {
         $this->compilerOptions['dateFormat'] = $format;
         return $this;
@@ -217,9 +217,9 @@ class Connection implements Serializable
      *
      * @param   string  $wrapper    Identifier wrapper
      * 
-     * @return  $this
+     * @return  Connection
      */
-    public function setWrapperFormat($wrapper)
+    public function setWrapperFormat(string $wrapper): self
     {
         $this->compilerOptions['wrapper'] = $wrapper;
         $this->schemaCompilerOptions['wrapper'] = $wrapper;
@@ -255,7 +255,7 @@ class Connection implements Serializable
      *
      * @return  Schema
      */
-    public function getSchema()
+    public function getSchema(): Schema
     {
         if ($this->schema === null) {
             $this->schema = new Schema($this);
@@ -269,7 +269,7 @@ class Connection implements Serializable
      *
      * @return PDO
      */
-    public function getPDO()
+    public function getPDO(): PDO
     {
         if ($this->pdo == null) {
             $this->pdo = new PDO($this->getDSN(), $this->username, $this->password, $this->options);
@@ -285,9 +285,9 @@ class Connection implements Serializable
     /**
      * Returns an instance of the compiler associated with this connection
      *
-     * @return  \Opis\Database\SQL\Compiler
+     * @return  SQL\Compiler
      */
-    public function getCompiler()
+    public function getCompiler(): SQL\Compiler
     {
         if ($this->compiler === null) {
             switch ($this->getDriver()) {
@@ -330,9 +330,9 @@ class Connection implements Serializable
      *
      * @throws  \Exception
      * 
-     * @return  \Opis\Database\Schema\Compiler
+     * @return  Schema\Compiler
      */
-    public function schemaCompiler()
+    public function schemaCompiler(): Schema\Compiler
     {
         if ($this->schemaCompiler === null) {
             switch ($this->getDriver()) {
@@ -378,7 +378,7 @@ class Connection implements Serializable
      * 
      * @return  array
      */
-    public function getLog()
+    public function getLog(): array
     {
         return $this->log;
     }
@@ -391,7 +391,7 @@ class Connection implements Serializable
      *
      * @return  ResultSet
      */
-    public function query($sql, array $params = array())
+    public function query(string $sql, array $params = []): ResultSet
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
@@ -406,7 +406,7 @@ class Connection implements Serializable
      *
      * @return  mixed   Command result
      */
-    public function command($sql, array $params = array())
+    public function command(string $sql, array $params = [])
     {
         return $this->execute($this->prepare($sql, $params));
     }
@@ -419,7 +419,7 @@ class Connection implements Serializable
      *
      * @return  int
      */
-    public function count($sql, array $params = array())
+    public function count($sql, array $params = []): int
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
@@ -436,7 +436,7 @@ class Connection implements Serializable
      *
      * @return  mixed
      */
-    public function column($sql, array $params = array())
+    public function column(string $sql, array $params = [])
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
@@ -450,9 +450,9 @@ class Connection implements Serializable
      *
      * @param   string  $query  SQL query
      * @param   array   $params Query parameters
-     * @param   int     $start  Start time in microseconds
+     * @param   int|float   $start  Start time in microseconds
      */
-    protected function log($query, array $params, $start)
+    protected function log(string $query, array $params, $start)
     {
         $time = microtime(true) - $start;
         $query = $this->replaceParams($query, $params);
@@ -467,7 +467,7 @@ class Connection implements Serializable
      * 
      * @return  string
      */
-    protected function replaceParams($query, array $params)
+    protected function replaceParams(string $query, array $params): string
     {
         $compiler = $this->getCompiler();
 
@@ -493,7 +493,7 @@ class Connection implements Serializable
      * 
      * @return  array
      */
-    protected function prepare($query, array $params)
+    protected function prepare(string $query, array $params): array
     {
         try {
             $statement = $this->getPDO()->prepare($query);
