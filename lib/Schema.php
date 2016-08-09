@@ -20,10 +20,8 @@
 
 namespace Opis\Database;
 
-use Closure;
 use Opis\Database\Schema\CreateTable;
 use Opis\Database\Schema\AlterTable;
-use Opis\Database\Schema\Compiler;
 
 class Schema
 {
@@ -78,7 +76,7 @@ class Schema
      *
      * @return  boolean
      */
-    public function hasTable($table, $clear = false)
+    public function hasTable(string $table, bool $clear = false): bool
     {
         $list = $this->getTables($clear);
         return isset($list[strtolower($table)]);
@@ -89,9 +87,9 @@ class Schema
      *
      * @param   boolean $clear  (optional) Refresh table list
      *
-     * @return  array
+     * @return  string[]
      */
-    public function getTables($clear = false)
+    public function getTables(bool $clear = false): array
     {
         if ($clear) {
             $this->tableList = null;
@@ -126,9 +124,9 @@ class Schema
      * @param   boolean $clear (optional) Refresh column list
      * @param   boolean $names (optional) Return only the column names
      * 
-     * @return array
+     * @return false|string[]
      */
-    public function getColumns($table, $clear = false, $names = true)
+    public function getColumns(string $table, bool $clear = false, bool $names = true)
     {
         if ($clear) {
             unset($this->columns[$table]);
@@ -169,9 +167,9 @@ class Schema
      * Creates a new table
      *
      * @param   string      $table      Table name
-     * @param   \Closure    $callback   A callback that will define table's fields and indexes
+     * @param   callable    $callback   A callback that will define table's fields and indexes
      */
-    public function create($table, Closure $callback)
+    public function create(string $table, callable $callback)
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -191,9 +189,9 @@ class Schema
      * Alters a table's definition
      *
      * @param   string      $table      Table name
-     * @param   \Closure    $callback   A callback that will add or remove fields or indexes
+     * @param   callable    $callback   A callback that will add or remove fields or indexes
      */
-    public function alter($table, Closure $callback)
+    public function alter(string $table, callable $callback)
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -214,7 +212,7 @@ class Schema
      * @param   string  $table  The table
      * @param   string  $name   The new name of the table
      */
-    public function renameTable($table, $name)
+    public function renameTable(string $table, string $name)
     {
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
         $this->connection->command($result['sql'], $result['params']);
@@ -227,7 +225,7 @@ class Schema
      *
      * @param   string  $table  Table name
      */
-    public function drop($table)
+    public function drop(string $table)
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -245,7 +243,7 @@ class Schema
      *
      * @param   string  $table  Table name
      */
-    public function truncate($table)
+    public function truncate(string $table)
     {
         $compiler = $this->connection->schemaCompiler();
 
