@@ -96,27 +96,13 @@ class ForeignKey
 
     /**
      * @param   string  $table
-     * 
+     * @param   string  $column
      * @return  $this
      */
-    public function references($table)
+    public function references($table, $column)
     {
         $this->refTable = $table;
-        return $this;
-    }
-
-    /**
-     * @param   string|array $columns
-     * 
-     * @return  $this
-     */
-    public function on($columns)
-    {
-        if (!is_array($columns)) {
-            $columns = array($columns);
-        }
-
-        $this->refColumns = $columns;
+        $this->refColumns = array($column);
         return $this;
     }
 

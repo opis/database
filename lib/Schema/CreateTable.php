@@ -208,7 +208,7 @@ class CreateTable
      * @param   string      $name
      * @param   mixed|null  $columns    (optional)
      * 
-     * @return  $this
+     * @return  ForeignKey
      */
     public function foreign($name, $columns = null)
     {
@@ -218,10 +218,7 @@ class CreateTable
             $columns = array($columns);
         }
 
-        $foreign = new ForeignKey($columns);
-
-        $this->foreignKeys[$name] = $foreign;
-        return $foreign;
+        return $this->foreignKeys[$name] = new ForeignKey($columns);
     }
 
     /**
