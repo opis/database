@@ -391,7 +391,7 @@ class Connection implements Serializable
      *
      * @return  ResultSet
      */
-    public function query(string $sql, array $params = []): ResultSet
+    public function query(string $sql, array $params = [])
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
@@ -419,7 +419,7 @@ class Connection implements Serializable
      *
      * @return  int
      */
-    public function count($sql, array $params = []): int
+    public function count($sql, array $params = [])
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
