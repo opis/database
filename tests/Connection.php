@@ -3,6 +3,8 @@
 namespace Opis\Database\Test;
 
 
+use Opis\Database\ResultSet;
+
 class Connection extends \Opis\Database\Connection
 {
 
@@ -13,22 +15,22 @@ class Connection extends \Opis\Database\Connection
         //$this->setWrapperFormat('`%s`');
     }
 
-    public function query($sql, array $params = array())
+    public function query(string $sql, array $params = [])
     {
         return $this->replaceParams($sql, $params);
     }
 
-    public function column($sql, array $params = array())
+    public function column(string $sql, array $params = [])
     {
         return $this->replaceParams($sql, $params);
     }
 
-    public function count($sql, array $params = array())
+    public function count(string $sql, array $params = [])
     {
         return $this->replaceParams($sql, $params);
     }
 
-    public function command($sql, array $params = array())
+    public function command(string $sql, array $params = [])
     {
         return $this->replaceParams($sql, $params);
     }
