@@ -374,8 +374,29 @@ abstract class Model
 
         if ($this->isNewRecord) {
 
-            $id = $this->database()->transaction([$this, 'performSave'])
-                ->onError([$this, 'interceptTransactionError'])
+            $id = $this->database()
+                ->transaction(function(Database $db){
+                    $columns = $this->prepareColumns();
+                    $customPK = $this->primaryKeyType === Model::PRIMARY_KEY_CUSTOM;
+
+                    if ($customPK) {
+                        $columns[$this->primaryKey] = $this->generatePrimaryKey();
+                    }
+
+                    if ($this->supportsTimestamps()) {
+                        $columns['created_at'] = date($this->getDateFormat());
+                        $columns['updated_at'] = null;
+                    }
+
+                    $db->insert($columns)->into($this->getTable());
+
+                    return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->getPDO()->lastInsertId($this->getSequence());
+                })
+                ->onError(function(\PDOException $e, Transaction $transaction){
+                    if($this->throwExceptions){
+                        throw $e;
+                    }
+                })
                 ->execute();
 
             $this->modified = array();
@@ -780,41 +801,6 @@ abstract class Model
         }
 
         return $qb;
-    }
-
-    /**
-     * @param Database $db
-     * @return mixed|string
-     */
-    protected function performSave(Database $db)
-    {
-        $columns = $this->prepareColumns();
-        $customPK = $this->primaryKeyType === Model::PRIMARY_KEY_CUSTOM;
-
-        if ($customPK) {
-            $columns[$this->primaryKey] = $this->generatePrimaryKey();
-        }
-
-        if ($this->supportsTimestamps()) {
-            $columns['created_at'] = date($this->getDateFormat());
-            $columns['updated_at'] = null;
-        }
-
-        $db->insert($columns)->into($this->getTable());
-
-        return $customPK ? $columns[$this->primaryKey] : $db->getConnection()->getPDO()->lastInsertId($this->getSequence());
-    }
-
-
-    /**
-     * @param \PDOException $e
-     * @param Transaction $transaction
-     */
-    protected function interceptTransactionError(\PDOException $e, Transaction $transaction)
-    {
-        if($this->throwExceptions){
-            throw $e;
-        }
     }
 
     /**
