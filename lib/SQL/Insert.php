@@ -43,7 +43,7 @@ class Insert extends InsertStatement
      * 
      * @return  boolean
      */
-    public function into($table)
+    public function into(string $table)
     {
         parent::into($table);
         $compiler = $this->connection->getCompiler();
