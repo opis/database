@@ -116,11 +116,10 @@ class Database
     /**
      * Initiate a new transaction
      *
-     * @param   Closure    $queries    A callback that will be called when the transaction will begin
-     * 
-     * @return  Transaction
+     * @param callable $queries
+     * @return Transaction
      */
-    public function transaction(Closure $queries): Transaction
+    public function transaction(callable $queries): Transaction
     {
         return new Transaction($this, $queries);
     }
