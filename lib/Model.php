@@ -675,16 +675,14 @@ abstract class Model
                 return (int) $value;
             case 'float':
                 return (float) $value;
-            case 'boolean':
-                return is_bool($value) ? (int) $value :  (bool) $value;
             case 'string':
                 return (string) $value;
-            case 'array':
-                return is_array($value) ? json_encode($value) : json_decode($value, true);
-            case 'object':
-                return is_object($value) ? json_encode($value) : json_decode($value);
+            case 'boolean':
+                return $ctx == 'get' ? (bool) $value : (int) $value;
+            case 'json':
+                return $ctx == 'get' ? json_decode($value) : json_encode($value, JSON_FORCE_OBJECT);
             case 'date':
-                return $value instanceof DateTime ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
+                return $ctx == 'get' ? DateTime::createFromFormat($this->getDateFormat(), $value) : $value;
         }
 
         throw new RuntimeException(vsprintf('Unknown cast type "%s"', array($cast)));
