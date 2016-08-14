@@ -741,7 +741,7 @@ abstract class Model implements ModelInterface
             if (is_string($callback) && $callback[0] === '@') {
                 $callback = array($this, substr($callback, 1));
             }
-            return call_user_func($callback, $cast, $value);
+            return call_user_func($callback, $cast, $value, $context);
         }
 
         switch ($cast) {
