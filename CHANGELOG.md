@@ -1,5 +1,10 @@
 CHANGELOG
 ---------
+### v3.6.8, 2016.08.14
+
+* Added `json` type cast
+* Added an optional argument to cast method
+
 ### v3.6.7, 2016.06.14
 
 * Bugfix
