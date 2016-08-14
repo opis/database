@@ -354,7 +354,7 @@ abstract class Model implements ModelInterface
         }
 
         if (isset($this->cast[$column])) {
-            $value = $this->cast($column, $value);
+            $value = $this->cast($column, $value, 'set');
         }
 
         if (method_exists($this, $name)) {
@@ -393,7 +393,7 @@ abstract class Model implements ModelInterface
             $value = $this->columns[$column];
 
             if (isset($this->cast[$column])) {
-                $value = $this->cast($column, $value);
+                $value = $this->cast($column, $value, 'get');
             }
 
             if (method_exists($this, $accesor)) {
@@ -721,10 +721,11 @@ abstract class Model implements ModelInterface
      *
      * @param   string  $name   Column's name
      * @param   mixed   $value  Value to be casted
+     * @param   string  $context 'get' or 'set'
      *
      * @return  mixed
      */
-    protected function cast($name, $value)
+    protected function cast($name, $value, $context = 'get')
     {
         $cast = $this->cast[$name];
 
@@ -756,6 +757,8 @@ abstract class Model implements ModelInterface
                 return is_array($value) ? json_encode($value) : json_decode($value, true);
             case 'object':
                 return is_object($value) ? json_encode($value) : json_decode($value);
+            case 'json':
+                return $context == 'get' ? json_decode($value) : json_encode($value);
             case 'date':
                 return $value instanceof DateTime ? $value : DateTime::createFromFormat($this->getDateFormat(), $value);
         }
