@@ -21,6 +21,8 @@
 namespace Opis\Database\SQL;
 
 use Closure;
+use Opis\Database\ORM\Query;
+use Opis\Database\ORM\Relation;
 
 class BaseStatement extends WhereStatement
 {
@@ -29,7 +31,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return  Delete|Select|BaseStatement|Query|Relation
      */
     public function join($table, Closure $closure)
     {
@@ -41,7 +43,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return  Delete|Select|BaseStatement|Query|Relation
      */
     public function leftJoin($table, Closure $closure)
     {
@@ -53,7 +55,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return  Delete|Select|BaseStatement|Query|Relation
      */
     public function rightJoin($table, Closure $closure)
     {
@@ -65,7 +67,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return  Delete|Select|BaseStatement|Query|Relation
      */
     public function fullJoin($table, Closure $closure)
     {

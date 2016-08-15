@@ -26,6 +26,7 @@ use Opis\Database\SQL\Delete;
 use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\SQLStatement;
 use Opis\Database\SQL\Update;
+use Opis\Database\SQL\WhereStatement;
 use RuntimeException;
 
 class Query extends BaseStatement
@@ -117,7 +118,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @return self
+     * @return Query|BaseStatement|WhereStatement
      */
     public function onlySoftDeleted(): self
     {
