@@ -47,7 +47,7 @@ class WhereStatement
     /**
      * @param $column
      * @param string $separator
-     * @return $this|Where
+     * @return WhereStatement|Where
      */
     protected function addWhereCondition($column, string $separator ='AND')
     {
@@ -62,7 +62,7 @@ class WhereStatement
      * @param Closure $select
      * @param string $separator
      * @param bool $not
-     * @return BaseStatement
+     * @return WhereStatement
      */
     protected function addWhereExistCondition(Closure $select, string $separator = 'AND', bool $not = false): self
     {
@@ -80,7 +80,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return self|Where
+     * @return Where|Delete|Select|Update
      */
     public function where($column)
     {
@@ -89,7 +89,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return self|Where
+     * @return Where|Delete|Select|Update
      */
     public function andWhere($column)
     {
@@ -98,7 +98,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return self|Where
+     * @return Where|Delete|Select|Update
      */
     public function orWhere($column)
     {
@@ -107,7 +107,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function whereExists(Closure $select): self
     {
@@ -116,7 +116,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function andWhereExists(Closure $select): self
     {
@@ -125,7 +125,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function orWhereExists(Closure $select): self
     {
@@ -134,7 +134,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function whereNotExists(Closure $select): self
     {
@@ -143,7 +143,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function andWhereNotExists(Closure $select): self
     {
@@ -152,7 +152,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return self
+     * @return WhereStatement|Where|Delete|Select|Update
      */
     public function orWhereNotExists(Closure $select): self
     {

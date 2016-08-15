@@ -29,7 +29,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  $this
+     * @return  Delete|Select|BaseStatement
      */
     public function join($table, Closure $closure)
     {
@@ -41,7 +41,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  $this
+     * @return  Delete|Select|BaseStatement
      */
     public function leftJoin($table, Closure $closure)
     {
@@ -53,7 +53,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  $this
+     * @return  Delete|Select|BaseStatement
      */
     public function rightJoin($table, Closure $closure)
     {
@@ -65,7 +65,7 @@ class BaseStatement extends WhereStatement
      * @param   string  $table
      * @param   Closure $closure
      *
-     * @return  $this
+     * @return  Delete|Select|BaseStatement
      */
     public function fullJoin($table, Closure $closure)
     {

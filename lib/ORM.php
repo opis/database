@@ -19,6 +19,7 @@
  * ============================================================================ */
 
 namespace Opis\Database;
+use Opis\Database\ORM\Query;
 
 /**
  * Class ORM
@@ -38,7 +39,7 @@ class ORM
 
     /**
      * @param $class
-     * @return Model
+     * @return Model|Query
      */
     public function __invoke(string $class)
     {
@@ -47,7 +48,7 @@ class ORM
 
     /**
      * @param string $class
-     * @return Model
+     * @return Model|Query
      */
     public function model(string $class): Model
     {
