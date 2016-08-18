@@ -222,9 +222,9 @@ class BelongsToMany extends Relation
     }
 
     /**
-     * @return  Model
+     * @return  Model[]
      */
-    public function getResult(): Model
+    public function getResult()
     {
         $columns = array($this->model->getTable() . '.*');
 

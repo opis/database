@@ -26,9 +26,9 @@ use Opis\Database\ORM\Relation;
 class HasMany extends Relation
 {
     /**
-     * @return  Model
+     * @return  Model[]
      */
-    public function getResult(): Model
+    public function getResult()
     {
         return $this->query()
                 ->fetchClass(get_class($this->model), [$this->connection])

@@ -80,9 +80,9 @@ abstract class Relation extends BaseStatement
 
 
     /**
-     * @return  Model
+     * @return  Model|Model[]|false
      */
-    abstract public function getResult(): Model;
+    abstract public function getResult();
 
     /**
      * @param   Model   $model

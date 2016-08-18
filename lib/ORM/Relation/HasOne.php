@@ -35,9 +35,9 @@ class HasOne extends Relation
     }
 
     /**
-     * @return  Model
+     * @return  Model|false
      */
-    public function getResult(): Model
+    public function getResult()
     {
         return $this->query()
                 ->fetchClass(get_class($this->model), [$this->connection])
