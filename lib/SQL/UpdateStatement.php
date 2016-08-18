@@ -34,8 +34,10 @@ class UpdateStatement extends BaseStatement
         if (!is_array($table)) {
             $table = array($table);
         }
-        $statement->addTables($table);
+
         parent::__construct($statement);
+
+        $this->getSQLStatement()->addTables($table);
     }
 
     /**
