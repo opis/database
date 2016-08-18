@@ -37,7 +37,7 @@ class UpdateStatement extends BaseStatement
 
         parent::__construct($statement);
 
-        $this->getSQLStatement()->addTables($table);
+        $this->sql->addTables($table);
     }
 
     /**
