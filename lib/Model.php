@@ -701,7 +701,7 @@ abstract class Model
             case 'boolean':
                 return $ctx == 'get' ? (bool) $value : (int) $value;
             case 'json':
-                return $ctx == 'get' ? json_decode($value) : json_encode($value, JSON_FORCE_OBJECT);
+                return $ctx == 'get' ? json_decode($value) : json_encode($value);
             case 'date':
                 return $ctx == 'get' ? DateTime::createFromFormat($this->getDateFormat(), $value) : $value;
         }
