@@ -100,6 +100,7 @@ class BelongsTo extends Relation
 
     protected function buildQuery(): Relation
     {
+        $this->sql->addTables([$this->model->getTable()]);
         return $this->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
     }
 
