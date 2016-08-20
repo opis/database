@@ -98,12 +98,7 @@ class BelongsTo extends Relation
         return $this->foreignKey;
     }
 
-    /**
-     * Build query
-     * 
-     * @return  self
-     */
-    protected function buildQuery(): self
+    protected function buildQuery(): Relation
     {
         return $this->where($this->model->getPrimaryKey())->is($this->owner->{$this->getForeignKey()});
     }

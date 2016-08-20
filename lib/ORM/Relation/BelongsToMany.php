@@ -203,7 +203,7 @@ class BelongsToMany extends Relation
      * 
      * @return  self
      */
-    protected function buildQuery(): self
+    protected function buildQuery(): Relation
     {
         $self = $this;
         $junctionTable = $this->getJunctionTable();
