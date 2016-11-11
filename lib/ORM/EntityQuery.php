@@ -18,16 +18,74 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Connection;
+use Opis\Database\EntityManager;
+use Opis\Database\SQL\BaseStatement;
+use Opis\Database\SQL\HavingStatement;
+use Opis\Database\SQL\SQLStatement;
 
-class EntityQuery
+class EntityQuery extends BaseStatement
 {
-    public function __construct(Connection $connection)
-    {
+    use SelectTrait {
+        select as protected;
+    }
 
+    /** @var HavingStatement */
+    protected $have;
+    protected $enityMapper;
+
+    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper)
+    {
+        $this->have = new HavingStatement($this->sql);
+        $this->enityMapper = $entityMapper;
     }
 
     public function find($id)
     {
 
     }
+
+    public function findMany()
+    {
+
+    }
+
+    public function findAll()
+    {
+        
+    }
+
+    public function first(array $columns = [])
+    {
+        
+    }
+
+    public function all(array $columns = [])
+    {
+        $results = $this->query($columns)
+                         ->fetchAssoc()
+                         ->all();
+    }
+
+    /**
+     * @param array $columns
+     * @return \Opis\Database\ResultSet
+     */
+    protected function query(array $columns)
+    {
+        if (!empty($columns)) {
+            $columns[] = $this->enityMapper->getPrimaryKey();
+        }
+    }
+
+    protected function getHavingStatement(): HavingStatement
+    {
+        return $this->have;
+    }
+
+    protected function executeStatement()
+    {
+        // TODO: Implement executeStatement() method.
+    }
+
+
 }

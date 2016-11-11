@@ -27,7 +27,6 @@ use Opis\Database\SQL\SQLStatement;
 
 trait SelectTrait
 {
-
     /**
      * @return SQLStatement
      */

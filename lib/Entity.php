@@ -17,28 +17,9 @@
 
 namespace Opis\Database;
 
-
 use Opis\Database\ORM\EntityMapper;
-use Opis\Database\ORM\EntityQuery;
 
-class EntityManager
+abstract class Entity
 {
-    protected $entityMappersCallbacks = [];
-
-    public function entity(string $entityClass): EntityQuery
-    {
-        return new EntityQuery($this, $this->resolveEntityMapper($entityClass));
-    }
-
-    public function resolveEntityMapper(string $class): EntityMapper
-    {
-        return $this->registerEntityMapper($class, $class . '::mapEntity')
-                    ->resolveEntityMapper($class);
-    }
-
-    public function registerEntityMapper(string $class, callable $callback): self
-    {
-        $this->entityMappersCallbacks[$class] = $callback;
-        return $this;
-    }
+    abstract protected static function mapEntity(EntityMapper $mapper);
 }
