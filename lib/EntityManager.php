@@ -17,9 +17,11 @@
 
 namespace Opis\Database;
 
+use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
+use Opis\Database\ORM\Helper\EntityHelper;
 use Opis\Database\SQL\Compiler;
 use RuntimeException;
 
@@ -39,6 +41,9 @@ class EntityManager
 
     /** @var callable[] */
     protected $entityMappersCallbacks = [];
+
+    /** @var  Database */
+    protected $database;
 
     /**
      * EntityManager constructor.
@@ -91,6 +96,39 @@ class EntityManager
     }
 
     /**
+     * @param Entity $entity
+     * @return bool
+     */
+    public function save(Entity $entity): bool
+    {
+        $data = EntityHelper::getDataMapper($entity);
+
+        if($data->isNew()) {
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $class
+     * @param array $columns
+     * @return Entity
+     */
+    public function create(string $class, array $columns = []): Entity
+    {
+        return new $class($this, $this->resolveEntityMapper($class), $columns, false, true);
+    }
+
+    /**
+     * @param Entity $entity
+     * @return bool
+     */
+    public function delete(Entity $entity): bool
+    {
+        return false;
+    }
+
+    /**
      * @param string $class
      * @return EntityMapper
      */
@@ -132,6 +170,17 @@ class EntityManager
     {
         $this->entityMappersCallbacks[$class] = $callback;
         return $this;
+    }
+
+    /**
+     * @return Database
+     */
+    protected function db(): Database
+    {
+        if($this->database === null){
+            $this->database = new Database($this->connection);
+        }
+        return $this->database;
     }
 
 }
