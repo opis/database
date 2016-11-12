@@ -17,7 +17,6 @@
 
 namespace Opis\Database\ORM;
 
-
 class EntityMapper
 {
     protected $entityClass;
@@ -25,20 +24,59 @@ class EntityMapper
     protected $table;
     protected $primaryKey = 'id';
     protected $primaryKeyGenerator;
+    protected $accessors = [];
+    protected $setters = [];
+    protected $casts = [];
+    protected $relations = [];
 
     public function __construct(string $entityClass)
     {
         $this->entityClass = $entityClass;
     }
 
-    public function setTable(string $table)
+    public function table(string $table): self
     {
         $this->table = $table;
+        return $this;
     }
 
-    public function setPrimaryKey(string $primaryKey)
+    public function primaryKey(string $primaryKey): self
     {
         $this->primaryKey = $primaryKey;
+        return $this;
+    }
+
+    public function accessor(string $column, callable $callback): self
+    {
+        $this->accessors[$column] = $callback;
+        return $this;
+    }
+
+    public function setter(string $column, callable $callback): self
+    {
+        $this->setters[$column] = $callback;
+        return $this;
+    }
+
+    public function relation(string $name): RelationFactory
+    {
+        return new RelationFactory($name, function ($name, EntityRelation $relation){
+           return $this->relations[$name] = $relation;
+        });
+    }
+
+    public function cast(array $casts): self
+    {
+        $this->casts = $casts;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass(): string
+    {
+        return $this->entityClass;
     }
 
     /**
@@ -68,6 +106,46 @@ class EntityMapper
     public function getForeignKey(): string
     {
         return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTypeCasts(): array
+    {
+        return $this->casts;
+    }
+
+    /**
+     * @return callable[]
+     */
+    public function getAccessors(): array
+    {
+        return $this->accessors;
+    }
+
+    /**
+     * @return callable[]
+     */
+    public function getSetters(): array
+    {
+        return $this->setters;
+    }
+
+    /**
+     * @return EntityRelation[]
+     */
+    public function getRelations(): array
+    {
+        return $this->relations;
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsSoftDelets(): bool
+    {
+        return isset($this->casts['deleted_at']) && $this->casts['deleted_at'] === '?date';
     }
 
     /**

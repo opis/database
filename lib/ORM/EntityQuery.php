@@ -18,6 +18,7 @@
 namespace Opis\Database\ORM;
 
 use Opis\Database\Connection;
+use Opis\Database\Entity;
 use Opis\Database\EntityManager;
 use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\HavingStatement;
@@ -31,55 +32,110 @@ class EntityQuery extends BaseStatement
 
     /** @var HavingStatement */
     protected $have;
-    protected $enityMapper;
+    protected $manager;
+    protected $mapper;
 
-    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper)
+    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, SQLStatement $statement = null)
     {
+        parent::__construct($statement);
         $this->have = new HavingStatement($this->sql);
-        $this->enityMapper = $entityMapper;
-    }
-
-    public function find($id)
-    {
-
-    }
-
-    public function findMany()
-    {
-
-    }
-
-    public function findAll()
-    {
-        
-    }
-
-    public function first(array $columns = [])
-    {
-        
-    }
-
-    public function all(array $columns = [])
-    {
-        $results = $this->query($columns)
-                         ->fetchAssoc()
-                         ->all();
+        $this->mapper = $entityMapper;
+        $this->manager = $entityManager;
     }
 
     /**
      * @param array $columns
-     * @return \Opis\Database\ResultSet
+     * @return null|Entity
+     */
+    public function get(array $columns = [])
+    {
+        $result = $this->query($columns)
+                       ->fetchAssoc()
+                       ->first();
+
+        if($result === false){
+            return null;
+        }
+
+        $class = $this->mapper->getClass();
+
+        return new $class($this->manager, $this->mapper, $result, $this->isReadOnly(), false);
+    }
+
+    /**
+     * @param array $columns
+     * @return Entity[]
+     */
+    public function all(array $columns = []): array
+    {
+        $results = $this->query($columns)
+                         ->fetchAssoc()
+                         ->all();
+
+        $entities = [];
+
+        $class = $this->mapper->getClass();
+        $isReadOnly = $this->isReadOnly();
+
+        foreach ($results as $result){
+            $entities[] = new $class($this->manager, $this->mapper, $result, $isReadOnly, false);
+        }
+
+        return $entities;
+    }
+
+    /**
+     * @param $id
+     * @param array $columns
+     * @return mixed|null
+     */
+    public function find($id, array $columns = [])
+    {
+        return $this->where($this->mapper->getPrimaryKey())->is($id)
+                    ->get($columns);
+    }
+
+    /**
+     * @param array $ids
+     * @param array $columns
+     * @return array
+     */
+    public function findAll(array $ids, array $columns = []): array
+    {
+        return $this->where($this->mapper->getPrimaryKey())->in($ids)
+                    ->all($columns);
+    }
+
+    /**
+     * @param array $columns
+     * @return \Opis\Database\ResultSet;
      */
     protected function query(array $columns)
     {
         if (!empty($columns)) {
-            $columns[] = $this->enityMapper->getPrimaryKey();
+            $columns[] = $this->mapper->getPrimaryKey();
         }
+
+        $this->sql->addTables([$this->mapper->getTable()]);
+        $this->select($columns);
+
+        $connection = $this->manager->getConnection();
+        $compiler = $connection->getCompiler();
+
+        return $connection->query($compiler->select($this->sql), $compiler->getParams());
     }
 
     protected function getHavingStatement(): HavingStatement
     {
         return $this->have;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isReadOnly(): bool
+    {
+        return empty($this->sql->getJoins());
     }
 
     protected function executeStatement()

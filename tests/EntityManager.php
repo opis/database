@@ -15,31 +15,14 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database;
+namespace Opis\Database\Test;
 
-use Opis\Database\ORM\DataMapper;
-use Opis\Database\ORM\EntityMapper;
+use Opis\Database\ORM\EntityQuery as EQ;
 
-abstract class Entity
+class EntityManager extends \Opis\Database\EntityManager
 {
-    private $args;
-    private $dataMapper;
-
-    final public function __construct(EntityManager $entityManager,
-                                      EntityMapper $entityMapper,
-                                      array $columns = [],
-                                      bool $isReadOnly = false,
-                                      bool $isNew = false)
+    public function query(string $entityClass): EQ
     {
-        $this->args = [$entityManager, $entityMapper, $columns, $isReadOnly, $isNew];
-    }
-
-    protected function orm(): DataMapper
-    {
-        if($this->dataMapper === null){
-            $this->dataMapper = new DataMapper(...$this->args);
-        }
-
-        return $this->dataMapper;
+        return new EntityQuery($this, $this->resolveEntityMapper($entityClass));
     }
 }

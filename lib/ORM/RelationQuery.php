@@ -15,31 +15,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database;
+namespace Opis\Database\ORM;
 
-use Opis\Database\ORM\DataMapper;
-use Opis\Database\ORM\EntityMapper;
+use Opis\Database\SQL\BaseStatement;
+use Opis\Database\SQL\HavingStatement;
+use Opis\Database\SQL\SQLStatement;
 
-abstract class Entity
+class RelationQuery extends BaseStatement
 {
-    private $args;
-    private $dataMapper;
-
-    final public function __construct(EntityManager $entityManager,
-                                      EntityMapper $entityMapper,
-                                      array $columns = [],
-                                      bool $isReadOnly = false,
-                                      bool $isNew = false)
-    {
-        $this->args = [$entityManager, $entityMapper, $columns, $isReadOnly, $isNew];
+    use SelectTrait {
+        select as protected;
     }
 
-    protected function orm(): DataMapper
-    {
-        if($this->dataMapper === null){
-            $this->dataMapper = new DataMapper(...$this->args);
-        }
+    /** @var HavingStatement */
+    protected $have;
 
-        return $this->dataMapper;
+    protected function getHavingStatement(): HavingStatement
+    {
+        return $this->have;
     }
+
+    protected function executeStatement()
+    {
+        // TODO: Implement executeStatement() method.
+    }
+
+
 }
