@@ -48,6 +48,14 @@ class DataMapper
     /** @var array */
     protected $relations = [];
 
+    /**
+     * DataMapper constructor.
+     * @param EntityManager $entityManager
+     * @param EntityMapper $entityMapper
+     * @param array $columns
+     * @param bool $isReadOnly
+     * @param bool $isNew
+     */
     public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, array $columns, bool $isReadOnly, bool $isNew)
     {
         $this->manager = $entityManager;
@@ -57,16 +65,26 @@ class DataMapper
         $this->isNew = $isNew;
     }
 
+    /**
+     * @return EntityManager
+     */
     public function getEntityManager(): EntityManager
     {
         return $this->manager;
     }
 
+    /**
+     * @return EntityMapper
+     */
     public function getEntityMapper(): EntityMapper
     {
         return $this->mapper;
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function getColumn(string $name)
     {
         if(array_key_exists($name, $this->columns)){
@@ -97,6 +115,10 @@ class DataMapper
         return $this->columns[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     * @param $value
+     */
     public function setColumn(string $name, $value)
     {
         if($this->isReadOnly){
@@ -119,6 +141,11 @@ class DataMapper
         $this->rawColumns[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     * @param callable|null $callback
+     * @return mixed
+     */
     public function getRelation(string $name, callable $callback = null)
     {
         if(array_key_exists($name, $this->relations)){

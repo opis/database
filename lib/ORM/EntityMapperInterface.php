@@ -19,5 +19,9 @@ namespace Opis\Database\ORM;
 
 interface EntityMapperInterface
 {
+    /**
+     * @param EntityMapper $mapper
+     * @return mixed
+     */
     public static function mapEntity(EntityMapper $mapper);
 }

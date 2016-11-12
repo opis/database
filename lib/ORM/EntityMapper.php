@@ -19,45 +19,88 @@ namespace Opis\Database\ORM;
 
 class EntityMapper
 {
+    /** @var string  */
     protected $entityClass;
+
+    /** @var string */
     protected $className;
+
+    /** @var string|null */
     protected $table;
+
+    /** @var string  */
     protected $primaryKey = 'id';
+
+    /** @var  callable|null */
     protected $primaryKeyGenerator;
+
+    /** @var callable[] */
     protected $getters = [];
+
+    /** @var callable[] */
     protected $setters = [];
+
+    /** @var array  */
     protected $casts = [];
+
+    /** @var EntityRelation[] */
     protected $relations = [];
 
+    /**
+     * EntityMapper constructor.
+     * @param string $entityClass
+     */
     public function __construct(string $entityClass)
     {
         $this->entityClass = $entityClass;
     }
 
+    /**
+     * @param string $table
+     * @return EntityMapper
+     */
     public function table(string $table): self
     {
         $this->table = $table;
         return $this;
     }
 
+    /**
+     * @param string $primaryKey
+     * @return EntityMapper
+     */
     public function primaryKey(string $primaryKey): self
     {
         $this->primaryKey = $primaryKey;
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param callable $callback
+     * @return EntityMapper
+     */
     public function getter(string $column, callable $callback): self
     {
         $this->getters[$column] = $callback;
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param callable $callback
+     * @return EntityMapper
+     */
     public function setter(string $column, callable $callback): self
     {
         $this->setters[$column] = $callback;
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @return RelationFactory
+     */
     public function relation(string $name): RelationFactory
     {
         return new RelationFactory($name, function ($name, EntityRelation $relation){
@@ -65,6 +108,10 @@ class EntityMapper
         });
     }
 
+    /**
+     * @param array $casts
+     * @return EntityMapper
+     */
     public function cast(array $casts): self
     {
         $this->casts = $casts;
@@ -93,6 +140,9 @@ class EntityMapper
         return $this->table;
     }
 
+    /**
+     * @return string
+     */
     public function getPrimaryKey(): string 
     {
         return $this->primaryKey;

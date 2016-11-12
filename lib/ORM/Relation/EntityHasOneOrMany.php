@@ -25,8 +25,15 @@ use Opis\Database\SQL\SQLStatement;
 
 class EntityHasOneOrMany extends EntityRelation
 {
+    /** @var bool */
     protected $hasMany;
 
+    /**
+     * EntityHasOneOrMany constructor.
+     * @param string $entityClass
+     * @param string|null $foreignKey
+     * @param bool $hasMany
+     */
     public function __construct(string $entityClass, string $foreignKey = null, bool $hasMany = false)
     {
         parent::__construct($entityClass, $foreignKey);

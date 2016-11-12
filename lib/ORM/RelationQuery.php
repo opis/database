@@ -19,7 +19,6 @@ namespace Opis\Database\ORM;
 
 use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\HavingStatement;
-use Opis\Database\SQL\SQLStatement;
 
 class RelationQuery extends BaseStatement
 {
@@ -30,15 +29,11 @@ class RelationQuery extends BaseStatement
     /** @var HavingStatement */
     protected $have;
 
+    /**
+     * @return HavingStatement
+     */
     protected function getHavingStatement(): HavingStatement
     {
         return $this->have;
     }
-
-    protected function executeStatement()
-    {
-        // TODO: Implement executeStatement() method.
-    }
-
-
 }

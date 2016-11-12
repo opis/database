@@ -37,11 +37,6 @@ trait SelectTrait
      */
     abstract protected function getHavingStatement(): HavingStatement;
 
-    /**
-     * @return mixed
-     */
-    abstract protected function executeStatement();
-
 
     /**
      * @param   string|array|Closure    $columns

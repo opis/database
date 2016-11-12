@@ -22,9 +22,20 @@ use Opis\Database\ORM\EntityMapper;
 
 abstract class Entity
 {
+    /** @var array */
     private $args;
+
+    /** @var  DataMapper|null */
     private $dataMapper;
 
+    /**
+     * Entity constructor.
+     * @param EntityManager $entityManager
+     * @param EntityMapper $entityMapper
+     * @param array $columns
+     * @param bool $isReadOnly
+     * @param bool $isNew
+     */
     final public function __construct(EntityManager $entityManager,
                                       EntityMapper $entityMapper,
                                       array $columns = [],
@@ -34,6 +45,9 @@ abstract class Entity
         $this->args = [$entityManager, $entityMapper, $columns, $isReadOnly, $isNew];
     }
 
+    /**
+     * @return DataMapper
+     */
     final protected function orm(): DataMapper
     {
         if($this->dataMapper === null){

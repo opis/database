@@ -32,9 +32,19 @@ class EntityQuery extends BaseStatement
 
     /** @var HavingStatement */
     protected $have;
+
+    /** @var EntityManager */
     protected $manager;
+
+    /** @var EntityMapper */
     protected $mapper;
 
+    /**
+     * EntityQuery constructor.
+     * @param EntityManager $entityManager
+     * @param EntityMapper $entityMapper
+     * @param SQLStatement|null $statement
+     */
     public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, SQLStatement $statement = null)
     {
         parent::__construct($statement);
@@ -125,6 +135,9 @@ class EntityQuery extends BaseStatement
         return $connection->query($compiler->select($this->sql), $compiler->getParams());
     }
 
+    /**
+     * @return HavingStatement
+     */
     protected function getHavingStatement(): HavingStatement
     {
         return $this->have;
@@ -137,11 +150,5 @@ class EntityQuery extends BaseStatement
     {
         return empty($this->sql->getJoins());
     }
-
-    protected function executeStatement()
-    {
-        // TODO: Implement executeStatement() method.
-    }
-
 
 }
