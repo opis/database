@@ -21,9 +21,6 @@ abstract class Relation
 {
     protected $queryCallback;
     protected $entityClass;
-    protected $withSoftDeletes = false;
-    protected $onlySoftDeletes = false;
-    protected $eagerLoad = [];
     protected $foreignKey;
 
     /**
@@ -44,36 +41,6 @@ abstract class Relation
     public function query(callable $callback): self
     {
         $this->queryCallback = $callback;
-        return $this;
-    }
-
-    /**
-     * @param bool $value
-     * @return Relation
-     */
-    public function withSoftDeletes(bool $value = true): self
-    {
-        $this->withSoftDeletes = $value;
-        return $this;
-    }
-
-    /**
-     * @param bool $value
-     * @return Relation
-     */
-    public function onlySoftDeletes(bool $value = true):self
-    {
-        $this->onlySoftDeletes = $value;
-        return $this;
-    }
-
-    /**
-     * @param array $relations
-     * @return Relation
-     */
-    public function eagerLoad(array $relations): self
-    {
-        $this->eagerLoad = $relations;
         return $this;
     }
 
