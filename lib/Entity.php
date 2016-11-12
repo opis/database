@@ -34,10 +34,11 @@ abstract class Entity
         $this->args = [$entityManager, $entityMapper, $columns, $isReadOnly, $isNew];
     }
 
-    protected function orm(): DataMapper
+    final protected function orm(): DataMapper
     {
         if($this->dataMapper === null){
             $this->dataMapper = new DataMapper(...$this->args);
+            unset($this->args);
         }
 
         return $this->dataMapper;

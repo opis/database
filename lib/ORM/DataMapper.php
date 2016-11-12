@@ -88,10 +88,10 @@ class DataMapper
             return $this->columns[$name] = $value;
         }
 
-        $accessors = $this->mapper->getAccessors();
+        $getters = $this->mapper->getGetters();
 
-        if(isset($accessors[$name])){
-            $value = $accessors[$name]($value);
+        if(isset($getters[$name])){
+            $value = $getters[$name]($value);
         }
 
         return $this->columns[$name] = $value;

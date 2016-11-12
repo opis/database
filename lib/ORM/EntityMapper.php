@@ -24,7 +24,7 @@ class EntityMapper
     protected $table;
     protected $primaryKey = 'id';
     protected $primaryKeyGenerator;
-    protected $accessors = [];
+    protected $getters = [];
     protected $setters = [];
     protected $casts = [];
     protected $relations = [];
@@ -46,9 +46,9 @@ class EntityMapper
         return $this;
     }
 
-    public function accessor(string $column, callable $callback): self
+    public function getter(string $column, callable $callback): self
     {
-        $this->accessors[$column] = $callback;
+        $this->getters[$column] = $callback;
         return $this;
     }
 
@@ -119,9 +119,9 @@ class EntityMapper
     /**
      * @return callable[]
      */
-    public function getAccessors(): array
+    public function getGetters(): array
     {
-        return $this->accessors;
+        return $this->getters;
     }
 
     /**
