@@ -419,7 +419,7 @@ class Connection implements Serializable
      *
      * @return  int
      */
-    public function count($sql, array $params = [])
+    public function count(string $sql, array $params = [])
     {
         $prepared = $this->prepare($sql, $params);
         $this->execute($prepared);
