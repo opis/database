@@ -20,7 +20,7 @@ namespace Opis\Database\ORM;
 use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\HavingStatement;
 
-class RelationQuery extends BaseStatement
+class Query extends BaseStatement
 {
     use SelectTrait {
         select as protected;

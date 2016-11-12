@@ -43,7 +43,7 @@ class EntityMapper
     /** @var array  */
     protected $casts = [];
 
-    /** @var EntityRelation[] */
+    /** @var Relation[] */
     protected $relations = [];
 
     /**
@@ -103,7 +103,7 @@ class EntityMapper
      */
     public function relation(string $name): RelationFactory
     {
-        return new RelationFactory($name, function ($name, EntityRelation $relation){
+        return new RelationFactory($name, function ($name, Relation $relation){
            return $this->relations[$name] = $relation;
         });
     }
@@ -183,7 +183,7 @@ class EntityMapper
     }
 
     /**
-     * @return EntityRelation[]
+     * @return Relation[]
      */
     public function getRelations(): array
     {

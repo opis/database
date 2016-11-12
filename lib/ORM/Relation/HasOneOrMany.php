@@ -18,12 +18,12 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\ORM\DataMapper;
-use Opis\Database\ORM\EntityRelation;
-use Opis\Database\ORM\RelationQuery;
+use Opis\Database\ORM\Relation;
+use Opis\Database\ORM\Query;
 use Opis\Database\SQL\SelectStatement;
 use Opis\Database\SQL\SQLStatement;
 
-class EntityHasOneOrMany extends EntityRelation
+class HasOneOrMany extends Relation
 {
     /** @var bool */
     protected $hasMany;
@@ -55,7 +55,7 @@ class EntityHasOneOrMany extends EntityRelation
         $select = new SelectStatement($related->getTable(), $statement);
 
         if($this->queryCallback !== null || $callback !== null){
-            $query = new RelationQuery($statement);
+            $query = new Query($statement);
             if($this->queryCallback !== null){
                 ($this->queryCallback)($query);
             }

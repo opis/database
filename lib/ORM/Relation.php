@@ -17,7 +17,7 @@
 
 namespace Opis\Database\ORM;
 
-abstract class EntityRelation
+abstract class Relation
 {
     protected $queryCallback;
     protected $entityClass;
@@ -39,7 +39,7 @@ abstract class EntityRelation
 
     /**
      * @param callable $callback
-     * @return EntityRelation
+     * @return Relation
      */
     public function query(callable $callback): self
     {
@@ -49,7 +49,7 @@ abstract class EntityRelation
 
     /**
      * @param bool $value
-     * @return EntityRelation
+     * @return Relation
      */
     public function withSoftDeletes(bool $value = true): self
     {
@@ -59,7 +59,7 @@ abstract class EntityRelation
 
     /**
      * @param bool $value
-     * @return EntityRelation
+     * @return Relation
      */
     public function onlySoftDeletes(bool $value = true):self
     {
@@ -69,7 +69,7 @@ abstract class EntityRelation
 
     /**
      * @param array $relations
-     * @return EntityRelation
+     * @return Relation
      */
     public function eagerLoad(array $relations): self
     {

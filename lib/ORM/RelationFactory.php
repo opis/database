@@ -18,7 +18,7 @@
 namespace Opis\Database\ORM;
 
 use Closure;
-use Opis\Database\ORM\Relation\EntityHasOneOrMany;
+use Opis\Database\ORM\Relation\HasOneOrMany;
 
 class RelationFactory
 {
@@ -42,11 +42,11 @@ class RelationFactory
     /**
      * @param string $entityClass
      * @param string|null $foreignKey
-     * @return EntityRelation
+     * @return Relation
      */
-    public function hasOne(string $entityClass, string $foreignKey = null): EntityRelation
+    public function hasOne(string $entityClass, string $foreignKey = null): Relation
     {
-        $relation = new EntityHasOneOrMany($entityClass, $foreignKey);
+        $relation = new HasOneOrMany($entityClass, $foreignKey);
         $callback = $this->callback;
         return $callback($this->name, $relation);
     }
@@ -54,11 +54,11 @@ class RelationFactory
     /**
      * @param string $entityClass
      * @param string|null $foreignKey
-     * @return EntityRelation
+     * @return Relation
      */
-    public function hasMany(string $entityClass, string $foreignKey = null): EntityRelation
+    public function hasMany(string $entityClass, string $foreignKey = null): Relation
     {
-        $relation = new EntityHasOneOrMany($entityClass, $foreignKey, true);
+        $relation = new HasOneOrMany($entityClass, $foreignKey, true);
         $callback = $this->callback;
         return $callback($this->name, $relation);
     }
