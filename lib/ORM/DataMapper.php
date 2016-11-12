@@ -82,6 +82,46 @@ class DataMapper
     }
 
     /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->isNew;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->isReadOnly;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawColumns(): array
+    {
+        return $this->rawColumns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumns(): array
+    {
+        return $this->columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModifiedColumns(): array
+    {
+        return array_keys($this->modified);
+    }
+
+    /**
      * @param string $name
      * @return mixed
      */
