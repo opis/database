@@ -235,7 +235,7 @@ class EntityMapper
     /**
      * @return bool
      */
-    public function supportsSoftDelets(): bool
+    public function supportsSoftDelete(): bool
     {
         return isset($this->casts['deleted_at']) && $this->casts['deleted_at'] === '?date';
     }

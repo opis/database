@@ -19,15 +19,27 @@ namespace Opis\Database\ORM;
 
 use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\HavingStatement;
+use Opis\Database\SQL\SQLStatement;
 
 class Query extends BaseStatement
 {
     use SelectTrait {
         select as protected;
     }
+    use SoftDeletesTrait;
 
     /** @var HavingStatement */
     protected $have;
+
+    /**
+     * Query constructor.
+     * @param SQLStatement|null $statement
+     */
+    public function __construct(SQLStatement $statement = null)
+    {
+        parent::__construct($statement);
+        $this->have = new HavingStatement($this->sql);
+    }
 
     /**
      * @return HavingStatement

@@ -25,15 +25,8 @@ use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\SQLStatement;
 use Opis\Database\SQL\Update;
 
-class EntityQuery extends BaseStatement
+class EntityQuery extends Query
 {
-    use SelectTrait {
-        select as protected;
-    }
-
-    /** @var HavingStatement */
-    protected $have;
-
     /** @var EntityManager */
     protected $manager;
 
@@ -49,7 +42,6 @@ class EntityQuery extends BaseStatement
     public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, SQLStatement $statement = null)
     {
         parent::__construct($statement);
-        $this->have = new HavingStatement($this->sql);
         $this->mapper = $entityMapper;
         $this->manager = $entityManager;
     }
@@ -145,6 +137,14 @@ class EntityQuery extends BaseStatement
             $columns[] = $this->mapper->getPrimaryKey();
         }
 
+        if($this->mapper->supportsSoftDelete()){
+            if($this->withSoftDeleted){
+                $this->where('deleted_at')->isNull();
+            } elseif ($this->onlySoftDeleted){
+                $this->where('deleted_at')->notNull();
+            }
+        }
+
         $this->sql->addTables([$this->mapper->getTable()]);
         $this->select($columns);
 
@@ -152,14 +152,6 @@ class EntityQuery extends BaseStatement
         $compiler = $connection->getCompiler();
 
         return $connection->query($compiler->select($this->sql), $compiler->getParams());
-    }
-
-    /**
-     * @return HavingStatement
-     */
-    protected function getHavingStatement(): HavingStatement
-    {
-        return $this->have;
     }
 
     /**
