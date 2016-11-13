@@ -17,6 +17,7 @@
 
 namespace Opis\Database;
 
+use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
@@ -101,7 +102,7 @@ class EntityManager
      */
     public function save(Entity $entity): bool
     {
-        $data = EntityHelper::getDataMapper($entity);
+        $data = $this->getDataMapper($entity);
 
         if($data->isNew()) {
 
@@ -110,7 +111,7 @@ class EntityManager
 
                 foreach ($columns as &$column){
                     if($column instanceof Entity){
-                        $column = EntityHelper::getPrimaryKey($column);
+                        $column = $this->getPKValue($column);
                     }
                 }
 
@@ -133,7 +134,7 @@ class EntityManager
             })
             ->execute();
 
-            return DataMapperHelper::markAsSaved($data, $id);
+            return $this->markAsSaved($data, $id);
         }
 
         $modified = $data->getModifiedColumns(false);
@@ -143,7 +144,7 @@ class EntityManager
 
             foreach ($columns as &$column){
                 if($column instanceof Entity){
-                    $column = EntityHelper::getPrimaryKey($column);
+                    $column = $this->getPKValue($column);
                 }
             }
 
@@ -151,7 +152,7 @@ class EntityManager
             $pk = $mapper->getPrimaryKey();
             $pkv = $data->getColumn($pk);
 
-            DataMapperHelper::markAsUpdated($data);
+            $this->markAsUpdated($data);
 
             return (bool) $this->db()->update($mapper->getTable())
                                          ->where($pk)->is($pkv)
@@ -178,7 +179,7 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        $data = EntityHelper::getDataMapper($entity);
+        $data = $this->getDataMapper($entity);
 
         if($data->isNew()){
             throw new RuntimeException("Can't delete an unsaved entity");
@@ -188,7 +189,7 @@ class EntityManager
         $pk = $mapper->getPrimaryKey();
         $pkv = $data->getColumn($pk);
 
-        DataMapperHelper::markAsDeleted($data);
+        $this->markAsDeleted($data);
 
         return (bool) $this->db()->from($mapper->getTable())
                                    ->where($pk)->is($pkv)
@@ -248,6 +249,88 @@ class EntityManager
             $this->database = new Database($this->connection);
         }
         return $this->database;
+    }
+
+    /**
+     * @param Entity $entity
+     * @return DataMapper
+     */
+    protected function getDataMapper(Entity $entity): DataMapper
+    {
+        static $closure;
+        if($closure === null){
+            $closure = function (){
+                return $this->orm();
+            };
+        }
+        return $closure->call($entity);
+    }
+
+    /**
+     * @param Entity $entity
+     * @return mixed
+     */
+    protected function getPKValue(Entity $entity)
+    {
+        static $closure;
+        if($closure === null){
+            $closure = function (){
+                /** @var DataMapper $data */
+                $data = $this->orm();
+                return $data->getColumn($data->getEntityMapper()->getPrimaryKey());
+            };
+        }
+        return $closure->call($entity);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param $id
+     * @return bool
+     */
+    protected function markAsSaved(DataMapper $data, $id): bool
+    {
+        static $closure;
+        if($closure === null){
+            $closure = function ($id){
+                $this->rawColumns[$this->mapper->getPrimaryKey()] = $id;
+                $this->dehidrated = true;
+                $this->isNew = false;
+                $this->modified = [];
+                return true;
+            };
+        }
+        return $closure->call($data, $id);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @return mixed
+     */
+    protected function markAsDeleted(DataMapper $data)
+    {
+        static $closure;
+        if($closure === null){
+            $closure = function (){
+                $this->deleted = true;
+            };
+        }
+        return $closure->call($data);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @return mixed
+     */
+    protected function markAsUpdated(DataMapper $data)
+    {
+        static $closure;
+        if($closure === null){
+            $closure = function (){
+                $this->modified = [];
+            };
+        }
+        return $closure->call($data);
     }
 
 }

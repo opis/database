@@ -107,6 +107,14 @@ class DataMapper
     }
 
     /**
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    /**
      * @return array
      */
     public function getRawColumns(): array
