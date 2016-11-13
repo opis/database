@@ -33,6 +33,9 @@ class EntityQuery extends Query
     /** @var EntityMapper */
     protected $mapper;
 
+    /** @var bool */
+    protected $locked = false;
+
     /**
      * EntityQuery constructor.
      * @param EntityManager $entityManager
@@ -127,13 +130,23 @@ class EntityQuery extends Query
                     ->all($columns);
     }
 
+
+    /**
+     * @return EntityQuery
+     */
+    protected function buildQuery(): self
+    {
+        $this->sql->addTables([$this->mapper->getTable()]);
+        return $this;
+    }
+
     /**
      * @param array $columns
      * @return \Opis\Database\ResultSet;
      */
     protected function query(array $columns)
     {
-        if (!empty($columns)) {
+        if (!$this->buildQuery()->locked && !empty($columns)) {
             $columns[] = $this->mapper->getPrimaryKey();
         }
 
@@ -145,7 +158,6 @@ class EntityQuery extends Query
             }
         }
 
-        $this->sql->addTables($this->getTables());
         $this->select($columns);
 
         $connection = $this->manager->getConnection();
@@ -160,14 +172,6 @@ class EntityQuery extends Query
     protected function isReadOnly(): bool
     {
         return !empty($this->sql->getJoins());
-    }
-
-    /**
-     * @return array
-     */
-    protected function getTables(): array
-    {
-        return [$this->mapper->getTable()];
     }
 
 }
