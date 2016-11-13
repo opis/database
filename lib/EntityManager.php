@@ -106,7 +106,6 @@ class EntityManager
         if($data->isNew()) {
 
             $id = $this->db()->transaction(function(Database $db) use($data){
-
                 $columns = $data->getRawColumns();
 
                 foreach ($columns as &$column){
@@ -117,7 +116,15 @@ class EntityManager
 
                 $mapper = $data->getEntityMapper();
 
+                if(null !== $pkgen = $mapper->getPrimaryKeyGenerator()){
+                    $columns[$mapper->getPrimaryKey()] = $pk = $pkgen($data);
+                }
+
                 $db->insert($columns)->into($mapper->getTable());
+
+                if($pkgen !== null){
+                    return $pk;
+                }
 
                 return $this->connection->getPDO()->lastInsertId($mapper->getSequence());
             })

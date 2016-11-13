@@ -79,6 +79,16 @@ class EntityMapper
     }
 
     /**
+     * @param callable $callback
+     * @return EntityMapper
+     */
+    public function primaryKeyGenerator(callable $callback): self
+    {
+        $this->primaryKeyGenerator = $callback;
+        return $this;
+    }
+
+    /**
      * @param string $sequence
      * @return EntityMapper
      */
@@ -159,6 +169,14 @@ class EntityMapper
     public function getPrimaryKey(): string 
     {
         return $this->primaryKey;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getPrimaryKeyGenerator()
+    {
+        return $this->primaryKeyGenerator;
     }
 
     /**

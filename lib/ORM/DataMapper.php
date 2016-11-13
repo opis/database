@@ -141,6 +141,10 @@ class DataMapper
             $this->hydrate();
         }
 
+        if($this->deleted){
+            throw new RuntimeException("The record was deleted");
+        }
+
         if(array_key_exists($name, $this->columns)){
             return $this->columns[$name];
         }
@@ -176,7 +180,11 @@ class DataMapper
     public function setColumn(string $name, $value)
     {
         if($this->isReadOnly){
-            throw new RuntimeException("This record is readonly");
+            throw new RuntimeException("The record is readonly");
+        }
+
+        if($this->deleted){
+            throw new RuntimeException("The record was deleted");
         }
 
         if($this->dehidrated){
