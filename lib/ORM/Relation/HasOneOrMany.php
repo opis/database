@@ -18,6 +18,7 @@
 namespace Opis\Database\ORM\Relation;
 
 use Opis\Database\ORM\DataMapper;
+use Opis\Database\ORM\EntityQuery;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Query;
 use Opis\Database\SQL\SelectStatement;
@@ -52,7 +53,7 @@ class HasOneOrMany extends Relation
         $related = $manager->resolveEntityMapper($this->entityClass);
 
         $statement = new SQLStatement();
-        $select = new SelectStatement($related->getTable(), $statement);
+        $select = new EntityQuery($manager, $related, $statement);
 
         if($this->queryCallback !== null || $callback !== null){
             $query = new Query($statement);
@@ -68,27 +69,6 @@ class HasOneOrMany extends Relation
 
         $select->where($foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
 
-        $class = $related->getClass();
-        $connection = $manager->getConnection();
-        $compiler = $connection->getCompiler();
-
-        $set = $connection->query($compiler->select($statement), $compiler->getParams())
-                          ->fetchAssoc();
-
-        if(!$this->hasMany){
-            $result = $set->first();
-            if($result === false){
-                return null;
-            }
-            return new $class($manager, $related, $result, false, false);
-        }
-
-        $entities = [];
-
-        foreach ($set->all() as $result){
-            $entities[] = new $class($manager, $related, $result, false, false);
-        }
-
-        return $entities;
+        return $this->hasMany ? $select->all() : $select->get();
     }
 }

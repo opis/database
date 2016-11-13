@@ -145,7 +145,7 @@ class EntityQuery extends Query
             }
         }
 
-        $this->sql->addTables([$this->mapper->getTable()]);
+        $this->sql->addTables($this->getTables());
         $this->select($columns);
 
         $connection = $this->manager->getConnection();
@@ -160,6 +160,14 @@ class EntityQuery extends Query
     protected function isReadOnly(): bool
     {
         return !empty($this->sql->getJoins());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getTables(): array
+    {
+        return [$this->mapper->getTable()];
     }
 
 }
