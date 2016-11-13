@@ -105,6 +105,10 @@ class EntityQuery extends Query
      */
     public function update(array $columns = [])
     {
+        if($this->mapper->supportsTimestamp()){
+            $columns['updated_at'] = date($this->manager->getDateFormat());
+        }
+
         return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->set($columns);
     }
 

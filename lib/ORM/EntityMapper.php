@@ -49,6 +49,12 @@ class EntityMapper
     /** @var  string */
     protected $sequence;
 
+    /** @var bool */
+    protected $softDelete = true;
+
+    /** @var bool */
+    protected $timestamp = true;
+
     /**
      * EntityMapper constructor.
      * @param string $entityClass
@@ -138,6 +144,26 @@ class EntityMapper
     public function cast(array $casts): self
     {
         $this->casts = $casts;
+        return $this;
+    }
+
+    /**
+     * @param bool $value
+     * @return EntityMapper
+     */
+    public function useSoftDelete(bool $value = true): self
+    {
+        $this->softDelete = $value;
+        return $this;
+    }
+
+    /**
+     * @param bool $value
+     * @return EntityMapper
+     */
+    public function useTimestamp(bool $value = true):self
+    {
+        $this->timestamp = $value;
         return $this;
     }
 
@@ -237,7 +263,17 @@ class EntityMapper
      */
     public function supportsSoftDelete(): bool
     {
-        return isset($this->casts['deleted_at']) && $this->casts['deleted_at'] === '?date';
+        return $this->softDelete && isset($this->casts['deleted_at']) && $this->casts['deleted_at'] === '?date';
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function supportsTimestamp(): bool
+    {
+        return $this->timestamp && isset($this->casts['created_at'], $this->casts['updated_at'])
+            && $this->casts['created_at'] === 'date' && $this->casts['updated_at'] === '?date';
     }
 
     /**

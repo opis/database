@@ -21,8 +21,6 @@ use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
-use Opis\Database\ORM\Helper\DataMapperHelper;
-use Opis\Database\ORM\Helper\EntityHelper;
 use Opis\Database\SQL\Compiler;
 use RuntimeException;
 
@@ -102,6 +100,7 @@ class EntityManager
      */
     public function save(Entity $entity): bool
     {
+        /** @var DataMapper $data */
         $data = $this->getDataMapper($entity);
 
         if($data->isDeleted()){
@@ -123,6 +122,11 @@ class EntityManager
 
                 if(null !== $pkgen = $mapper->getPrimaryKeyGenerator()){
                     $columns[$mapper->getPrimaryKey()] = $pk = $pkgen($data);
+                }
+
+                if($mapper->supportsTimestamp()){
+                    $columns['created_at'] = date($this->getDateFormat());
+                    $columns['updated_at'] = null;
                 }
 
                 $db->insert($columns)->into($mapper->getTable());
@@ -156,12 +160,17 @@ class EntityManager
             $pk = $mapper->getPrimaryKey();
             $pkv = $data->getColumn($pk);
 
-            $this->markAsUpdated($data);
+            $updatedAt = null;
+
+            if($mapper->supportsTimestamp()){
+                $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
+            }
+
+            $this->markAsUpdated($data, $updatedAt);
 
             return (bool) $this->db()->update($mapper->getTable())
                                          ->where($pk)->is($pkv)
                                          ->set($columns);
-
         }
 
         return true;
@@ -328,17 +337,21 @@ class EntityManager
 
     /**
      * @param DataMapper $data
+     * @param string|null $updatedAt
      * @return mixed
      */
-    protected function markAsUpdated(DataMapper $data)
+    protected function markAsUpdated(DataMapper $data, string $updatedAt = null)
     {
         static $closure;
         if($closure === null){
-            $closure = function (){
+            $closure = function (string $updatedAt = null){
+                if($updatedAt !== null){
+                    unset($this->columns['updated_at']);
+                    $this->rawColumns['updated_at'] = $updatedAt;
+                }
                 $this->modified = [];
             };
         }
-        return $closure->call($data);
+        return $closure->call($data, $updatedAt);
     }
-
 }
