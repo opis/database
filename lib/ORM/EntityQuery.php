@@ -23,6 +23,7 @@ use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\Delete;
 use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\SQLStatement;
+use Opis\Database\SQL\Update;
 
 class EntityQuery extends BaseStatement
 {
@@ -101,6 +102,15 @@ class EntityQuery extends BaseStatement
     public function delete(array $tables = [])
     {
         return (new Delete($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->delete($tables);
+    }
+
+    /**
+     * @param array $columns
+     * @return int
+     */
+    public function update(array $columns = [])
+    {
+        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->set($columns);
     }
 
     /**
