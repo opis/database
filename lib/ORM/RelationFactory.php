@@ -18,6 +18,7 @@
 namespace Opis\Database\ORM;
 
 use Closure;
+use Opis\Database\ORM\Relation\BelongsTo;
 use Opis\Database\ORM\Relation\HasOneOrMany;
 
 class RelationFactory
@@ -63,6 +64,15 @@ class RelationFactory
         return $callback($this->name, $relation);
     }
 
-
-
+    /**
+     * @param string $entityClass
+     * @param string|null $foreignKey
+     * @return Relation
+     */
+    public function belongsTo(string $entityClass, string  $foreignKey = null): Relation
+    {
+        $relation = new BelongsTo($entityClass, $foreignKey);
+        $callback = $this->callback;
+        return $callback($this->name, $relation);
+    }
 }
