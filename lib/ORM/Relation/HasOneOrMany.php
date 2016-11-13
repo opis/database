@@ -45,7 +45,7 @@ class HasOneOrMany extends Relation
      * @param callable|null $callback
      * @return mixed
      */
-    public function getResult(DataMapper $data, callable $callback = null)
+    protected function getResult(DataMapper $data, callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();

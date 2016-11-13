@@ -222,6 +222,8 @@ class DataMapper
      */
     public function getRelation(string $name, callable $callback = null)
     {
+        static $closure;
+
         if(array_key_exists($name, $this->relations)){
             return $this->relations[$name];
         }
@@ -233,8 +235,7 @@ class DataMapper
         }
 
         $this->hydrate();
-
-        return $this->relations[$name] = $relations[$name]->getResult($this, $callback);
+        return $this->relations[$name] = $this->getRelationResult($relations[$name], $callback);
     }
 
     /**
@@ -332,5 +333,18 @@ class DataMapper
         $this->rawColumns = $columns;
         $this->columns = [];
         $this->dehidrated = false;
+    }
+
+    protected function getRelationResult(Relation $relation, callable $callback = null)
+    {
+        static $closure;
+
+        if($closure === null){
+            $closure = function ($data, $callback){
+                return $this->getResult($data, $callback);
+            };
+        };
+
+        return $closure->call($relation, $this, $callback);
     }
 }

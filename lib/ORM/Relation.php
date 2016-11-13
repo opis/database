@@ -48,5 +48,5 @@ abstract class Relation
      * @param DataMapper $data
      * @return mixed
      */
-    abstract public function getResult(DataMapper $data, callable $callback = null);
+    abstract protected function getResult(DataMapper $data, callable $callback = null);
 }
