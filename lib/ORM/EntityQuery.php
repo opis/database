@@ -138,7 +138,7 @@ class EntityQuery extends Query
         }
 
         if($this->mapper->supportsSoftDelete()){
-            if($this->withSoftDeleted){
+            if(!$this->withSoftDeleted){
                 $this->where('deleted_at')->isNull();
             } elseif ($this->onlySoftDeleted){
                 $this->where('deleted_at')->notNull();

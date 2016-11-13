@@ -41,7 +41,7 @@ trait SoftDeletesTrait
      */
     public function onlySoftDeleted(bool $value = true): self
     {
-        $this->onlySoftDeleted = $value;
+        $this->onlySoftDeleted = $this->withSoftDeleted = $value;
         return $this;
     }
 
