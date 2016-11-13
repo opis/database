@@ -17,10 +17,10 @@
 
 namespace Opis\Database\ORM;
 
-use Opis\Database\Connection;
 use Opis\Database\Entity;
 use Opis\Database\EntityManager;
 use Opis\Database\SQL\BaseStatement;
+use Opis\Database\SQL\Delete;
 use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\SQLStatement;
 
@@ -92,6 +92,15 @@ class EntityQuery extends BaseStatement
         }
 
         return $entities;
+    }
+
+    /**
+     * @param array $tables
+     * @return int
+     */
+    public function delete(array $tables = [])
+    {
+        return (new Delete($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->delete($tables);
     }
 
     /**
