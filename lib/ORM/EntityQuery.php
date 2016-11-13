@@ -134,7 +134,7 @@ class EntityQuery extends Query
     /**
      * @return EntityQuery
      */
-    protected function buildQuery(): self
+    protected function buildQuery()
     {
         $this->sql->addTables([$this->mapper->getTable()]);
         return $this;
@@ -173,5 +173,4 @@ class EntityQuery extends Query
     {
         return !empty($this->sql->getJoins());
     }
-
 }

@@ -52,8 +52,14 @@ class HasOneOrMany extends Relation
         $owner = $data->getEntityMapper();
         $related = $manager->resolveEntityMapper($this->entityClass);
 
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
+
+        $select->where($this->foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
 
         if($this->queryCallback !== null || $callback !== null){
             $query = new Query($statement);
@@ -64,10 +70,6 @@ class HasOneOrMany extends Relation
                 $callback($query);
             }
         }
-
-        $foreignKey = $this->foreignKey ?? $owner->getForeignKey();
-
-        $select->where($foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
 
         return $this->hasMany ? $select->all() : $select->get();
     }

@@ -19,6 +19,7 @@ namespace Opis\Database\ORM;
 
 use Closure;
 use Opis\Database\ORM\Relation\BelongsTo;
+use Opis\Database\ORM\Relation\HasOneOrManyThrough;
 use Opis\Database\ORM\Relation\HasOneOrMany;
 
 class RelationFactory
@@ -72,6 +73,40 @@ class RelationFactory
     public function belongsTo(string $entityClass, string  $foreignKey = null): Relation
     {
         $relation = new BelongsTo($entityClass, $foreignKey);
+        $callback = $this->callback;
+        return $callback($this->name, $relation);
+    }
+
+    /**
+     * @param string $entityClass
+     * @param string|null $foreignKey
+     * @param string|null $junctionTable
+     * @param string|null $junctionKey
+     * @return Relation
+     */
+    public function hasOneThrough(string $entityClass,
+                                  string  $foreignKey = null,
+                                  string $junctionTable = null,
+                                  string $junctionKey = null): Relation
+    {
+        $relation = new HasOneOrManyThrough($entityClass, $foreignKey, $junctionTable, $junctionKey, false);
+        $callback = $this->callback;
+        return $callback($this->name, $relation);
+    }
+
+    /**
+     * @param string $entityClass
+     * @param string|null $foreignKey
+     * @param string|null $junctionTable
+     * @param string|null $junctionKey
+     * @return Relation
+     */
+    public function hasManyThrough(string $entityClass,
+                                   string  $foreignKey = null,
+                                   string $junctionTable = null,
+                                   string $junctionKey = null): Relation
+    {
+        $relation = new HasOneOrManyThrough($entityClass, $foreignKey, $junctionTable, $junctionKey, true);
         $callback = $this->callback;
         return $callback($this->name, $relation);
     }

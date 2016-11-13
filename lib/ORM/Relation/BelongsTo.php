@@ -35,8 +35,14 @@ class BelongsTo extends Relation
         $manager = $data->getEntityManager();
         $related = $manager->resolveEntityMapper($this->entityClass);
 
+        if($this->foreignKey === null){
+            $this->foreignKey = $related->getForeignKey();
+        }
+
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
+
+        $select->where($related->getPrimaryKey())->is($data->getColumn($this->foreignKey));
 
         if($this->queryCallback !== null || $callback !== null){
             $query = new Query($statement);
@@ -47,10 +53,6 @@ class BelongsTo extends Relation
                 $callback($query);
             }
         }
-
-        $foreignKey = $this->foreignKey ?? $related->getForeignKey();
-
-        $select->where($related->getPrimaryKey())->is($data->getColumn($foreignKey));
 
         return $select->get();
     }
