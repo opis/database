@@ -104,6 +104,10 @@ class EntityManager
     {
         $data = $this->getDataMapper($entity);
 
+        if($data->isDeleted()){
+            throw new RuntimeException("The record is deleted");
+        }
+
         if($data->isNew()) {
 
             $id = $this->db()->transaction(function(Database $db) use($data){
@@ -180,6 +184,10 @@ class EntityManager
     public function delete(Entity $entity): bool
     {
         $data = $this->getDataMapper($entity);
+
+        if($data->isDeleted()){
+            throw new RuntimeException("The record was already deleted");
+        }
 
         if($data->isNew()){
             throw new RuntimeException("Can't delete an unsaved entity");
