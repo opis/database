@@ -17,14 +17,12 @@
 
 namespace Opis\Database;
 
-use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
 use Opis\Database\ORM\Helper\DataMapperHelper;
 use Opis\Database\ORM\Helper\EntityHelper;
 use Opis\Database\SQL\Compiler;
-use Opis\Database\SQL\UpdateStatement;
 use RuntimeException;
 
 class EntityManager
@@ -173,7 +171,21 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        return false;
+        $data = EntityHelper::getDataMapper($entity);
+
+        if($data->isNew()){
+            throw new RuntimeException("Can't delete an unsaved entity");
+        }
+
+        $mapper = $data->getEntityMapper();
+        $pk = $mapper->getPrimaryKey();
+        $pkv = $data->getColumn($pk);
+
+        DataMapperHelper::markAsDeleted($data);
+
+        return (bool) $this->db()->from($mapper->getTable())
+                                   ->where($pk)->is($pkv)
+                                   ->delete();
     }
 
     /**
