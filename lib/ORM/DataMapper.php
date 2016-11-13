@@ -42,11 +42,20 @@ class DataMapper
     /** @var bool  */
     protected $isNew;
 
+    /** @var  string|null */
+    protected $sequence;
+
     /** @var array */
     protected $modified = [];
 
     /** @var array */
     protected $relations = [];
+
+    /** @var bool */
+    protected $dehidrated = false;
+
+    /** @var bool  */
+    protected $deleted = false;
 
     /**
      * DataMapper constructor.
@@ -114,11 +123,12 @@ class DataMapper
     }
 
     /**
+     * @param bool $list
      * @return array
      */
-    public function getModifiedColumns(): array
+    public function getModifiedColumns(bool $list = true): array
     {
-        return array_keys($this->modified);
+        return $list ? array_keys($this->modified) : $this->modified;
     }
 
     /**
@@ -127,6 +137,10 @@ class DataMapper
      */
     public function getColumn(string $name)
     {
+        if($this->dehidrated){
+            $this->hydrate();
+        }
+
         if(array_key_exists($name, $this->columns)){
             return $this->columns[$name];
         }
@@ -165,6 +179,10 @@ class DataMapper
             throw new RuntimeException("This record is readonly");
         }
 
+        if($this->dehidrated){
+            $this->hydrate();
+        }
+
         $casts = $this->mapper->getTypeCasts();
         $setters = $this->mapper->getSetters();
 
@@ -197,6 +215,8 @@ class DataMapper
         if(!isset($relations[$name])){
             throw new RuntimeException("Unknown relation '$name'");
         }
+
+        $this->hydrate();
 
         return $this->relations[$name] = $relations[$name]->getResult($this, $callback);
     }
@@ -276,4 +296,25 @@ class DataMapper
         throw new RuntimeException("Invalid cast type '$originalCast'");
     }
 
+    protected function hydrate()
+    {
+        if(!$this->dehidrated){
+            return;
+        }
+
+        $pk = $this->mapper->getPrimaryKey();
+        $columns = $this->manager->db()->from($this->mapper->getTable())
+                                        ->where($pk)->is($this->rawColumns[$pk])
+                                       ->select()
+                                       ->fetchAssoc()
+                                       ->first();
+        if($columns === false){
+            $this->deleted = true;
+            return;
+        }
+
+        $this->rawColumns = $columns;
+        $this->columns = [];
+        $this->dehidrated = false;
+    }
 }

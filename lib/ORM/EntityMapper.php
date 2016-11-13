@@ -46,6 +46,9 @@ class EntityMapper
     /** @var Relation[] */
     protected $relations = [];
 
+    /** @var  string */
+    protected $sequence;
+
     /**
      * EntityMapper constructor.
      * @param string $entityClass
@@ -72,6 +75,16 @@ class EntityMapper
     public function primaryKey(string $primaryKey): self
     {
         $this->primaryKey = $primaryKey;
+        return $this;
+    }
+
+    /**
+     * @param string $sequence
+     * @return EntityMapper
+     */
+    public function sequence(string $sequence): self
+    {
+        $this->sequence = $sequence;
         return $this;
     }
 
@@ -188,6 +201,17 @@ class EntityMapper
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSequence(): string
+    {
+        if($this->sequence === null){
+            $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey() . '_seq';
+        }
+        return $this->sequence;
     }
 
     /**

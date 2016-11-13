@@ -21,8 +21,10 @@ use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
+use Opis\Database\ORM\Helper\DataMapperHelper;
 use Opis\Database\ORM\Helper\EntityHelper;
 use Opis\Database\SQL\Compiler;
+use Opis\Database\SQL\UpdateStatement;
 use RuntimeException;
 
 class EntityManager
@@ -104,9 +106,55 @@ class EntityManager
         $data = EntityHelper::getDataMapper($entity);
 
         if($data->isNew()) {
+
+            $id = $this->db()->transaction(function(Database $db) use($data){
+
+                $columns = $data->getRawColumns();
+
+                foreach ($columns as &$column){
+                    if($column instanceof Entity){
+                        $column = EntityHelper::getPrimaryKey($column);
+                    }
+                }
+
+                $mapper = $data->getEntityMapper();
+
+                $db->insert($columns)->into($mapper->getTable());
+
+                return $this->connection->getPDO()->lastInsertId($mapper->getSequence());
+            })
+            ->onError(function(\PDOException $e, Transaction $transaction){
+                throw $e;
+            })
+            ->execute();
+
+            return DataMapperHelper::markAsSaved($data, $id);
         }
 
-        return false;
+        $modified = $data->getModifiedColumns(false);
+
+        if(!empty($modified)){
+            $columns = array_intersect_key($data->getRawColumns(), $modified);
+
+            foreach ($columns as &$column){
+                if($column instanceof Entity){
+                    $column = EntityHelper::getPrimaryKey($column);
+                }
+            }
+
+            $mapper = $data->getEntityMapper();
+            $pk = $mapper->getPrimaryKey();
+            $pkv = $data->getColumn($pk);
+
+            DataMapperHelper::markAsUpdated($data);
+
+            return (bool) $this->db()->update($mapper->getTable())
+                                         ->where($pk)->is($pkv)
+                                         ->set($columns);
+
+        }
+
+        return true;
     }
 
     /**
@@ -175,7 +223,7 @@ class EntityManager
     /**
      * @return Database
      */
-    protected function db(): Database
+    public function db(): Database
     {
         if($this->database === null){
             $this->database = new Database($this->connection);

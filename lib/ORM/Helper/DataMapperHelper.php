@@ -22,4 +22,33 @@ use Opis\Database\ORM\DataMapper;
 class DataMapperHelper extends DataMapper
 {
 
+    /**
+     * @param DataMapper $data
+     * @param $id
+     * @return bool
+     */
+    public static function markAsSaved(DataMapper $data, $id): bool
+    {
+        $data->rawColumns[$data->mapper->getPrimaryKey()] = $id;
+        $data->dehidrated = true;
+        $data->isNew = false;
+        $data->modified = [];
+        return true;
+    }
+
+    /**
+     * @param DataMapper $data
+     */
+    public static function markAsDeleted(DataMapper $data)
+    {
+        $data->deleted = true;
+    }
+
+    /**
+     * @param DataMapper $data
+     */
+    public static function markAsUpdated(DataMapper $data)
+    {
+        $data->modified = [];
+    }
 }

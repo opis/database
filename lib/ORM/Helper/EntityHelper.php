@@ -30,4 +30,11 @@ class EntityHelper extends Entity
     {
         return $entity->orm();
     }
+
+    public static function getPrimaryKey(Entity $entity)
+    {
+        $data = $entity->orm();
+        return $data->getColumn($data->getEntityMapper()->getPrimaryKey());
+    }
+
 }

@@ -148,7 +148,7 @@ class EntityQuery extends BaseStatement
      */
     protected function isReadOnly(): bool
     {
-        return empty($this->sql->getJoins());
+        return !empty($this->sql->getJoins());
     }
 
 }
