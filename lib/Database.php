@@ -20,7 +20,6 @@
 
 namespace Opis\Database;
 
-use Closure;
 use Opis\Database\SQL\Query as QueryCommand;
 use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\Update as UpdateCommand;
@@ -121,6 +120,6 @@ class Database
      */
     public function transaction(callable $queries): Transaction
     {
-        return new Transaction($this, $queries);
+        return new Transaction($this->connection, $queries, $this);
     }
 }
