@@ -21,8 +21,8 @@
 namespace Opis\Database\SQL;
 
 use Closure;
+use Opis\Database\ORM\EntityQuery;
 use Opis\Database\ORM\Query;
-use Opis\Database\ORM\Relation;
 
 class WhereStatement
 {
@@ -82,7 +82,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return Where|Delete|Select|Update|Query|Relation
+     * @return Where|Delete|Select|Update|Query|EntityQuery
      */
     public function where($column)
     {
@@ -91,7 +91,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return Where|Delete|Select|Update|Query|Relation
+     * @return Where|Delete|Select|Update|Query|EntityQuery
      */
     public function andWhere($column)
     {
@@ -100,7 +100,7 @@ class WhereStatement
 
     /**
      * @param $column
-     * @return Where|Delete|Select|Update|Query|Relation
+     * @return Where|Delete|Select|Update|Query|EntityQuery
      */
     public function orWhere($column)
     {
@@ -109,7 +109,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function whereExists(Closure $select): self
     {
@@ -118,7 +118,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function andWhereExists(Closure $select): self
     {
@@ -127,7 +127,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function orWhereExists(Closure $select): self
     {
@@ -136,7 +136,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function whereNotExists(Closure $select): self
     {
@@ -145,7 +145,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function andWhereNotExists(Closure $select): self
     {
@@ -154,7 +154,7 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update|Query|Relation
+     * @return WhereStatement|Where|Delete|Select|Update|Query|EntityQuery
      */
     public function orWhereNotExists(Closure $select): self
     {
