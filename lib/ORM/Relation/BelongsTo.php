@@ -17,14 +17,45 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\EntityManager;
 use Opis\Database\ORM\DataMapper;
+use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityQuery;
+use Opis\Database\ORM\LazyLoader;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation;
 use Opis\Database\SQL\SQLStatement;
 
 class BelongsTo extends Relation
 {
+    /**
+     * @param EntityManager $manager
+     * @param EntityMapper $owner
+     * @param array $options
+     * @return LazyLoader
+     */
+    protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    {
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $related->getForeignKey();
+        }
+
+        $statement = new SQLStatement();
+        $select = new EntityQuery($manager, $related, $statement);
+
+        $select->where($related->getPrimaryKey())->in($options['ids']);
+        
+        if($options['callback'] !== null){
+            $options['callback'](new Query($statement));
+        }
+
+        $select->with($options['with'], $options['immediate']);
+
+        return new LazyLoader($select, $owner->getPrimaryKey(), $this->foreignKey, false, $options['immediate']);
+    }
+    
     /**
      * @param DataMapper $data
      * @param callable|null $callback

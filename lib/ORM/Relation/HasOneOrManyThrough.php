@@ -21,6 +21,7 @@ use Opis\Database\EntityManager;
 use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityQuery;
+use Opis\Database\ORM\LazyLoader;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation;
 use Opis\Database\SQL\Join;
@@ -53,6 +54,82 @@ class HasOneOrManyThrough extends Relation
         $this->hasMany = $hasMany;
         $this->juctionKey = $junctionKey;
         $this->junctionTable = $junctionTable;
+    }
+
+    /**
+     * @param EntityManager $manager
+     * @param EntityMapper $owner
+     * @param array $options
+     * @return LazyLoader
+     */
+    protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    {
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if($this->junctionTable === null){
+            $table = [$owner->getTable(), $related->getTable()];
+            sort($table);
+            $this->junctionTable = implode('_', $table);
+        }
+
+        if($this->juctionKey === null){
+            $this->juctionKey = $related->getForeignKey();
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        if($this->joinTable === null){
+            $this->joinTable = $related->getTable();
+        }
+
+        if($this->joinColumn === null){
+            $this->joinColumn = $related->getPrimaryKey();
+        }
+
+        $statement = new SQLStatement();
+
+        $select = new class($manager, $related, $statement, $this->junctionTable) extends EntityQuery{
+
+            protected $junctionTable;
+
+            public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, $statement, $table)
+            {
+                parent::__construct($entityManager, $entityMapper, $statement);
+                $this->junctionTable = $table;
+            }
+
+            protected function buildQuery()
+            {
+                $this->locked = true;
+                $this->sql->addTables([$this->junctionTable]);
+                return $this;
+            }
+
+            protected function isReadOnly(): bool
+            {
+                return count($this->sql->getJoins()) > 1;
+            }
+        };
+
+        $linkKey = 'hidden_' . $this->junctionTable . '_' . $this->foreignKey;
+
+        $select->join($this->joinTable, function (Join $join){
+            $join->on($this->junctionTable . '.' . $this->juctionKey, $this->joinTable . '.' . $this->joinColumn);
+        })
+            ->where($this->junctionTable . '.' . $this->foreignKey)->in($options['ids']);
+
+        $statement->addColumn($this->joinTable . '.*');
+        $statement->addColumn($this->junctionTable . '.' . $this->foreignKey, $linkKey);
+
+        if($options['callback'] !== null){
+            $options['callback'](new Query($statement));
+        }
+
+        $select->with($options['with'], $options['immediate']);
+
+        return new LazyLoader($select, $owner->getPrimaryKey(), $linkKey, $this->hasMany, $options['immediate']);
     }
 
     /**

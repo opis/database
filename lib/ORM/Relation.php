@@ -17,6 +17,8 @@
 
 namespace Opis\Database\ORM;
 
+use Opis\Database\EntityManager;
+
 abstract class Relation
 {
     protected $queryCallback;
@@ -45,9 +47,18 @@ abstract class Relation
     }
 
     /**
+     * @param EntityManager $manager
+     * @param EntityMapper $owner
+     * @param array $options
+     * @return mixed
+     */
+    abstract protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options);
+
+    /**
      * @param DataMapper $data
      * @param callable|null $callback
      * @return mixed
      */
     abstract protected function getResult(DataMapper $data, callable $callback = null);
+
 }

@@ -30,6 +30,9 @@ class DataMapper
     /** @var array  */
     protected $columns = [];
 
+    /** @var  LazyLoader[] */
+    protected $loaders;
+
     /** @var EntityManager  */
     protected $manager;
 
@@ -62,14 +65,16 @@ class DataMapper
      * @param EntityManager $entityManager
      * @param EntityMapper $entityMapper
      * @param array $columns
+     * @param LazyLoader[] $loaders
      * @param bool $isReadOnly
      * @param bool $isNew
      */
-    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, array $columns, bool $isReadOnly, bool $isNew)
+    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, array $columns, array $loaders, bool $isReadOnly, bool $isNew)
     {
         $this->manager = $entityManager;
         $this->mapper = $entityMapper;
         $this->rawColumns = $columns;
+        $this->loaders = $loaders;
         $this->isReadOnly = $isReadOnly;
         $this->isNew = $isNew;
     }
@@ -222,8 +227,6 @@ class DataMapper
      */
     public function getRelation(string $name, callable $callback = null)
     {
-        static $closure;
-
         if(array_key_exists($name, $this->relations)){
             return $this->relations[$name];
         }
@@ -235,6 +238,11 @@ class DataMapper
         }
 
         $this->hydrate();
+
+        if(isset($this->loaders[$name])){
+            return $this->relations[$name] = $this->loaders[$name]->getResult($this);
+        }
+
         return $this->relations[$name] = $this->getRelationResult($relations[$name], $callback);
     }
 

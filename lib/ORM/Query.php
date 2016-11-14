@@ -27,6 +27,7 @@ class Query extends BaseStatement
         select as protected;
     }
     use SoftDeletesTrait;
+    use LoaderTrait;
 
     /** @var HavingStatement */
     protected $have;

@@ -65,7 +65,7 @@ class EntityQuery extends Query
 
         $class = $this->mapper->getClass();
 
-        return new $class($this->manager, $this->mapper, $result, $this->isReadOnly(), false);
+        return new $class($this->manager, $this->mapper, $result, [], $this->isReadOnly(), false);
     }
 
     /**
@@ -77,14 +77,15 @@ class EntityQuery extends Query
         $results = $this->query($columns)
                          ->fetchAssoc()
                          ->all();
-
+        
         $entities = [];
 
         $class = $this->mapper->getClass();
         $isReadOnly = $this->isReadOnly();
+        $loaders = $this->getLazyLoaders($results);
 
         foreach ($results as $result){
-            $entities[] = new $class($this->manager, $this->mapper, $result, $isReadOnly, false);
+            $entities[] = new $class($this->manager, $this->mapper, $result, $loaders, $isReadOnly, false);
         }
 
         return $entities;
@@ -176,5 +177,49 @@ class EntityQuery extends Query
     protected function isReadOnly(): bool
     {
         return !empty($this->sql->getJoins());
+    }
+
+    /**
+     * @param array $results
+     * @return array
+     */
+    protected function getLazyLoaders(array $results): array
+    {
+        if(empty($this->with) || empty($results)){
+            return [];
+        }
+
+        $ids = [];
+        $loaders = [];
+        $pk = $this->mapper->getPrimaryKey();
+        $attr = $this->getWithAttributes();
+        $relations = $this->mapper->getRelations();
+
+        foreach ($results as $result){
+            $ids[] = $result[$pk];
+        }
+
+        $lazyLoader = function (EntityManager $manager, EntityMapper $owner, array $options){
+            return $this->getLazyLoader($manager, $owner, $options);
+        };
+
+        foreach ($attr['with'] as $with => $callback) {
+            if(!isset($relations[$with])){
+                continue;
+            }
+            $loader = $lazyLoader->call($relations[$with], $this->manager, $this->mapper,[
+                'ids' => $ids,
+                'callback' => $callback,
+                'with' => $attr[$with]['extra'] ?? [],
+                'immediate' => $this->immediate,
+            ]);
+
+            if(null === $loader){
+                continue;
+            }
+            $loaders[$with] = $loader;
+        }
+
+        return $loaders;
     }
 }

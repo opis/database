@@ -23,7 +23,7 @@ use Opis\Database\ORM\EntityMapper;
 abstract class Entity
 {
     /** @var array */
-    private $args;
+    protected $dataMapperArgs;
 
     /** @var  DataMapper|null */
     private $dataMapper;
@@ -33,16 +33,18 @@ abstract class Entity
      * @param EntityManager $entityManager
      * @param EntityMapper $entityMapper
      * @param array $columns
+     * @param array $loaders
      * @param bool $isReadOnly
      * @param bool $isNew
      */
     final public function __construct(EntityManager $entityManager,
                                       EntityMapper $entityMapper,
                                       array $columns = [],
+                                      array $loaders = [],
                                       bool $isReadOnly = false,
                                       bool $isNew = false)
     {
-        $this->args = [$entityManager, $entityMapper, $columns, $isReadOnly, $isNew];
+        $this->dataMapperArgs = [$entityManager, $entityMapper, $columns, $loaders, $isReadOnly, $isNew];
     }
 
     /**
@@ -51,8 +53,8 @@ abstract class Entity
     final protected function orm(): DataMapper
     {
         if($this->dataMapper === null){
-            $this->dataMapper = new DataMapper(...$this->args);
-            unset($this->args);
+            $this->dataMapper = new DataMapper(...$this->dataMapperArgs);
+            unset($this->dataMapperArgs);
         }
 
         return $this->dataMapper;

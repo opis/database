@@ -183,7 +183,7 @@ class EntityManager
      */
     public function create(string $class, array $columns = []): Entity
     {
-        return new $class($this, $this->resolveEntityMapper($class), $columns, false, true);
+        return new $class($this, $this->resolveEntityMapper($class), $columns, [], false, true);
     }
 
     /**
