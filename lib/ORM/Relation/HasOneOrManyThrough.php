@@ -106,6 +106,11 @@ class HasOneOrManyThrough extends Relation
                 $this->sql->addTables([$this->junctionTable]);
                 return $this;
             }
+            
+            protected function isReadOnly(): bool
+            {
+                return count($this->sql->getJoins()) > 1;
+            }
         };
 
         $select->join($this->joinTable, function (Join $join){
