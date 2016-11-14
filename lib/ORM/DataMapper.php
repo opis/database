@@ -19,6 +19,7 @@ namespace Opis\Database\ORM;
 
 use DateTime;
 use Opis\Database\Entity;
+use Opis\Database\ORM\Relation\HasOneOrManyThrough;
 use RuntimeException;
 use Opis\Database\EntityManager;
 
@@ -244,6 +245,44 @@ class DataMapper
         }
 
         return $this->relations[$name] = $this->getRelationResult($relations[$name], $callback);
+    }
+
+    /**
+     * @param string $relation
+     * @param $items
+     */
+    public function link(string $relation, $items)
+    {
+        $relations = $this->mapper->getRelations();
+        if(!isset($relation[$relation])){
+            throw new RuntimeException("Unknown relation '$relation'");
+        }
+
+        /** @var $rel HasOneOrManyThrough */
+        if(!($rel = $relations[$relation] instanceof HasOneOrManyThrough)){
+            throw new RuntimeException("Unsupported relation type");
+        }
+
+        $rel->link($this, $items);
+    }
+
+    /**
+     * @param string $relation
+     * @param $items
+     */
+    public function unlink(string $relation, $items)
+    {
+        $relations = $this->mapper->getRelations();
+        if(!isset($relation[$relation])){
+            throw new RuntimeException("Unknown relation '$relation'");
+        }
+
+        /** @var $rel HasOneOrManyThrough */
+        if(!($rel = $relations[$relation] instanceof HasOneOrManyThrough)){
+            throw new RuntimeException("Unsupported relation type");
+        }
+
+        $rel->unlink($this, $items);
     }
 
     /**

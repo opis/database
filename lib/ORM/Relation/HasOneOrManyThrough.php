@@ -17,6 +17,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Entity;
 use Opis\Database\EntityManager;
 use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
@@ -24,6 +25,8 @@ use Opis\Database\ORM\EntityQuery;
 use Opis\Database\ORM\LazyLoader;
 use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Relation;
+use Opis\Database\SQL\Delete;
+use Opis\Database\SQL\Insert;
 use Opis\Database\SQL\Join;
 use Opis\Database\SQL\SQLStatement;
 
@@ -55,6 +58,116 @@ class HasOneOrManyThrough extends Relation
         $this->juctionKey = $junctionKey;
         $this->junctionTable = $junctionTable;
     }
+
+    /**
+     * @param DataMapper $data
+     * @param $items
+     */
+    public function link(DataMapper $data, $items)
+    {
+        if(!is_array($items)){
+            $items = [$items];
+        }
+
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if($this->junctionTable === null){
+            $table = [$owner->getTable(), $related->getTable()];
+            sort($table);
+            $this->junctionTable = implode('_', $table);
+        }
+
+        if($this->juctionKey === null){
+            $this->juctionKey = $related->getForeignKey();
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $table = $this->junctionTable;
+        $col1 = $this->foreignKey;
+        $col2 = $this->juctionKey;
+        $val1 = $data->getColumn($owner->getPrimaryKey());
+        $key = $related->getPrimaryKey();
+        $connection = $manager->getConnection();
+
+        $extractor = function () use($key){
+            return $this->orm()->getColumn($key);
+        };
+
+        foreach ($items as $item){
+            $val2 = is_subclass_of($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+            try{
+
+                (new Insert($connection))->insert([
+                    $col1 => $val1,
+                    $col2 => $val2
+                ])->into($table);
+
+            }catch (\Exception $e){
+                // Ignore
+            }
+        }
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param $items
+     */
+    public function unlink(DataMapper $data, $items)
+    {
+        if(!is_array($items)){
+            $items = [$items];
+        }
+
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if($this->junctionTable === null){
+            $table = [$owner->getTable(), $related->getTable()];
+            sort($table);
+            $this->junctionTable = implode('_', $table);
+        }
+
+        if($this->juctionKey === null){
+            $this->juctionKey = $related->getForeignKey();
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $table = $this->junctionTable;
+        $col1 = $this->foreignKey;
+        $col2 = $this->juctionKey;
+        $val1 = $data->getColumn($owner->getPrimaryKey());
+        $val2 = [];
+        $key = $related->getPrimaryKey();
+        $connection = $manager->getConnection();
+
+        $extractor = function () use($key){
+            return $this->orm()->getColumn($key);
+        };
+
+        foreach ($items as $item){
+            $val2[] = is_subclass_of($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+        }
+
+        try{
+            (new Delete($connection, $table))
+                ->where($col1)->is($val1)
+                ->andWhere($col2)->in($val2)
+                ->delete();
+        }
+        catch(\Exception $e){
+            //ignore
+        }
+    }
+
 
     /**
      * @param EntityManager $manager
