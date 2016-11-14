@@ -58,7 +58,7 @@ trait SelectTrait
 
     /**
      * @param bool $value
-     * @return mixed|SelectTrait
+     * @return self|mixed
      */
     public function distinct(bool $value = true): self
     {
@@ -67,8 +67,8 @@ trait SelectTrait
     }
 
     /**
-     * @param   string|array c$columns
-     * @return  self
+     * @param string|array $columns
+     * @return self|mixed
      */
     public function groupBy($columns): self
     {
@@ -80,7 +80,7 @@ trait SelectTrait
      * @param   string  $column
      * @param   Closure $value  (optional)
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function having($column, Closure $value = null): self
     {
@@ -92,7 +92,7 @@ trait SelectTrait
      * @param   string  $column
      * @param   Closure $value
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function andHaving($column, Closure $value = null): self
     {
@@ -104,7 +104,7 @@ trait SelectTrait
      * @param   string  $column
      * @param   Closure $value
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function orHaving($column, Closure $value = null): self
     {
@@ -117,7 +117,7 @@ trait SelectTrait
      * @param   string          $order      (optional)
      * @param   string          $nulls      (optional)
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
     {
@@ -128,7 +128,7 @@ trait SelectTrait
     /**
      * @param   int $value
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function limit(int $value): self
     {
@@ -139,7 +139,7 @@ trait SelectTrait
     /**
      * @param   int $value
      *
-     * @return  self
+     * @return  self|mixed
      */
     public function offset(int $value): self
     {
