@@ -25,8 +25,8 @@ use PDOException;
 
 class Transaction
 {
-    /** @var  Database Database object. */
-    protected $database;
+    /** @var  Connection Database connection */
+    protected $connection;
 
     /** @var    callable    Transaction callback. */
     protected $transaction;
@@ -37,15 +37,20 @@ class Transaction
     /** @var    callable    Error callback. */
     protected $errorCallback;
 
+    /** @var  mixed */
+    protected $dataObject;
+
     /**
      * Transaction constructor.
-     * @param Database $database
+     * @param Connection $connection
      * @param callable $transaction
+     * @param mixed $dataObject
      */
-    public function __construct(Database $database, callable $transaction)
+    public function __construct(Connection $connection, callable $transaction, $dataObject = null)
     {
-        $this->database = $database;
+        $this->connection = $connection;
         $this->transaction = $transaction;
+        $this->dataObject = $dataObject;
     }
 
     /**
@@ -95,13 +100,11 @@ class Transaction
     }
 
     /**
-     * Get the database for the current transaction
-     *
-     * @return  Database
+     * @return mixed|null
      */
-    public function database(): Database
+    public function getDataObject()
     {
-        return $this->database;
+        return $this->dataObject;
     }
 
     /**
@@ -111,7 +114,7 @@ class Transaction
      */
     public function pdo(): PDO
     {
-        return $this->database->getConnection()->getPDO();
+        return $this->connection->getPDO();
     }
 
     /**
@@ -145,8 +148,7 @@ class Transaction
      */
     public function run()
     {
-        $transaction = $this->transaction;
-        return $transaction($this->database);
+        return ($this->transaction)($this->dataObject);
     }
 
     /**
@@ -166,19 +168,17 @@ class Transaction
             $this->begin();
             $result = $this->run();
             $this->commit();
-            $successCallback = $this->successCallback;
-            
-            if ($successCallback !== null) {
-                $successCallback($this);
+
+            if($this->successCallback !== null){
+                ($this->successCallback)($this);
             }
 
             return $result;
         } catch (PDOException $e) {
             $this->rollBack();
-            $errorCallback = $this->errorCallback;
-            
-            if ($errorCallback !== null) {
-                $errorCallback($e, $this);
+
+            if($this->errorCallback !== null){
+                ($this->errorCallback)($e, $this);
             }
         }
     }
