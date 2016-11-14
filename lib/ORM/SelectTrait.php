@@ -57,8 +57,17 @@ trait SelectTrait
     }
 
     /**
-     * @param   string|array    $columns
-     *
+     * @param bool $value
+     * @return mixed|SelectTrait
+     */
+    public function distinct(bool $value = true): self
+    {
+        $this->getSQLStatement()->setDistinct($value);
+        return $this;
+    }
+
+    /**
+     * @param   string|array c$columns
      * @return  self
      */
     public function groupBy($columns): self
