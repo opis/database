@@ -22,6 +22,8 @@ use Opis\Database\ORM\EntityMapper;
 use Opis\Database\ORM\EntityMapperInterface;
 use Opis\Database\ORM\EntityQuery;
 use Opis\Database\SQL\Compiler;
+use Opis\Database\SQL\Insert;
+use Opis\Database\SQL\Update;
 use RuntimeException;
 
 class EntityManager
@@ -40,9 +42,6 @@ class EntityManager
 
     /** @var callable[] */
     protected $entityMappersCallbacks = [];
-
-    /** @var  Database */
-    protected $database;
 
     /**
      * EntityManager constructor.
@@ -109,7 +108,8 @@ class EntityManager
 
         if($data->isNew()) {
 
-            $id = $this->db()->transaction(function(Database $db) use($data){
+            $id = (new Transaction($this->connection, function(Connection $connection) use($data){
+
                 $columns = $data->getRawColumns();
 
                 foreach ($columns as &$column){
@@ -129,15 +129,16 @@ class EntityManager
                     $columns['updated_at'] = null;
                 }
 
-                $db->insert($columns)->into($mapper->getTable());
+                (new Insert($connection))->insert($columns)->into($mapper->getTable());
 
                 if($pkgen !== null){
                     return $pk;
                 }
 
-                return $this->connection->getPDO()->lastInsertId($mapper->getSequence());
-            })
-            ->onError(function(\PDOException $e, Transaction $transaction){
+                return $connection->getPDO()->lastInsertId($mapper->getSequence());
+
+            }, $this->connection))
+            ->onError(function(\PDOException $e){
                 throw $e;
             })
             ->execute();
@@ -168,9 +169,9 @@ class EntityManager
 
             $this->markAsUpdated($data, $updatedAt);
 
-            return (bool) $this->db()->update($mapper->getTable())
-                                         ->where($pk)->is($pkv)
-                                         ->set($columns);
+            return (bool)(new Update($this->connection, $mapper->getTable()))
+                            ->where($pk)->is($pkv)
+                            ->set($columns);
         }
 
         return true;
@@ -208,9 +209,7 @@ class EntityManager
 
         $this->markAsDeleted($data);
 
-        return (bool) $this->db()->from($mapper->getTable())
-                                   ->where($pk)->is($pkv)
-                                   ->delete();
+        return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
     }
 
     /**
@@ -255,17 +254,6 @@ class EntityManager
     {
         $this->entityMappersCallbacks[$class] = $callback;
         return $this;
-    }
-
-    /**
-     * @return Database
-     */
-    public function db(): Database
-    {
-        if($this->database === null){
-            $this->database = new Database($this->connection);
-        }
-        return $this->database;
     }
 
     /**

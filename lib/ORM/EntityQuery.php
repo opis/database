@@ -95,10 +95,17 @@ class EntityQuery extends Query
 
     /**
      * @param array $tables
+     * @param bool $force
      * @return int
      */
-    public function delete(array $tables = [])
+    public function delete(array $tables = [], bool $force = false)
     {
+        if(!$force && $this->mapper->supportsSoftDelete()){
+            return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->set([
+                'deleted_at' => date($this->manager->getDateFormat())
+            ]);
+        }
+
         return (new Delete($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->delete($tables);
     }
 
