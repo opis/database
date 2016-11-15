@@ -27,6 +27,8 @@ use Opis\Database\SQL\Update;
 
 class EntityQuery extends Query
 {
+    use AggregateTrait;
+
     /** @var EntityManager */
     protected $manager;
 
@@ -170,6 +172,28 @@ class EntityQuery extends Query
 
         return $connection->query($compiler->select($this->sql), $compiler->getParams());
     }
+
+    /**
+     * @return mixed
+     */
+    protected function executeAggregate()
+    {
+        $this->sql->addTables([$this->mapper->getTable()]);
+
+        if($this->mapper->supportsSoftDelete()){
+            if(!$this->withSoftDeleted){
+                $this->where('deleted_at')->isNull();
+            } elseif ($this->onlySoftDeleted){
+                $this->where('deleted_at')->notNull();
+            }
+        }
+
+        $connection = $this->manager->getConnection();
+        $compiler = $connection->getCompiler();
+
+        return $connection->column($compiler->select($this->sql), $compiler->getParams());
+    }
+
 
     /**
      * @return bool
