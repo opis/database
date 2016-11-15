@@ -55,6 +55,12 @@ class EntityMapper
     /** @var bool */
     protected $timestamp = true;
 
+    /** @var  null|array */
+    protected $fillable;
+
+    /** @var null|array */
+    protected $guarded;
+
     /**
      * EntityMapper constructor.
      * @param string $entityClass
@@ -168,6 +174,26 @@ class EntityMapper
     }
 
     /**
+     * @param string[] $columns
+     * @return EntityMapper
+     */
+    public function fillable(array $columns): self
+    {
+        $this->fillable = $columns;
+        return $this;
+    }
+
+    /**
+     * @param string[] $columns
+     * @return EntityMapper
+     */
+    public function guarded(array $columns): self
+    {
+        $this->guarded = $columns;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getClass(): string
@@ -274,6 +300,22 @@ class EntityMapper
     {
         return $this->timestamp && isset($this->casts['created_at'], $this->casts['updated_at'])
             && $this->casts['created_at'] === 'date' && $this->casts['updated_at'] === '?date';
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getFillableColumns()
+    {
+        return $this->fillable;
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getGuardedColumns()
+    {
+        return $this->guarded;
     }
 
     /**
