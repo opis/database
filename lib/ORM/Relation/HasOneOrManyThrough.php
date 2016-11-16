@@ -201,6 +201,12 @@ class HasOneOrManyThrough extends Relation
             $this->joinColumn = $related->getPrimaryKey();
         }
 
+        $ids = [];
+        $pk = $owner->getPrimaryKey();
+        foreach ($options['results'] as $result){
+            $ids[] = $result[$pk];
+        }
+
         $statement = new SQLStatement();
 
         $select = new class($manager, $related, $statement, $this->junctionTable) extends EntityQuery{
@@ -231,7 +237,7 @@ class HasOneOrManyThrough extends Relation
         $select->join($this->joinTable, function (Join $join){
             $join->on($this->junctionTable . '.' . $this->juctionKey, $this->joinTable . '.' . $this->joinColumn);
         })
-            ->where($this->junctionTable . '.' . $this->foreignKey)->in($options['ids']);
+            ->where($this->junctionTable . '.' . $this->foreignKey)->in($ids);
 
         $statement->addColumn($this->joinTable . '.*');
         $statement->addColumn($this->junctionTable . '.' . $this->foreignKey, $linkKey);
@@ -242,7 +248,7 @@ class HasOneOrManyThrough extends Relation
 
         $select->with($options['with'], $options['immediate']);
 
-        return new LazyLoader($select, $owner->getPrimaryKey(), $linkKey, $this->hasMany, $options['immediate']);
+        return new LazyLoader($select, $pk, $linkKey, $this->hasMany, $options['immediate']);
     }
 
     /**

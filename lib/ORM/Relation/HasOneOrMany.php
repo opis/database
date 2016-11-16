@@ -58,18 +58,24 @@ class HasOneOrMany extends Relation
             $this->foreignKey = $owner->getForeignKey();
         }
 
+        $ids = [];
+        $pk = $owner->getPrimaryKey();
+        foreach ($options['results'] as $result){
+            $ids[] = $result[$pk];
+        }
+
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        $select->where($this->foreignKey)->in($options['ids']);
+        $select->where($this->foreignKey)->in($ids);
 
         if($options['callback'] !== null){
             $options['callback'](new Query($statement));
         }
 
         $select->with($options['with'], $options['immediate']);
-
-        return new LazyLoader($select, $owner->getPrimaryKey(), $this->foreignKey, $this->hasMany, $options['immediate']);
+        
+        return new LazyLoader($select, $pk, $this->foreignKey, $this->hasMany, $options['immediate']);
     }
 
     /**

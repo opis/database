@@ -179,7 +179,7 @@ class EntityQuery extends Query
 
         return $connection->query($compiler->select($this->sql), $compiler->getParams());
     }
-
+    
     /**
      * @return mixed
      */
@@ -220,15 +220,9 @@ class EntityQuery extends Query
             return [];
         }
 
-        $ids = [];
         $loaders = [];
-        $pk = $this->mapper->getPrimaryKey();
         $attr = $this->getWithAttributes();
         $relations = $this->mapper->getRelations();
-
-        foreach ($results as $result){
-            $ids[] = $result[$pk];
-        }
 
         $lazyLoader = function (EntityManager $manager, EntityMapper $owner, array $options){
             return $this->getLazyLoader($manager, $owner, $options);
@@ -239,7 +233,7 @@ class EntityQuery extends Query
                 continue;
             }
             $loader = $lazyLoader->call($relations[$with], $this->manager, $this->mapper,[
-                'ids' => $ids,
+                'results' => $results,
                 'callback' => $callback,
                 'with' => $attr[$with]['extra'] ?? [],
                 'immediate' => $this->immediate,

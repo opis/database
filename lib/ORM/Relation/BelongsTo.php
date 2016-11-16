@@ -42,10 +42,15 @@ class BelongsTo extends Relation
             $this->foreignKey = $related->getForeignKey();
         }
 
+        $ids = [];
+        foreach ($options['results'] as $result){
+            $ids[] = $result[$this->foreignKey];
+        }
+
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        $select->where($related->getPrimaryKey())->in($options['ids']);
+        $select->where($related->getPrimaryKey())->in($ids);
         
         if($options['callback'] !== null){
             $options['callback'](new Query($statement));
@@ -53,7 +58,7 @@ class BelongsTo extends Relation
 
         $select->with($options['with'], $options['immediate']);
 
-        return new LazyLoader($select, $owner->getPrimaryKey(), $this->foreignKey, false, $options['immediate']);
+        return new LazyLoader($select, $this->foreignKey, $related->getPrimaryKey(), false, $options['immediate']);
     }
     
     /**
