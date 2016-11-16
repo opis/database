@@ -78,9 +78,10 @@ class DataMapper
         $this->loaders = $loaders;
         $this->isReadOnly = $isReadOnly;
         $this->isNew = $isNew;
-        $this->rawColumns = [];
+        $this->rawColumns = $columns;
 
         if($isNew && !empty($columns)){
+            $this->rawColumns = [];
             if(null !== $fillable = $entityMapper->getFillableColumns()){
                 $columns = array_intersect_key($columns, array_flip($columns));
             } elseif (null !== $guarded = $entityMapper->getGuardedColumns()){
