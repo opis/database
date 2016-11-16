@@ -75,16 +75,19 @@ class DataMapper
     {
         $this->manager = $entityManager;
         $this->mapper = $entityMapper;
-        $this->rawColumns = $columns;
         $this->loaders = $loaders;
         $this->isReadOnly = $isReadOnly;
         $this->isNew = $isNew;
+        $this->rawColumns = [];
 
         if($isNew && !empty($columns)){
             if(null !== $fillable = $entityMapper->getFillableColumns()){
-                $this->columns = array_intersect_key($columns, array_flip($columns));
+                $columns = array_intersect_key($columns, array_flip($columns));
             } elseif (null !== $guarded = $entityMapper->getGuardedColumns()){
-                $this->columns = array_diff_key($columns, array_flip($guarded));
+                $columns = array_diff_key($columns, array_flip($guarded));
+            }
+            foreach ($columns as $name => $value){
+                $this->setColumn($name, $value);
             }
         }
     }
