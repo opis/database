@@ -20,6 +20,7 @@ namespace Opis\Database\ORM;
 use DateTime;
 use Opis\Database\Entity;
 use Opis\Database\ORM\Relation\HasOneOrManyThrough;
+use Opis\Database\SQL\Select;
 use RuntimeException;
 use Opis\Database\EntityManager;
 
@@ -375,11 +376,14 @@ class DataMapper
         }
 
         $pk = $this->mapper->getPrimaryKey();
-        $columns = $this->manager->db()->from($this->mapper->getTable())
-                                        ->where($pk)->is($this->rawColumns[$pk])
-                                       ->select()
-                                       ->fetchAssoc()
-                                       ->first();
+
+        $select = new Select($this->manager->getConnection(), $this->mapper->getTable());
+
+        $columns = $select->where($pk)->is($this->rawColumns[$pk])
+                            ->select()
+                            ->fetchAssoc()
+                            ->first();
+
         if($columns === false){
             $this->deleted = true;
             return;
