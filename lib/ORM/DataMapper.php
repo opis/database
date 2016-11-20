@@ -297,7 +297,7 @@ class DataMapper
     public function assign(array $columns)
     {
         if(null !== $fillable = $this->mapper->getFillableColumns()){
-            $columns = array_intersect_key($columns, array_flip($columns));
+            $columns = array_intersect_key($columns, array_flip($fillable));
         } elseif (null !== $guarded = $this->mapper->getGuardedColumns()){
             $columns = array_diff_key($columns, array_flip($guarded));
         }
