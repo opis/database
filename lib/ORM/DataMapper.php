@@ -82,14 +82,7 @@ class DataMapper
 
         if($isNew && !empty($columns)){
             $this->rawColumns = [];
-            if(null !== $fillable = $entityMapper->getFillableColumns()){
-                $columns = array_intersect_key($columns, array_flip($columns));
-            } elseif (null !== $guarded = $entityMapper->getGuardedColumns()){
-                $columns = array_diff_key($columns, array_flip($guarded));
-            }
-            foreach ($columns as $name => $value){
-                $this->setColumn($name, $value);
-            }
+            $this->assign($columns);
         }
     }
 
@@ -296,6 +289,21 @@ class DataMapper
         }
 
         $rel->unlink($this, $items);
+    }
+
+    /**
+     * @param array $columns
+     */
+    public function assign(array $columns)
+    {
+        if(null !== $fillable = $this->mapper->getFillableColumns()){
+            $columns = array_intersect_key($columns, array_flip($columns));
+        } elseif (null !== $guarded = $this->mapper->getGuardedColumns()){
+            $columns = array_diff_key($columns, array_flip($guarded));
+        }
+        foreach ($columns as $name => $value){
+            $this->setColumn($name, $value);
+        }
     }
 
     /**
