@@ -145,6 +145,38 @@ class EntityQuery extends Query
     }
 
     /**
+     * @param string[]|string $column
+     * @param int $value
+     * @return int
+     */
+    public function increment($column, $value = 1)
+    {
+        if($this->mapper->supportsTimestamp()){
+            $this->sql->addUpdateColumns([
+                'updated_at' => date($this->manager->getDateFormat())
+            ]);
+        }
+
+        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->increment($column, $value);
+    }
+
+    /**
+     * @param string[]|string $column
+     * @param int $value
+     * @return int
+     */
+    public function decrement($column, $value = 1)
+    {
+        if($this->mapper->supportsTimestamp()){
+            $this->sql->addUpdateColumns([
+                'updated_at' => date($this->manager->getDateFormat())
+            ]);
+        }
+
+        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->decrement($column, $value);
+    }
+
+    /**
      * @param $id
      * @param array $columns
      * @return mixed|null
