@@ -52,6 +52,28 @@ class EntityQuery extends Query
     }
 
     /**
+     * @param string|string[] $names
+     * @return EntityQuery
+     */
+    public function filter($names): self
+    {
+        if(!is_array($names)){
+            $names = [$names];
+        }
+
+        $query = new Query($this->sql);
+        $filters = $this->mapper->getFilters();
+
+        foreach ($names as $name){
+            if(isset($filters[$name])){
+                $filters[$name]($query);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $columns
      * @return null|Entity
      */

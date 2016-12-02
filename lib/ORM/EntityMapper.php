@@ -61,6 +61,9 @@ class EntityMapper
     /** @var null|array */
     protected $guarded;
 
+    /** @var callable[] */
+    protected $filters = [];
+
     /**
      * EntityMapper constructor.
      * @param string $entityClass
@@ -194,6 +197,17 @@ class EntityMapper
     }
 
     /**
+     * @param string $name
+     * @param callable $callback
+     * @return EntityMapper
+     */
+    public function filter(string $name, callable $callback): self
+    {
+        $this->filters[$name] = $callback;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getClass(): string
@@ -316,6 +330,14 @@ class EntityMapper
     public function getGuardedColumns()
     {
         return $this->guarded;
+    }
+
+    /**
+     * @return callable[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
     }
 
     /**
