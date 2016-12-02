@@ -214,14 +214,25 @@ class DataMapper
         $casts = $this->mapper->getTypeCasts();
         $setters = $this->mapper->getSetters();
 
-        if(isset($casts[$name])){
-            $value = $this->castSet($value, $casts[$name]);
-        }
-
         if(isset($setters[$name])){
             $value = $setters[$name]($value);
         }
 
+        if(isset($casts[$name])){
+            $value = $this->castSet($value, $casts[$name]);
+        }
+
+        $this->modified[$name] = 1;
+        unset($this->columns[$name]);
+        $this->rawColumns[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function setRawColumn(string $name, $value)
+    {
         $this->modified[$name] = 1;
         unset($this->columns[$name]);
         $this->rawColumns[$name] = $value;
