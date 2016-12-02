@@ -29,6 +29,19 @@ use Opis\Database\SQL\SQLStatement;
 class BelongsTo extends Relation
 {
     /**
+     * @param DataMapper $owner
+     * @param DataMapper $related
+     */
+    public function addRelatedEntity(DataMapper $owner, DataMapper $related)
+    {
+        if($this->foreignKey === null){
+            $this->foreignKey = $related->getEntityMapper()->getForeignKey();
+        }
+
+        $owner->setColumn($this->foreignKey, $related->getColumn($related->getEntityMapper()->getPrimaryKey()));
+    }
+
+    /**
      * @param EntityManager $manager
      * @param EntityMapper $owner
      * @param array $options

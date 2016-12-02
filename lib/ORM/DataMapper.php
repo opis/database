@@ -19,6 +19,8 @@ namespace Opis\Database\ORM;
 
 use DateTime;
 use Opis\Database\Entity;
+use Opis\Database\ORM\Relation\BelongsTo;
+use Opis\Database\ORM\Relation\HasOneOrMany;
 use Opis\Database\ORM\Relation\HasOneOrManyThrough;
 use Opis\Database\SQL\Select;
 use RuntimeException;
@@ -266,6 +268,33 @@ class DataMapper
 
     /**
      * @param string $relation
+     * @param Entity $entity
+     */
+    public function addRelatedEntity(string $relation, Entity $entity)
+    {
+        $relations = $this->mapper->getRelations();
+
+        if(!isset($relations[$relation])){
+            throw new RuntimeException("Unknown relation '$relation'");
+        }
+
+        $rel = $relations[$relation];
+
+        /** @var $rel BelongsTo */
+        if(!($rel instanceof BelongsTo) && !($rel instanceof HasOneOrMany)){
+            throw new RuntimeException("Unsupported relation type");
+        }
+
+        /** @var DataMapper $data */
+        $data = (function(){
+            return $this->orm();
+        })->call($entity);
+
+        $rel->addRelatedEntity($this, $data);
+    }
+
+    /**
+     * @param string $relation
      * @param $items
      */
     public function link(string $relation, $items)
@@ -276,7 +305,7 @@ class DataMapper
         }
 
         /** @var $rel HasOneOrManyThrough */
-        if(!($rel = $relations[$relation] instanceof HasOneOrManyThrough)){
+        if(!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)){
             throw new RuntimeException("Unsupported relation type");
         }
 
@@ -290,12 +319,12 @@ class DataMapper
     public function unlink(string $relation, $items)
     {
         $relations = $this->mapper->getRelations();
-        if(!isset($relation[$relation])){
+        if(!isset($relations[$relation])){
             throw new RuntimeException("Unknown relation '$relation'");
         }
 
         /** @var $rel HasOneOrManyThrough */
-        if(!($rel = $relations[$relation] instanceof HasOneOrManyThrough)){
+        if(!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)){
             throw new RuntimeException("Unsupported relation type");
         }
 
@@ -345,7 +374,7 @@ class DataMapper
             case 'string':
                 return (string) $value;
             case 'date':
-                return DateTime::createFromFormat($this->mapper->getDateFormat(), $value);
+                return DateTime::createFromFormat($this->manager->getDateFormat(), $value);
             case 'json':
                 return json_decode($value);
             case 'json-assoc':

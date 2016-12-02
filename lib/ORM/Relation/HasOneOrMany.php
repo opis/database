@@ -45,6 +45,19 @@ class HasOneOrMany extends Relation
     }
 
     /**
+     * @param DataMapper $owner
+     * @param DataMapper $related
+     */
+    public function addRelatedEntity(DataMapper $owner, DataMapper $related)
+    {
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getEntityMapper()->getForeignKey();
+        }
+
+        $related->setColumn($this->foreignKey, $owner->getColumn($owner->getEntityMapper()->getPrimaryKey()));
+    }
+
+    /**
      * @param EntityManager $manager
      * @param EntityMapper $owner
      * @param array $options
