@@ -69,6 +69,9 @@ trait SelectTrait
      */
     public function groupBy($columns): self
     {
+        if (!is_array($columns)) {
+            $columns = array($columns);
+        }
         $this->getSQLStatement()->addGroupBy($columns);
         return $this;
     }
@@ -118,6 +121,9 @@ trait SelectTrait
      */
     public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
     {
+        if (!is_array($columns)) {
+            $columns = array($columns);
+        }
         $this->getSQLStatement()->addOrder($columns, $order, $nulls);
         return $this;
     }
