@@ -259,6 +259,10 @@ class DataMapper
 
         $this->hydrate();
 
+        if(isset($this->relations[$name])){
+            return $this->relations[$name];
+        }
+
         if(isset($this->loaders[$name])){
             return $this->relations[$name] = $this->loaders[$name]->getResult($this);
         }
@@ -442,6 +446,8 @@ class DataMapper
 
         $this->rawColumns = $columns;
         $this->columns = [];
+        $this->relations = [];
+        $this->loaders = [];
         $this->dehidrated = false;
     }
 
