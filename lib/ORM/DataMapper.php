@@ -268,9 +268,9 @@ class DataMapper
 
     /**
      * @param string $relation
-     * @param Entity $entity
+     * @param Entity|null $entity
      */
-    public function addRelatedEntity(string $relation, Entity $entity)
+    public function addRelatedEntity(string $relation, Entity $entity = null)
     {
         $relations = $this->mapper->getRelations();
 
@@ -280,17 +280,16 @@ class DataMapper
 
         $rel = $relations[$relation];
 
-        /** @var $rel BelongsTo */
+        /** @var $rel BelongsTo|HasOneOrMany */
         if(!($rel instanceof BelongsTo) && !($rel instanceof HasOneOrMany)){
             throw new RuntimeException("Unsupported relation type");
         }
 
-        /** @var DataMapper $data */
-        $data = (function(){
-            return $this->orm();
-        })->call($entity);
+        if($entity === null && !($rel instanceof BelongsTo)){
+            throw new RuntimeException("Unsupported relation type");
+        }
 
-        $rel->addRelatedEntity($this, $data);
+        $rel->addRelatedEntity($this, $entity);
     }
 
     /**

@@ -17,6 +17,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Entity;
 use Opis\Database\EntityManager;
 use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
@@ -30,15 +31,27 @@ class BelongsTo extends Relation
 {
     /**
      * @param DataMapper $owner
-     * @param DataMapper $related
+     * @param Entity|null $related
      */
-    public function addRelatedEntity(DataMapper $owner, DataMapper $related)
+    public function addRelatedEntity(DataMapper $owner, Entity $entity = null)
     {
-        if($this->foreignKey === null){
-            $this->foreignKey = $related->getEntityMapper()->getForeignKey();
+        if($entity === null){
+            $value = null;
+            $mapper = $owner->getEntityManager()->resolveEntityMapper($this->entityClass);
+        } else {
+            /** @var DataMapper $related */
+            $related = (function(){
+                return $this->orm();
+            })->call($entity);
+            $mapper = $related->getEntityMapper();
+            $value = $related->getColumn($mapper->getPrimaryKey());
         }
 
-        $owner->setColumn($this->foreignKey, $related->getColumn($related->getEntityMapper()->getPrimaryKey()));
+        if($this->foreignKey === null){
+            $this->foreignKey = $mapper->getForeignKey();
+        }
+
+        $owner->setColumn($this->foreignKey, $value);
     }
 
     /**

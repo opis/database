@@ -17,6 +17,7 @@
 
 namespace Opis\Database\ORM\Relation;
 
+use Opis\Database\Entity;
 use Opis\Database\EntityManager;
 use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
@@ -48,13 +49,19 @@ class HasOneOrMany extends Relation
      * @param DataMapper $owner
      * @param DataMapper $related
      */
-    public function addRelatedEntity(DataMapper $owner, DataMapper $related)
+    public function addRelatedEntity(DataMapper $owner, Entity $entity)
     {
-        if($this->foreignKey === null){
-            $this->foreignKey = $owner->getEntityMapper()->getForeignKey();
-        }
+        $mapper = $owner->getEntityMapper();
 
-        $related->setColumn($this->foreignKey, $owner->getColumn($owner->getEntityMapper()->getPrimaryKey()));
+        if($this->foreignKey === null){
+            $this->foreignKey = $mapper->getForeignKey();
+        }
+        /** @var DataMapper $related */
+        $related = (function(){
+            return $this->orm();
+        })->call($entity);
+
+        $related->setColumn($this->foreignKey, $owner->getColumn($mapper->getPrimaryKey()));
     }
 
     /**
