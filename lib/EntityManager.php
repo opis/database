@@ -34,6 +34,9 @@ class EntityManager
     /** @var  Compiler */
     protected $compiler;
 
+    /** @var  array */
+    protected $options;
+
     /** @var  string */
     protected $dateFormat;
 
@@ -41,15 +44,24 @@ class EntityManager
     protected $entityMappers = [];
 
     /** @var callable[] */
-    protected $entityMappersCallbacks = [];
+    protected $entityMappersCallbacks;
 
     /**
      * EntityManager constructor.
      * @param Connection $connection
+     * @param array $callbacks
+     * @param array $options
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, array $callbacks = [], array $options = [])
     {
         $this->connection = $connection;
+        $this->entityMappersCallbacks = $callbacks;
+
+        $options += [
+            'throw' => false,
+        ];
+
+        $this->options = $options;
     }
 
     /**
@@ -82,6 +94,14 @@ class EntityManager
         }
 
         return $this->dateFormat;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 
     /**
@@ -254,6 +274,12 @@ class EntityManager
         return $this;
     }
 
+    /**
+     * @param \Closure $callback
+     * @param bool $default
+     * @return bool
+     * @throws \Exception
+     */
     protected function transaction(\Closure $callback, $default = false)
     {
         $pdo = $this->connection->getPDO();
@@ -266,8 +292,11 @@ class EntityManager
             $pdo->beginTransaction();
             $result = $callback($this->connection);
             $pdo->commit();
-        }catch (\PDOException $exception){
+        }catch (\Exception $exception){
             $pdo->rollBack();
+            if($this->options['throw']){
+                throw $exception;
+            }
             $result = $default;
         }
 

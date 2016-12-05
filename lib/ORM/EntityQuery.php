@@ -205,6 +205,7 @@ class EntityQuery extends Query
      * @param \Closure $callback
      * @param int $default
      * @return int
+     * @throws \Exception
      */
     protected function transaction(\Closure $callback, $default = 0)
     {
@@ -219,8 +220,11 @@ class EntityQuery extends Query
             $pdo->beginTransaction();
             $result = $callback($connection);
             $pdo->commit();
-        }catch (\PDOException $exception){
+        }catch (\Exception $exception){
             $pdo->rollBack();
+            if($this->manager->getOptions()['throw']){
+                throw $exception;
+            }
             $result = $default;
         }
         return $result;
