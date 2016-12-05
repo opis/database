@@ -108,8 +108,7 @@ class EntityManager
 
         if($data->isNew()) {
 
-            $id = (new Transaction($this->connection, function(Connection $connection) use($data){
-
+            $id = $this->transaction(function (Connection $connection) use($data) {
                 $columns = $data->getRawColumns();
 
                 foreach ($columns as &$column){
@@ -132,46 +131,43 @@ class EntityManager
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
 
                 if($pkgen !== null){
-                    return $pk;
+                    return $pk ?? false;
                 }
 
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
+            }, false);
 
-            }, $this->connection))
-            ->onError(function(\PDOException $e){
-                throw $e;
-            })
-            ->execute();
-
-            return $this->markAsSaved($data, $id);
+            return $id !== false ? $this->markAsSaved($data, $id) : false;
         }
 
         $modified = $data->getModifiedColumns(false);
 
         if(!empty($modified)){
-            $columns = array_intersect_key($data->getRawColumns(), $modified);
+            return $this->transaction(function (Connection $connection) use($data, $modified) {
+                $columns = array_intersect_key($data->getRawColumns(), $modified);
 
-            foreach ($columns as &$column){
-                if($column instanceof Entity){
-                    $column = $this->getPKValue($column);
+                foreach ($columns as &$column){
+                    if($column instanceof Entity){
+                        $column = $this->getPKValue($column);
+                    }
                 }
-            }
 
-            $mapper = $data->getEntityMapper();
-            $pk = $mapper->getPrimaryKey();
-            $pkv = $data->getColumn($pk);
+                $mapper = $data->getEntityMapper();
+                $pk = $mapper->getPrimaryKey();
+                $pkv = $data->getColumn($pk);
 
-            $updatedAt = null;
+                $updatedAt = null;
 
-            if($mapper->supportsTimestamp()){
-                $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
-            }
+                if($mapper->supportsTimestamp()){
+                    $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
+                }
 
-            $this->markAsUpdated($data, $updatedAt);
+                $this->markAsUpdated($data, $updatedAt);
 
-            return (bool)(new Update($this->connection, $mapper->getTable()))
-                            ->where($pk)->is($pkv)
-                            ->set($columns);
+                return (bool) (new Update($connection, $mapper->getTable()))
+                    ->where($pk)->is($pkv)
+                    ->set($columns);
+            }, false);
         }
 
         return true;
@@ -193,23 +189,25 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        $data = $this->getDataMapper($entity);
+        return $this->transaction(function() use($entity) {
+            $data = $this->getDataMapper($entity);
 
-        if($data->isDeleted()){
-            throw new RuntimeException("The record was already deleted");
-        }
+            if($data->isDeleted()){
+                throw new RuntimeException("The record was already deleted");
+            }
 
-        if($data->isNew()){
-            throw new RuntimeException("Can't delete an unsaved entity");
-        }
+            if($data->isNew()){
+                throw new RuntimeException("Can't delete an unsaved entity");
+            }
 
-        $mapper = $data->getEntityMapper();
-        $pk = $mapper->getPrimaryKey();
-        $pkv = $data->getColumn($pk);
+            $mapper = $data->getEntityMapper();
+            $pk = $mapper->getPrimaryKey();
+            $pkv = $data->getColumn($pk);
 
-        $this->markAsDeleted($data);
+            $this->markAsDeleted($data);
 
-        return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
+            return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
+        }, false);
     }
 
     /**
@@ -254,6 +252,22 @@ class EntityManager
     {
         $this->entityMappersCallbacks[$class] = $callback;
         return $this;
+    }
+
+    protected function transaction(\Closure $callback, $default = 0)
+    {
+        $pdo = $this->connection->getPDO();
+
+        try{
+            $pdo->beginTransaction();
+            $result = $callback($this->connection);
+            $pdo->commit();
+        }catch (\PDOException $exception){
+            $pdo->rollBack();
+            $result = $default;
+        }
+
+        return $result;
     }
 
     /**
