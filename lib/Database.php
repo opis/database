@@ -128,6 +128,10 @@ class Database
 
         $pdo = $this->connection->getPDO();
 
+        if($pdo->inTransaction()){
+            return $query($this);
+        }
+
         try{
             $pdo->beginTransaction();
             $result = $query($this);
