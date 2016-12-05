@@ -5,12 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## v4.0.x-dev
 ### Added
 - Support for PHP 7.0.x
+- New ORM related classes
 - `Opis\Database\SQL\SQLStatement` class
 - `Opis\Database\SQL\BaseStatement` class
 - `Opis\Database\SQL\WhereStatement` class
 - `Opis\Database\SQL\HavingStatement` class
 - `Opis\Database\SQL\HavingExpression` class
 - `Opis\Database\Connection::fromPDO` static method
+- `Opis\Database\Entity` class
+- `Opis\Database\EntityManager` class
 
 ### Removed
 - Support for PHP 5.x
@@ -21,8 +24,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\SQL\HavingClause` class
 - `Opis\Database\SQL\AggregateExpression` class
 - `Opis\Database\Schema\ForeignKey::on` method
+- `Opis\Database\Transaction` class
+- `Opis\Database\Model` class
 
 ### Changed
+- The ORM was refactored
 - `Opis\Database\SQL\Where` class
 - `Opis\Database\SQL\Having` class
 - `Opis\Database\SQL\Expression` class
@@ -34,6 +40,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\Connection::schema` method was renamed to `getSchema`
 - `Opis\Database\Connection::dsn` method was renamed to `getDSN`
 - Added column argument to `Opis\Database\Schema\ForeignKey::references` method
+- Modified `Opis\Database\Database::transaction` method
 
 ### Fixed
 - Nothing
