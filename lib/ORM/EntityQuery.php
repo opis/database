@@ -17,11 +17,10 @@
 
 namespace Opis\Database\ORM;
 
+use Opis\Database\Connection;
 use Opis\Database\Entity;
 use Opis\Database\EntityManager;
-use Opis\Database\SQL\BaseStatement;
 use Opis\Database\SQL\Delete;
-use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\SQLStatement;
 use Opis\Database\SQL\Update;
 
@@ -122,13 +121,14 @@ class EntityQuery extends Query
      */
     public function delete(array $tables = [], bool $force = false)
     {
-        if(!$force && $this->mapper->supportsSoftDelete()){
-            return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->set([
-                'deleted_at' => date($this->manager->getDateFormat())
-            ]);
-        }
-
-        return (new Delete($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->delete($tables);
+        return $this->transaction(function (Connection $connection) use($tables, $force) {
+            if(!$force && $this->mapper->supportsSoftDelete()){
+                return (new Update($connection, $this->mapper->getTable(), $this->sql))->set([
+                    'deleted_at' => date($this->manager->getDateFormat())
+                ]);
+            }
+            return (new Delete($connection, $this->mapper->getTable(), $this->sql))->delete($tables);
+        });
     }
 
     /**
@@ -137,11 +137,12 @@ class EntityQuery extends Query
      */
     public function update(array $columns = [])
     {
-        if($this->mapper->supportsTimestamp()){
-            $columns['updated_at'] = date($this->manager->getDateFormat());
-        }
-
-        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->set($columns);
+        return $this->transaction(function (Connection $connection) use($columns) {
+            if($this->mapper->supportsTimestamp()){
+                $columns['updated_at'] = date($this->manager->getDateFormat());
+            }
+            return (new Update($connection, $this->mapper->getTable(), $this->sql))->set($columns);
+        });
     }
 
     /**
@@ -151,13 +152,14 @@ class EntityQuery extends Query
      */
     public function increment($column, $value = 1)
     {
-        if($this->mapper->supportsTimestamp()){
-            $this->sql->addUpdateColumns([
-                'updated_at' => date($this->manager->getDateFormat())
-            ]);
-        }
-
-        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->increment($column, $value);
+        return $this->transaction(function (Connection $connection) use($column, $value) {
+            if($this->mapper->supportsTimestamp()){
+                $this->sql->addUpdateColumns([
+                    'updated_at' => date($this->manager->getDateFormat())
+                ]);
+            }
+            return (new Update($connection, $this->mapper->getTable(), $this->sql))->increment($column, $value);
+        });
     }
 
     /**
@@ -167,13 +169,14 @@ class EntityQuery extends Query
      */
     public function decrement($column, $value = 1)
     {
-        if($this->mapper->supportsTimestamp()){
-            $this->sql->addUpdateColumns([
-                'updated_at' => date($this->manager->getDateFormat())
-            ]);
-        }
-
-        return (new Update($this->manager->getConnection(), $this->mapper->getTable(), $this->sql))->decrement($column, $value);
+        return $this->transaction(function(Connection $connection) use($column, $value) {
+            if($this->mapper->supportsTimestamp()){
+                $this->sql->addUpdateColumns([
+                    'updated_at' => date($this->manager->getDateFormat())
+                ]);
+            }
+            return (new Update($connection, $this->mapper->getTable(), $this->sql))->decrement($column, $value);
+        });
     }
 
     /**
@@ -198,6 +201,25 @@ class EntityQuery extends Query
                     ->all($columns);
     }
 
+    /**
+     * @param \Closure $callback
+     * @param int $default
+     * @return int
+     */
+    protected function transaction(\Closure $callback, $default = 0)
+    {
+        $connection = $this->manager->getConnection();
+        $pdo = $connection->getPDO();
+        $pdo->beginTransaction();
+        try{
+            $result = $callback($connection);
+            $pdo->commit();
+        }catch (\PDOException $exception){
+            $pdo->rollBack();
+            $result = $default;
+        }
+        return $result;
+    }
 
     /**
      * @return EntityQuery
