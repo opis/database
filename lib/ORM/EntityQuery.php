@@ -210,6 +210,11 @@ class EntityQuery extends Query
     {
         $connection = $this->manager->getConnection();
         $pdo = $connection->getPDO();
+
+        if($pdo->inTransaction()){
+            return $callback($connection);
+        }
+
         try{
             $pdo->beginTransaction();
             $result = $callback($connection);

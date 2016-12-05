@@ -254,9 +254,13 @@ class EntityManager
         return $this;
     }
 
-    protected function transaction(\Closure $callback, $default = 0)
+    protected function transaction(\Closure $callback, $default = false)
     {
         $pdo = $this->connection->getPDO();
+
+        if($pdo->inTransaction()){
+            return $callback($this->connection);
+        }
 
         try{
             $pdo->beginTransaction();
