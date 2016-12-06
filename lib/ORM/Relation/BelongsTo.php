@@ -31,7 +31,7 @@ class BelongsTo extends Relation
 {
     /**
      * @param DataMapper $owner
-     * @param Entity|null $related
+     * @param Entity|null $entity
      */
     public function addRelatedEntity(DataMapper $owner, Entity $entity = null)
     {

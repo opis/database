@@ -25,7 +25,6 @@ use Opis\Database\ORM\EntityQuery;
 use Opis\Database\ORM\LazyLoader;
 use Opis\Database\ORM\Relation;
 use Opis\Database\ORM\Query;
-use Opis\Database\SQL\SelectStatement;
 use Opis\Database\SQL\SQLStatement;
 
 class HasOneOrMany extends Relation
@@ -47,7 +46,7 @@ class HasOneOrMany extends Relation
 
     /**
      * @param DataMapper $owner
-     * @param DataMapper $related
+     * @param Entity $entity
      */
     public function addRelatedEntity(DataMapper $owner, Entity $entity)
     {
