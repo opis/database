@@ -252,7 +252,8 @@ class EntityMapper
      */
     public function getForeignKey(): string
     {
-        return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName()))) . '_id';
+        return str_replace('-', '_', strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())))
+            . '_' . $this->primaryKey;
     }
 
     /**
