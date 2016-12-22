@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Opis\\Database\\": "lib/"
+            "Opis\\Database\\": "src/"
         }
     },
     "autoload-dev": {
