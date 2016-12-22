@@ -41,6 +41,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\Connection::dsn` method was renamed to `getDSN`
 - Added column argument to `Opis\Database\Schema\ForeignKey::references` method
 - Modified `Opis\Database\Database::transaction` method
+- Source files were moved from `lib` to `src`
 
 ### Fixed
 - Nothing
