@@ -53,9 +53,9 @@ class Firebird extends Compiler
      *
      * @access  public
      * @param   SQLStatement    $select
-     * @return  array
+     * @return  string
      */
-    public function select(SQLStatement $select)
+    public function select(SQLStatement $select): string
     {
         $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());

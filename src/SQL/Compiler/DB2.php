@@ -30,7 +30,7 @@ class DB2 extends Compiler
      * 
      * @return  string
      */
-    public function select(SQLStatement $select)
+    public function select(SQLStatement $select): string
     {
         $limit = $select->getLimit();
 
