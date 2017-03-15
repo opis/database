@@ -27,7 +27,7 @@ class SQLite extends Compiler
     protected $modifiers = array('nullable', 'default', 'autoincrement');
 
     /** @var    string */
-    protected $autoincrement = 'AUTOINCREMENT';
+    protected $autoincrement = 'AUTO_INCREMENT';
 
     /**
      * @param   BaseColumn  $column
