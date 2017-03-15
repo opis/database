@@ -220,17 +220,19 @@ class CreateTable
 
     /**
      * @param   CreateColumn    $column
-     * 
+     * @param   string|null     $name
+     *
      * @return  $this
      */
-    public function autoincrement(CreateColumn $column)
+    public function autoincrement(CreateColumn $column, $name = null)
     {
         if ($column->getType() !== 'integer') {
             return $this;
         }
 
         $this->autoincrement = $column->set('autoincrement', true);
-        return $this->primary($column->getName());
+        $column_name = $column->getName();
+        return $this->primary($name === null ? $column_name : $name, $column_name);
     }
 
     /**
