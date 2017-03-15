@@ -53,29 +53,32 @@ class CreateColumn extends BaseColumn
     }
 
     /**
-     * @return  $this
+     * @param mixed|null $columns
+     * @return $this
      */
-    public function primary()
+    public function primary($columns = null)
     {
-        $this->table->primary($this->name);
+        $this->table->primary($this->name, $columns);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @param mixed|null $columns
+     * @return $this
      */
-    public function unique()
+    public function unique($columns = null)
     {
-        $this->table->unique($this->name);
+        $this->table->unique($this->name, $columns);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @param mixed|null $columns
+     * @return $this
      */
-    public function index()
+    public function index($columns = null)
     {
-        $this->table->index($this->name);
+        $this->table->index($this->name, $columns);
         return $this;
     }
 }
