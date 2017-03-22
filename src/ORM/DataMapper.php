@@ -415,7 +415,8 @@ class DataMapper
             case 'string':
                 return (string) $value;
             case 'date':
-                return $value;
+                /** @var $value DateTime */
+                return $value->format($this->manager->getDateFormat());
             case 'json':
             case 'json-assoc':
                 return json_encode($value);
