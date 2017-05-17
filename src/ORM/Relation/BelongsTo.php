@@ -107,7 +107,7 @@ class BelongsTo extends Relation
         $select->where($related->getPrimaryKey())->is($data->getColumn($this->foreignKey));
 
         if($this->queryCallback !== null || $callback !== null){
-            $query = new Query($statement);
+            $query = $select;//new Query($statement);
             if($this->queryCallback !== null){
                 ($this->queryCallback)($query);
             }

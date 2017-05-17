@@ -317,7 +317,7 @@ class HasOneOrManyThrough extends Relation
         $statement->addColumn($this->joinTable . '.*');
 
         if($this->queryCallback !== null || $callback !== null){
-            $query = new Query($statement);
+            $query = $select;//new Query($statement);
             if($this->queryCallback !== null){
                 ($this->queryCallback)($query);
             }

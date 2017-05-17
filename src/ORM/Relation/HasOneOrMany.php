@@ -118,7 +118,7 @@ class HasOneOrMany extends Relation
         $select->where($this->foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
 
         if($this->queryCallback !== null || $callback !== null){
-            $query = new Query($statement);
+            $query = $select;//new Query($statement);
             if($this->queryCallback !== null){
                 ($this->queryCallback)($query);
             }
