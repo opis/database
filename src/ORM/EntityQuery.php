@@ -115,11 +115,11 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param array $tables
      * @param bool $force
+     * @param array $tables
      * @return int
      */
-    public function delete(array $tables = [], bool $force = false)
+    public function delete(bool $force = false, array $tables = [])
     {
         return $this->transaction(function (Connection $connection) use($tables, $force) {
             if(!$force && $this->mapper->supportsSoftDelete()){
