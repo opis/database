@@ -209,25 +209,7 @@ class EntityQuery extends Query
      */
     protected function transaction(\Closure $callback, $default = 0)
     {
-        $connection = $this->manager->getConnection();
-        $pdo = $connection->getPDO();
-
-        if($pdo->inTransaction()){
-            return $callback($connection);
-        }
-
-        try{
-            $pdo->beginTransaction();
-            $result = $callback($connection);
-            $pdo->commit();
-        }catch (\Exception $exception){
-            $pdo->rollBack();
-            if($this->manager->getOptions()['throw']){
-                throw $exception;
-            }
-            $result = $default;
-        }
-        return $result;
+        return $this->manager->getConnection()->transaction($callback, null, $default);
     }
 
     /**

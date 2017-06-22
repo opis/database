@@ -110,46 +110,15 @@ class Database
     }
 
     /**
-     * Perform a transaction
+     * Performs a transaction
      *
      * @param callable $query
-     * @param array $options
-     * @return mixed
-     * @throws \Exception
+     * @param mixed|null $default
+     * @return mixed|null
+     * @throws \PDOException
      */
-    public function transaction(callable $query, array $options = [])
+    public function transaction(callable $query, $default = null)
     {
-        $options += [
-            'return' => false,
-            'throw' => false,
-            'error' => null,
-            'success' => null,
-        ];
-
-        $pdo = $this->connection->getPDO();
-
-        if($pdo->inTransaction()){
-            return $query($this);
-        }
-
-        try{
-            $pdo->beginTransaction();
-            $result = $query($this);
-            $pdo->commit();
-            if(isset($options['success']) && is_callable($options['success'])){
-                $options['success']($this);
-            }
-        }catch (\Exception $exception){
-            $pdo->rollBack();
-            if($options['throw']){
-                throw $exception;
-            }
-            if(isset($options['error']) && is_callable($options['error'])){
-                $options['error']($this, $exception);
-            }
-            $result = $options['return'];
-        }
-
-        return $result;
+        return $this->connection->transaction($query, $this, $default);
     }
 }

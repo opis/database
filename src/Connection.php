@@ -69,6 +69,9 @@ class Connection implements Serializable
 
     /** @var    array   Schema compiler options */
     protected $schemaCompilerOptions = array();
+
+    /** @var bool */
+    protected $throwTransactionExceptions = false;
     
     /**
      * Constructor
@@ -107,6 +110,16 @@ class Connection implements Serializable
     public function logQueries(bool $value = true): self
     {
         $this->logQueries = $value;
+        return $this;
+    }
+
+    /**
+     * @param bool $value
+     * @return Connection
+     */
+    public function throwTransactionExceptions(bool $value = true): self
+    {
+        $this->throwTransactionExceptions = $value;
         return $this;
     }
 
@@ -439,6 +452,44 @@ class Connection implements Serializable
         $this->execute($prepared);
         $result = $prepared['statement']->fetchColumn();
         $prepared['statement']->closeCursor();
+        return $result;
+    }
+
+
+    /**
+     * Transaction
+     *
+     * @param callable $callback
+     * @param mixed|null $that
+     * @param mixed|null $default
+     * @return mixed|null
+     * @throws PDOException
+     */
+    public function transaction(callable $callback, $that = null, $default = null)
+    {
+        if($that === null){
+            $that = $this;
+        }
+
+        $pdo = $this->getPDO();
+
+        if($pdo->inTransaction()){
+            return $callback($that);
+        }
+
+        $result = $default;
+
+        try{
+            $pdo->beginTransaction();
+            $result = $callback($that);
+            $pdo->commit();
+        } catch (PDOException $exception){
+            $pdo->rollBack();
+            if($this->throwTransactionExceptions){
+                throw $exception;
+            }
+        }
+
         return $result;
     }
 
