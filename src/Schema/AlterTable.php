@@ -71,7 +71,7 @@ class AlterTable
         }
 
         if($name === null){
-            $name = $this->table . '__' . $map[$type] . '__' . implode('__', $columns);
+            $name = $this->table . '_' . $map[$type] . '_' . implode('_', $columns);
         }
 
         return $this->addCommand($type, array(
@@ -239,7 +239,7 @@ class AlterTable
         }
 
         if($name === null){
-            $name = $this->table . '__fk__' . implode('__', $columns);
+            $name = $this->table . '_fk_' . implode('_', $columns);
         }
 
         $foreign = new ForeignKey($columns);
