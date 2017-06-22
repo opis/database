@@ -153,7 +153,7 @@ class CreateTable
         }
 
         if($name === null){
-            $name = $this->table . '_pk_' . implode('_', $columns);
+            $name = $this->table . '__pk__' . implode('__', $columns);
         }
 
         $this->primaryKey = array(
@@ -176,7 +176,7 @@ class CreateTable
         }
 
         if($name === null){
-            $name = $this->table . '_uk_' . implode('_', $columns);
+            $name = $this->table . '__uk__' . implode('__', $columns);
         }
 
         $this->uniqueKeys[$name] = $columns;
@@ -196,7 +196,7 @@ class CreateTable
         }
 
         if($name === null){
-            $name = $this->table . '_ik_' . implode('_', $columns);
+            $name = $this->table . '__ik__' . implode('__', $columns);
         }
 
         $this->indexes[$name] = $columns;
@@ -216,7 +216,7 @@ class CreateTable
         }
 
         if($name === null){
-            $name = $this->table . '_fk_' . implode('_', $columns);
+            $name = $this->table . '__fk__' . implode('__', $columns);
         }
 
         return $this->foreignKeys[$name] = new ForeignKey($columns);

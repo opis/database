@@ -52,18 +52,26 @@ class AlterTable
     }
 
     /**
-     * @param   string  $type
-     * @param   string  $name
-     * @param   mixed   $columns
-     * 
-     * @return  $this
+     * @param string $type
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    protected function addKey($type, $name, $columns)
+    protected function addKey(string $type, $columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        static $map = [
+            'addPrimary' => 'pk',
+            'addUnique' => 'uk',
+            'addForeignKey' => 'fk',
+            'addIndex' => 'ik'
+        ];
+
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '__' . $map[$type] . '__' . implode('__', $columns);
         }
 
         return $this->addCommand($type, array(
@@ -190,63 +198,62 @@ class AlterTable
     }
 
     /**
-     * @param   string          $name
-     * @param   string|array    $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function primary($name, $columns = null)
+    public function primary($columns, string $name = null)
     {
-        return $this->addKey('addPrimary', $name, $columns);
+        return $this->addKey('addPrimary', $columns, $name);
     }
 
     /**
-     * @param   string          $name
-     * @param   string|array    $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function unique($name, $columns = null)
+    public function unique($columns, string $name = null)
     {
-        return $this->addKey('addUnique', $name, $columns);
+        return $this->addKey('addUnique', $columns, $name);
     }
 
     /**
-     * @param   string          $name
-     * @param   string|array    $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function index($name, $columns = null)
+    public function index($columns, string $name = null)
     {
-        return $this->addKey('addIndex', $name, $columns);
+        return $this->addKey('addIndex', $columns, $name);
     }
 
     /**
-     * @param   string          $name
-     * @param   string|array    $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return ForeignKey
      */
-    public function foreign($name, $columns = null)
+    public function foreign($columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '__fk__' . implode('__', $columns);
         }
 
         $foreign = new ForeignKey($columns);
-        $this->addCommand('addForeign', array(
+
+        $this->addCommand('addForeign', [
             'name' => $name,
             'foreign' => $foreign,
-        ));
+        ]);
 
         return $foreign;
     }
 
     /**
-     * @param   string  $name
+     * @param   string  $column
      * @param   mixed   $value
      * 
      * @return  $this
@@ -350,7 +357,7 @@ class AlterTable
      */
     public function text($name)
     {
-        return $this->addColumn($name);
+        return $this->addColumn($name, 'text');
     }
 
     /**
