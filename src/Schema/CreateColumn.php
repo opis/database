@@ -47,9 +47,9 @@ class CreateColumn extends BaseColumn
      * @param   string|null $name
      * @return  $this
      */
-    public function autoincrement($name = null)
+    public function autoincrement(string $name = null)
     {
-        $this->table->autoincrement($this, $name === null ? $this->name : $name);
+        $this->table->autoincrement($this, $name);
         return $this;
     }
 
@@ -57,9 +57,9 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function primary($name = null)
+    public function primary(string $name = null)
     {
-        $this->table->primary($name === null ? $this->name : $name, $this->name);
+        $this->table->primary($this->name, $name);
         return $this;
     }
 
@@ -67,9 +67,9 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function unique($name = null)
+    public function unique(string $name = null)
     {
-        $this->table->unique($name === null ? $this->name : $name, $this->name);
+        $this->table->unique($this->name, $name);
         return $this;
     }
 
@@ -77,9 +77,9 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function index($name = null)
+    public function index(string $name = null)
     {
-        $this->table->index($name === null ? $this->name : $name, $this->name);
+        $this->table->index($this->name, $name);
         return $this;
     }
 }

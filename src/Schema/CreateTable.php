@@ -142,17 +142,18 @@ class CreateTable
     }
 
     /**
-     * @param   string      $name
-     * @param   mixed|null  $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function primary($name, $columns = null)
+    public function primary($columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '_pk_' . implode('_', $columns);
         }
 
         $this->primaryKey = array(
@@ -164,17 +165,18 @@ class CreateTable
     }
 
     /**
-     * @param   string      $name
-     * @param   mixed|null  $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function unique($name, $columns = null)
+    public function unique($columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '_uk_' . implode('_', $columns);
         }
 
         $this->uniqueKeys[$name] = $columns;
@@ -183,17 +185,18 @@ class CreateTable
     }
 
     /**
-     * @param   string      $name
-     * @param   mixed|null  $columns    (optional)
-     * 
-     * @return  $this
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return $this
      */
-    public function index($name, $columns = null)
+    public function index($columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '_ik_' . implode('_', $columns);
         }
 
         $this->indexes[$name] = $columns;
@@ -202,17 +205,18 @@ class CreateTable
     }
 
     /**
-     * @param   string      $name
-     * @param   mixed|null  $columns    (optional)
-     * 
-     * @return  ForeignKey
+     * @param string|string[] $columns
+     * @param string|null $name
+     * @return ForeignKey
      */
-    public function foreign($name, $columns = null)
+    public function foreign($columns, string $name = null)
     {
-        if ($columns === null) {
-            $columns = array($name);
-        } elseif (!is_array($columns)) {
-            $columns = array($columns);
+        if(!is_array($columns)){
+            $columns = [$columns];
+        }
+
+        if($name === null){
+            $name = $this->table . '_fk_' . implode('_', $columns);
         }
 
         return $this->foreignKeys[$name] = new ForeignKey($columns);
@@ -224,15 +228,14 @@ class CreateTable
      *
      * @return  $this
      */
-    public function autoincrement(CreateColumn $column, $name = null)
+    public function autoincrement(CreateColumn $column, string $name = null)
     {
         if ($column->getType() !== 'integer') {
             return $this;
         }
 
         $this->autoincrement = $column->set('autoincrement', true);
-        $column_name = $column->getName();
-        return $this->primary($name === null ? $column_name : $name, $column_name);
+        return $this->primary($column->getName(), $name);
     }
 
     /**
