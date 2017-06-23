@@ -74,6 +74,16 @@ class EntityMapper
     }
 
     /**
+     * @param string $class
+     * @return EntityMapper
+     */
+    public function entityClass(string $class): self
+    {
+        $this->entityClass = $class;
+        return $this;
+    }
+
+    /**
      * @param string $table
      * @return EntityMapper
      */
