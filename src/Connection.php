@@ -494,20 +494,6 @@ class Connection implements Serializable
     }
 
     /**
-     * Log a query.
-     *
-     * @param   string  $query  SQL query
-     * @param   array   $params Query parameters
-     * @param   int|float   $start  Start time in microseconds
-     */
-    protected function log(string $query, array $params, $start)
-    {
-        $time = microtime(true) - $start;
-        $query = $this->replaceParams($query, $params);
-        $this->log[] = compact('query', 'time');
-    }
-
-    /**
      * Replace placeholders with parameteters.
      *
      * @param   string  $query  SQL query
@@ -563,6 +549,10 @@ class Connection implements Serializable
     {
         if ($this->logQueries) {
             $start = microtime(true);
+            $log = [
+                'query' => $this->replaceParams($prepared['query'], $prepared['params'])
+            ];
+            $this->log[] = &$log;
         }
 
         try {
@@ -572,7 +562,7 @@ class Connection implements Serializable
         }
 
         if ($this->logQueries) {
-            $this->log($prepared['query'], $prepared['params'], $start);
+            $log['time'] = microtime(true) - $start;
         }
 
         return $result;
