@@ -145,7 +145,7 @@ class EntityManager
         $modified = $data->getModifiedColumns(false);
 
         if(!empty($modified)){
-            return $this->transaction(function (Connection $connection) use($data, $modified) {
+            return $this->connection->transaction(function (Connection $connection) use($data, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
 
                 foreach ($columns as &$column){
@@ -169,7 +169,7 @@ class EntityManager
                 return (bool) (new Update($connection, $mapper->getTable()))
                     ->where($pk)->is($pkv)
                     ->set($columns);
-            }, false);
+            }, null, false);
         }
 
         return true;
@@ -191,7 +191,7 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        return $this->transaction(function() use($entity) {
+        return $this->connection->transaction(function() use($entity) {
             $data = $this->getDataMapper($entity);
 
             if($data->isDeleted()){
@@ -209,7 +209,7 @@ class EntityManager
             $this->markAsDeleted($data);
 
             return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
-        }, false);
+        }, null,false);
     }
 
     /**
