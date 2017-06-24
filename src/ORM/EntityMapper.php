@@ -22,6 +22,8 @@ class EntityMapper
     /** @var string  */
     protected $entityClass;
 
+    protected $originalEntityClass;
+
     /** @var string */
     protected $className;
 
@@ -70,7 +72,7 @@ class EntityMapper
      */
     public function __construct(string $entityClass)
     {
-        $this->entityClass = $entityClass;
+        $this->entityClass = $this->originalEntityClass = $entityClass;
     }
 
     /**
@@ -222,7 +224,7 @@ class EntityMapper
      */
     public function getClass(): string
     {
-        return $this->entityClass;
+        return $this->originalEntityClass;
     }
 
     /**
