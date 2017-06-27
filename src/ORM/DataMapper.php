@@ -303,7 +303,7 @@ class DataMapper
     public function link(string $relation, $items)
     {
         $relations = $this->mapper->getRelations();
-        if(!isset($relation[$relation])){
+        if(!isset($relations[$relation])){
             throw new RuntimeException("Unknown relation '$relation'");
         }
 
