@@ -99,7 +99,7 @@ class HasOneOrManyThrough extends Relation
         };
 
         foreach ($items as $item){
-            $val2 = is_subclass_of($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+            $val2 = is_a($item, $this->entityClass, false) ? $extractor->call($item) : $item;
             try{
 
                 (new Insert($connection))->insert([
@@ -109,6 +109,7 @@ class HasOneOrManyThrough extends Relation
 
             }catch (\Exception $e){
                 // Ignore
+                die('uuu');
             }
         }
     }
@@ -154,7 +155,7 @@ class HasOneOrManyThrough extends Relation
         };
 
         foreach ($items as $item){
-            $val2[] = is_subclass_of($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+            $val2[] = is_a($item, $this->entityClass, false) ? $extractor->call($item) : $item;
         }
 
         try{

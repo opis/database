@@ -64,6 +64,9 @@ class DataMapper
     /** @var bool  */
     protected $deleted = false;
 
+    /** @var array */
+    protected $pendingLinks = [];
+
     /**
      * DataMapper constructor.
      * @param EntityManager $entityManager
@@ -312,6 +315,15 @@ class DataMapper
             throw new RuntimeException("Unsupported relation type");
         }
 
+        if($this->isNew){
+            $this->pendingLinks[] = [
+                'relation' => $rel,
+                'items' => $items,
+                'link' => true,
+            ];
+            return;
+        }
+
         $rel->link($this, $items);
     }
 
@@ -329,6 +341,15 @@ class DataMapper
         /** @var $rel HasOneOrManyThrough */
         if(!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)){
             throw new RuntimeException("Unsupported relation type");
+        }
+
+        if($this->isNew){
+            $this->pendingLinks[] = [
+                'relation' => $rel,
+                'items' => $items,
+                'link' => false,
+            ];
+            return;
         }
 
         $rel->unlink($this, $items);
@@ -463,5 +484,20 @@ class DataMapper
         };
 
         return $closure->call($relation, $this, $callback);
+    }
+
+    protected function executePendingLinkage()
+    {
+        foreach ($this->pendingLinks as $item){
+            /** @var HasOneOrManyThrough $rel */
+            $rel = $item['relation'];
+            if($item['link']){
+                $rel->link($this, $item['items']);
+            } else {
+                $rel->unlink($this, $item['items']);
+            }
+        }
+
+        $this->pendingLinks = [];
     }
 }

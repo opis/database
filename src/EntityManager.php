@@ -302,6 +302,9 @@ class EntityManager
                 $this->dehidrated = true;
                 $this->isNew = false;
                 $this->modified = [];
+                if(!empty($this->pendingLinks)){
+                    $this->executePendingLinkage();
+                }
                 return true;
             };
         }
