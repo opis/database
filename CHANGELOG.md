@@ -5,18 +5,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## v4.0.x-dev
 ### Added
 - Support for PHP 7.0.x
-- New ORM related classes
 - `Opis\Database\SQL\SQLStatement` class
 - `Opis\Database\SQL\BaseStatement` class
 - `Opis\Database\SQL\WhereStatement` class
 - `Opis\Database\SQL\HavingStatement` class
 - `Opis\Database\SQL\HavingExpression` class
 - `Opis\Database\Connection::fromPDO` static method
-- `Opis\Database\Entity` class
-- `Opis\Database\EntityManager` class
 
 ### Removed
 - Support for PHP 5.x
+- ORM - see [opis/orm](https://github.com/opis/orm) library
 - `Opis\Database\SQL\WhereCondition` class
 - `Opis\Database\SQL\WhereClause` class
 - `Opis\Database\SQL\WhereJoinCondition` class
@@ -28,7 +26,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - `Opis\Database\Model` class
 
 ### Changed
-- The ORM was refactored
 - `Opis\Database\SQL\Where` class
 - `Opis\Database\SQL\Having` class
 - `Opis\Database\SQL\Expression` class
