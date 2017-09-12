@@ -29,10 +29,10 @@ class Query extends BaseStatement
     protected $tables;
 
     /**
-     * Constructor
-     * 
-     * @param   Connection  $connection
-     * @param   array       $tables
+     * Query constructor.
+     * @param Connection $connection
+     * @param $tables
+     * @param SQLStatement|null $statement
      */
     public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
     {

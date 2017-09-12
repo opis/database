@@ -25,10 +25,9 @@ class Firebird extends Compiler
 
     /**
      * Handle limits
-     * 
-     * @param   int|null    $limit
-     * 
-     * @return  string
+     * @param int|null $limit
+     * @param null $offset
+     * @return string
      */
     protected function handleLimit($limit, $offset = null)
     {

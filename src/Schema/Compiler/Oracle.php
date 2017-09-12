@@ -216,9 +216,8 @@ class Oracle extends Compiler
     }
 
     /**
-     * @param   string  $databse
-     *
-     * @return  array
+     * @param string $database
+     * @return array
      */
     public function getTables($database)
     {

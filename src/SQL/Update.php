@@ -25,10 +25,10 @@ class Update extends UpdateStatement
     protected $connection;
 
     /**
-     * Constructor
-     * 
-     * @param   Connection      $connection
-     * @param   string|array    $table
+     * Update constructor.
+     * @param Connection $connection
+     * @param null|SQLStatement $table
+     * @param SQLStatement|null $statement
      */
     public function __construct(Connection $connection, $table, SQLStatement $statement = null)
     {

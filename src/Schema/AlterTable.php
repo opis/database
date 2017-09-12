@@ -430,10 +430,12 @@ class AlterTable
         return $this->modifyColumn($name, 'double');
     }
 
+
     /**
-     * @param   string  $name
-     * 
-     * @return  AlterColumn
+     * @param $name
+     * @param null $maximum
+     * @param null $decimal
+     * @return AlterColumn
      */
     public function toDecimal($name, $maximum = null, $decimal = null)
     {

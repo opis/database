@@ -31,9 +31,8 @@ class Having
     protected $separator;
 
     /**
-     * Constructor
-     *
-     * @param SQLStatement $clause
+     * Having constructor.
+     * @param SQLStatement $statement
      */
     public function __construct(SQLStatement $statement)
     {

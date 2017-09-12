@@ -109,7 +109,7 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn[]    $column
+     * @param   BaseColumn[]    $columns
      * 
      * @return  string
      */

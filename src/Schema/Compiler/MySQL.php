@@ -181,10 +181,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $column
-     * @param   mixed       $data
-     * 
-     * @return  string
+     * @param AlterTable $table
+     * @param mixed $data
+     * @return string
      */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
