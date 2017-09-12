@@ -27,7 +27,7 @@ class Update extends UpdateStatement
     /**
      * Update constructor.
      * @param Connection $connection
-     * @param null|SQLStatement $table
+     * @param string|array $table
      * @param SQLStatement|null $statement
      */
     public function __construct(Connection $connection, $table, SQLStatement $statement = null)
