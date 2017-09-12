@@ -18,11 +18,9 @@
 namespace Opis\Database\SQL;
 
 use Closure;
-use Opis\Database\ORM\EntityQuery;
 
 class Where
 {
-    
     /** @var    string */
     protected $column;
 
@@ -58,7 +56,7 @@ class Where
      * @param   string  $operator
      * @param   bool    $isColumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     protected function addCondition($value, string $operator, bool $isColumn = false): WhereStatement
     {
@@ -76,7 +74,7 @@ class Where
      * @param   int|float|string     $value2
      * @param   bool    $not    
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     protected function addBetweenCondition($value1, $value2, bool $not): WhereStatement
     {
@@ -88,7 +86,7 @@ class Where
      * @param   string  $pattern
      * @param   bool    $not
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     protected function addLikeCondition(string $pattern, bool $not): WhereStatement
     {
@@ -100,7 +98,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $not
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     protected function addInCondition($value, bool $not): WhereStatement
     {
@@ -111,7 +109,7 @@ class Where
     /**
      * @param   bool    $not
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     protected function addNullCondition(bool $not): WhereStatement
     {
@@ -123,7 +121,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function is($value, bool $iscolumn = false): WhereStatement
     {
@@ -134,7 +132,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function isNot($value, bool $iscolumn = false): WhereStatement
     {
@@ -145,7 +143,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function lessThan($value, bool $iscolumn = false): WhereStatement
     {
@@ -156,7 +154,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function greaterThan($value, bool $iscolumn = false): WhereStatement
     {
@@ -167,7 +165,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function atLeast($value, bool $iscolumn = false): WhereStatement
     {
@@ -178,7 +176,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function atMost($value, bool $iscolumn = false): WhereStatement
     {
@@ -189,7 +187,7 @@ class Where
      * @param   int|float|string $value1
      * @param   int|float|string $value2
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function between($value1, $value2): WhereStatement
     {
@@ -200,7 +198,7 @@ class Where
      * @param   int|float|string $value1
      * @param   int|float|string $value2
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function notBetween($value1, $value2): WhereStatement
     {
@@ -210,7 +208,7 @@ class Where
     /**
      * @param   string  $value
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function like(string $value): WhereStatement
     {
@@ -220,7 +218,7 @@ class Where
     /**
      * @param   string  $value
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function notLike(string $value): WhereStatement
     {
@@ -230,7 +228,7 @@ class Where
     /**
      * @param   array|Closure   $value
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function in($value): WhereStatement
     {
@@ -240,7 +238,7 @@ class Where
     /**
      * @param   array|Closure   $value
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function notIn($value): WhereStatement
     {
@@ -248,7 +246,7 @@ class Where
     }
 
     /**
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function isNull(): WhereStatement
     {
@@ -256,7 +254,7 @@ class Where
     }
 
     /**
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function notNull(): WhereStatement
     {
@@ -268,7 +266,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function eq($value, bool $iscolumn = false): WhereStatement
     {
@@ -279,7 +277,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function ne($value, bool $iscolumn = false): WhereStatement
     {
@@ -290,7 +288,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function lt($value, bool $iscolumn = false): WhereStatement
     {
@@ -301,7 +299,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function gt($value, bool $iscolumn = false): WhereStatement
     {
@@ -312,7 +310,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function gte($value, bool $iscolumn = false): WhereStatement
     {
@@ -323,7 +321,7 @@ class Where
      * @param   mixed   $value
      * @param   bool    $iscolumn   (optional)
      *
-     * @return  WhereStatement|Select|Delete|Update|EntityQuery
+     * @return  WhereStatement|Select|Delete|Update
      */
     public function lte($value, bool $iscolumn = false): WhereStatement
     {
