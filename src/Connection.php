@@ -302,28 +302,28 @@ class Connection implements Serializable
         if ($this->compiler === null) {
             switch ($this->getDriver()) {
                 case 'mysql':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\MySQL();
+                    $this->compiler = new SQL\Compiler\MySQL();
                     break;
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\SQLServer();
+                    $this->compiler = new SQL\Compiler\SQLServer();
                     break;
                 case 'oci':
                 case 'oracle':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\Oracle();
+                    $this->compiler = new SQL\Compiler\Oracle();
                     break;
                 case 'firebird':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\Firebird();
+                    $this->compiler = new SQL\Compiler\Firebird();
                     break;
                 case 'db2':
                 case 'ibm':
                 case 'odbc':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\DB2();
+                    $this->compiler = new SQL\Compiler\DB2();
                     break;
                 case 'nuodb':
-                    $this->compiler = new \Opis\Database\SQL\Compiler\NuoDB();
+                    $this->compiler = new SQL\Compiler\NuoDB();
                     break;
                 default:
                     $this->compiler = new SQL\Compiler();
@@ -347,23 +347,23 @@ class Connection implements Serializable
         if ($this->schemaCompiler === null) {
             switch ($this->getDriver()) {
                 case 'mysql':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\MySQL($this);
+                    $this->schemaCompiler = new Schema\Compiler\MySQL($this);
                     break;
                 case 'pgsql':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\PostgreSQL($this);
+                    $this->schemaCompiler = new Schema\Compiler\PostgreSQL($this);
                     break;
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\SQLServer($this);
+                    $this->schemaCompiler = new Schema\Compiler\SQLServer($this);
                     break;
                 case 'sqlite':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\SQLite($this);
+                    $this->schemaCompiler = new Schema\Compiler\SQLite($this);
                     break;
                 case 'oci':
                 case 'oracle':
-                    $this->schemaCompiler = new \Opis\Database\Schema\Compiler\Oracle($this);
+                    $this->schemaCompiler = new Schema\Compiler\Oracle($this);
                     break;
                 default:
                     throw new \Exception('Schema not supported yet');
