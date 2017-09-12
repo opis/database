@@ -463,7 +463,7 @@ class AlterTable
     /**
      * @param $name
      * @param int $length
-     * @return $this
+     * @return $this|AlterColumn
      */
     public function toString($name, $length = 255)
     {
@@ -488,7 +488,7 @@ class AlterTable
      */
     public function toText($name)
     {
-        return $this->modifyColumn($name);
+        return $this->modifyColumn($name, 'text');
     }
 
     /**

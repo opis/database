@@ -46,7 +46,7 @@ class AlterColumn extends BaseColumn
     /**
      * @param   mixed   $value
      * 
-     * @return  $this
+     * @return  $this|BaseColumn
      */
     public function defaultValue($value)
     {

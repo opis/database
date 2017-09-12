@@ -17,6 +17,7 @@
 
 namespace Opis\Database;
 
+use Opis\Database\SQL\InsertStatement;
 use Opis\Database\SQL\Query as QueryCommand;
 use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\Update as UpdateCommand;
@@ -76,7 +77,7 @@ class Database
      *
      * @param   array  $values  An array of values.
      *
-     * @return  InsertCommand
+     * @return  InsertCommand|InsertStatement
      */
     public function insert(array $values): InsertCommand
     {

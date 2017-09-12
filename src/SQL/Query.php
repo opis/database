@@ -60,7 +60,7 @@ class Query extends BaseStatement
     /**
      * @param   bool    $value  (optional)
      * 
-     * @return  Select
+     * @return  Select|SelectStatement
      */
     public function distinct($value = true)
     {
@@ -115,7 +115,7 @@ class Query extends BaseStatement
      * @param   string          $order      (optional)
      * @param   string          $nulls      (optional)
      * 
-     * @return  Select
+     * @return  Select|SelectStatement
      */
     public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
@@ -125,7 +125,7 @@ class Query extends BaseStatement
     /**
      * @param   int $value
      * 
-     * @return  Select
+     * @return  Select|SelectStatement
      */
     public function limit($value)
     {
@@ -135,7 +135,7 @@ class Query extends BaseStatement
     /**
      * @param   int $value
      * 
-     * @return  Select
+     * @return  Select|SelectStatement
      */
     public function offset($value)
     {
@@ -146,7 +146,7 @@ class Query extends BaseStatement
      * @param   string  $table
      * @param   string  $database   (optional)
      * 
-     * @return  Select
+     * @return  Select|SelectStatement
      */
     public function into($table, $database = null)
     {

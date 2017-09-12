@@ -128,7 +128,7 @@ class PostgreSQL extends Compiler
     /**
      * @param   CreateTable $schema
      * 
-     * @return  string
+     * @return  string[]
      */
     protected function handleIndexKeys(CreateTable $schema)
     {
