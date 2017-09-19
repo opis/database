@@ -28,7 +28,7 @@ class SQLite extends Compiler
     protected $modifiers = array('nullable', 'default', 'autoincrement');
 
     /** @var    string */
-    protected $autoincrement = 'PRIMARY KEY AUTOINCREMENT';
+    protected $autoincrement = 'AUTOINCREMENT';
 
     /** @var bool No primary key */
     private $nopk = false;
@@ -73,6 +73,7 @@ class SQLite extends Compiler
 
         if($modifier !== ''){
             $this->nopk = true;
+            $modifier = 'PRIMARY KEY ' . $modifier;
         }
 
         return $modifier;
