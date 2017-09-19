@@ -79,17 +79,16 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param AlterTable $table
-     * @param mixed $data
+     * @param CreateTable $schema
      * @return string
      */
-    public function handleAddPrimary(AlterTable $table, $data)
+    public function handlePrimaryKey(CreateTable $schema)
     {
         if($this->nopk){
             return '';
         }
 
-        return parent::handleAddPrimary($table, $data);
+        return parent::handlePrimaryKey($schema);
     }
 
     /**
