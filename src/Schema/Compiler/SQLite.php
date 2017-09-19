@@ -17,6 +17,7 @@
 
 namespace Opis\Database\Schema\Compiler;
 
+use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
 use Opis\Database\Schema\CreateTable;
@@ -27,7 +28,10 @@ class SQLite extends Compiler
     protected $modifiers = array('nullable', 'default', 'autoincrement');
 
     /** @var    string */
-    protected $autoincrement = 'AUTO_INCREMENT';
+    protected $autoincrement = 'PRIMARY KEY AUTOINCREMENT';
+
+    /** @var bool No primary key */
+    private $nopk = false;
 
     /**
      * @param   BaseColumn  $column
@@ -57,6 +61,35 @@ class SQLite extends Compiler
     protected function handleTypeTimestamp(BaseColumn $column)
     {
         return 'DATETIME';
+    }
+
+    /**
+     * @param BaseColumn $column
+     * @return string
+     */
+    public function handleModifierAutoincrement(BaseColumn $column)
+    {
+        $modifier = parent::handleModifierAutoincrement($column);
+
+        if($modifier !== ''){
+            $this->nopk = true;
+        }
+
+        return $modifier;
+    }
+
+    /**
+     * @param AlterTable $table
+     * @param mixed $data
+     * @return string
+     */
+    public function handleAddPrimary(AlterTable $table, $data)
+    {
+        if($this->nopk){
+            return '';
+        }
+
+        return parent::handleAddPrimary($table, $data);
     }
 
     /**
