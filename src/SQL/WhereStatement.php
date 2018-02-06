@@ -155,4 +155,13 @@ class WhereStatement
     {
         return $this->addWhereExistCondition($select, 'OR', true);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->where = new Where($this, $this->sql);
+    }
 }

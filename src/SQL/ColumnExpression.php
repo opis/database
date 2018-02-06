@@ -234,4 +234,12 @@ class ColumnExpression
     {
         return $this->column((new Expression())->now(), $alias);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+    }
 }

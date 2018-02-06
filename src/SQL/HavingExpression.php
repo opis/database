@@ -103,4 +103,13 @@ class HavingExpression
         $value = (new Expression())->max($this->column, $distinct);
         return $this->having->init($value, $this->separator);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->having = new Having($this->sql);
+    }
 }

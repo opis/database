@@ -218,5 +218,13 @@ class SelectStatement extends BaseStatement
     {
         (new ColumnExpression($this->sql))->max($column, null, $distinct);
     }
-    
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->have = new HavingStatement($this->sql);
+    }
 }

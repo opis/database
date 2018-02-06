@@ -97,4 +97,13 @@ class HavingStatement
     {
         return $this->addCondition($column, $value, 'OR');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->expression = new HavingExpression($this->sql);
+    }
 }

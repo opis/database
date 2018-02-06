@@ -327,4 +327,13 @@ class Where
     {
         return $this->atMost($value, $iscolumn);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->statement = new WhereStatement($this->sql);
+    }
 }
