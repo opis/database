@@ -189,7 +189,9 @@ class MySQL extends Compiler
     {
         $table_name = $table->getTableName();
         $column_name = $data['from'];
-        $new_name = $data['column']->getName();
+        /** @var BaseColumn $column */
+        $column = $data['column'];
+        $new_name = $column->getName();
         $columns = $this->connection->getSchema()->getColumns($table_name, false, false);
         $column_type = isset($columns[$column_name]) ? $columns[$column_name]['type'] : 'integer';
 

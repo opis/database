@@ -239,13 +239,17 @@ class Compiler
                     $sql[] = $this->param($expr['value']);
                     break;
                 case 'group':
-                    $sql[] = '(' . $this->handleExpressions($expr['value']->getExpressions()) . ')';
+                    /** @var Expression $expression */
+                    $expression = $expr['value'];
+                    $sql[] = '(' . $this->handleExpressions($expression->getExpressions()) . ')';
                     break;
                 case 'function':
                     $sql[] = $this->handleSqlFunction($expr['value']);
                     break;
                 case 'subquery':
-                    $sql[] = '(' . $this->select($expr['value']->getSQLStatement()) . ')';
+                    /** @var Subquery $subquery */
+                    $subquery = $expr['value'];
+                    $sql[] = '(' . $this->select($subquery->getSQLStatement()) . ')';
                     break;
             }
         }
@@ -383,7 +387,10 @@ class Compiler
         }
         $sql = array();
         foreach ($joins as $join) {
-            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' . $this->handleJoinCondtitions($join['join']->getJoinConditions());
+            /** @var Join $joinObject */
+            $joinObject = $join['join'];
+            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' .
+                $this->handleJoinCondtitions($joinObject->getJoinConditions());
         }
         return ' ' . implode(' ', $sql);
     }
@@ -788,7 +795,7 @@ class Compiler
      * 
      * @return  string
      */
-    protected function sqlFunctionNOW(array $func)
+    protected function sqlFunctionNOW(/** @noinspection PhpUnusedParameterInspection */array $func)
     {
         return 'NOW()';
     }

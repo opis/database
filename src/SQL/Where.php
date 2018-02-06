@@ -61,7 +61,7 @@ class Where
     protected function addCondition($value, string $operator, bool $isColumn = false): WhereStatement
     {
         if ($isColumn && is_string($value)) {
-            $value = function ($expr) use ($value) {
+            $value = function (Expression $expr) use ($value) {
                 $expr->column($value);
             };
         }

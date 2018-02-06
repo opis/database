@@ -303,7 +303,7 @@ class AlterTable
      * 
      * @return  AlterColumn
      */
-    public function decimal($name, $maximum = null, $decimal = null)
+    public function decimal($name, $maximum = null, /** @noinspection PhpUnusedParameterInspection */$decimal = null)
     {
         return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }
@@ -437,7 +437,7 @@ class AlterTable
      * @param null $decimal
      * @return AlterColumn
      */
-    public function toDecimal($name, $maximum = null, $decimal = null)
+    public function toDecimal($name, $maximum = null, /** @noinspection PhpUnusedParameterInspection */$decimal = null)
     {
         return $this->modifyColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }

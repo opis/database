@@ -138,8 +138,10 @@ class SQLServer extends Compiler
      */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
+        /** @var BaseColumn $column */
+        $column = $data['column'];
         return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
-            . $this->wrap($data['column']->getName()) . ', COLUMN';
+            . $this->wrap($column->getName()) . ', COLUMN';
     }
 
     /**
