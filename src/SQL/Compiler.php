@@ -390,7 +390,7 @@ class Compiler
             /** @var Join $joinObject */
             $joinObject = $join['join'];
             $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' .
-                $this->handleJoinCondtitions($joinObject->getJoinConditions());
+                $this->handleJoinConditions($joinObject->getJoinConditions());
         }
         return ' ' . implode(' ', $sql);
     }
@@ -402,7 +402,7 @@ class Compiler
      * 
      * @return  string
      */
-    protected function handleJoinCondtitions(array $conditions)
+    protected function handleJoinConditions(array $conditions)
     {
         $sql[] = $this->{$conditions[0]['type']}($conditions[0]);
         $count = count($conditions);
@@ -547,7 +547,7 @@ class Compiler
      */
     protected function joinNested(array $join)
     {
-        return '(' . $this->handleJoinCondtitions($join['join']->getJoinCOnditions()) . ')';
+        return '(' . $this->handleJoinConditions($join['join']->getJoinCOnditions()) . ')';
     }
 
     /**
