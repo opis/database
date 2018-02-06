@@ -494,10 +494,10 @@ class Connection implements Serializable
     }
 
     /**
-     * Replace placeholders with parameteters.
+     * Replace placeholders with parameters.
      *
      * @param   string  $query  SQL query
-     * @param   array   $params Query paramaters
+     * @param   array   $params Query parameters
      * 
      * @return  string
      */

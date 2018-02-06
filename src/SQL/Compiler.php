@@ -439,7 +439,7 @@ class Compiler
     }
 
     /**
-     * Hanlde ORDER BY
+     * Handle ORDER BY
      * 
      * @param   array   $ordering
      * 
@@ -495,7 +495,7 @@ class Compiler
     }
 
     /**
-     * Hanlde insert values
+     * Handle insert values
      * 
      * @param   array   $values
      * 

@@ -28,7 +28,7 @@ class HavingStatement
     protected $expression;
 
     /**
-     * HavingStatament constructor.
+     * HavingStatement constructor.
      * @param SQLStatement|null $statement
      */
     public function __construct(SQLStatement $statement = null)

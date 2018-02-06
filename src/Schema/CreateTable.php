@@ -381,7 +381,7 @@ class CreateTable
     }
     
     /**
-     * Add timsetamp columns
+     * Add timestamp columns
      */
     public function timestamps()
     {
