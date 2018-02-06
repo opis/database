@@ -107,9 +107,9 @@ class Expression
      */
     public function group(Closure $closure): self
     {
-        $expresion = new Expression();
-        $closure($expresion);
-        return $this->addExpression('group', $expresion);
+        $expression = new Expression();
+        $closure($expression);
+        return $this->addExpression('group', $expression);
     }
 
     /**
