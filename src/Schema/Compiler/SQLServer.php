@@ -87,7 +87,7 @@ class SQLServer extends Compiler
      */
     protected function handleTypeString(BaseColumn $column)
     {
-        return 'NVARCHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'NVARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
     /**
@@ -97,7 +97,7 @@ class SQLServer extends Compiler
      */
     protected function handleTypeFixed(BaseColumn $column)
     {
-        return 'NCHAR(' . $this->value($column->get('lenght', 255)) . ')';
+        return 'NCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
     /**
