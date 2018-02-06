@@ -304,7 +304,7 @@ class Compiler
      */
     protected function handleModifierUnsigned(BaseColumn $column)
     {
-        return $column->get('unisgned', false) ? 'UNSIGNED' : '';
+        return $column->get('unsigned', false) ? 'UNSIGNED' : '';
     }
 
     /**
