@@ -17,8 +17,6 @@
 
 namespace Opis\Database\SQL;
 
-use Closure;
-
 class UpdateStatement extends BaseStatement
 {
     /**
