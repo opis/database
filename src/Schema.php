@@ -48,6 +48,7 @@ class Schema
      * Get the name of the currently used database
      *
      * @return  string
+     * @throws \Exception
      */
     public function getCurrentDatabase()
     {
@@ -68,10 +69,11 @@ class Schema
     /**
      * Check if the specified table exists
      *
-     * @param   string  $table  Table name
-     * @param   boolean $clear  (optional) Refresh table list
+     * @param   string $table Table name
+     * @param   boolean $clear (optional) Refresh table list
      *
      * @return  boolean
+     * @throws \Exception
      */
     public function hasTable(string $table, bool $clear = false): bool
     {
@@ -82,9 +84,10 @@ class Schema
     /**
      * Get a list with all tables that belong to the currently used database
      *
-     * @param   boolean $clear  (optional) Refresh table list
+     * @param   boolean $clear (optional) Refresh table list
      *
      * @return  string[]
+     * @throws \Exception
      */
     public function getTables(bool $clear = false): array
     {
@@ -117,11 +120,12 @@ class Schema
     /**
      * Get a list with all columns that belong to the specified table
      *
-     * @param   string  $table
+     * @param   string $table
      * @param   boolean $clear (optional) Refresh column list
      * @param   boolean $names (optional) Return only the column names
-     * 
+     *
      * @return false|string[]
+     * @throws \Exception
      */
     public function getColumns(string $table, bool $clear = false, bool $names = true)
     {
@@ -163,8 +167,9 @@ class Schema
     /**
      * Creates a new table
      *
-     * @param   string      $table      Table name
-     * @param   callable    $callback   A callback that will define table's fields and indexes
+     * @param   string $table Table name
+     * @param   callable $callback A callback that will define table's fields and indexes
+     * @throws \Exception
      */
     public function create(string $table, callable $callback)
     {
@@ -185,8 +190,9 @@ class Schema
     /**
      * Alters a table's definition
      *
-     * @param   string      $table      Table name
-     * @param   callable    $callback   A callback that will add or remove fields or indexes
+     * @param   string $table Table name
+     * @param   callable $callback A callback that will add or remove fields or indexes
+     * @throws \Exception
      */
     public function alter(string $table, callable $callback)
     {
@@ -206,8 +212,9 @@ class Schema
     /**
      * Change a table's name
      *
-     * @param   string  $table  The table
-     * @param   string  $name   The new name of the table
+     * @param   string $table The table
+     * @param   string $name The new name of the table
+     * @throws \Exception
      */
     public function renameTable(string $table, string $name)
     {
@@ -220,7 +227,8 @@ class Schema
     /**
      * Deletes a table
      *
-     * @param   string  $table  Table name
+     * @param   string $table Table name
+     * @throws \Exception
      */
     public function drop(string $table)
     {
@@ -238,7 +246,8 @@ class Schema
     /**
      * Deletes all records from a table
      *
-     * @param   string  $table  Table name
+     * @param   string $table Table name
+     * @throws \Exception
      */
     public function truncate(string $table)
     {
