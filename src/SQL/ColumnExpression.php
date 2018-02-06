@@ -44,7 +44,7 @@ class ColumnExpression
     public function column($name, string $alias = null): self
     {
         if ($name instanceof Closure) {
-            $expression = $this->expression();
+            $expression = new Expression();
             $name($expression);
             $name = $expression;
         }
