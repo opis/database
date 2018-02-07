@@ -44,7 +44,7 @@ class ColumnExpression
     public function column($name, string $alias = null): self
     {
         if ($name instanceof Closure) {
-            $expression = $this->expression();
+            $expression = new Expression();
             $name($expression);
             $name = $expression;
         }
@@ -233,5 +233,13 @@ class ColumnExpression
     public function now($alias = null): self
     {
         return $this->column((new Expression())->now(), $alias);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
     }
 }

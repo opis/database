@@ -239,13 +239,17 @@ class Compiler
                     $sql[] = $this->param($expr['value']);
                     break;
                 case 'group':
-                    $sql[] = '(' . $this->handleExpressions($expr['value']->getExpressions()) . ')';
+                    /** @var Expression $expression */
+                    $expression = $expr['value'];
+                    $sql[] = '(' . $this->handleExpressions($expression->getExpressions()) . ')';
                     break;
                 case 'function':
                     $sql[] = $this->handleSqlFunction($expr['value']);
                     break;
                 case 'subquery':
-                    $sql[] = '(' . $this->select($expr['value']->getSQLStatement()) . ')';
+                    /** @var Subquery $subquery */
+                    $subquery = $expr['value'];
+                    $sql[] = '(' . $this->select($subquery->getSQLStatement()) . ')';
                     break;
             }
         }
@@ -383,7 +387,10 @@ class Compiler
         }
         $sql = array();
         foreach ($joins as $join) {
-            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' . $this->handleJoinCondtitions($join['join']->getJoinConditions());
+            /** @var Join $joinObject */
+            $joinObject = $join['join'];
+            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' .
+                $this->handleJoinConditions($joinObject->getJoinConditions());
         }
         return ' ' . implode(' ', $sql);
     }
@@ -395,7 +402,7 @@ class Compiler
      * 
      * @return  string
      */
-    protected function handleJoinCondtitions(array $conditions)
+    protected function handleJoinConditions(array $conditions)
     {
         $sql[] = $this->{$conditions[0]['type']}($conditions[0]);
         $count = count($conditions);
@@ -432,7 +439,7 @@ class Compiler
     }
 
     /**
-     * Hanlde ORDER BY
+     * Handle ORDER BY
      * 
      * @param   array   $ordering
      * 
@@ -488,7 +495,7 @@ class Compiler
     }
 
     /**
-     * Hanlde insert values
+     * Handle insert values
      * 
      * @param   array   $values
      * 
@@ -540,7 +547,7 @@ class Compiler
      */
     protected function joinNested(array $join)
     {
-        return '(' . $this->handleJoinCondtitions($join['join']->getJoinCOnditions()) . ')';
+        return '(' . $this->handleJoinConditions($join['join']->getJoinCOnditions()) . ')';
     }
 
     /**
@@ -760,7 +767,7 @@ class Compiler
      */
     protected function sqlFunctionMID(array $func)
     {
-        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['lenght'] > 0 ? $this->param($func['lenght']) . ')' : ')');
+        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? $this->param($func['length']) . ')' : ')');
     }
 
     /**
@@ -788,7 +795,7 @@ class Compiler
      * 
      * @return  string
      */
-    protected function sqlFunctionNOW(array $func)
+    protected function sqlFunctionNOW(/** @noinspection PhpUnusedParameterInspection */array $func)
     {
         return 'NOW()';
     }

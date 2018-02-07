@@ -28,7 +28,7 @@ class HavingStatement
     protected $expression;
 
     /**
-     * HavingStatament constructor.
+     * HavingStatement constructor.
      * @param SQLStatement|null $statement
      */
     public function __construct(SQLStatement $statement = null)
@@ -96,5 +96,14 @@ class HavingStatement
     public function orHaving($column, Closure $value = null): self
     {
         return $this->addCondition($column, $value, 'OR');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->expression = new HavingExpression($this->sql);
     }
 }

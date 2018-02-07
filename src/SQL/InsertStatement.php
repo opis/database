@@ -73,4 +73,12 @@ class InsertStatement
     {
         $this->sql->addTables([$table]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+    }
 }

@@ -17,7 +17,6 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
 use Opis\Database\Schema\CreateTable;

@@ -274,7 +274,7 @@ class SQLStatement
             'aggregate' => $aggregate,
             'value1' => $value1,
             'value2' => $value2,
-            'seperator' => $separator,
+            'separator' => $separator,
             'not' => $not,
         );
     }

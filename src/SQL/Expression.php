@@ -107,9 +107,9 @@ class Expression
      */
     public function group(Closure $closure): self
     {
-        $expresion = new Expression();
-        $closure($expresion);
-        return $this->addExpression('group', $expresion);
+        $expression = new Expression();
+        $closure($expression);
+        return $this->addExpression('group', $expression);
     }
 
     /**
@@ -212,7 +212,7 @@ class Expression
      */
     public function mid($column, int $start = 1, int $length = 0): self
     {
-        return $this->addFunction('sqlFunction', 'MID', $column, array('start' => $start, 'lenght' => $length));
+        return $this->addFunction('sqlFunction', 'MID', $column, array('start' => $start, 'length' => $length));
     }
 
     /**

@@ -39,4 +39,12 @@ class Subquery
     {
         return $this->select->getSQLStatement();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->select = clone $this->select;
+    }
 }

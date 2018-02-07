@@ -152,7 +152,7 @@ class ResultSet
     }
 
     /**
-     * Fetch each result as an stdobject
+     * Fetch each result as an stdClass object
      *
      * @return  $this
      */
@@ -206,6 +206,7 @@ class ResultSet
      */
     public function fetchClass($class, array $ctorargs = array())
     {
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
         return $this;
     }

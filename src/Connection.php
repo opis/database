@@ -494,10 +494,10 @@ class Connection implements Serializable
     }
 
     /**
-     * Replace placeholders with parameteters.
+     * Replace placeholders with parameters.
      *
      * @param   string  $query  SQL query
-     * @param   array   $params Query paramaters
+     * @param   array   $params Query parameters
      * 
      * @return  string
      */
@@ -505,7 +505,7 @@ class Connection implements Serializable
     {
         $compiler = $this->getCompiler();
 
-        return preg_replace_callback('/\?/', function ($matches) use (&$params, $compiler) {
+        return preg_replace_callback('/\?/', function () use (&$params, $compiler) {
             $param = array_shift($params);
             $param = is_object($param) ? get_class($param) : $param;
 
@@ -562,6 +562,7 @@ class Connection implements Serializable
         }
 
         if ($this->logQueries) {
+            /** @noinspection PhpUndefinedVariableInspection */
             $log['time'] = microtime(true) - $start;
         }
 

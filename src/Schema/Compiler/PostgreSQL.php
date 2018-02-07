@@ -157,8 +157,10 @@ class PostgreSQL extends Compiler
      */
     protected function handleRenameColumn(AlterTable $table, $data)
     {
+        /** @var BaseColumn $column */
+        $column = $data['column'];
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
-            . $this->wrap($data['from']) . ' TO ' . $this->wrap($data['column']->getName());
+            . $this->wrap($data['from']) . ' TO ' . $this->wrap($column->getName());
     }
 
     /**

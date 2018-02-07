@@ -169,7 +169,7 @@ class BaseColumn
      */
     public function unsigned($value = true)
     {
-        return $this->set('unisgned', $value);
+        return $this->set('unsigned', $value);
     }
 
     /**

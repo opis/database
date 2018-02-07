@@ -154,4 +154,12 @@ class Having
     {
         $this->sql->addHavingBetweenCondition($this->aggregate, $value1, $value2, $this->separator, true);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+    }
 }

@@ -304,7 +304,7 @@ class Compiler
      */
     protected function handleModifierUnsigned(BaseColumn $column)
     {
-        return $column->get('unisgned', false) ? 'UNSIGNED' : '';
+        return $column->get('unsigned', false) ? 'UNSIGNED' : '';
     }
 
     /**
@@ -411,6 +411,7 @@ class Compiler
      */
     protected function handleForeignKeys(CreateTable $schema)
     {
+        /** @var ForeignKey[] $keys */
         $keys = $schema->getForeignKeys();
 
         if (empty($keys)) {
@@ -578,6 +579,7 @@ class Compiler
      */
     protected function handleAddForeign(AlterTable $table, $data)
     {
+        /** @var ForeignKey $key */
         $key = $data['foreign'];
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
             . $this->wrap($data['name']) . ' FOREIGN KEY (' . $this->wrapArray($key->getColumns()) . ') '
