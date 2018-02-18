@@ -1,5 +1,11 @@
 CHANGELOG
 ---------
+### v3.6.9, 2018.02.18
+
+* Fixed `orderBy` not supporting Closure as its first argument
+* Fixed `join`, `leftJoin`, `rightJoin`, and `fullJoin` not supporting
+Closure as their first argument
+
 ### v3.6.8, 2016.08.14
 
 * Added `json` type cast
