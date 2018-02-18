@@ -59,6 +59,12 @@ class WhereJoinCondition extends WhereCondition
 
         $closure($join);
 
+        if($table instanceof Closure){
+            $expr = new Expression($this->compiler);
+            $table($expr);
+            $table = $expr;
+        }
+
         if (!is_array($table)) {
             $table = array($table);
         }

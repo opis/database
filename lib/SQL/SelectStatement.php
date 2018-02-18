@@ -238,6 +238,14 @@ class SelectStatement extends WhereJoinCondition
             $columns = array($columns);
         }
 
+        foreach ($columns as &$column){
+            if($column instanceof Closure){
+                $expr = new Expression($this->compiler);
+                $column($expr);
+                $column = $expr;
+            }
+        }
+
         $order = strtoupper($order);
 
         if ($order !== 'ASC' && $order !== 'DESC') {
