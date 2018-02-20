@@ -32,12 +32,12 @@ class Schema
     protected $currentDatabase;
 
     /** @var    array   Column list */
-    protected $columns = array();
+    protected $columns = [];
 
     /**
      * Constructor
      *
-     * @param   \Opis\Database\Connection   $connection Connection.
+     * @param   \Opis\Database\Connection $connection Connection.
      */
     public function __construct(Connection $connection)
     {
@@ -107,7 +107,7 @@ class Schema
                 ->fetchNum()
                 ->all();
 
-            $this->tableList = array();
+            $this->tableList = [];
 
             foreach ($results as $result) {
                 $this->tableList[strtolower($result[0])] = $result[0];
@@ -149,13 +149,13 @@ class Schema
                 ->fetchAssoc()
                 ->all();
 
-            $columns = array();
+            $columns = [];
 
             foreach ($results as $ord => &$col) {
-                $columns[$col['name']] = array(
+                $columns[$col['name']] = [
                     'name' => $col['name'],
                     'type' => $col['type'],
-                );
+                ];
             }
 
             $this->columns[$table] = $columns;

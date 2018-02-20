@@ -21,10 +21,10 @@ use Closure;
 
 class WhereStatement
 {
-    /** @var SQLStatement  */
+    /** @var SQLStatement */
     protected $sql;
 
-    /** @var Where  */
+    /** @var Where */
     protected $where;
 
     /**
@@ -33,7 +33,7 @@ class WhereStatement
      */
     public function __construct(SQLStatement $statement = null)
     {
-        if($statement === null){
+        if ($statement === null) {
             $statement = new SQLStatement();
         }
 
@@ -46,9 +46,9 @@ class WhereStatement
      * @param string $separator
      * @return WhereStatement|Where
      */
-    protected function addWhereCondition($column, string $separator ='AND')
+    protected function addWhereCondition($column, string $separator = 'AND')
     {
-        if($column instanceof  Closure) {
+        if ($column instanceof Closure) {
             $this->sql->addWhereConditionGroup($column, $separator);
             return $this;
         }

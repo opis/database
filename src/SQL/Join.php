@@ -22,14 +22,14 @@ use Closure;
 class Join
 {
     /** @var    array */
-    protected $conditions = array();
+    protected $conditions = [];
 
     /**
-     * @param   string  $column1
-     * @param   string  $column2
-     * @param   string  $operator
-     * @param   string  $separator
-     * 
+     * @param   string $column1
+     * @param   string $column2
+     * @param   string $operator
+     * @param   string $separator
+     *
      * @return $this
      */
     protected function addJoinCondition($column1, $column2, $operator, $separator)
@@ -37,19 +37,19 @@ class Join
         if ($column1 instanceof Closure) {
             $join = new Join();
             $column1($join);
-            $this->conditions[] = array(
+            $this->conditions[] = [
                 'type' => 'joinNested',
                 'join' => $join,
                 'separator' => $separator,
-            );
+            ];
         } else {
-            $this->conditions[] = array(
+            $this->conditions[] = [
                 'type' => 'joinColumn',
                 'column1' => $column1,
                 'column2' => $column2,
                 'operator' => $operator,
                 'separator' => $separator,
-            );
+            ];
         }
 
         return $this;
@@ -64,10 +64,10 @@ class Join
     }
 
     /**
-     * @param   string  $column1
-     * @param   string  $column2    (optional)
-     * @param   string  $operator   (optional)
-     * 
+     * @param   string $column1
+     * @param   string $column2 (optional)
+     * @param   string $operator (optional)
+     *
      * @return  $this
      */
     public function on($column1, $column2 = null, $operator = '=')
@@ -76,10 +76,10 @@ class Join
     }
 
     /**
-     * @param   string  $column1
-     * @param   string  $column2    (optional)
-     * @param   string  $operator   (optional)
-     * 
+     * @param   string $column1
+     * @param   string $column2 (optional)
+     * @param   string $operator (optional)
+     *
      * @return  $this
      */
     public function andOn($column1, $column2 = null, $operator = '=')
@@ -88,10 +88,10 @@ class Join
     }
 
     /**
-     * @param   string  $column1
-     * @param   string  $column2    (optional)
-     * @param   string  $operator   (optional)
-     * 
+     * @param   string $column1
+     * @param   string $column2 (optional)
+     * @param   string $operator (optional)
+     *
      * @return  $this
      */
     public function orOn($column1, $column2 = null, $operator = '=')

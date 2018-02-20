@@ -25,8 +25,8 @@ class MySQL extends Compiler
     protected $wrapper = '`%s`';
 
     /**
-     * @param   array   $func
-     * 
+     * @param   array $func
+     *
      * @return  string
      */
     protected function sqlFunctionROUND(array $func)
@@ -35,8 +35,8 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   array   $func
-     * 
+     * @param   array $func
+     *
      * @return  string
      */
     protected function sqlFunctionLEN(array $func)

@@ -25,9 +25,9 @@ class DB2 extends Compiler
 
     /**
      * Returns the SQL for a select statement
-     * 
-     * @param   SQLStatement  $select
-     * 
+     *
+     * @param   SQLStatement $select
+     *
      * @return  string
      */
     public function select(SQLStatement $select): string

@@ -24,10 +24,10 @@ class CreateColumn extends BaseColumn
 
     /**
      * Constructor
-     * 
+     *
      * @param   CreateTable $table
-     * @param   string      $name
-     * @param   string      $type
+     * @param   string $name
+     * @param   string $type
      */
     public function __construct(CreateTable $table, $name, $type)
     {

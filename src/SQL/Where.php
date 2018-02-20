@@ -33,7 +33,7 @@ class Where
     /** @var  WhereStatement */
     protected $statement;
 
-    public function __construct(WhereStatement $statement,SQLStatement $sql)
+    public function __construct(WhereStatement $statement, SQLStatement $sql)
     {
         $this->sql = $sql;
         $this->statement = $statement;
@@ -52,9 +52,9 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   string  $operator
-     * @param   bool    $isColumn   (optional)
+     * @param   mixed $value
+     * @param   string $operator
+     * @param   bool $isColumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -70,9 +70,9 @@ class Where
     }
 
     /**
-     * @param   int|float|string     $value1
-     * @param   int|float|string     $value2
-     * @param   bool    $not    
+     * @param   int|float|string $value1
+     * @param   int|float|string $value2
+     * @param   bool $not
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -83,8 +83,8 @@ class Where
     }
 
     /**
-     * @param   string  $pattern
-     * @param   bool    $not
+     * @param   string $pattern
+     * @param   bool $not
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -95,8 +95,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $not
+     * @param   mixed $value
+     * @param   bool $not
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -107,7 +107,7 @@ class Where
     }
 
     /**
-     * @param   bool    $not
+     * @param   bool $not
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -118,8 +118,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -129,8 +129,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -140,8 +140,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -151,8 +151,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -162,8 +162,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -173,8 +173,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -206,7 +206,7 @@ class Where
     }
 
     /**
-     * @param   string  $value
+     * @param   string $value
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -216,7 +216,7 @@ class Where
     }
 
     /**
-     * @param   string  $value
+     * @param   string $value
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -226,7 +226,7 @@ class Where
     }
 
     /**
-     * @param   array|Closure   $value
+     * @param   array|Closure $value
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -236,7 +236,7 @@ class Where
     }
 
     /**
-     * @param   array|Closure   $value
+     * @param   array|Closure $value
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -263,8 +263,8 @@ class Where
     //Aliases
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -274,8 +274,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -285,8 +285,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -296,8 +296,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -307,8 +307,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
@@ -318,8 +318,8 @@ class Where
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn   (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */

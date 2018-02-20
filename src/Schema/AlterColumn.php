@@ -24,10 +24,10 @@ class AlterColumn extends BaseColumn
 
     /**
      * Constructor
-     * 
-     * @param   AlterTable  $table
-     * @param   string      $name
-     * @param   string|null $type   (optional)
+     *
+     * @param   AlterTable $table
+     * @param   string $name
+     * @param   string|null $type (optional)
      */
     public function __construct(AlterTable $table, $name, $type = null)
     {
@@ -44,8 +44,8 @@ class AlterColumn extends BaseColumn
     }
 
     /**
-     * @param   mixed   $value
-     * 
+     * @param   mixed $value
+     *
      * @return  $this|BaseColumn
      */
     public function defaultValue($value)

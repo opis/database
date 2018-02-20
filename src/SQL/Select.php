@@ -38,11 +38,11 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|array|Closure    $columns    (optional)
-     * 
+     * @param   string|array|Closure $columns (optional)
+     *
      * @return  ResultSet
      */
-    public function select($columns = array())
+    public function select($columns = [])
     {
         parent::select($columns);
         $compiler = $this->connection->getCompiler();
@@ -50,8 +50,8 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  mixed|false
      */
     public function column(string $name)
@@ -61,9 +61,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $column     (optional)
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column (optional)
+     * @param   bool $distinct (optional)
+     *
      * @return  int
      */
     public function count($column = '*', bool $distinct = false)
@@ -73,9 +73,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function avg(string $column, bool $distinct = false)
@@ -85,9 +85,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function sum(string $column, bool $distinct = false)
@@ -97,9 +97,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function min(string $column, bool $distinct = false)
@@ -109,9 +109,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function max(string $column, bool $distinct = false)

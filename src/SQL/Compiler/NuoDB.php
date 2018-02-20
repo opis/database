@@ -27,8 +27,8 @@ class NuoDB extends Compiler
     /**
      * Compiles LIMIT clauses.
      *
-     * @param   int        $limit  Limit
-     * 
+     * @param   int $limit Limit
+     *
      * @return  string
      */
     protected function handleLimit($limit)
@@ -38,9 +38,9 @@ class NuoDB extends Compiler
 
     /**
      * Compiles OFFSET clauses.
-     * 
-     * @param   int        $offset  Limit
-     * 
+     *
+     * @param   int $offset Limit
+     *
      * @return  string
      */
     protected function handleOffset($offset)

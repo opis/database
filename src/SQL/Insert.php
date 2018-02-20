@@ -36,8 +36,8 @@ class Insert extends InsertStatement
     }
 
     /**
-     * @param   string  $table
-     * 
+     * @param   string $table
+     *
      * @return  boolean
      */
     public function into(string $table)

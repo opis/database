@@ -37,19 +37,19 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param   string          $sign
-     * @param   string|array    $columns
-     * @param   int             $value
-     * 
+     * @param   string $sign
+     * @param   string|array $columns
+     * @param   int $value
+     *
      * @return  int
      */
     protected function incrementOrDecrement(string $sign, $columns, $value)
     {
         if (!is_array($columns)) {
-            $columns = array($columns);
+            $columns = [$columns];
         }
 
-        $values = array();
+        $values = [];
 
         foreach ($columns as $k => $v) {
             if (is_numeric($k)) {
@@ -67,9 +67,9 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param   string|array    $column
-     * @param   int             $value  (optional)
-     * 
+     * @param   string|array $column
+     * @param   int $value (optional)
+     *
      * @return  int
      */
     public function increment($column, $value = 1)
@@ -78,9 +78,9 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param   string|array    $column
-     * @param   int             $value  (optional)
-     * 
+     * @param   string|array $column
+     * @param   int $value (optional)
+     *
      * @return  int
      */
     public function decrement($column, $value = 1)
@@ -89,8 +89,8 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param   array   $columns
-     * 
+     * @param   array $columns
+     *
      * @return  int
      */
     public function set(array $columns)

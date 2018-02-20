@@ -28,7 +28,7 @@ class Oracle extends Compiler
      * Compiles a SELECT query.
      *
      * @param   SQLStatement $select
-     * 
+     *
      * @return  string
      */
     public function select(SQLStatement $select): string
@@ -39,7 +39,7 @@ class Oracle extends Compiler
             return parent::select($select);
         }
 
-        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ' FROM ';
         $sql .= $this->handleTables($select->getTables());
@@ -62,7 +62,7 @@ class Oracle extends Compiler
     }
 
     /**
-     * @param   mixed   $value
+     * @param   mixed $value
      *
      * @return  string
      */
@@ -72,7 +72,7 @@ class Oracle extends Compiler
             return $this->handleExpressions($value->getExpressions());
         }
 
-        $wrapped = array();
+        $wrapped = [];
 
         foreach (explode('.', $value) as $segment) {
             if ($segment == '*') {
@@ -86,7 +86,7 @@ class Oracle extends Compiler
     }
 
     /**
-     * @param   array   $ordering
+     * @param   array $ordering
      *
      * @return  string
      */
@@ -96,7 +96,7 @@ class Oracle extends Compiler
             return '';
         }
 
-        $sql = array();
+        $sql = [];
 
         foreach ($ordering as $order) {
             if ($order['nulls'] !== null) {

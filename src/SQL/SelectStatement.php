@@ -34,7 +34,7 @@ class SelectStatement extends BaseStatement
         parent::__construct($statement);
 
         if (!is_array($tables)) {
-            $tables = array($tables);
+            $tables = [$tables];
         }
 
         $this->sql->addTables($tables);
@@ -64,23 +64,23 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string|array    $columns
-     * 
+     * @param   string|array $columns
+     *
      * @return  $this
      */
     public function groupBy($columns): self
     {
         if (!is_array($columns)) {
-            $columns = array($columns);
+            $columns = [$columns];
         }
         $this->sql->addGroupBy($columns);
         return $this;
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
     public function having($column, Closure $value = null): self
@@ -90,9 +90,9 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
     public function andHaving($column, Closure $value = null): self
@@ -102,12 +102,12 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null): self 
+    public function orHaving($column, Closure $value = null): self
     {
         $this->have->orHaving($column, $value);
         return $this;
@@ -122,7 +122,7 @@ class SelectStatement extends BaseStatement
     public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
     {
         if (!is_array($columns)) {
-            $columns = array($columns);
+            $columns = [$columns];
         }
         $this->sql->addOrder($columns, $order, $nulls);
         return $this;
@@ -149,10 +149,10 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string|array|Closure    $columns
+     * @param   string|array|Closure $columns
      *
      */
-    public function select($columns = array())
+    public function select($columns = [])
     {
         $expr = new ColumnExpression($this->sql);
 
@@ -160,14 +160,14 @@ class SelectStatement extends BaseStatement
             $columns($expr);
         } else {
             if (!is_array($columns)) {
-                $columns = array($columns);
+                $columns = [$columns];
             }
             $expr->columns($columns);
         }
     }
 
     /**
-     * @param   string  $name
+     * @param   string $name
      */
     public function column(string $name)
     {
@@ -175,8 +175,8 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column     (optional)
-     * @param   bool    $distinct   (optional)
+     * @param   string $column (optional)
+     * @param   bool $distinct (optional)
      */
     public function count($column = '*', bool $distinct = false)
     {
@@ -184,8 +184,8 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
+     * @param   string $column
+     * @param   bool $distinct (optional)
      */
     public function avg(string $column, bool $distinct = false)
     {
@@ -193,8 +193,8 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
+     * @param   string $column
+     * @param   bool $distinct (optional)
      */
     public function sum(string $column, bool $distinct = false)
     {
@@ -202,8 +202,8 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
+     * @param   string $column
+     * @param   bool $distinct (optional)
      */
     public function min(string $column, bool $distinct = false)
     {
@@ -211,8 +211,8 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
+     * @param   string $column
+     * @param   bool $distinct (optional)
      */
     public function max(string $column, bool $distinct = false)
     {

@@ -25,11 +25,11 @@ use Opis\Database\Schema\CreateTable;
 class PostgreSQL extends Compiler
 {
     /** @var    array */
-    protected $modifiers = array('nullable', 'default');
+    protected $modifiers = ['nullable', 'default'];
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeInteger(BaseColumn $column)
@@ -50,8 +50,8 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeFloat(BaseColumn $column)
@@ -60,8 +60,8 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDouble(BaseColumn $column)
@@ -70,24 +70,24 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDecimal(BaseColumn $column)
     {
         if (null !== $l = $column->get('length')) {
-        	if (null === $p = $column->get('precision')) {
-        		return 'DECIMAL (' . $this->value($l) . ')';
-        	}
+            if (null === $p = $column->get('precision')) {
+                return 'DECIMAL (' . $this->value($l) . ')';
+            }
             return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
         }
         return 'DECIMAL';
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBinary(BaseColumn $column)
@@ -96,8 +96,8 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTime(BaseColumn $column)
@@ -106,8 +106,8 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTimestamp(BaseColumn $column)
@@ -116,8 +116,8 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDateTime(BaseColumn $column)
@@ -127,7 +127,7 @@ class PostgreSQL extends Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string[]
      */
     protected function handleIndexKeys(CreateTable $schema)
@@ -135,10 +135,10 @@ class PostgreSQL extends Compiler
         $indexes = $schema->getIndexes();
 
         if (empty($indexes)) {
-            return array();
+            return [];
         }
 
-        $sql = array();
+        $sql = [];
 
         $table = $schema->getTableName();
 
@@ -150,9 +150,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleRenameColumn(AlterTable $table, $data)
@@ -164,9 +164,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddIndex(AlterTable $table, $data)
@@ -175,9 +175,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropIndex(AlterTable $table, $data)
@@ -187,7 +187,7 @@ class PostgreSQL extends Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handleEngine(CreateTable $schema)
@@ -196,9 +196,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   string  $database
-     * @param   string  $table
-     * 
+     * @param   string $database
+     * @param   string $table
+     *
      * @return  array
      */
     public function getColumns($database, $table)
@@ -209,36 +209,36 @@ class PostgreSQL extends Compiler
             . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
             . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
 
-        return array(
+        return [
             'sql' => $sql,
-            'params' => array($database, $table),
-        );
+            'params' => [$database, $table],
+        ];
     }
 
     /**
-     * @param   string  $dsn
-     * 
+     * @param   string $dsn
+     *
      * @return  array
      */
     public function currentDatabase($dsn)
     {
-        return array(
+        return [
             'sql' => 'SELECT current_schema()',
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $old
-     * @param   string  $new
-     * 
+     * @param   string $old
+     * @param   string $new
+     *
      * @return  array
      */
     public function renameTable($old, $new)
     {
-        return array(
+        return [
             'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 }

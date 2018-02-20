@@ -31,7 +31,7 @@ class InsertStatement
      */
     public function __construct(SQLStatement $statement = null)
     {
-        if($statement === null){
+        if ($statement === null) {
             $statement = new SQLStatement();
         }
         $this->sql = $statement;
@@ -67,7 +67,7 @@ class InsertStatement
     }
 
     /**
-     * @param   string  $table
+     * @param   string $table
      */
     public function into(string $table)
     {

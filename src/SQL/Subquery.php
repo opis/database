@@ -23,8 +23,8 @@ class Subquery
     protected $select;
 
     /**
-     * @param   string|array    $tables
-     * 
+     * @param   string|array $tables
+     *
      * @return  SelectStatement
      */
     public function from($tables)

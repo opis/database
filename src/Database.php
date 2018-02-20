@@ -33,7 +33,7 @@ class Database
     /**
      * Constructor
      *
-     * @param   Connection   $connection Connection instance.
+     * @param   Connection $connection Connection instance.
      */
     public function __construct(Connection $connection)
     {
@@ -63,7 +63,7 @@ class Database
     /**
      * Execute a query in order to fetch or to delete records.
      *
-     * @param   string|array    $tables Table name or an array of tables
+     * @param   string|array $tables Table name or an array of tables
      *
      * @return  QueryCommand
      */
@@ -75,7 +75,7 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @param   array  $values  An array of values.
+     * @param   array $values An array of values.
      *
      * @return  InsertCommand|InsertStatement
      */
@@ -87,7 +87,7 @@ class Database
     /**
      * Update records.
      *
-     * @param   string  $table  Table name
+     * @param   string $table Table name
      *
      * @return  UpdateCommand
      */

@@ -40,8 +40,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   string  $operator
+     * @param   mixed $value
+     * @param   string $operator
      * @param   boolean $iscolumn
      */
     protected function addCondition($value, string $operator, bool $iscolumn)
@@ -55,9 +55,9 @@ class Having
     }
 
     /**
-     * @param   string  $aggregate
-     * @param   string  $separator
-     * 
+     * @param   string $aggregate
+     * @param   string $separator
+     *
      * @return  $this
      */
     public function init(string $aggregate, string $separator): self
@@ -68,8 +68,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function eq($value, bool $iscolumn = false)
     {
@@ -77,8 +77,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function ne($value, bool $iscolumn = false)
     {
@@ -86,8 +86,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function lt($value, bool $iscolumn = false)
     {
@@ -95,8 +95,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function gt($value, bool $iscolumn = false)
     {
@@ -104,8 +104,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function lte($value, bool $iscolumn = false)
     {
@@ -113,8 +113,8 @@ class Having
     }
 
     /**
-     * @param   mixed   $value
-     * @param   bool    $iscolumn (optional)
+     * @param   mixed $value
+     * @param   bool $iscolumn (optional)
      */
     public function gte($value, bool $iscolumn = false)
     {
@@ -122,7 +122,7 @@ class Having
     }
 
     /**
-     * @param   array|Closure   $value
+     * @param   array|Closure $value
      */
     public function in($value)
     {
@@ -130,7 +130,7 @@ class Having
     }
 
     /**
-     * @param   array|Closure   $value
+     * @param   array|Closure $value
      */
     public function notIn($value)
     {

@@ -21,9 +21,9 @@ use Closure;
 
 class BaseStatement extends WhereStatement
 {
-    
+
     /**
-     * @param   string  $table
+     * @param   string $table
      * @param   Closure $closure
      *
      * @return  Delete|Select|BaseStatement
@@ -35,7 +35,7 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string  $table
+     * @param   string $table
      * @param   Closure $closure
      *
      * @return  Delete|Select|BaseStatement
@@ -47,7 +47,7 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string  $table
+     * @param   string $table
      * @param   Closure $closure
      *
      * @return  Delete|Select|BaseStatement
@@ -59,7 +59,7 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string  $table
+     * @param   string $table
      * @param   Closure $closure
      *
      * @return  Delete|Select|BaseStatement

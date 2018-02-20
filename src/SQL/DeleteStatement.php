@@ -30,7 +30,7 @@ class DeleteStatement extends BaseStatement
         parent::__construct($statement);
 
         if (!is_array($from)) {
-            $from = array($from);
+            $from = [$from];
         }
 
         $this->sql->setFrom($from);
@@ -38,13 +38,13 @@ class DeleteStatement extends BaseStatement
 
     /**
      * Delete records
-     * 
-     * @param   string|array    $tables
+     *
+     * @param   string|array $tables
      */
-    public function delete($tables = array())
+    public function delete($tables = [])
     {
         if (!is_array($tables)) {
-            $tables = array($tables);
+            $tables = [$tables];
         }
         $this->sql->addTables($tables);
     }

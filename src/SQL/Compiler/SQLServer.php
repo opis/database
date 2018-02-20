@@ -45,7 +45,7 @@ class SQLServer extends Compiler
         $offset = $select->getOffset();
 
         if ($offset < 0) {
-            $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+            $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
             $sql .= 'TOP ' . $limit . ' ';
             $sql .= $this->handleColumns($select->getColumns());
             $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
@@ -66,7 +66,7 @@ class SQLServer extends Compiler
             $order = 'ORDER BY (SELECT 0)';
         }
 
-        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= ', ROW_NUMBER() OVER (' . $order . ') AS opis_rownum';
         $sql .= ' FROM ';
@@ -84,7 +84,7 @@ class SQLServer extends Compiler
 
     /**
      * @param   SQLStatement $update
-     * 
+     *
      * @return  string
      */
     public function update(SQLStatement $update): string
@@ -97,7 +97,7 @@ class SQLServer extends Compiler
             $tables = array_values($tables);
         }
 
-        $sql  = 'UPDATE ';
+        $sql = 'UPDATE ';
         $sql .= $this->handleTables($tables);
         $sql .= $this->handleSetColumns($update->getColumns());
         $sql .= $joins;

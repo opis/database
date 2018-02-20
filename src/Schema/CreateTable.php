@@ -20,19 +20,19 @@ namespace Opis\Database\Schema;
 class CreateTable
 {
     /** @var    array */
-    protected $columns = array();
+    protected $columns = [];
 
     /** @var    mixed */
     protected $primaryKey;
 
     /** @var    array */
-    protected $uniqueKeys = array();
+    protected $uniqueKeys = [];
 
     /** @var    array */
-    protected $indexes = array();
+    protected $indexes = [];
 
     /** @var    array */
-    protected $foreignKeys = array();
+    protected $foreignKeys = [];
 
     /** @var    string */
     protected $table;
@@ -45,8 +45,8 @@ class CreateTable
 
     /**
      * Constructor
-     * 
-     * @param   string  $table
+     *
+     * @param   string $table
      */
     public function __construct($table)
     {
@@ -54,9 +54,9 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * @param   string  $type
-     * 
+     * @param   string $name
+     * @param   string $type
+     *
      * @return  CreateColumn
      */
     protected function addColumn($name, $type)
@@ -131,8 +131,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function engine($name)
@@ -148,18 +148,18 @@ class CreateTable
      */
     public function primary($columns, string $name = null)
     {
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_pk_' . implode('_', $columns);
         }
 
-        $this->primaryKey = array(
-            'name'    => $name,
+        $this->primaryKey = [
+            'name' => $name,
             'columns' => $columns,
-        );
+        ];
 
         return $this;
     }
@@ -171,11 +171,11 @@ class CreateTable
      */
     public function unique($columns, string $name = null)
     {
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_uk_' . implode('_', $columns);
         }
 
@@ -191,11 +191,11 @@ class CreateTable
      */
     public function index($columns, string $name = null)
     {
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_ik_' . implode('_', $columns);
         }
 
@@ -211,11 +211,11 @@ class CreateTable
      */
     public function foreign($columns, string $name = null)
     {
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_fk_' . implode('_', $columns);
         }
 
@@ -223,8 +223,8 @@ class CreateTable
     }
 
     /**
-     * @param   CreateColumn    $column
-     * @param   string|null     $name
+     * @param   CreateColumn $column
+     * @param   string|null $name
      *
      * @return  $this
      */
@@ -239,8 +239,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function integer($name)
@@ -249,8 +249,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function float($name)
@@ -259,8 +259,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function double($name)
@@ -269,10 +269,10 @@ class CreateTable
     }
 
     /**
-     * @param   string      $name
-     * @param   int|null    $length       (optional)
-     * @param   int|null    $precision    (optional)
-     * 
+     * @param   string $name
+     * @param   int|null $length (optional)
+     * @param   int|null $precision (optional)
+     *
      * @return  CreateColumn
      */
     public function decimal($name, $length = null, $precision = null)
@@ -281,8 +281,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function boolean($name)
@@ -291,8 +291,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function binary($name)
@@ -301,9 +301,9 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * @param   int     $length (optional)
-     * 
+     * @param   string $name
+     * @param   int $length (optional)
+     *
      * @return  CreateColumn
      */
     public function string($name, $length = 255)
@@ -312,9 +312,9 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * @param   int     $length (optional)
-     * 
+     * @param   string $name
+     * @param   int $length (optional)
+     *
      * @return  CreateColumn
      */
     public function fixed($name, $length = 255)
@@ -323,8 +323,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function text($name)
@@ -333,8 +333,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function time($name)
@@ -343,8 +343,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function timestamp($name)
@@ -353,8 +353,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function date($name)
@@ -363,8 +363,8 @@ class CreateTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  CreateColumn
      */
     public function dateTime($name)
@@ -379,7 +379,7 @@ class CreateTable
     {
         $this->dateTime('deleted_at');
     }
-    
+
     /**
      * Add timestamp columns
      */
@@ -388,5 +388,5 @@ class CreateTable
         $this->dateTime('created_at')->notNull();
         $this->dateTime('updated_at');
     }
-    
+
 }

@@ -123,7 +123,7 @@ class WhereTest extends TestCase
     public function testWhereInQuery()
     {
         $expected = 'SELECT * FROM "users" WHERE "age" IN (SELECT "name" FROM "customers")';
-        $actual = $this->db->from('users')->where('age')->in(function ($query){
+        $actual = $this->db->from('users')->where('age')->in(function ($query) {
             $query->from('customers')->select('name');
         })->select();
         $this->assertEquals($expected, $actual);
@@ -133,7 +133,7 @@ class WhereTest extends TestCase
     public function testWhereNotInQuery()
     {
         $expected = 'SELECT * FROM "users" WHERE "age" NOT IN (SELECT "name" FROM "customers")';
-        $actual = $this->db->from('users')->where('age')->notIn(function ($query){
+        $actual = $this->db->from('users')->where('age')->notIn(function ($query) {
             $query->from('customers')->select('name');
         })->select();;
         $this->assertEquals($expected, $actual);
@@ -171,9 +171,9 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" WHERE "age" = 18 AND "city" = \'London\'';
         $actual = $this->db->from('users')
-                            ->where('age')->is(18)
-                            ->andWhere('city')->is('London')
-                            ->select();
+            ->where('age')->is(18)
+            ->andWhere('city')->is('London')
+            ->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -181,9 +181,9 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" WHERE "age" = 18 OR "city" = \'London\'';
         $actual = $this->db->from('users')
-                            ->where('age')->is(18)
-                            ->orWhere('city')->is('London')
-                            ->select();
+            ->where('age')->is(18)
+            ->orWhere('city')->is('London')
+            ->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -191,12 +191,12 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" WHERE "age" = 18 AND ("city" = \'London\' OR "city" = \'Paris\')';
         $actual = $this->db->from('users')
-                            ->where('age')->is(18)
-                            ->andWhere(function($group){
-                                $group->where('city')->is('London')
-                                    ->orWhere('city')->is('Paris');
-                            })
-                            ->select();
+            ->where('age')->is(18)
+            ->andWhere(function ($group) {
+                $group->where('city')->is('London')
+                    ->orWhere('city')->is('Paris');
+            })
+            ->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -274,12 +274,12 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" WHERE EXISTS (SELECT * FROM "orders" WHERE "orders"."name" = "users"."name")';
         $actual = $this->db->from('users')
-                            ->whereExists(function($query){
-                                $query->from('orders')
-                                    ->where('orders.name')->eq('users.name', true)
-                                    ->select();
-                            })
-                            ->select();
+            ->whereExists(function ($query) {
+                $query->from('orders')
+                    ->where('orders.name')->eq('users.name', true)
+                    ->select();
+            })
+            ->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -287,7 +287,7 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "numbers" WHERE "c" = "b" + 10';
         $actual = $this->db->from('numbers')
-            ->where('c')->eq(function($expr){
+            ->where('c')->eq(function ($expr) {
                 $expr->column('b')->op('+')->value(10);
             })
             ->select();
@@ -298,7 +298,7 @@ class WhereTest extends TestCase
     {
         $expected = 'SELECT * FROM "numbers" WHERE "c" = "a" + "b"';
         $actual = $this->db->from('numbers')
-            ->where('c')->eq(function($expr){
+            ->where('c')->eq(function ($expr) {
                 $expr->column('a')->{'+'}->column('b');
             })
             ->select();

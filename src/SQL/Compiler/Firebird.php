@@ -38,8 +38,8 @@ class Firebird extends Compiler
      * Compiles OFFSET clause.
      *
      * @access  protected
-     * @param   int        $limit   Offset
-     * @param   int        $offset  Limit
+     * @param   int $limit Offset
+     * @param   int $offset Limit
      * @return  string
      */
     protected function handleOffset($offset, $limit = null)
@@ -51,12 +51,12 @@ class Firebird extends Compiler
      * Compiles a SELECT query.
      *
      * @access  public
-     * @param   SQLStatement    $select
+     * @param   SQLStatement $select
      * @return  string
      */
     public function select(SQLStatement $select): string
     {
-        $sql  = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
+        $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
         $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
         $sql .= ' FROM ';

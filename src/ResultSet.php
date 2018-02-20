@@ -29,7 +29,7 @@ class ResultSet
     /**
      * Constructor
      *
-     * @param   \PDOStatement   $statement  The PDOStatement associated with this result set.
+     * @param   \PDOStatement $statement The PDOStatement associated with this result set.
      */
     public function __construct(PDOStatement $statement)
     {
@@ -57,8 +57,8 @@ class ResultSet
     /**
      * Fetch all results
      *
-     * @param   callable    $callable   (optional) Callback function
-     * @param   int         $fetchStyle (optional) PDO fetch style
+     * @param   callable $callable (optional) Callback function
+     * @param   int $fetchStyle (optional) PDO fetch style
      *
      * @return  array
      */
@@ -71,9 +71,9 @@ class ResultSet
     }
 
     /**
-     * @param   bool        $uniq       (optional)
-     * @param   callable    $callable   (optional)
-     * 
+     * @param   bool $uniq (optional)
+     * @param   callable $callable (optional)
+     *
      * @return  array
      */
     public function allGroup($uniq = false, $callable = null)
@@ -88,7 +88,7 @@ class ResultSet
     /**
      * Fetch first result
      *
-     * @param   callable    $callable   (optional) Callback function
+     * @param   callable $callable (optional) Callback function
      *
      * @return  mixed
      */
@@ -131,8 +131,8 @@ class ResultSet
     /**
      * Return a column
      *
-     * @param   int $col    0-indexed number of the column you wish to retrieve
-     * 
+     * @param   int $col 0-indexed number of the column you wish to retrieve
+     *
      * @return  mixed
      */
     public function column($col = 0)
@@ -199,12 +199,12 @@ class ResultSet
     }
 
     /**
-     * @param   string  $class
-     * @param   array   $ctorargs   (optional)
-     * 
+     * @param   string $class
+     * @param   array $ctorargs (optional)
+     *
      * @return  $this
      */
-    public function fetchClass($class, array $ctorargs = array())
+    public function fetchClass($class, array $ctorargs = [])
     {
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
@@ -213,7 +213,7 @@ class ResultSet
 
     /**
      * @param   Closure $func
-     * 
+     *
      * @return  $this
      */
     public function fetchCustom(Closure $func)

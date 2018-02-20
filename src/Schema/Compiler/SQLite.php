@@ -24,7 +24,7 @@ use Opis\Database\Schema\CreateTable;
 class SQLite extends Compiler
 {
     /** @var    array */
-    protected $modifiers = array('nullable', 'default', 'autoincrement');
+    protected $modifiers = ['nullable', 'default', 'autoincrement'];
 
     /** @var    string */
     protected $autoincrement = 'AUTOINCREMENT';
@@ -33,8 +33,8 @@ class SQLite extends Compiler
     private $nopk = false;
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeInteger(BaseColumn $column)
@@ -43,8 +43,8 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTime(BaseColumn $column)
@@ -53,8 +53,8 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTimestamp(BaseColumn $column)
@@ -70,7 +70,7 @@ class SQLite extends Compiler
     {
         $modifier = parent::handleModifierAutoincrement($column);
 
-        if($modifier !== ''){
+        if ($modifier !== '') {
             $this->nopk = true;
             $modifier = 'PRIMARY KEY ' . $modifier;
         }
@@ -84,7 +84,7 @@ class SQLite extends Compiler
      */
     public function handlePrimaryKey(CreateTable $schema)
     {
-        if($this->nopk){
+        if ($this->nopk) {
             return '';
         }
 
@@ -92,8 +92,8 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   CreateTable     $schema
-     * 
+     * @param   CreateTable $schema
+     *
      * @return  string
      */
     protected function handleEngine(CreateTable $schema)
@@ -102,8 +102,8 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   string  $dsn
-     * 
+     * @param   string $dsn
+     *
      * @return  string
      */
     public function currentDatabase($dsn)
@@ -112,8 +112,8 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   string  $database
-     * 
+     * @param   string $database
+     *
      * @return  array
      */
     public function getTables($database)
@@ -121,37 +121,37 @@ class SQLite extends Compiler
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
             . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
 
-        return array(
+        return [
             'sql' => $sql,
-            'params' => array('table'),
-        );
+            'params' => ['table'],
+        ];
     }
 
     /**
-     * @param   string  $database
-     * @param   string  $table
-     * 
+     * @param   string $database
+     * @param   string $table
+     *
      * @return  array
      */
     public function getColumns($database, $table)
     {
-        return array(
+        return [
             'sql' => 'PRAGMA table_info(' . $this->wrap($table) . ')',
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $old
-     * @param   string  $new
-     * 
+     * @param   string $old
+     * @param   string $new
+     *
      * @return  array
      */
     public function renameTable($old, $new)
     {
-        return array(
+        return [
             'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 }

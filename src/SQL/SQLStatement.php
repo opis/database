@@ -24,7 +24,7 @@ class SQLStatement
     protected $wheres = [];
     protected $having = [];
     protected $joins = [];
-    protected $tables= [];
+    protected $tables = [];
     protected $columns = [];
     protected $order = [];
     protected $distinct = false;
@@ -44,11 +44,11 @@ class SQLStatement
     {
         $where = new WhereStatement();
         $callback($where);
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereNested',
             'clause' => $where->getSQLStatement()->getWheres(),
-            'separator' => $separator
-        );
+            'separator' => $separator,
+        ];
     }
 
     /**
@@ -59,19 +59,19 @@ class SQLStatement
      */
     public function addWhereCondition(string $column, $value, string $operator, string $separator)
     {
-        if($value instanceof Closure) {
+        if ($value instanceof Closure) {
             $expr = new Expression();
             $value($expr);
             $value = $expr;
         }
 
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereColumn',
             'column' => $column,
             'value' => $value,
             'operator' => $operator,
             'separator' => $separator,
-        );
+        ];
     }
 
     /**
@@ -82,13 +82,13 @@ class SQLStatement
      */
     public function addWhereLikeCondition(string $column, string $pattern, string $separator, bool $not)
     {
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereLike',
             'column' => $column,
             'pattern' => $pattern,
             'separator' => $separator,
             'not' => $not,
-        );
+        ];
     }
 
     /**
@@ -100,15 +100,16 @@ class SQLStatement
      */
     public function addWhereBetweenCondition(string $column, $value1, $value2, string $separator, bool $not)
     {
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereBetween',
             'column' => $column,
             'value1' => $value1,
             'value2' => $value2,
             'separator' => $separator,
             'not' => $not,
-        );
+        ];
     }
+
     /**
      * @param $column
      * @param $value
@@ -120,21 +121,21 @@ class SQLStatement
         if ($value instanceof Closure) {
             $select = new Subquery();
             $value($select);
-            $this->wheres[] = array(
+            $this->wheres[] = [
                 'type' => 'whereInSelect',
                 'column' => $column,
                 'subquery' => $select,
                 'separator' => $separator,
                 'not' => $not,
-            );
+            ];
         } else {
-            $this->wheres[] = array(
+            $this->wheres[] = [
                 'type' => 'whereIn',
                 'column' => $column,
                 'value' => $value,
                 'separator' => $separator,
                 'not' => $not,
-            );
+            ];
         }
     }
 
@@ -145,12 +146,12 @@ class SQLStatement
      */
     public function addWhereNullCondition(string $column, string $separator, bool $not)
     {
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereNull',
             'column' => $column,
             'separator' => $separator,
             'not' => $not,
-        );
+        ];
     }
 
     /**
@@ -163,18 +164,18 @@ class SQLStatement
         $select = new Subquery();
         $closure($select);
 
-        $this->wheres[] = array(
+        $this->wheres[] = [
             'type' => 'whereExists',
             'subquery' => $select,
             'separator' => $separator,
             'not' => $not,
-        );
+        ];
     }
 
     /**
-     *  @param  string          $type
-     *  @param  string|array    $table
-     *  @param  Closure         $closure
+     * @param  string $type
+     * @param  string|array $table
+     * @param  Closure $closure
      */
     public function addJoinClause(string $type, $table, Closure $closure)
     {
@@ -188,37 +189,37 @@ class SQLStatement
         }
 
         if (!is_array($table)) {
-            $table = array($table);
+            $table = [$table];
         }
 
-        $this->joins[] = array(
+        $this->joins[] = [
             'type' => $type,
             'table' => $table,
             'join' => $join,
-        );
+        ];
     }
 
     /**
      * @param   Closure $callback
-     * @param   string  $separator
+     * @param   string $separator
      */
     public function addHavingGroupCondition(Closure $callback, string $separator)
     {
         $having = new HavingStatement();
         $callback($having);
 
-        $this->having[] = array(
+        $this->having[] = [
             'type' => 'havingNested',
             'conditions' => $having->getSQLStatement()->getHaving(),
             'separator' => $separator,
-        );
+        ];
     }
 
     /**
-     * @param   string  $aggregate
-     * @param   mixed   $value
-     * @param   string  $operator
-     * @param   string  $separator
+     * @param   string $aggregate
+     * @param   mixed $value
+     * @param   string $operator
+     * @param   string $separator
      */
     public function addHavingCondition(string $aggregate, $value, string $operator, string $separator)
     {
@@ -228,61 +229,61 @@ class SQLStatement
             $value = $expr;
         }
 
-        $this->having[] = array(
+        $this->having[] = [
             'type' => 'havingCondition',
             'aggregate' => $aggregate,
             'value' => $value,
             'operator' => $operator,
             'separator' => $separator,
-        );
+        ];
     }
 
     /**
-     * @param   string  $aggregate
-     * @param   mixed   $value
-     * @param   string  $separator
-     * @param   bool    $not
+     * @param   string $aggregate
+     * @param   mixed $value
+     * @param   string $separator
+     * @param   bool $not
      */
     public function addHavingInCondition(string $aggregate, $value, string $separator, bool $not)
     {
         if ($value instanceof Closure) {
             $select = new Subquery();
             $value($select);
-            $this->having[] = array(
+            $this->having[] = [
                 'type' => 'havingInSelect',
                 'aggregate' => $aggregate,
                 'subquery' => $select,
                 'separator' => $separator,
                 'not' => $not,
-            );
+            ];
         } else {
-            $this->having[] = array(
+            $this->having[] = [
                 'type' => 'havingIn',
                 'aggregate' => $aggregate,
                 'value' => $value,
                 'separator' => $separator,
                 'not' => $not,
-            );
+            ];
         }
     }
 
     /**
-     * @param   string  $aggregate
-     * @param   int     $value1
-     * @param   int     $value2
-     * @param   string  $separator
-     * @param   bool    $not
+     * @param   string $aggregate
+     * @param   int $value1
+     * @param   int $value2
+     * @param   string $separator
+     * @param   bool $not
      */
     public function addHavingBetweenCondition(string $aggregate, $value1, $value2, string $separator, bool $not)
     {
-        $this->having[] = array(
+        $this->having[] = [
             'type' => 'havingBetween',
             'aggregate' => $aggregate,
             'value1' => $value1,
             'value2' => $value2,
             'separator' => $separator,
             'not' => $not,
-        );
+        ];
     }
 
     /**
@@ -299,7 +300,7 @@ class SQLStatement
     public function addUpdateColumns(array $columns)
     {
         foreach ($columns as $column => $value) {
-            if($value instanceof Closure){
+            if ($value instanceof Closure) {
                 $expr = new Expression();
                 $value($expr);
                 $value = $expr;
@@ -312,7 +313,7 @@ class SQLStatement
         }
     }
 
-    public function addOrder(array $columns, string $order, string  $nulls = null)
+    public function addOrder(array $columns, string $order, string $nulls = null)
     {
         foreach ($columns as &$column) {
             if ($column instanceof Closure) {

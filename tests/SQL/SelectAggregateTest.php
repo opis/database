@@ -35,7 +35,7 @@ class SelectAggregateTest extends TestCase
         $actual = $this->db->from('users')->count('description');
         $this->assertEquals($expected, $actual);
     }
-    
+
     public function testCountOneColumnDistinct()
     {
         $expected = 'SELECT COUNT(DISTINCT "description") FROM "users"';
@@ -63,6 +63,7 @@ class SelectAggregateTest extends TestCase
         $actual = $this->db->from('users')->avg('age');
         $this->assertEquals($expected, $actual);
     }
+
     public function testTotalSum()
     {
         $expected = 'SELECT SUM("age") FROM "users"';

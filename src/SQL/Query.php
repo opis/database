@@ -58,8 +58,8 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   bool    $value  (optional)
-     * 
+     * @param   bool $value (optional)
+     *
      * @return  Select|SelectStatement
      */
     public function distinct($value = true)
@@ -68,8 +68,8 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|array    $columns
-     * 
+     * @param   string|array $columns
+     *
      * @return  Select
      */
     public function groupBy($columns)
@@ -78,9 +78,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  Select
      */
     public function having($column, Closure $value = null)
@@ -89,9 +89,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
+     * @param   string $column
      * @param   Closure $value
-     * 
+     *
      * @return  Select
      */
     public function andHaving($column, Closure $value = null)
@@ -100,9 +100,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
+     * @param   string $column
      * @param   Closure $value
-     * 
+     *
      * @return  Select
      */
     public function orHaving($column, Closure $value = null)
@@ -111,10 +111,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|array    $columns
-     * @param   string          $order      (optional)
-     * @param   string          $nulls      (optional)
-     * 
+     * @param   string|array $columns
+     * @param   string $order (optional)
+     * @param   string $nulls (optional)
+     *
      * @return  Select|SelectStatement
      */
     public function orderBy($columns, $order = 'ASC', $nulls = null)
@@ -124,7 +124,7 @@ class Query extends BaseStatement
 
     /**
      * @param   int $value
-     * 
+     *
      * @return  Select|SelectStatement
      */
     public function limit($value)
@@ -134,7 +134,7 @@ class Query extends BaseStatement
 
     /**
      * @param   int $value
-     * 
+     *
      * @return  Select|SelectStatement
      */
     public function offset($value)
@@ -143,9 +143,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $table
-     * @param   string  $database   (optional)
-     * 
+     * @param   string $table
+     * @param   string $database (optional)
+     *
      * @return  Select|SelectStatement
      */
     public function into($table, $database = null)
@@ -154,18 +154,18 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   array   $columns    (optional)
-     * 
+     * @param   array $columns (optional)
+     *
      * @return  \Opis\Database\ResultSet
      */
-    public function select($columns = array())
+    public function select($columns = [])
     {
         return $this->buildSelect()->select($columns);
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  mixed|false
      */
     public function column($name)
@@ -174,9 +174,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column     (optional)
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column (optional)
+     * @param   bool $distinct (optional)
+     *
      * @return  int
      */
     public function count($column = '*', $distinct = false)
@@ -185,9 +185,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function avg($column, $distinct = false)
@@ -196,9 +196,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function sum($column, $distinct = false)
@@ -207,9 +207,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function min($column, $distinct = false)
@@ -218,9 +218,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   bool    $distinct   (optional)
-     * 
+     * @param   string $column
+     * @param   bool $distinct (optional)
+     *
      * @return  int|float
      */
     public function max($column, $distinct = false)
@@ -229,11 +229,11 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   array   $tables (optional)
-     * 
+     * @param   array $tables (optional)
+     *
      * @return  int
      */
-    public function delete($tables = array())
+    public function delete($tables = [])
     {
         return $this->buildDelete()->delete($tables);
     }

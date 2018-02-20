@@ -23,12 +23,12 @@ class AlterTable
     protected $table;
 
     /** @var    array */
-    protected $commands = array();
+    protected $commands = [];
 
     /**
      * Constructor
-     * 
-     * @param   string  $table
+     *
+     * @param   string $table
      */
     public function __construct($table)
     {
@@ -36,17 +36,17 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * @param   mixed   $data
-     * 
+     * @param   string $name
+     * @param   mixed $data
+     *
      * @return  $this
      */
     protected function addCommand($name, $data)
     {
-        $this->commands[] = array(
+        $this->commands[] = [
             'type' => $name,
             'data' => $data,
-        );
+        ];
 
         return $this;
     }
@@ -63,27 +63,27 @@ class AlterTable
             'addPrimary' => 'pk',
             'addUnique' => 'uk',
             'addForeignKey' => 'fk',
-            'addIndex' => 'ik'
+            'addIndex' => 'ik',
         ];
 
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_' . $map[$type] . '_' . implode('_', $columns);
         }
 
-        return $this->addCommand($type, array(
-                'name' => $name,
-                'columns' => $columns,
-        ));
+        return $this->addCommand($type, [
+            'name' => $name,
+            'columns' => $columns,
+        ]);
     }
 
     /**
-     * @param   string  $name
-     * @param   string  $type
-     * 
+     * @param   string $name
+     * @param   string $type
+     *
      * @return  AlterColumn
      */
     protected function addColumn($name, $type)
@@ -94,9 +94,9 @@ class AlterTable
     }
 
     /**
-     * @param   string  $column
-     * @param   string  $type
-     * 
+     * @param   string $column
+     * @param   string $type
+     *
      * @return  AlterColumn
      */
     protected function modifyColumn($column, $type)
@@ -124,8 +124,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function dropIndex($name)
@@ -134,8 +134,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function dropUnique($name)
@@ -144,8 +144,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function dropPrimary($name)
@@ -154,8 +154,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function dropForeign($name)
@@ -164,8 +164,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  $this
      */
     public function dropColumn($name)
@@ -184,17 +184,17 @@ class AlterTable
     }
 
     /**
-     * @param   string  $from
-     * @param   string  $to
-     * 
+     * @param   string $from
+     * @param   string $to
+     *
      * @return  $this
      */
     public function renameColumn($from, $to)
     {
-        return $this->addCommand('renameColumn', array(
-                'from' => $from,
-                'column' => new AlterColumn($this, $to),
-        ));
+        return $this->addCommand('renameColumn', [
+            'from' => $from,
+            'column' => new AlterColumn($this, $to),
+        ]);
     }
 
     /**
@@ -234,11 +234,11 @@ class AlterTable
      */
     public function foreign($columns, string $name = null)
     {
-        if(!is_array($columns)){
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
-        if($name === null){
+        if ($name === null) {
             $name = $this->table . '_fk_' . implode('_', $columns);
         }
 
@@ -253,22 +253,22 @@ class AlterTable
     }
 
     /**
-     * @param   string  $column
-     * @param   mixed   $value
-     * 
+     * @param   string $column
+     * @param   mixed $value
+     *
      * @return  $this
      */
     public function setDefaultValue($column, $value)
     {
-        return $this->addCommand('setDefaultValue', array(
-                'column' => $column,
-                'value' => $value,
-        ));
+        return $this->addCommand('setDefaultValue', [
+            'column' => $column,
+            'value' => $value,
+        ]);
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function integer($name)
@@ -277,8 +277,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function float($name)
@@ -287,8 +287,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function double($name)
@@ -297,20 +297,24 @@ class AlterTable
     }
 
     /**
-     * @param   string      $name
-     * @param   int|null    $maximum (optional)
-     * @param   int|null    $decimal (optional)
-     * 
+     * @param   string $name
+     * @param   int|null $maximum (optional)
+     * @param   int|null $decimal (optional)
+     *
      * @return  AlterColumn
      */
-    public function decimal($name, $maximum = null, /** @noinspection PhpUnusedParameterInspection */$decimal = null)
-    {
+    public function decimal(
+        $name,
+        $maximum = null,
+        /** @noinspection PhpUnusedParameterInspection */
+        $decimal = null
+    ) {
         return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function boolean($name)
@@ -319,8 +323,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function binary($name)
@@ -329,9 +333,9 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * @param   int     $length (optional)
-     * 
+     * @param   string $name
+     * @param   int $length (optional)
+     *
      * @return  AlterColumn
      */
     public function string($name, $length = 255)
@@ -340,9 +344,9 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * @param   int     $length (optional)
-     * 
+     * @param   string $name
+     * @param   int $length (optional)
+     *
      * @return  AlterColumn
      */
     public function fixed($name, $length = 255)
@@ -351,8 +355,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function text($name)
@@ -361,8 +365,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function time($name)
@@ -371,8 +375,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function timestamp($name)
@@ -381,8 +385,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function date($name)
@@ -391,8 +395,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function dateTime($name)
@@ -401,8 +405,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toInteger($name)
@@ -411,8 +415,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toFloat($name)
@@ -421,8 +425,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toDouble($name)
@@ -437,14 +441,18 @@ class AlterTable
      * @param null $decimal
      * @return AlterColumn
      */
-    public function toDecimal($name, $maximum = null, /** @noinspection PhpUnusedParameterInspection */$decimal = null)
-    {
+    public function toDecimal(
+        $name,
+        $maximum = null,
+        /** @noinspection PhpUnusedParameterInspection */
+        $decimal = null
+    ) {
         return $this->modifyColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toBoolean($name)
@@ -453,8 +461,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toBinary($name)
@@ -473,9 +481,9 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * @param   int     $length (optional)
-     * 
+     * @param   string $name
+     * @param   int $length (optional)
+     *
      * @return  AlterColumn
      */
     public function toFixed($name, $length = 255)
@@ -484,8 +492,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toText($name)
@@ -494,8 +502,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toTime($name)
@@ -504,8 +512,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toTimestamp($name)
@@ -514,8 +522,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toDate($name)
@@ -524,8 +532,8 @@ class AlterTable
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  AlterColumn
      */
     public function toDateTime($name)

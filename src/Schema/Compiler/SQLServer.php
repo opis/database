@@ -28,14 +28,14 @@ class SQLServer extends Compiler
     protected $wrapper = '[%s]';
 
     /** @var    array */
-    protected $modifiers = array('nullable', 'default', 'autoincrement');
+    protected $modifiers = ['nullable', 'default', 'autoincrement'];
 
     /** @var    string */
     protected $autoincrement = 'IDENTITY';
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeInteger(BaseColumn $column)
@@ -53,26 +53,26 @@ class SQLServer extends Compiler
 
         return 'INTEGER';
     }
-    
+
     /**
-     * @param   BaseColumn  $column
+     * @param   BaseColumn $column
      *
      * @return  string
      */
     protected function handleTypeDecimal(BaseColumn $column)
     {
-    	if (null !== $l = $column->get('length')) {
-    		if (null === $p = $column->get('precision')) {
-    			return 'DECIMAL (' . $this->value($l) . ')';
-    		}
-    		return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
-    	}
-    	return 'DECIMAL';
+        if (null !== $l = $column->get('length')) {
+            if (null === $p = $column->get('precision')) {
+                return 'DECIMAL (' . $this->value($l) . ')';
+            }
+            return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
+        }
+        return 'DECIMAL';
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBoolean(BaseColumn $column)
@@ -81,8 +81,8 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeString(BaseColumn $column)
@@ -91,8 +91,8 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeFixed(BaseColumn $column)
@@ -101,8 +101,8 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeText(BaseColumn $column)
@@ -111,8 +111,8 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBinary(BaseColumn $column)
@@ -121,8 +121,8 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTimestamp(BaseColumn $column)
@@ -131,9 +131,9 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleRenameColumn(AlterTable $table, $data)
@@ -146,7 +146,7 @@ class SQLServer extends Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handleEngine(CreateTable $schema)
@@ -155,36 +155,36 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   string  $old
-     * @param   string  $new
-     * 
+     * @param   string $old
+     * @param   string $new
+     *
      * @return  array
      */
     public function renameTable($old, $new)
     {
-        return array(
+        return [
             'sql' => 'sp_rename ' . $this->wrap($old) . ', ' . $this->wrap($new),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $dsn
-     * 
+     * @param   string $dsn
+     *
      * @return  array
      */
     public function currentDatabase($dsn)
     {
-        return array(
+        return [
             'sql' => 'SELECT SCHEMA_NAME()',
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $database
-     * @param   string  $table
-     * 
+     * @param   string $database
+     * @param   string $table
+     *
      * @return  array
      */
     public function getColumns($database, $table)
@@ -195,9 +195,9 @@ class SQLServer extends Compiler
             . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
             . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
 
-        return array(
+        return [
             'sql' => $sql,
-            'params' => array($database, $table),
-        );
+            'params' => [$database, $table],
+        ];
     }
 }

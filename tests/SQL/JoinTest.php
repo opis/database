@@ -26,10 +26,10 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id"';
         $actual = $this->db->from('users')
-                            ->join('profiles', function($join){
-                                $join->on('users.id', 'profiles.id');
-                            })
-                            ->select();
+            ->join('profiles', function ($join) {
+                $join->on('users.id', 'profiles.id');
+            })
+            ->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -37,7 +37,7 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" >= "profiles"."id"';
         $actual = $this->db->from('users')
-            ->join('profiles', function($join){
+            ->join('profiles', function ($join) {
                 $join->on('users.id', 'profiles.id', '>=');
             })
             ->select();
@@ -48,7 +48,7 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND "users"."email" = "profile"."primary_email"';
         $actual = $this->db->from('users')
-            ->join('profiles', function($join){
+            ->join('profiles', function ($join) {
                 $join->on('users.id', 'profiles.id')
                     ->andOn('users.email', 'profile.primary_email');
             })
@@ -60,7 +60,7 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" OR "users"."email" = "profile"."primary_email"';
         $actual = $this->db->from('users')
-            ->join('profiles', function($join){
+            ->join('profiles', function ($join) {
                 $join->on('users.id', 'profiles.id')
                     ->orOn('users.email', 'profile.primary_email');
             })
@@ -72,9 +72,9 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND ("users"."email" = "profiles"."primary_email" OR "users"."email" = "profiles"."secondary_email")';
         $actual = $this->db->from('users')
-            ->join('profiles', function($join){
+            ->join('profiles', function ($join) {
                 $join->on('users.id', 'profiles.id')
-                    ->andOn(function($join){
+                    ->andOn(function ($join) {
                         $join->on('users.email', 'profiles.primary_email')
                             ->orOn('users.email', 'profiles.secondary_email');
                     });
@@ -87,7 +87,7 @@ class JoinTest extends TestCase
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" AS "p" ON "users"."id" = "p"."id"';
         $actual = $this->db->from('users')
-            ->join(['profiles' => 'p'], function($join){
+            ->join(['profiles' => 'p'], function ($join) {
                 $join->on('users.id', 'p.id');
             })
             ->select();

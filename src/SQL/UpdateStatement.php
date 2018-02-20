@@ -27,7 +27,7 @@ class UpdateStatement extends BaseStatement
     public function __construct($table, SQLStatement $statement = null)
     {
         if (!is_array($table)) {
-            $table = array($table);
+            $table = [$table];
         }
 
         parent::__construct($statement);

@@ -27,8 +27,8 @@ class MySQL extends Compiler
     protected $wrapper = '`%s`';
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeInteger(BaseColumn $column)
@@ -48,24 +48,24 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDecimal(BaseColumn $column)
     {
         if (null !== $l = $column->get('length')) {
-        	if (null === $p = $column->get('precision')) {
-        		return 'DECIMAL (' . $this->value($l) . ')';
-        	}
+            if (null === $p = $column->get('precision')) {
+                return 'DECIMAL (' . $this->value($l) . ')';
+            }
             return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
         }
         return 'DECIMAL';
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBoolean(BaseColumn $column)
@@ -74,8 +74,8 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeText(BaseColumn $column)
@@ -94,8 +94,8 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBinary(BaseColumn $column)
@@ -114,9 +114,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropPrimaryKey(AlterTable $table, $data)
@@ -125,9 +125,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropUniqueKey(AlterTable $table, $data)
@@ -136,9 +136,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropIndex(AlterTable $table, $data)
@@ -147,9 +147,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropForeignKey(AlterTable $table, $data)
@@ -158,9 +158,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleSetDefaultValue(AlterTable $table, $data)
@@ -170,9 +170,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropDefaultValue(AlterTable $table, $data)

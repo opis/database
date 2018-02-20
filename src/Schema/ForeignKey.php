@@ -26,15 +26,15 @@ class ForeignKey
     protected $refColumns;
 
     /** @var    array */
-    protected $actions = array();
+    protected $actions = [];
 
     /** @var    array */
     protected $columns;
 
     /**
      * Constructor
-     * 
-     * @param   array   $columns
+     *
+     * @param   array $columns
      */
     public function __construct($columns)
     {
@@ -42,16 +42,16 @@ class ForeignKey
     }
 
     /**
-     * @param   string  $on
-     * @param   string  $action
-     * 
+     * @param   string $on
+     * @param   string $action
+     *
      * @return  $this
      */
     protected function addAction($on, $action)
     {
         $action = strtoupper($action);
 
-        if (!in_array($action, array('RESTRICT', 'CASCADE', 'NO ACTION', 'SET NULL'))) {
+        if (!in_array($action, ['RESTRICT', 'CASCADE', 'NO ACTION', 'SET NULL'])) {
             return $this;
         }
 
@@ -92,20 +92,20 @@ class ForeignKey
     }
 
     /**
-     * @param   string  $table
-     * @param   string  $column
+     * @param   string $table
+     * @param   string $column
      * @return  $this
      */
     public function references($table, $column)
     {
         $this->refTable = $table;
-        $this->refColumns = array($column);
+        $this->refColumns = [$column];
         return $this;
     }
 
     /**
-     * @param   string  $action
-     * 
+     * @param   string $action
+     *
      * @return  $this
      */
     public function onDelete($action)
@@ -114,8 +114,8 @@ class ForeignKey
     }
 
     /**
-     * @param   string  $action
-     * 
+     * @param   string $action
+     *
      * @return  $this
      */
     public function onUpdate($action)

@@ -28,13 +28,13 @@ class Compiler
     protected $wrapper = '"%s"';
 
     /** @var    array */
-    protected $params = array();
+    protected $params = [];
 
     /** @var    array */
-    protected $modifiers = array('unsigned', 'nullable', 'default', 'autoincrement');
+    protected $modifiers = ['unsigned', 'nullable', 'default', 'autoincrement'];
 
     /** @var    array */
-    protected $serials = array('tiny', 'small', 'normal', 'medium', 'big');
+    protected $serials = ['tiny', 'small', 'normal', 'medium', 'big'];
 
     /** @var    string */
     protected $autoincrement = 'AUTO_INCREMENT';
@@ -44,8 +44,8 @@ class Compiler
 
     /**
      * Constructor
-     * 
-     * @param   Connection  $connection
+     *
+     * @param   Connection $connection
      */
     public function __construct(Connection $connection)
     {
@@ -54,8 +54,8 @@ class Compiler
 
     /**
      * Sets compiler options
-     * 
-     * @param   array   $options
+     *
+     * @param   array $options
      */
     public function setOptions(array $options)
     {
@@ -66,8 +66,8 @@ class Compiler
 
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  string
      */
     protected function wrap($name)
@@ -76,19 +76,19 @@ class Compiler
     }
 
     /**
-     * @param   array   $value
-     * @param   string  $separator  (optional)
-     * 
+     * @param   array $value
+     * @param   string $separator (optional)
+     *
      * @return  string
      */
     protected function wrapArray(array $value, $separator = ', ')
     {
-        return implode($separator, array_map(array($this, 'wrap'), $value));
+        return implode($separator, array_map([$this, 'wrap'], $value));
     }
 
     /**
-     * @param   mixed   $value
-     * 
+     * @param   mixed $value
+     *
      * @return  float|int|string
      */
     protected function value($value)
@@ -109,13 +109,13 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn[]    $columns
-     * 
+     * @param   BaseColumn[] $columns
+     *
      * @return  string
      */
     protected function handleColumns(array $columns)
     {
-        $sql = array();
+        $sql = [];
 
         foreach ($columns as $column) {
             $line = $this->wrap($column->getName());
@@ -128,8 +128,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleColumnType(BaseColumn $column)
@@ -145,8 +145,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleColumnModifiers(BaseColumn $column)
@@ -168,8 +168,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeInteger(BaseColumn $column)
@@ -178,8 +178,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeFloat(BaseColumn $column)
@@ -188,8 +188,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDouble(BaseColumn $column)
@@ -198,8 +198,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDecimal(BaseColumn $column)
@@ -208,8 +208,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn   $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBoolean(BaseColumn $column)
@@ -218,8 +218,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeBinary(BaseColumn $column)
@@ -228,8 +228,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeText(BaseColumn $column)
@@ -238,8 +238,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeString(BaseColumn $column)
@@ -248,8 +248,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeFixed(BaseColumn $column)
@@ -258,8 +258,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTime(BaseColumn $column)
@@ -268,8 +268,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeTimestamp(BaseColumn $column)
@@ -278,8 +278,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDate(BaseColumn $column)
@@ -288,8 +288,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleTypeDateTime(BaseColumn $column)
@@ -298,8 +298,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleModifierUnsigned(BaseColumn $column)
@@ -308,8 +308,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleModifierNullable(BaseColumn $column)
@@ -322,8 +322,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleModifierDefault(BaseColumn $column)
@@ -332,8 +332,8 @@ class Compiler
     }
 
     /**
-     * @param   BaseColumn  $column
-     * 
+     * @param   BaseColumn $column
+     *
      * @return  string
      */
     protected function handleModifierAutoincrement(BaseColumn $column)
@@ -347,7 +347,7 @@ class Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handlePrimaryKey(CreateTable $schema)
@@ -361,7 +361,7 @@ class Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handleUniqueKeys(CreateTable $schema)
@@ -372,7 +372,7 @@ class Compiler
             return '';
         }
 
-        $sql = array();
+        $sql = [];
 
         foreach ($schema->getUniqueKeys() as $name => $columns) {
             $sql[] = 'CONSTRAINT ' . $this->wrap($name) . ' UNIQUE (' . $this->wrapArray($columns) . ')';
@@ -383,7 +383,7 @@ class Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string[]
      */
     protected function handleIndexKeys(CreateTable $schema)
@@ -391,10 +391,10 @@ class Compiler
         $indexes = $schema->getIndexes();
 
         if (empty($indexes)) {
-            return array();
+            return [];
         }
 
-        $sql = array();
+        $sql = [];
         $table = $this->wrap($schema->getTableName());
 
         foreach ($indexes as $name => $columns) {
@@ -406,7 +406,7 @@ class Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handleForeignKeys(CreateTable $schema)
@@ -418,7 +418,7 @@ class Compiler
             return '';
         }
 
-        $sql = array();
+        $sql = [];
 
         foreach ($keys as $name => $key) {
             $cmd = 'CONSTRAINT ' . $this->wrap($name) . ' FOREIGN KEY (' . $this->wrapArray($key->getColumns()) . ') ';
@@ -436,7 +436,7 @@ class Compiler
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  string
      */
     protected function handleEngine(CreateTable $schema)
@@ -449,9 +449,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropPrimaryKey(AlterTable $table, $data)
@@ -460,9 +460,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropUniqueKey(AlterTable $table, $data)
@@ -471,9 +471,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropIndex(AlterTable $table, $data)
@@ -482,9 +482,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropForeignKey(AlterTable $table, $data)
@@ -493,9 +493,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropColumn(AlterTable $table, $data)
@@ -504,9 +504,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  null
      */
     protected function handleRenameColumn(AlterTable $table, $data)
@@ -515,31 +515,31 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleModifyColumn(AlterTable $table, $data)
     {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY COLUMN ' . $this->handleColumns(array($data));
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY COLUMN ' . $this->handleColumns([$data]);
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddColumn(AlterTable $table, $data)
     {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD COLUMN ' . $this->handleColumns(array($data));
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD COLUMN ' . $this->handleColumns([$data]);
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddPrimary(AlterTable $table, $data)
@@ -549,9 +549,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddUnique(AlterTable $table, $data)
@@ -561,9 +561,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddIndex(AlterTable $table, $data)
@@ -572,9 +572,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleAddForeign(AlterTable $table, $data)
@@ -587,9 +587,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleSetDefaultValue(AlterTable $table, $data)
@@ -599,9 +599,9 @@ class Compiler
     }
 
     /**
-     * @param   AlterTable  $table
-     * @param   mixed       $data
-     * 
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
      * @return  string
      */
     protected function handleDropDefaultValue(AlterTable $table, $data)
@@ -616,40 +616,40 @@ class Compiler
     public function getParams()
     {
         $params = $this->params;
-        $this->params = array();
+        $this->params = [];
         return $params;
     }
 
     /**
-     * @param   string  $dsn
-     * 
+     * @param   string $dsn
+     *
      * @return  array
      */
     public function currentDatabase($dsn)
     {
-        return array(
+        return [
             'sql' => 'SELECT database()',
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $old
-     * @param   string  $new
-     * 
+     * @param   string $old
+     * @param   string $new
+     *
      * @return  array
      */
     public function renameTable($old, $new)
     {
-        return array(
+        return [
             'sql' => 'RENAME TABLE ' . $this->wrap($old) . ' TO ' . $this->wrap($new),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $database
-     * 
+     * @param   string $database
+     *
      * @return  array
      */
     public function getTables($database)
@@ -658,16 +658,16 @@ class Compiler
             . '.' . $this->wrap('tables') . ' WHERE table_type = ? AND table_schema = ? ORDER BY '
             . $this->wrap('table_name') . ' ASC';
 
-        return array(
+        return [
             'sql' => $sql,
-            'params' => array('BASE TABLE', $database),
-        );
+            'params' => ['BASE TABLE', $database],
+        ];
     }
 
     /**
-     * @param   string  $database
-     * @param   string  $table
-     * 
+     * @param   string $database
+     * @param   string $table
+     *
      * @return  array
      */
     public function getColumns($database, $table)
@@ -678,15 +678,15 @@ class Compiler
             . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
             . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
 
-        return array(
+        return [
             'sql' => $sql,
-            'params' => array($database, $table),
-        );
+            'params' => [$database, $table],
+        ];
     }
 
     /**
      * @param   CreateTable $schema
-     * 
+     *
      * @return  array
      */
     public function create(CreateTable $schema)
@@ -699,31 +699,31 @@ class Compiler
         $sql .= $this->handleForeignKeys($schema);
         $sql .= "\n)" . $this->handleEngine($schema);
 
-        $commands = array();
+        $commands = [];
 
-        $commands[] = array(
+        $commands[] = [
             'sql' => $sql,
             'params' => $this->getParams(),
-        );
-        
+        ];
+
         foreach ($this->handleIndexKeys($schema) as $index) {
-            $commands[] = array(
+            $commands[] = [
                 'sql' => $index,
-                'params' => array(),
-            );
+                'params' => [],
+            ];
         }
 
         return $commands;
     }
 
     /**
-     * @param   AlterTable  $schema
-     * 
+     * @param   AlterTable $schema
+     *
      * @return  array
      */
     public function alter(AlterTable $schema)
     {
-        $commands = array();
+        $commands = [];
 
         foreach ($schema->getCommands() as $command) {
             $type = 'handle' . ucfirst($command['type']);
@@ -733,38 +733,38 @@ class Compiler
                 continue;
             }
 
-            $commands[] = array(
+            $commands[] = [
                 'sql' => $sql,
                 'params' => $this->getParams(),
-            );
+            ];
         }
 
         return $commands;
     }
 
     /**
-     * @param   string  $table
-     * 
+     * @param   string $table
+     *
      * @return  array
      */
     public function drop($table)
     {
-        return array(
+        return [
             'sql' => 'DROP TABLE ' . $this->wrap($table),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 
     /**
-     * @param   string  $table
-     * 
+     * @param   string $table
+     *
      * @return  array
      */
     public function truncate($table)
     {
-        return array(
+        return [
             'sql' => 'TRUNCATE TABLE ' . $this->wrap($table),
-            'params' => array(),
-        );
+            'params' => [],
+        ];
     }
 }

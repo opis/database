@@ -41,10 +41,10 @@ class HavingStatement
     }
 
     /**
-     * @param   string|Closure  $column
-     * @param   Closure   $value
-     * @param   string  $separator
-     * 
+     * @param   string|Closure $column
+     * @param   Closure $value
+     * @param   string $separator
+     *
      * @return  $this
      */
     protected function addCondition($column, Closure $value = null, $separator): self
@@ -66,9 +66,9 @@ class HavingStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
     public function having($column, Closure $value = null): self
@@ -77,9 +77,9 @@ class HavingStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
     public function andHaving($column, Closure $value = null): self
@@ -88,9 +88,9 @@ class HavingStatement
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
-     * 
+     * @param   string $column
+     * @param   Closure $value (optional)
+     *
      * @return  $this
      */
     public function orHaving($column, Closure $value = null): self

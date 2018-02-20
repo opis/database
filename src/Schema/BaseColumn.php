@@ -26,13 +26,13 @@ class BaseColumn
     protected $type;
 
     /** @var    array */
-    protected $properties = array();
+    protected $properties = [];
 
     /**
      * Constructor
-     * 
-     * @param   string      $name
-     * @param   string|null $type   (optional)
+     *
+     * @param   string $name
+     * @param   string|null $type (optional)
      */
     public function __construct($name, $type = null)
     {
@@ -65,8 +65,8 @@ class BaseColumn
     }
 
     /**
-     * @param   string  $type
-     * 
+     * @param   string $type
+     *
      * @return  $this
      */
     public function setType($type)
@@ -76,9 +76,9 @@ class BaseColumn
     }
 
     /**
-     * @param   string  $name
-     * @param   mixed   $value
-     * 
+     * @param   string $name
+     * @param   mixed $value
+     *
      * @return  $this
      */
     public function set($name, $value)
@@ -88,8 +88,8 @@ class BaseColumn
     }
 
     /**
-     * @param   string  $name
-     * 
+     * @param   string $name
+     *
      * @return  bool
      */
     public function has($name)
@@ -98,9 +98,9 @@ class BaseColumn
     }
 
     /**
-     * @param   string      $name
-     * @param   mixed|null  $default    (optional)
-     * 
+     * @param   string $name
+     * @param   mixed|null $default (optional)
+     *
      * @return  mixed|null
      */
     public function get($name, $default = null)
@@ -109,15 +109,15 @@ class BaseColumn
     }
 
     /**
-     * @param   string  $value
-     * 
+     * @param   string $value
+     *
      * @return  $this
      */
     public function size($value)
     {
         $value = strtolower($value);
 
-        if (!in_array($value, array('tiny', 'small', 'normal', 'medium', 'big'))) {
+        if (!in_array($value, ['tiny', 'small', 'normal', 'medium', 'big'])) {
             return $this;
         }
 
@@ -143,8 +143,8 @@ class BaseColumn
     }
 
     /**
-     * @param   string  $comment
-     * 
+     * @param   string $comment
+     *
      * @return  $this
      */
     public function description($comment)
@@ -153,8 +153,8 @@ class BaseColumn
     }
 
     /**
-     * @param   mixed   $value
-     * 
+     * @param   mixed $value
+     *
      * @return  $this
      */
     public function defaultValue($value)
@@ -163,8 +163,8 @@ class BaseColumn
     }
 
     /**
-     * @param   bool|true   $value  (optional)
-     * 
+     * @param   bool|true $value (optional)
+     *
      * @return  $this
      */
     public function unsigned($value = true)
@@ -173,12 +173,12 @@ class BaseColumn
     }
 
     /**
-     * @param   mixed   $value
+     * @param   mixed $value
      *
      * @return  $this
      */
     public function length($value)
     {
-    	return $this->set('length', $value);
+        return $this->set('length', $value);
     }
 }

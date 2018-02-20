@@ -38,12 +38,12 @@ class Delete extends DeleteStatement
 
     /**
      * Delete records
-     * 
-     * @param   string|array    $tables (optional)
-     * 
+     *
+     * @param   string|array $tables (optional)
+     *
      * @return  int
      */
-    public function delete($tables = array())
+    public function delete($tables = [])
     {
         parent::delete($tables);
         $compiler = $this->connection->getCompiler();
