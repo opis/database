@@ -181,6 +181,12 @@ class SQLStatement
         $join = new Join();
         $closure($join);
 
+        if ($table instanceof Closure) {
+            $expr = new Expression();
+            $table($expr);
+            $table = $expr;
+        }
+
         if (!is_array($table)) {
             $table = array($table);
         }
@@ -308,6 +314,14 @@ class SQLStatement
 
     public function addOrder(array $columns, string $order, string  $nulls = null)
     {
+        foreach ($columns as &$column) {
+            if ($column instanceof Closure) {
+                $expr = new Expression();
+                $column($expr);
+                $column = $expr;
+            }
+        }
+
         $order = strtoupper($order);
 
         if ($order !== 'ASC' && $order !== 'DESC') {
