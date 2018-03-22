@@ -17,6 +17,7 @@
 
 namespace Opis\Database\Schema\Compiler;
 
+use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\Compiler;
 use Opis\Database\Schema\BaseColumn;
 use Opis\Database\Schema\CreateTable;
@@ -99,6 +100,29 @@ class SQLite extends Compiler
     protected function handleEngine(CreateTable $schema)
     {
         return '';
+    }
+
+    /**
+     * @param   AlterTable $table
+     * @param   mixed $data
+     *
+     * @return  string
+     */
+    protected function handleAddUnique(AlterTable $table, $data)
+    {
+        return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
+    }
+
+    /**
+     * @param AlterTable $table
+     * @param mixed $data
+     * @return string
+     */
+    protected function handleAddIndex(AlterTable $table, $data)
+    {
+        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
     }
 
     /**
