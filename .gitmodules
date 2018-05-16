@@ -1,1 +1,4 @@
 
+[submodule "docs/shared"]
+	path = docs/shared
+	url = https://github.com/opis/opis.github.io.git
