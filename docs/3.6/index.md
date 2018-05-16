@@ -40,7 +40,7 @@ If you are unable to use [Composer] you can download the [.tar.gz] or the [.zip]
 archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
-require_once 'path/to/{{page.lib}}-{{page.version}}/autoload.php';
+require_once 'path/to/{{page.lib.name}}-{{page.lib.version}}/autoload.php';
 ```
 
 
