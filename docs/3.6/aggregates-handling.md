@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Working with aggregates
 description: Learn how to work with aggregates
 canonical: /database/4.x/aggregates-handling

@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Relationships
 description: Learn about ORM relationships
 ---

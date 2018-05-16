@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Object Relational Mapper
 description: Learn about Opis Database ORM
 ---
@@ -87,7 +87,7 @@ If you want to provide a custom primary key you must set the `$primaryKeyType` p
 
 **Important!**{:.important}
 You must make sure that the generated primary key is a unique value.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 
 ```php

@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: About
 description: Getting started with Opis Database
 canonical: /database/4.x/

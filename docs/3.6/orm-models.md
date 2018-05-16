@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Working with models
 description: Learn how to work with models
 ---
@@ -63,7 +63,7 @@ $article->save();
 **Important!**{:.important}
 The `link` and the `unlink` methods are available 
 starting with version `3.3.0`.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 Creating related models that have a many-to-many relationship is a bit different since 
 they use a junction table. Linking together two related models is done by using the `link` method.

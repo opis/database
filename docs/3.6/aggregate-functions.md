@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Aggregate functions
 description: Learn about aggregate functions
 canonical: /database/4.x/aggregate-functions

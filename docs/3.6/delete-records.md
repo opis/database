@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Delete records
 description: Learn how to delete existing records
 canonical: /database/4.x/delete-records

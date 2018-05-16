@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Update records
 description: Learn how to update existing records
 canonical: /database/4.x/update-records

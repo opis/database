@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Basic operations
 description: Learn how to use Opis Database ORM
 ---
@@ -196,7 +196,7 @@ $page->save();
 
 **Important!**{:.important}
 This feature is available starting with version `3.3.2`.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 
 You can define a new casting type or how a casting operation is handled by using
@@ -286,7 +286,7 @@ $users = User::fullAged()
 **Important!**{:.important}
 All records returned by a query that uses `joins` 
 will be marked as [read-only records](#read-only-records).
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 A possible use case for joins is when you want, for example, to return a list with 
 all users that have written at least one article.
@@ -425,7 +425,7 @@ values through mass assignment.
 **Important!**{:.important}
 The `$guarded` attributes serve as a *black list* while 
 the `$fillable` attributes serve as a *white list*. You should only use one of this two, not both.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 ```php
 class User extends BaseModel

@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Ordering criteria
 description: Learn how to order results
 canonical: /database/4.x/ordering-criteria

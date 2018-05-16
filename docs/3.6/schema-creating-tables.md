@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Creating tables
 description: Learn how to create new tables
 canonical: /database/4.x/schema-creating-tables
@@ -42,31 +42,129 @@ $db->schema()->create('users', function($table){
 ```
 
 ## Adding columns
+	
+The schema builder provides a series of methods that allows you to add columns,
+having different data types, to a table. 
+The first argument that these methods take, represents the column name. 
+Here is a list of supported column types and their associated methods:
 
-Below is a list containing all columns types that you may use when building your tables.	
+##### Integer
 
-| Command | Description |
-|---------|-------------|
-|`$table->integer('age');`{:.language-php .nobg} | Adds an `INTEGER` equivalent column to the table.|
-|`$table->float('height');`{:.language-php .nobg}|Adds a `FLOAT` equivalent column to the table.|
-|`$table->double('distance');`{:.language-php .nobg}|Adds a `DOUBLE` equivalent column to the table.|
-|`$table->decimal('ammount');`{:.language-php .nobg}|Adds a `DECIMAL` equivalent column to the table.|
-|`$table->decimal('ammount', 16, 4);`{:.language-php .nobg}|Adds a `DECIMAL` equivalent column to the table and specify column's precision.|
-|`$table->boolean('registered');`{:.language-php .nobg}|Adds a `BOOLEAN` equivalent column to the table.|
-|`$table->binary('picture');`{:.language-php .nobg}|Adds a `BLOB` equivalent column to the table.|
-|`$table->string('email');`{:.language-php .nobg}|Adds a `VARCHAR` equivalent column to the table.|
-|`$table->string('email', 128);`{:.language-php .nobg}|Adds a `VARCHAR` equivalent column to the table and specify the column's length.|
-|`$table->fixed('country_code');`{:.language-php .nobg}|Adds a `CHAR` equivalent column to the table.|
-|`$table->fixed('country_code', 2);`{:.language-php .nobg}|Adds a `CHAR` equivalent column to the table and specify the column's length.|
-|`$table->text('description');`{:.language-php .nobg}|Adds a `TEXT` equivalent column to the table.|
-|`$table->time('sunrise');`{:.language-php .nobg}|Adds a `TIME` equivalent column to the table.|
-|`$table->timestamp('created_at');`{:.language-php .nobg}|Adds a `TIMESTAMP` equivalent column to the table.|
-|`$table->string('email');`{:.language-php .nobg}|Adds a `VARCHAR` equivalent column to the table.|
-|`$table->date('created_at');`{:.language-php .nobg}|Adds a `DATE` equivalent column to the table.|
-|`$table->dateTime('created_at');`{:.language-php .nobg}|Adds a `DATETIME` equivalent column to the table.|
-{:.table .table-bordered .box-highlight}
+```php
+$table->integer('age');
+```
 
-#### Column's size 
+Adds an `INTEGER` equivalent column
+
+##### Float
+
+```php
+$table->float('height');
+```
+
+Adds a `FLOAT` equivalent column
+
+##### Double
+
+```php
+$table->double('distance');
+```
+
+Adds a `DOUBLE` equivalent column
+
+##### Decimal
+
+```php
+// Default precision
+$table->decimal('ammount');
+
+// Explicit precision
+$table->decimal('ammount', 16, 4);
+```
+
+Adds a `DECIMAL` equivalent column, and optionally specify decimal's precision
+
+##### Boolean
+
+```php
+$table->boolean('registered');
+```
+
+Adds a `BOOLEAN` equivalent column
+
+##### Binary
+
+```php
+$table->binary('picture');
+```
+
+Adds a `BLOB` equivalent column
+
+##### String
+
+```php
+// Default length of 255
+$table->string('email');
+
+// Explicit length
+$table->string('email', 128)
+```
+
+Adds a `VARCHAR` equivalent column, and optionally specify its length
+
+##### Fixed
+
+```php
+// Default length of 255
+$table->fixed('country_code');
+
+// Explicit length
+$table->fixed('country_code', 2);
+```
+
+Adds a `CHAR` equivalent column, and optionally specify its lengths
+
+##### Text
+
+```php
+$table->text('description');
+```
+
+Adds a `TEXT` equivalent column
+
+##### Time
+
+```php
+$table->time('sunrise');
+```
+
+Adds a `TIME` equivalent column
+
+##### Timestamp
+
+```php
+$table->timestamp('created_at');
+```
+
+Adds a `TIMESTAMP` equivalent column
+
+##### Date
+
+```php
+$table->date('birthday');
+```
+
+Adds a `DATE` equivalent column
+
+##### DateTime
+
+```php
+$table->dateTime('appointment');
+```
+
+Adds a `DATETIME` equivalent column
+
+### Column's size 
 {: #column-s-size }
 
 For `integer`, `text` and `binary` types you can specify the column size by calling 
@@ -80,26 +178,26 @@ $db->schema()->create('users', function($table){
 }));
 ```
 
-| Command | Description |
-|---------|-------------|
-|`$table->integer('column')->size('tiny');`{:.language-php .nobg}|Adds an `TINYINT` equivalent column to the table.|
-|`$table->integer('column')->size('small');`{:.language-php .nobg}|Adds an `SMALLINT` equivalent column to the table.|
-|`$table->integer('column')->size('normal');`{:.language-php .nobg}|Adds an `INTEGER` equivalent column to the table.|
-|`$table->integer('column')->size('medium');`{:.language-php .nobg}|Adds an MEDIUMINT equivalent column to the table.|
-|`$table->integer('column')->size('big');`{:.language-php .nobg}|Adds an BIGINT equivalent column to the table.|
-|`$table->text('column')->size('tiny');`{:.language-php .nobg}|Adds an `TINYTEXT` equivalent column to the table.|
-|`$table->text('column')->size('small');`{:.language-php .nobg}|Adds an `TINYTEXT` equivalent column to the table.|
-|`$table->text('column')->size('normal');`{:.language-php .nobg}|Adds an `TEXT` equivalent column to the table.|
-|`$table->text('column')->size('medium');`{:.language-php .nobg}|Adds an `MEDIUMTEXT` equivalent column to the table.|
-|`$table->text('column')->size('big');`{:.language-php .nobg}|Adds an `LONGTEXT` equivalent column to the table.|
-|`$table->binary('column')->size('tiny');`{:.language-php .nobg}|Adds an `TINYBLOB` equivalent column to the table.|
-|`$table->binary('column')->size('small');`{:.language-php .nobg}|Adds an `TINYBLOB` equivalent column to the table.|
-|`$table->binary('column')->size('normal');`{:.language-php .nobg}|Adds an `BLOB` equivalent column to the table.|
-|`$table->binary('column')->size('medium');`{:.language-php .nobg}|Adds an `MEDIUMBLOB` equivalent column to the table.|
-|`$table->binary('column')->size('big');`{:.language-php .nobg}|Adds an `LONGBLOB` equivalent column to the table.|
+| Type | Size | Description |
+|------|------|------------|
+|integer|tiny|Adds an `TINYINT` equivalent column to the table|
+|integer|small|Adds an `SMALLINT` equivalent column to the table|
+|integer|normal|Adds an `INTEGER` equivalent column to the table|
+|integer|medium|Adds an `MEDIUMINT` equivalent column to the table|
+|integer|big|Adds an `BIGINT` equivalent column to the table|
+|text|tiny|Adds an `TINYTEXT` equivalent column to the table|
+|text|small|Adds an `TINYTEXT` equivalent column to the table|
+|text|small|Adds an `TINYTEXT` equivalent column to the table|
+|text|medium|Adds an `MEDIUMTEXT` equivalent column to the table|
+|text|big|Adds an `LONGTEXT` equivalent column to the table|
+|binary|tiny|Adds an `TINYBLOB` equivalent column to the table|
+|binary|small|Adds an `TINYBLOB` equivalent column to the table|
+|binary|normal|Adds an `BLOB` equivalent column to the table|
+|binary|medium|Adds an `MEDIUMBLOB` equivalent column to the table|
+|binary|big|Adds an `LONGBLOB` equivalent column to the table|
 {:.table .table-bordered .box-highlight}
 
-#### Column's properties 
+### Column's properties 
 {: #column-s-properties }
 
 You can specify that an `integer` column contains an unsigned integer value 
@@ -121,7 +219,7 @@ Specifying that a column in not nullable id bone by using the `notNull` method.
 $table->string('email')->notNull();
 ```
 
-#### Column's constraints 
+### Column's constraints 
 {: #column-s-constraints }
 
 Adding a primary key constraint is done by using the `primary` method. 
@@ -147,7 +245,7 @@ will be automatically added to the column.
 $table->integer('id')->autoincrement();
 ```
 
-#### Indexing a column
+### Indexing a column
 
 You can specify that the current column should be indexed, by calling the `index` method.
 The name of the newly added index will be the same as the column's name.
@@ -175,7 +273,7 @@ $db->schema()->create('users', function($table){
 
 **Important!**{:.important}
 You can add only one primary key per table.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 Adding a primary key that has a custom name can be done by passing as arguments 
 to the `primary` method the name of the primary key and the name of the column on 

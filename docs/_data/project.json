@@ -1,16 +1,16 @@
 {
-    "title": "Opis ORM",
-    "name": "ORM",
-    "github": "https://github.com/opis/orm",
-    "version": "1.0.x-dev",
-    "url": "/orm",
+    "title": "Opis Database",
+    "name": "Database",
+    "github": "https://github.com/opis/database",
+    "version": "4.0.x-dev",
+    "url": "/database",
     "chapters": true,
     "copyright": {
         "owner": "The Opis Project",
         "start": "2017",
         "end": "2018"
     },
-    "title_suffix": " | Opis ORM",
+    "title_suffix": " | Opis Database",
     "ga": false,
     "logo": "/assets/v2/logo.svg",
     "favicon": "/assets/v2/favicon.png",
@@ -33,6 +33,6 @@
     ],
     "current_version": 0,
     "versions": [
-        {"title": "Version 1.x", "url": "/orm/1.x"}
+        {"title": "Version 3.6", "url": "/database/3.6"}
     ]
 }

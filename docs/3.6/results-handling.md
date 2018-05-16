@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Results handling
 description: Learn how to handle the result set of a query
 canonical: /database/4.x/results-handling

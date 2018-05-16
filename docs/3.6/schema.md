@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Schema
 description: Learn about Opis Database schema
 canonical: /database/4.x/schema
@@ -11,10 +11,10 @@ canonical: /database/4.x/schema
 2. [Table information](#table-information)
 3. [Getting the columns of a table](#getting-the-columns-of-a-table)
 
-**Important!**{:.important}
+**Important!**
 At this moment all the features presented here are available only for
 **MySQL**, **SQLServer**, **PostgreSQL** and **SQLite** database systems.
-{:.well .text-primary}
+{:.alert.alert-info}
 
 ## Introduction
 

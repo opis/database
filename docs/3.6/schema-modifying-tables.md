@@ -1,6 +1,6 @@
 ---
 layout: project
-version: 3.6
+version: 3.x
 title: Modifying tables
 description: Learn how to alter existing new tables
 canonical: /database/4.x/schema-modifying-tables
@@ -198,23 +198,14 @@ $db->schema()->alter('users', function($table){
 {: #changing-a-column-s-type }
 
 When a table is altered you may change the types of its columns by using the following methods:
+`toInteger`, `toFloat`, `toDouble`, `toDecimal`, `toBoolean`, `toBinary`, `toString`,
+`toFixed`, `toText`, `toTime`, `toTimestamp`, `toDate`, `toDateTime`.
 
-| Command | Description |
-|---------|-------------|
-|`$table->toInteger('column');`{:.language-php .nobg}|Changes the type of the column to `INTEGER` equivalent.|
-|`$table->toFloat('column');`{:.language-php .nobg}|Changes the type of the column to `FLOAT` equivalent.|
-|`$table->toDouble('column');`{:.language-php .nobg}|Changes the type of the column to `DOUBLE` equivalent.|
-|`$table->toDecimal('column');`{:.language-php .nobg}|Changes the type of the column to `DECIMAL` equivalent.|
-|`$table->toBoolean('column');`{:.language-php .nobg}|Changes the type of the column to `BOOLEAN` equivalent.|
-|`$table->toBinary('column');`{:.language-php .nobg}|Changes the type of the column to `BLOB` equivalent.|
-|`$table->toString('column');`{:.language-php .nobg}|Changes the type of the column to `VARCHAR` equivalent.|
-|`$table->toFixed('column');`{:.language-php .nobg}|Changes the type of the column to `CHAR` equivalent.|
-|`$table->toText('column');`{:.language-php .nobg}|Changes the type of the column to `TEXT` equivalent.|
-|`$table->toTime('column');`{:.language-php .nobg}|Changes the type of the column to `TIME` equivalent.|
-|`$table->toTimestamp('column');`{:.language-php .nobg}|Changes the type of the column to `TIMESTAMP` equivalent.|
-|`$table->toDate('column');`{:.language-php .nobg}|Changes the type of the column to `DATE` equivalent.|
-|`$table->toDateTime('column');`{:.language-php .nobg}|Changes the type of the column to `DATETIME` equivalent.|
-{:.table .table-bordered .box-highlight}
+```php
+$db->schema()->alter('users', function($table){
+    $table->toDouble('height');
+}));
+```
 
 ## Truncate tables
 
