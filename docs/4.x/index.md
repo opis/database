@@ -20,7 +20,7 @@ Firebird, IBM DB2, Oracle, NuoDB.
 **Opis Database** is licensed under [Apache License, Version 2.0][apache_license].
 
 ## Requirements
-* PHP 5.3.0 or higher
+* PHP 7.0.0 or higher
 * PDO
 
 ## Installation
