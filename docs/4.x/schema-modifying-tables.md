@@ -1,9 +1,8 @@
 ---
 layout: project
-version: 3.x
+version: 4.x
 title: Modifying tables
 description: Learn how to alter existing new tables
-canonical: /database/4.x/schema-modifying-tables
 ---
 # Modifying tables
 

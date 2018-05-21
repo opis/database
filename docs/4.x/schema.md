@@ -1,9 +1,8 @@
 ---
 layout: project
-version: 3.x
+version: 4.x
 title: Schema
 description: Learn about Opis Database schema
-canonical: /database/4.x/schema
 ---
 # Schema
 

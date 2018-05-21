@@ -1,9 +1,8 @@
 ---
 layout: project
-version: 3.x
+version: 4.x
 title: Transactions
 description: Learn how to use transactions
-canonical: /database/4.x/transactions
 ---
 # Transactions
 
