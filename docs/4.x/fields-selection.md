@@ -1,10 +1,10 @@
 ---
 layout: project
 version: 4.x
-title: Extended selections
-description: Learn about how to define custom selections
+title: Fields selection
+description: Learn about how to add fields to selection
 ---
-# Extended selections
+# Fields selection
 
 1. [Introduction](#introduction)
 2. [Adding columns](#adding-columns)

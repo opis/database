@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Extended selections
 description: Learn about how to define custom selections
-canonical: /database/4.x/extended-selections
+canonical: /database/4.x/fields-selection.html
 ---
 # Extended selections
 
