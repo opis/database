@@ -20,23 +20,15 @@ description: Learn how to create new tables
 ## Introduction
 
 You can create new tables by using the `create` method. This method takes two arguments:
-its first argument represents the name of the table you want to create and the second 
-argument is an anonymous callback function (`Closure`) that takes as an argument 
-an instance of `Opis\Database\Schema\CreateTable` class.
+the name of the table you want to create and a callback. The callback that receive as an argument, 
+an instance of the `Opis\Database\Schema\CreateTable` class, which will be further used to add columns,
+indexes and constraints to the newly created table.
 
 ```php
-$db->schema()->create('users', function($table){
-    //add columns here
-}));
-```
+Opis\Database\Schema\CreateTable;
 
-The object passed as an argument to the anonymous callback function, will be further 
-used to add columns, constraints and indexes to the newly created table.
-
-```php
-$db->schema()->create('users', function($table){
-    //add column
-    $table->integer('age');
+$db->schema()->create('users', function(CreateTable $table){
+    //add table members
 }));
 ```
 
@@ -255,9 +247,10 @@ $table->string('username', 32)->index();
 
 ## Primary key
 
-Adding a primary key for a newly created table is done using the `primary` method. 
-The method takes as an argument the name of the column on which you want to add 
-the primary key constraint. The name of the primary key will be the same as the column's name.
+Adding a primary key for a newly created table is done by using the `primary` method. 
+This method takes as an argument the name of the column on which you want to add 
+the primary key constraint. The primary key's name will be then derived from the table's name
+and the name of the column on which the primary key was added.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -274,24 +267,8 @@ $db->schema()->create('users', function($table){
 You can add only one primary key per table.
 {:.alert.alert-warning}
 
-Adding a primary key that has a custom name can be done by passing as arguments 
-to the `primary` method the name of the primary key and the name of the column on 
-which the primary key will be added.
-
-```php
-$db->schema()->create('users', function($table){
-
-    $table->integer('id');
-    // ... Add other columns
-    //Add a primary key named `pk_id` on column `id`
-    $table->primary('pk_id', 'id');
-
-}));
-```
-
-If you want add a primary key on multiple columns, you simply have to pass as arguments 
-to the `primary` method the name of the primary key and an array containing the column names 
-on which the primary key will be added.
+If you want add a composite primary key, you simply have to pass an array of column names
+to the `primary` method.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -299,17 +276,29 @@ $db->schema()->create('users', function($table){
     $table->integer('id');
     $table->integer('group');
     // ... Add other columns
-    //Add a primary key named `users_pk` on columns `id` and `group`
-    $table->primary('users_pk', array('id', 'group'));
+    //Add a composite primary key on `id` and `group` columns
+    $table->primary(['id', 'group']);
+    
+}));
+```
 
+Specifying a custom name for a primary key is also possible.
+
+```php
+$db->schema()->create('users', function($table){
+
+    $table->integer('id');
+    // ... Add other columns
+    //Add a primary key named `my_custom_pk` on column `id`
+    $table->primary('id', 'my_custom_pk');
+    
 }));
 ```
 
 ## Unique keys
 
 Adding a unique key for a newly created table is done using the `unique` method. 
-The method takes as an argument the name of the column on which you want to add 
-the unique key constraint. The name of the unique key will be the same as the column's name.
+The name of the unique key will be derived in the same manner as the name of the primary key is.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -322,24 +311,7 @@ $db->schema()->create('users', function($table){
 }));
 ```
 
-Adding a unique key that has a custom name can be done by passing as arguments to 
-the `unique` method the name of the unique key and the name of the column on 
-which the unique key will be added.
-
-```php
-$db->schema()->create('users', function($table){
-
-    $table->string('email');
-    // ... Add other columns
-    //Add a unique key named `uk_email` on column `email`
-    $table->unique('uk_email', 'email');
-
-}));
-```
-
-If you want add a unique key on multiple columns, you simply have to pass as arguments
-to the `unique` method the name of the unique key and an array containing the column names 
-on which the unique key will be added.
+Composite unique keys are supported as well.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -347,20 +319,34 @@ $db->schema()->create('users', function($table){
     $table->string('email');
     $table->string('username');
     // ... Add other columns
-    //Add a unique key named `uk_users` on columns `email` and `uesername`
-    $table->unique('uk_users', array('email', 'username'));
+    //Add a unique key on `email` and `uesername` columns
+    $table->unique(['email', 'username']);
 
 }));
 ```
+And, of course, you can always add a custom name for a unique key.
+
+```php
+$db->schema()->create('users', function($table){
+
+    $table->string('email');
+    $table->string('username');
+    // ... Add other columns
+    //Add a unique key named `uk_email` on column `email`
+    $table->unique('email', 'uk_email');
+    //Add a unique key named `uk_composite` on `email` and `uesername` columns
+    $table->unique(['email', 'username'], 'uk_composite');
+    
+}));
+```
+
 
 ## Foreign keys
 
-Adding a foreign key to a newly created table is done using the `foreign` method. 
-The method takes as an argument the name of the column on which you want to add the foreign key. 
-The name of the foreign will be the same as the column's name.
-
-The referenced table is set by calling the `references` method and the referenced column 
-is set by calling the `on` method.
+Adding a foreign key to a newly created table is done using the `foreign` method in
+conjunction with the `references` method. The `foreign` method takes as arguments
+the column on which the foreign key will be added, and the `references` method,
+takes as arguments the referenced table and column.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -368,7 +354,8 @@ $db->schema()->create('users', function($table){
     $table->integer('profile_id');
     // ... Add other columns
     //Add a foreign key
-    $table->foreign('profile_id')->references('profiles')->on('id');
+    $table->foreign('profile_id')
+          ->references('profiles', 'id');
 
 }));
 ```
@@ -384,33 +371,33 @@ $db->schema()->create('users', function($table){
     // ... Add other columns
     //Add a foreign key
     $table->foreign('profile_id')
-          ->references('profiles')->on('id')
+          ->references('profiles', 'id')
           ->onDelete('cascade')
           ->onUpdate('cascade');
 
 }));
 ```
 
-Adding a foreign key that has a custom name can be done by passing as arguments to the 
-`foreign` method the name of the foreign key and the name of the column on which the 
-foreign key will be added.
+Adding a foreign key that has a custom name can be done by passing a second argument
+to the `foreign` method
 
 ```php
 $db->schema()->create('users', function($table){
 
     $table->integer('profile_id');
     // ... Add other columns
-    //Add a foreign key named `fk_custom_name` on column `profile_id`
-    $table->foreign('fk_custom_name', 'profile_id')->references('profiles')->on('id');
+    //Add a foreign key named `fk_custom_name`
+    $table->foreign('profile_id', 'fk_custom_name')
+          ->references('profiles', 'id')
+          ->onDelete('cascade')
+          ->onUpdate('cascade');
 
 }));
 ```
 
 ## Indexes
 
-Adding an index for a newly created table is done using the `index` method. 
-The method takes as an argument the name of the column on which you want to add the index. 
-The name of the index will be the same as the column's name.
+Indexes are added by using the `index` method.
 
 ```php
 $db->schema()->create('users', function($table){
@@ -423,23 +410,7 @@ $db->schema()->create('users', function($table){
 }));
 ```
 
-Adding a index that has a custom name can be done by passing as arguments 
-to the `index` method the name of the index and the name of the column that you want to be indexed.
-
-```php
-$db->schema()->create('users', function($table){
-
-    $table->string('name');
-    // ... Add other columns
-    //Add an index named `idx_name` on column `name`
-    $table->index('idx_name', 'name');
-
-}));
-```
-
-If you want add a index on multiple columns, you simply have to pass as arguments 
-to the `index` method the name of the index and an array containing the column names 
-on which the index will be added.
+You can set an index on multiple columns
 
 ```php
 $db->schema()->create('users', function($table){
@@ -447,8 +418,22 @@ $db->schema()->create('users', function($table){
     $table->string('name');
     $table->string('email');
     // ... Add other columns
-    //Add an index named `idx_users` on columns `email` and `name`
-    $table->index('idx_users', array('email', 'name'));
+    //Add an index on `email` and `name` columns
+    $table->index(['name', 'email']);
+
+}));
+```
+
+Adding a custom named index is simply a matter of passing a 
+second argument to the `index` method.
+
+```php
+$db->schema()->create('users', function($table){
+
+    $table->string('name');
+    // ... Add other columns
+    //Add an index named `idx_name` on column `name`
+    $table->index('name', 'idx_name');
 
 }));
 ```

@@ -102,7 +102,7 @@ and optionally an array of arguments that will be passed to the class constructo
 **Important!**{:.important}
 The named properties of your class that will be mapped to column
 names must have `public` access. 
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 ```php
 class User

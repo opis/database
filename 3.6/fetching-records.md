@@ -68,7 +68,7 @@ You should always [filter](filters.html) your records
 before handling the results of a query even if
 you use the `first` or the `column` method, otherwise you may have performance
 issues when querying over large data sets.
-{:.well .text-primary}
+{:.alert.alert-warning}
 
 ## Distinct results
 

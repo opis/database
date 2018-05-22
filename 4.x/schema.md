@@ -12,13 +12,13 @@ description: Learn about Opis Database schema
 
 **Important!**
 At this moment all the features presented here are available only for
-**MySQL**, **SQLServer**, **PostgreSQL** and **SQLite** database systems.
+the officially supported RDBMSs.
 {:.alert.alert-info}
 
 ## Introduction
 
-**Opis Database** provides an unified **API** across all database supported systems 
-that allows developers to manipulate tables or to obtain other informations about a database.
+**Opis Database** provides an unified **API**, that covers multiple relational database management systems,
+and which allows developers to manipulate tables or to obtain other information about a database.
 
 Accessing the database associated schema is done by calling the `schema` method.
 
