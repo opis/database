@@ -1,5 +1,8 @@
 .idea/
 vendor/
 docs/_site/
+_site/
+shared/
+Gemfile.lock
 docs/Gemfile.lock
 composer.lock
