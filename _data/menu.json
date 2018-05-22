@@ -1,0 +1,267 @@
+{
+    "3.x": [
+        {
+            "title": "Getting started",
+            "pages": [
+                {
+                    "title": "About",
+                    "url": "/3.6/",
+                    "description": "About this library"
+                },
+                {
+                    "title": "Database connections",
+                    "url": "/3.6/connections.html",
+                    "description": "Learn how to connect to a database"
+                }
+            ]
+        },
+        {
+            "title": "The basics",
+            "pages": [
+                {
+                    "title": "Fetching records",
+                    "url": "/3.6/fetching-records.html",
+                    "description": "Fetching records from a database"
+                },
+                {
+                    "title": "Results handling",
+                    "url": "/3.6/results-handling.html",
+                    "description": "Learn how to handle the results set of a query"
+                },
+                {
+                    "title": "Aggregate functions",
+                    "url": "/3.6/aggregate-functions.html",
+                    "description": "Learn about aggregate functions"
+                },
+                {
+                    "title": "Extended selections",
+                    "url": "/3.6/extended-selections.html",
+                    "description": "Learn how to define custom selections"
+                },
+                {
+                    "title": "Filters",
+                    "url": "/3.6/filters.html",
+                    "description": "Learn how to filter records"
+                },
+                {
+                    "title": "Expressions",
+                    "url": "/3.6/expressions.html",
+                    "description": "Learn about expressions"
+                },
+                {
+                    "title": "Ordering criteria",
+                    "url": "/3.6/ordering-criteria.html",
+                    "description": "Learn how to order results"
+                },
+                {
+                    "title": "Limits and offsets",
+                    "url": "/3.6/limits-and-offsets.html",
+                    "description": "Learn about limits and offsets"
+                },
+                {
+                    "title": "Joins",
+                    "url": "/3.6/joins.html",
+                    "description": "Learn how to perform joins"
+                },
+                {
+                    "title": "Working with aggregates",
+                    "url": "/3.6/aggregates-handling.html",
+                    "description": "Learn how to work with aggregates"
+                },
+                {
+                    "title": "Insert records",
+                    "url": "/3.6/insert-records.html",
+                    "description": "Insert new records into a table"
+                },
+                {
+                    "title": "Update records",
+                    "url": "/3.6/update-records.html",
+                    "description": "Learn how to update existing records"
+                },
+                {
+                    "title": "Delete records",
+                    "url": "/3.6/delete-records.html",
+                    "description": "Learn how to delete existing records"
+                }
+            ]
+        },
+        {
+            "title": "Transactions",
+            "pages": [
+                {
+                    "title": "Performing transactions",
+                    "url": "/3.6/transactions.html",
+                    "description": "Learn how to use transactions"
+                }
+            ]
+        },
+        {
+            "title": "Database schema",
+            "pages": [
+                {
+                    "title": "Introduction",
+                    "url": "/3.6/schema.html",
+                    "description": "Learn about Opis Database Schema"
+                },
+                {
+                    "title": "Creating tables",
+                    "url": "/3.6/schema-creating-tables.html",
+                    "description": "Learn how to create new tables"
+                },
+                {
+                    "title": "Modifying tables",
+                    "url": "/3.6/schema-modifying-tables.html",
+                    "description": "Learn how to alter existing tables"
+                }
+            ]
+        },
+        {
+            "title": "ORM",
+            "pages": [
+                {
+                    "title": "Introduction",
+                    "url": "/3.6/orm.html",
+                    "description": "Learn about Opis Database ORM"
+                },
+                {
+                    "title": "Basic operations",
+                    "url": "/3.6/orm-basics.html",
+                    "description": "Learn how to use Opis Database ORM"
+                },
+                {
+                    "title": "Relationships",
+                    "url": "/3.6/orm-relationships.html",
+                    "description": "Learn about ORM relationships"
+                },
+                {
+                    "title": "Working with models",
+                    "url": "/3.6/orm-models.html",
+                    "description": "Learn how to work with models"
+                }
+            ]
+        }
+    ],
+    "4.x": [
+        {
+            "title": "Opis Database",
+            "pages": [
+                {
+                    "title": "About",
+                    "url": "/4.x/",
+                    "description": "About this library"
+                },
+                {
+                    "title": "Database connections",
+                    "url": "/4.x/connections.html",
+                    "description": "Learn how to connect to a database"
+                }
+            ]
+        },
+        {
+            "title": "The basics",
+            "pages": [
+                {
+                    "title": "Fetching records",
+                    "url": "/4.x/fetching-records.html",
+                    "description": "Fetching records from a database"
+                },
+                {
+                    "title": "Results handling",
+                    "url": "/4.x/results-handling.html",
+                    "description": "Learn how to handle the results set of a query"
+                },
+                {
+                    "title": "Aggregate functions",
+                    "url": "/4.x/aggregate-functions.html",
+                    "description": "Learn about aggregate functions"
+                },
+                {
+                    "title": "Fields selection",
+                    "url": "/4.x/fields-selection.html",
+                    "description": "Learn how to add fields to selection"
+                }
+            ]
+        },
+        {
+            "title": "Query builder",
+            "pages": [
+                {
+                    "title": "Filters",
+                    "url": "/4.x/filters.html",
+                    "description": "Learn how to filter records"
+                },
+                {
+                    "title": "Expressions",
+                    "url": "/4.x/expressions.html",
+                    "description": "Learn about expressions"
+                },
+                {
+                    "title": "Ordering criteria",
+                    "url": "/4.x/ordering-criteria.html",
+                    "description": "Learn how to order results"
+                },
+                {
+                    "title": "Limits and offsets",
+                    "url": "/4.x/limits-and-offsets.html",
+                    "description": "Learn about limits and offsets"
+                },
+                {
+                    "title": "Joins",
+                    "url": "/4.x/joins.html",
+                    "description": "Learn how to perform joins"
+                },
+                {
+                    "title": "Working with aggregates",
+                    "url": "/4.x/aggregates-handling.html",
+                    "description": "Learn how to work with aggregates"
+                }
+            ]
+        },
+        {
+            "title": "Other operations",
+            "pages": [
+                {
+                    "title": "Insert records",
+                    "url": "/4.x/insert-records.html",
+                    "description": "Insert new records into a table"
+                },
+                {
+                    "title": "Update records",
+                    "url": "/4.x/update-records.html",
+                    "description": "Learn how to update existing records"
+                },
+                {
+                    "title": "Delete records",
+                    "url": "/4.x/delete-records.html",
+                    "description": "Learn how to delete existing records"
+                },
+                {
+                    "title": "Transactions",
+                    "url": "/4.x/transactions.html",
+                    "description": "Learn how to use transactions"
+                }
+            ]
+        },
+        {
+            "title": "Database schema",
+            "pages": [
+                {
+                    "title": "Introduction",
+                    "url": "/4.x/schema.html",
+                    "description": "Learn about Opis Database Schema"
+                },
+                {
+                    "title": "Creating tables",
+                    "url": "/4.x/schema-creating-tables.html",
+                    "description": "Learn how to create new tables"
+                },
+                {
+                    "title": "Modifying tables",
+                    "url": "/4.x/schema-modifying-tables.html",
+                    "description": "Learn how to alter existing tables"
+                }
+            ]
+        }
+    ]
+}
+
