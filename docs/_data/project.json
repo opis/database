@@ -34,6 +34,7 @@
     ],
     "current_version": 0,
     "versions": [
-        {"title": "Version 3.6", "url": "/database/3.6"}
+        {"title": "Version 3.6", "url": "/database/3.6"},
+        {"title": "Version 4.x", "url": "/database/4.x"}
     ]
 }
