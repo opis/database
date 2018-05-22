@@ -16,8 +16,7 @@
     "favicon": "/assets/v2/favicon.png",
     "classes": {
         "body": "d-flex flex-column",
-        "main": "mb-auto pt-3",
-        "navbar": "navbar-dark bg-dark"
+        "main": "mb-auto pt-3"
     },
     "styles": [
         "/assets/v2/theme.css",
