@@ -12,11 +12,13 @@ description: Learn how to connect to a database
 
 ## Introduction
 
-Working with databases is done with the help of the `Opis\Database\Database` class, which provides various methods
-that will ease the process of manipulating tables and records. 
-The constructor of the `Database` class takes as an argument an instance of the `Opis\Database\Connection` class. 
-The `Connection` class is responsible for establishing a connection to the database server, as well as for 
-sending and receiving data. The constructor of the `Connection` class accepts parameters for specifying
+Interaction with a database is achieved with the help of the `Opis\Database\Database` class, 
+which provides various methods that will ease the process of manipulating tables and records. 
+The constructor of this class takes as an argument an instance of `Opis\Database\Connection`.
+ 
+The `Connection` class is responsible both for establishing a connection to the database server, 
+as well as for sending and receiving data. 
+The constructor of the `Connection` class accepts parameters for specifying
 the [DSN] and optionally for the username and password(if any). 
 
 ```php
@@ -28,10 +30,11 @@ $connection = new Connection('mysql:host=localhost;dbname=test', 'username', 'pa
 $db = new Database($connection);
 ```
 
-You can also create a connection by using the `create` static method of `Opid\Database\Connection` class. 
+You can also create a connection by using the `fromPDO` static method and 
+passing an instance of the `PDO` class as an argument to the method. 
 
 ```php
-$connection = Connection::create('mysql:host=localhost;dbname=test', 'user', 'password');
+$connection = Connection::fromPDO($pdo);
 ```
 
 ## Connection options
@@ -52,10 +55,10 @@ and passing as an argument an array of options.
 
 ```php
 $connection = Connection::create($dsn, $user, $password)
-                        ->options(array(
+                        ->options([
                             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
                             PDO::ATTR_STRINGIFY_FETCHES => false
-                        ));
+                        ]);
 ```
 
 Making a connection persistent is done by using the `persistent` method. 
