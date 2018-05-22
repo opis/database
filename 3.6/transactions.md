@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Transactions
 description: Learn how to use transactions
-canonical: /database/4.x/transactions
+canonical: /database/4.x/transactions.html
 ---
 # Transactions
 

@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Fetching records
 description: Fetching records from a database
-canonical: /database/4.x/fetching-records
+canonical: /database/4.x/fetching-records.html
 ---
 # Fetching records
 

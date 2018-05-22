@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Filters
 description: Learn how to filter records
-canonical: /database/4.x/filters
+canonical: /database/4.x/filters.html
 ---
 # Filters
 

@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Insert records
 description: Insert new records into a table
-canonical: /database/4.x/insert-records
+canonical: /database/4.x/insert-records.html
 ---
 # Insert records
 

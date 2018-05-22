@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Creating tables
 description: Learn how to create new tables
-canonical: /database/4.x/schema-creating-tables
+canonical: /database/4.x/schema-creating-tables.html
 ---
 # Creating tables
 

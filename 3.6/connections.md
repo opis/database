@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Database connections
 description: Learn how to connect to a database
-canonical: /database/4.x/connections
+canonical: /database/4.x/connections.html
 ---
 
 # Database connections

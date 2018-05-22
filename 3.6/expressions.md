@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Expressions
 description: Learn about expressions
-canonical: /database/4.x/expressions
+canonical: /database/4.x/expressions.html
 ---
 # Expressions
 

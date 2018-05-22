@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Aggregate functions
 description: Learn about aggregate functions
-canonical: /database/4.x/aggregate-functions
+canonical: /database/4.x/aggregate-functions.html
 ---
 # Aggregate functions
 

@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Results handling
 description: Learn how to handle the result set of a query
-canonical: /database/4.x/results-handling
+canonical: /database/4.x/results-handling.html
 ---
 # Results handling
 

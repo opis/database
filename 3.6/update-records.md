@@ -3,7 +3,7 @@ layout: project
 version: 3.x
 title: Update records
 description: Learn how to update existing records
-canonical: /database/4.x/update-records
+canonical: /database/4.x/update-records.html
 ---
 # Update records
 
