@@ -12,7 +12,7 @@ description: Learn about Opis Database schema
 
 **Important!**
 At this moment all the features presented here are available only for
-the officially supported RDBMSs.
+the officially supported RDBMS.
 {:.alert.alert-info}
 
 ## Introduction
