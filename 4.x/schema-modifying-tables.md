@@ -14,13 +14,12 @@ description: Learn how to alter existing new tables
 
 ## Alter tables
 
-You can alter existing tables by using the `alter` method. 
-This method takes two arguments: the first argument represents the name of the table
-you want to modify and the second argument is an anonymous callback function (`Closure`)
-that takes as an argument an instance of `Opis\Database\Schema\AlterTable` class.
+You can alter an existing table by using the `alter` method. 
 
 ```php
-$db->schema()->alter('users', function($table){
+Opis\Database\Schema\AlterTable;
+
+$db->schema()->alter('users', function(AlterTable $table){
     
     //code
     
@@ -30,7 +29,7 @@ $db->schema()->alter('users', function($table){
 #### Adding columns
 
 Adding a new column to an existing table is done in a similar way described in the 
-[Creating tables](schema-creating-tables) section. 
+[Creating tables](schema-creating-tables.html) section. 
 The only difference is that you won't be able to directly add a constraint or an index.
 
 ```php
@@ -82,7 +81,7 @@ $db->schema()->alter('users', function($table){
 
 #### Removing default values
 
-You can remove a default value of a column by using the `dropDefaultValue` method. 
+You can remove a column's default value by using the `dropDefaultValue` method. 
 This method takes as an argument the name of the column.
 
 ```php
@@ -107,7 +106,7 @@ $db->schema()->alter('users', function($table){
 
 #### Delete primary key
 
-Dropping primary key is done by using the `dropPrimary` method. 
+Dropping a primary key is done by using the `dropPrimary` method. 
 This method takes a single argument representing the name of the primary key.
 
 ```php
@@ -145,12 +144,12 @@ $db->schema()->alter('users', function($table){
 
 #### Add foreign keys
 
-You may add a foreign key by using the foreign method.
+You may add a foreign key by using the `foreign` method.
 
 ```php
 $db->schema()->alter('users', function($table){
 
-    $table->foreign('profile_id')->references('profiles')->on('id');
+    $table->foreign('profile_id')->references('profiles', 'id');
 
 }));
 ```
