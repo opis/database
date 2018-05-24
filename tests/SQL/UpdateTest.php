@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-class CommandTest extends BaseClass
+class UpdateTest extends BaseClass
 {
     public function testUpdate()
     {
@@ -67,6 +67,34 @@ class CommandTest extends BaseClass
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 5, "foo" = "foo" + 5';
         $actual = $this->db->update('users')->increment(["age", "foo"], 5);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testUpdateDecrementByOne()
+    {
+        $expected = 'UPDATE "users" SET "age" = "age" - 1';
+        $actual = $this->db->update('users')->decrement("age");
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testUpdateDecrementMultipleByOne()
+    {
+        $expected = 'UPDATE "users" SET "age" = "age" - 1, "foo" = "foo" - 1';
+        $actual = $this->db->update('users')->decrement(["age", "foo"]);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testUpdateDecrementByN()
+    {
+        $expected = 'UPDATE "users" SET "age" = "age" - 5';
+        $actual = $this->db->update('users')->decrement("age", 5);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testUpdateDecrementMultipleByN()
+    {
+        $expected = 'UPDATE "users" SET "age" = "age" - 5, "foo" = "foo" - 5';
+        $actual = $this->db->update('users')->decrement(["age", "foo"], 5);
         $this->assertEquals($expected, $actual);
     }
 }
