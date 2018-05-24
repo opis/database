@@ -2,26 +2,8 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
-use Opis\Database\Test\Connection;
-use PHPUnit\Framework\TestCase;
-
-class WhereTest extends TestCase
+class WhereTest extends BaseClass
 {
-    protected static $database;
-    /** @var  Database */
-    protected $db;
-
-    public static function setUpBeforeClass()
-    {
-        static::$database = new Database(new Connection(''));
-    }
-
-    public function setUp()
-    {
-        $this->db = static::$database;
-    }
-
     public function testWhereIs()
     {
         $expected = 'SELECT * FROM "users" WHERE "age" = 21';

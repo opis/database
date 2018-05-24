@@ -2,26 +2,8 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
-use Opis\Database\Test\Connection;
-use PHPUnit\Framework\TestCase;
-
-class JoinTest extends TestCase
+class JoinTest extends BaseClass
 {
-    protected static $database;
-    /** @var  Database */
-    protected $db;
-
-    public static function setUpBeforeClass()
-    {
-        static::$database = new Database(new Connection(''));
-    }
-
-    public function setUp()
-    {
-        $this->db = static::$database;
-    }
-
     public function testDefaultJoin()
     {
         $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id"';
