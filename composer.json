@@ -1,8 +1,7 @@
 {
     "name": "opis/database",
-    "description": "Opis Database is a library that provides an abstraction layer over several database systems, offering a standard way of handling database records and thus, making the differences between various SQL dialects irrelevant for developers.",
-    "keywords": ["database", "query", "abstraction", "mysql", "postgre", "sql", "sqlite", "firebird",
-                 "nuodb", "db2", "oracle", "sql server", "orm", "models", "schema", "query builder", "schema builder"],
+    "description": "A database abstraction layer over PDO, that provides a powerful and intuitive query builder, bundled with an easy to use schema builder",
+    "keywords": ["database", "query", "abstraction layer", "mysql", "postgre", "sql", "sqlite",  "query builder", "schema builder"],
     "homepage": "http://opis.io",
     "license": "Apache-2.0",
     "authors": [
