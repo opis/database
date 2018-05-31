@@ -26,116 +26,116 @@ class MySqlTest extends BaseClass
     {
         static::$data = [
             'testCreateTable' => implode("\n", [
-                "CREATE TABLE `foo`(", "", ")"
+                'CREATE TABLE `foo`(', '', ')'
             ]),
             'testAddSingleColumn' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                ]), ')'
             ]),
             'testAddMultipleColumns' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                    "`b` INT"
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` INT'
+                ]), ')'
             ]),
             'testTypes' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                    "`b` FLOAT",
-                    "`c` DOUBLE",
-                    "`d` DECIMAL",
-                    "`d1` DECIMAL(4)",
-                    "`d2` DECIMAL(4, 8)",
-                    "`e` TINYINT(1)",
-                    "`f` VARCHAR(255)",
-                    "`f1` VARCHAR(32)",
-                    "`g` CHAR(255)",
-                    "`g1` CHAR(2)",
-                    "`h` DATE",
-                    "`i` DATETIME",
-                    "`j` TIMESTAMP",
-                    "`k` TIME",
-                    "`l` BLOB",
-                    "`m` TEXT",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` FLOAT',
+                    '`c` DOUBLE',
+                    '`d` DECIMAL',
+                    '`d1` DECIMAL(4)',
+                    '`d2` DECIMAL(4, 8)',
+                    '`e` TINYINT(1)',
+                    '`f` VARCHAR(255)',
+                    '`f1` VARCHAR(32)',
+                    '`g` CHAR(255)',
+                    '`g1` CHAR(2)',
+                    '`h` DATE',
+                    '`i` DATETIME',
+                    '`j` TIMESTAMP',
+                    '`k` TIME',
+                    '`l` BLOB',
+                    '`m` TEXT',
+                ]), ')'
             ]),
             'testIntSizes' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` TINYINT",
-                    "`b` SMALLINT",
-                    "`c` INT",
-                    "`d` MEDIUMINT",
-                    "`e` BIGINT",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` TINYINT',
+                    '`b` SMALLINT',
+                    '`c` INT',
+                    '`d` MEDIUMINT',
+                    '`e` BIGINT',
+                ]), ')'
             ]),
             'testTextSizes' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` TINYTEXT",
-                    "`b` TINYTEXT",
-                    "`c` TEXT",
-                    "`d` MEDIUMTEXT",
-                    "`e` LONGTEXT",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` TINYTEXT',
+                    '`b` TINYTEXT',
+                    '`c` TEXT',
+                    '`d` MEDIUMTEXT',
+                    '`e` LONGTEXT',
+                ]), ')'
             ]),
             'testBinarySizes' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` TINYBLOB",
-                    "`b` TINYBLOB",
-                    "`c` BLOB",
-                    "`d` MEDIUMBLOB",
-                    "`e` LONGBLOB",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` TINYBLOB',
+                    '`b` TINYBLOB',
+                    '`c` BLOB',
+                    '`d` MEDIUMBLOB',
+                    '`e` LONGBLOB',
+                ]), ')'
             ]),
             'testColumnProperties' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT UNSIGNED",
-                    "`b` FLOAT DEFAULT 0.1",
-                    "`c` VARCHAR(255) NOT NULL"
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT UNSIGNED',
+                    '`b` FLOAT DEFAULT 0.1',
+                    '`c` VARCHAR(255) NOT NULL'
+                ]), ')'
             ]),
             'testColumnConstraints' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                    "`b` INT",
-                    "CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`)",
-                    "CONSTRAINT `foo_uk_b` UNIQUE (`b`)",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` INT',
+                    'CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`)',
+                    'CONSTRAINT `foo_uk_b` UNIQUE (`b`)',
+                ]), ')'
             ]),
             'testColumnNamedConstraints' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                    "`b` INT",
-                    "CONSTRAINT `pk_a` PRIMARY KEY (`a`)",
-                    "CONSTRAINT `uk_b` UNIQUE (`b`)",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` INT',
+                    'CONSTRAINT `pk_a` PRIMARY KEY (`a`)',
+                    'CONSTRAINT `uk_b` UNIQUE (`b`)',
+                ]), ')'
             ]),
             'testAutoincrement' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT AUTO_INCREMENT",
-                    "CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`)",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT AUTO_INCREMENT',
+                    'CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`)',
+                ]), ')'
             ]),
             'testNamedAutoincrement' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT AUTO_INCREMENT",
-                    "CONSTRAINT `x` PRIMARY KEY (`a`)",
-                ]), ")"
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT AUTO_INCREMENT',
+                    'CONSTRAINT `x` PRIMARY KEY (`a`)',
+                ]), ')'
             ]),
             'testIndex' => implode("\n", [
-                "CREATE TABLE `foo`(", implode(",\n", [
-                    "`a` INT",
-                    "`b` INT",
-                    "`c` INT",
-                    "`d` INT",
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` INT',
+                    '`c` INT',
+                    '`d` INT',
                 ]), implode("\n", [
-                    ")",
-                    "CREATE INDEX `foo_ik_a` ON `foo`(`a`)",
-                    "CREATE INDEX `x` ON `foo`(`b`)",
-                    "CREATE INDEX `foo_ik_c` ON `foo`(`c`)",
-                    "CREATE INDEX `y` ON `foo`(`d`)",
-                    "CREATE INDEX `foo_ik_a_b` ON `foo`(`a`, `b`)",
-                    "CREATE INDEX `z` ON `foo`(`c`, `d`)",
+                    ')',
+                    'CREATE INDEX `foo_ik_a` ON `foo`(`a`)',
+                    'CREATE INDEX `x` ON `foo`(`b`)',
+                    'CREATE INDEX `foo_ik_c` ON `foo`(`c`)',
+                    'CREATE INDEX `y` ON `foo`(`d`)',
+                    'CREATE INDEX `foo_ik_a_b` ON `foo`(`a`, `b`)',
+                    'CREATE INDEX `z` ON `foo`(`c`, `d`)',
                 ])
             ])
         ];
