@@ -2,83 +2,25 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## v4.0.x-dev
-### Added
-- Support for PHP 7.0.x
-- `Opis\Database\SQL\SQLStatement` class
-- `Opis\Database\SQL\BaseStatement` class
-- `Opis\Database\SQL\WhereStatement` class
-- `Opis\Database\SQL\HavingStatement` class
-- `Opis\Database\SQL\HavingExpression` class
-- `Opis\Database\Connection::fromPDO` static method
+## v4.0.0 - 2018-05-31
 
 ### Removed
 - Support for PHP 5.x
 - ORM - see [opis/orm](https://github.com/opis/orm) library
-- `Opis\Database\SQL\WhereCondition` class
-- `Opis\Database\SQL\WhereClause` class
-- `Opis\Database\SQL\WhereJoinCondition` class
-- `Opis\Database\SQL\HavingCondition` class
-- `Opis\Database\SQL\HavingClause` class
-- `Opis\Database\SQL\AggregateExpression` class
-- `Opis\Database\Schema\ForeignKey::on` method
-- `Opis\Database\Transaction` class
-- `Opis\Database\Model` class
 
 ### Changed
-- `Opis\Database\SQL\Where` class
-- `Opis\Database\SQL\Having` class
-- `Opis\Database\SQL\Expression` class
-- `Opis\Database\SQL\UpdatedStatement` class
-- `Opis\Database\SQL\SelectStatement` class
-- `Opis\Database\SQL\Select` class
-- The constructor of the `Opis\Database\Connection` class can take now an extra `PDO` object as an argument 
-- `Opis\Database\Connection::pdo` method was renamed to `getPDO`
-- `Opis\Database\Connection::schema` method was renamed to `getSchema`
-- `Opis\Database\Connection::dsn` method was renamed to `getDSN`
-- Added column argument to `Opis\Database\Schema\ForeignKey::references` method
-- Modified `Opis\Database\Database::transaction` method
-- Source files were moved from `lib` to `src`
-
-### Fixed
-- Nothing
+In this major release many classes were refactored or entirely removed,
+in order to improve the library.
 
 ## v3.6.7 - 2016.06.14
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Bugfix
 
 ## v3.6.6 - 2016.06.07
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug related to PHP 7
 
 ## v3.6.5 - 2016.05.29
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Bugfix
 
@@ -86,61 +28,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added `object` casting type
 
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
-### Fixed
-- Nothing
-
 ## v3.6.3 - 2016.05.19
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
 ### Changed
 - Rollback. `Opis\Database\Connection::count` is no longer deprecated and  is used again.
 
-### Fixed
-- Nothing
-
 ## v3.6.2 - 2016.05.19
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
 ### Changed
 - Method `Opis\Database\Connection::count` is now deprecated
   and `Opis\Database\Connection::command` method is used instead.
 
-### Fixed
-- Nothing
-
 ## v3.6.1 - 2016.05.19
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Model::__set` method
 
 ## v3.6.0 - 2016.03.21
 ### Added
 - Added `throwExceptions` flag on `Opis\Database\Model` class
-
-### Removed
-- Nothing
 
 ### Changed
 - Changed exception message in `Opis\Database\Model::__get`
@@ -149,15 +52,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed a bug in `Opis\Database\Model::__set` method
 
 ## v3.5.1 - 2016.03.08
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\ORM\BaseQuery` that prevented proper using of grouped conditions
 
@@ -174,27 +68,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `timestamps` and `softDelete` methods to `Opis\Database\Schema\CreateTable`
 - Added `update` and `updateAll` methods to `Opis\Database\Model` class
 
-### Removed
-- Nothing
-
 ### Changed
 - Now you can count, update, delete, soft delete and restore related models
 - `Opis\Database\Model::getDateFormat` method is now public
 - The `Opis\Database\Model::assign` method now returns the current model instance
 
-### Fixed
-- Nothing
 
 ## v3.4.2 - 2016.02.23
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Model::__set` method
 
@@ -203,41 +83,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added `isNewRecord` property to `Opis\Database\Model` class in order to fix a bug that might
 occur when using custom values for primary key.
 
-### Removed
-- Nothing
-
 ### Changed
 - The `__set`, `save` and `delete` methods were updated to use the newly added
   `isNewRecord` property.
-
-### Fixed
-- Nothing
 
 ## v3.4.0 - 2016.02.22
 ### Added
 - Added `Opis\Database\Schema\BaseColumn::length` method
 - Added `Opis\Database\Schema\Compiler\SQLServer::handleTypeDecimal` method
 
-### Removed
-- Nothing
-
 ### Changed
 - Updated `Opis\Database\Schema\Compiler\MySQL::handleTypeDecimal` method
 - Updated `Opis\Database\Schema\Compiler\PostgreSQL::handleTypeDecimal` method
 
-### Fixed
-- Nothing
-
 ## v3.3.3 - 2016.02.13
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Model::__set` method
 
@@ -246,25 +105,7 @@ occur when using custom values for primary key.
 - Added missing use statement for `DateTime` class in `Opis\Database\Model`
 - Added support for custom cast handling
 
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
-### Fixed
-- Nothing
-
 ## v3.3.1 - 2016.02.04
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Model::__get` and `Opis\Database\Model::__set`
 
@@ -272,20 +113,11 @@ occur when using custom values for primary key.
 ### Added
 - Added `link` and `unlink` methods to `Opis\Database\ORM\Relation\BelongsToMany` class
 
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a potential bug in `Opis\Database\Model::delete` method
 
 ## v3.2.3 - 2016.01.31
 ### Added
-- Nothing
-
-### Removed
 - Nothing
 
 ### Changed
@@ -295,23 +127,11 @@ occur when using custom values for primary key.
 - Fixed a bug related to nullable column handling in `Opis\Colibri\Module::__get`
 
 ## v3.2.2 - 2016.01.29
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Transaction` class. See [issue #22](https://github.com/opis/database/issues/22).
 
 ## v3.2.1 - 2015.12.19
 ### Added
-- Nothing
-
-### Removed
 - Nothing
 
 ### Changed
@@ -345,28 +165,13 @@ See [issue #19](https://github.com/opis/database/issues/19) and [issue #18](http
 - Added `Opis\Database\ResultSet::column` method.
   See [issue #10](https://github.com/opis/database/issues/10)
 
-### Removed
-- Nothing
-
 ### Changed
 - The `Opis\Database\Model::getConnection` method is not abstract anymore.
   See issue [issue #11](https://github.com/opis/database/issues/11)
 
-### Fixed
-- Nothing
-
 ## v3.0.1 - 2015.11.09
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
 ### Changed
 - The second argument of the `Opis\Database\Connection::column` method is now optional.
-
-### Fixed
-- Nothing
 
 ## v3.0.0 - 2015.10.29
 ### Added
@@ -391,19 +196,7 @@ used by the compiler.
 ### Changed
 - Moved classes that were under the `Opis\Database\Compiler` namespace to `Opis\Database\SQL\Compiler` namespace
 
-### Fixed
-- Nothing
-
 ## v2.3.1 - 2015.10.21
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\SQL\Compiler::sqlFunctionROUND`
 - Fixed some bugs in `Opis\Database\Compiler\MySQL` compiler class
@@ -434,9 +227,6 @@ used by the compiler.
 - Added `Opis\Database\Connection::driver` method
 - Added `Opis\Database\Schema\Compiler\SQLite` class. This class provides schema support for SQLite
 
-### Removed
-- Nothing
-
 ### Changed
 - Newly added `increment` and `decrement` methods can now be used when a row is updated
 - Improvements
@@ -445,44 +235,19 @@ used by the compiler.
 - Bugfixes
 
 ## v2.1.2 - 2015.10.01
-### Added
-- Nothing
-
 ### Removed
 - `branch-alias` from `composer.json` file
-
-### Changed
-- Nothing
 
 ### Fixed
 - Fixed a bug that prevented boolean values to be as default value for a table's column.
 - Fixed a bug where `text` and `binary` types were not mapped correctly.
 
 ## v2.1.1 - 2015.02.02
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug (see https://github.com/opis/database/pull/4)
 
 ## v2.1.0 - 2014.12.12
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
-- Nothing
 * Modified `persistent` method in `Opis\Database\Connection`. The method accepts now an optional
 boolean argument that specify if the connection should pe persistent or not.
 * Added `disconnect` method in `Opis\Database\Connection`
@@ -494,15 +259,6 @@ boolean argument that specify if the connection should pe persistent or not.
  in order to avoid keeping the connection alive after the `disconnect` method was called.
 
 ## v2.0.1 - 2014.11.26
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\Schema\Complier` class.
 
@@ -533,46 +289,16 @@ boolean argument that specify if the connection should pe persistent or not.
 -  Changed `set` method of the `Opis\Database\SQL\Update` class.
 - The schema builder is now officially supported, although it is still marked as experimental.
 
-### Fixed
-- Nothing
-
-
 ## v1.4.0 - 2014.07.04
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
 ### Changed
 - `insert` command
 
-### Fixed
-- Nothing
 
 ## v1.3.2 - 2014.07.03
 ### Added
 - Autoload file
 
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
-### Fixed
-- Nothing
-
 ## v1.3.1 - 2014.07.01
-### Added
-- Nothing
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\SQL\Where` class.
 
@@ -584,22 +310,10 @@ boolean argument that specify if the connection should pe persistent or not.
 ### Removed
 - `port` method from `Opis\Database\DSN\SQLServer` class
 
-### Changed
-- Nothing
-
 ### Fixed
 - Fixed a bug in `Opis\Database\DSN\SQLite` class
 
 ## v1.2.2
 ### Added
 - Changelog
-
-### Removed
-- Nothing
-
-### Changed
-- Nothing
-
-### Fixed
-- Nothing
 
