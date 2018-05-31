@@ -45,8 +45,8 @@ class MySqlTest extends BaseClass
                     "`b` FLOAT",
                     "`c` DOUBLE",
                     "`d` DECIMAL",
-                    "`d1` DECIMAL (4)",
-                    "`d2` DECIMAL (4, 8)",
+                    "`d1` DECIMAL(4)",
+                    "`d2` DECIMAL(4, 8)",
                     "`e` TINYINT(1)",
                     "`f` VARCHAR(255)",
                     "`f1` VARCHAR(32)",
@@ -121,6 +121,22 @@ class MySqlTest extends BaseClass
                     "`a` INT AUTO_INCREMENT",
                     "CONSTRAINT `x` PRIMARY KEY (`a`)",
                 ]), ")"
+            ]),
+            'testIndex' => implode("\n", [
+                "CREATE TABLE `foo`(", implode(",\n", [
+                    "`a` INT",
+                    "`b` INT",
+                    "`c` INT",
+                    "`d` INT",
+                ]), implode("\n", [
+                    ")",
+                    "CREATE INDEX `foo_ik_a` ON `foo`(`a`)",
+                    "CREATE INDEX `x` ON `foo`(`b`)",
+                    "CREATE INDEX `foo_ik_c` ON `foo`(`c`)",
+                    "CREATE INDEX `y` ON `foo`(`d`)",
+                    "CREATE INDEX `foo_ik_a_b` ON `foo`(`a`, `b`)",
+                    "CREATE INDEX `z` ON `foo`(`c`, `d`)",
+                ])
             ])
         ];
     }

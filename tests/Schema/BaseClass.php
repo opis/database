@@ -170,10 +170,29 @@ class BaseClass extends TestCase
         $expected = static::$data[__FUNCTION__];
         $this->assertEquals($expected, $result);
     }
+
     public function testNamedAutoincrement()
     {
         $result = $this->schema->create('foo', function (CreateTable $table){
             $table->integer('a')->autoincrement('x');
+        });
+
+        $expected = static::$data[__FUNCTION__];
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testIndex()
+    {
+        $result = $this->schema->create('foo', function (CreateTable $table){
+            $table->integer('a')->index();
+            $table->integer('b')->index('x');
+            $table->integer('c');
+            $table->integer('d');
+
+            $table->index('c');
+            $table->index('d', 'y');
+            $table->index(['a', 'b']);
+            $table->index(['c', 'd'], 'z');
         });
 
         $expected = static::$data[__FUNCTION__];
