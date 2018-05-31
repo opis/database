@@ -22,11 +22,6 @@ use Opis\Database\Test\Schema;
 
 class MySqlTest extends BaseClass
 {
-    /** @var Schema */
-    protected $schema;
-
-    protected static $data = [];
-
     public static function setUpBeforeClass()
     {
         static::$data = [
