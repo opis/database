@@ -137,7 +137,13 @@ class MySqlTest extends BaseClass
                     'CREATE INDEX `foo_ik_a_b` ON `foo`(`a`, `b`)',
                     'CREATE INDEX `z` ON `foo`(`c`, `d`)',
                 ])
-            ])
+            ]),
+            'testForeignKey' => implode("\n", [
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    'CONSTRAINT `foo_fk_a` FOREIGN KEY (`a`) REFERENCES `bar` (`a`) ON UPDATE CASCADE ON DELETE CASCADE',
+                ]), ')'
+            ]),
         ];
     }
 
