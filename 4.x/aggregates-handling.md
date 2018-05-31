@@ -2,7 +2,8 @@
 layout: project
 version: 4.x
 title: Working with aggregates
-description: Learn how to work with aggregates
+description: Learn how you can use the 'GROUP BY' and 'HAVING' clauses
+keywords: group by, having, aggregates
 ---
 # Working with aggregates
 

@@ -2,7 +2,9 @@
 layout: project
 version: 4.x
 title: Database connections
-description: Learn how to connect to a database
+description: Define and establish a connection to a database. 
+ Learn how you can configure your connection settings
+keywords: connection, settings, DSN
 ---
 
 # Database connections
