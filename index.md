@@ -1,4 +1,4 @@
 ---
 layout: meta-redirect
-location: /database/3.6
+location: /database/4.x
 ---

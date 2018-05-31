@@ -7,7 +7,7 @@ lib:
     name: opis/database
     version: 4.0.0
 ---
-# Database abstraction layer
+# About
 
 **Opis Database** is a library that implements an abstraction layer over the PDO extension, 
 by providing a powerful query builder along with an easy to use schema builder.

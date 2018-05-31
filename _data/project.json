@@ -31,7 +31,7 @@
         "/assets/v2/prism.js",
         "/assets/v2/script.js"
     ],
-    "current_version": 1,
+    "current_version": 0,
     "versions": [
         {"title": "Version 4.x", "url": "/database/4.x"},
         {"title": "Version 3.6", "url": "/database/3.6"}
