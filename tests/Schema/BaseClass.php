@@ -35,7 +35,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testAddSingleColumn()
@@ -45,7 +49,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testAddMultipleColumns()
@@ -56,7 +64,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testTypes()
@@ -82,7 +94,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testIntSizes()
@@ -96,7 +112,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testTextSizes()
@@ -110,7 +130,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testBinarySizes()
@@ -124,7 +148,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testColumnProperties()
@@ -136,7 +164,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testColumnConstraints()
@@ -147,7 +179,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testColumnNamedConstraints()
@@ -158,7 +194,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testAutoincrement()
@@ -168,7 +208,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testNamedAutoincrement()
@@ -178,7 +222,11 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testIndex()
@@ -196,6 +244,10 @@ class BaseClass extends TestCase
         });
 
         $expected = static::$data[__FUNCTION__];
-        $this->assertEquals($expected, $result);
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 }
