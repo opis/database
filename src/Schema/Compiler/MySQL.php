@@ -56,9 +56,9 @@ class MySQL extends Compiler
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
-                return 'DECIMAL (' . $this->value($l) . ')';
+                return 'DECIMAL(' . $this->value($l) . ')';
             }
-            return 'DECIMAL (' . $this->value($l) . ', ' . $this->value($p) . ')';
+            return 'DECIMAL(' . $this->value($l) . ', ' . $this->value($p) . ')';
         }
         return 'DECIMAL';
     }
