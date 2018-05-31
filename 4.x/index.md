@@ -2,7 +2,9 @@
 layout: project
 version: 4.x
 title: About
-description: Getting started with Opis Database
+description: A database abstraction layer over PDO, 
+    that provides a powerful and intuitive query builder, bundled with an easy to use schema builder
+keywords: DAL, database, sql, query builder, schema builder, abstraction layer
 lib: 
     name: opis/database
     version: 4.0.0
