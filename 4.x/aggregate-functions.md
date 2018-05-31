@@ -2,7 +2,8 @@
 layout: project
 version: 4.x
 title: Aggregate functions
-description: Learn about aggregate functions
+description: A list of aggregate functions that you can use when building your query
+keywords: aggregate, functions, count, average, sum, total
 ---
 # Aggregate functions
 
