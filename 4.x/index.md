@@ -7,7 +7,7 @@ description: A database abstraction layer over PDO,
 keywords: DAL, database, sql, query builder, schema builder, abstraction layer
 lib: 
     name: opis/database
-    version: 4.0.0
+    version: 4.0
 ---
 # About
 
