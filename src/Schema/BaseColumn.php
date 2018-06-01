@@ -19,101 +19,95 @@ namespace Opis\Database\Schema;
 
 class BaseColumn
 {
-    /** @var    string */
+    /** @var string */
     protected $name;
 
-    /** @var    string */
+    /** @var string */
     protected $type;
 
-    /** @var    array */
+    /** @var array */
     protected $properties = [];
 
     /**
-     * Constructor
-     *
-     * @param   string $name
-     * @param   string|null $type (optional)
+     * BaseColumn constructor.
+     * @param string $name
+     * @param string|null $type
      */
-    public function __construct($name, $type = null)
+    public function __construct(string $name, string $type = null)
     {
         $this->name = $name;
         $this->type = $type;
     }
 
     /**
-     * @return  string
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @return  string|null
+     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
     /**
-     * @return  array
+     * @return array
      */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
     /**
-     * @param   string $type
-     *
-     * @return  $this
+     * @param string $type
+     * @return $this
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
         return $this;
     }
 
     /**
-     * @param   string $name
-     * @param   mixed $value
-     *
-     * @return  $this
+     * @param string $name
+     * @param $value
+     * @return $this
      */
-    public function set($name, $value)
+    public function set(string $name, $value): self
     {
         $this->properties[$name] = $value;
         return $this;
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  bool
+     * @param string $name
+     * @return bool
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->properties[$name]);
     }
 
     /**
-     * @param   string $name
-     * @param   mixed|null $default (optional)
-     *
-     * @return  mixed|null
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed|null
      */
-    public function get($name, $default = null)
+    public function get(string $name, $default = null)
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : $default;
     }
 
     /**
-     * @param   string $value
-     *
-     * @return  $this
+     * @param string $value
+     * @return $this
      */
-    public function size($value)
+    public function size(string $value): self
     {
         $value = strtolower($value);
 
@@ -125,59 +119,45 @@ class BaseColumn
     }
 
     /**
-     * @deprecated  2.1.0   No longer used
-     *
-     * @return  $this
+     * @return $this
      */
-    public function nullable()
-    {
-        return $this->set('nullable', true);
-    }
-
-    /**
-     * @return  $this
-     */
-    public function notNull()
+    public function notNull(): self
     {
         return $this->set('nullable', false);
     }
 
     /**
-     * @param   string $comment
-     *
-     * @return  $this
+     * @param string $comment
+     * @return $this
      */
-    public function description($comment)
+    public function description(string $comment): self
     {
         return $this->set('description', $comment);
     }
 
     /**
-     * @param   mixed $value
-     *
-     * @return  $this
+     * @param $value
+     * @return $this
      */
-    public function defaultValue($value)
+    public function defaultValue($value): self
     {
         return $this->set('default', $value);
     }
 
     /**
-     * @param   bool|true $value (optional)
-     *
-     * @return  $this
+     * @param bool $value
+     * @return $this
      */
-    public function unsigned($value = true)
+    public function unsigned(bool $value = true): self
     {
         return $this->set('unsigned', $value);
     }
 
     /**
-     * @param   mixed $value
-     *
-     * @return  $this
+     * @param $value
+     * @return $this
      */
-    public function length($value)
+    public function length($value): self
     {
         return $this->set('length', $value);
     }

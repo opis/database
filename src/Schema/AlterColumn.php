@@ -19,17 +19,16 @@ namespace Opis\Database\Schema;
 
 class AlterColumn extends BaseColumn
 {
-    /** @var    string */
+    /** @var string*/
     protected $table;
 
     /**
-     * Constructor
-     *
-     * @param   AlterTable $table
-     * @param   string $name
-     * @param   string|null $type (optional)
+     * AlterColumn constructor.
+     * @param AlterTable $table
+     * @param string $name
+     * @param string|null $type
      */
-    public function __construct(AlterTable $table, $name, $type = null)
+    public function __construct(AlterTable $table, string $name, string $type = null)
     {
         $this->table = $table;
         parent::__construct($name, $type);
@@ -38,17 +37,16 @@ class AlterColumn extends BaseColumn
     /**
      * @return  string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->table;
     }
 
+
     /**
-     * @param   mixed $value
-     *
-     * @return  $this|BaseColumn
+     * @inheritdoc
      */
-    public function defaultValue($value)
+    public function defaultValue($value): BaseColumn
     {
         if ($this->get('handleDefault', true)) {
             return parent::defaultValue($value);
@@ -58,9 +56,9 @@ class AlterColumn extends BaseColumn
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
-    public function autoincrement()
+    public function autoincrement(): self
     {
         return $this->set('autoincrement', true);
     }

@@ -19,29 +19,27 @@ namespace Opis\Database\Schema;
 
 class AlterTable
 {
-    /** @var    string */
+    /** @var string*/
     protected $table;
 
-    /** @var    array */
+    /** @var array*/
     protected $commands = [];
 
     /**
-     * Constructor
-     *
-     * @param   string $table
+     * AlterTable constructor.
+     * @param string $table
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
 
     /**
-     * @param   string $name
-     * @param   mixed $data
-     *
-     * @return  $this
+     * @param string $name
+     * @param $data
+     * @return $this
      */
-    protected function addCommand($name, $data)
+    protected function addCommand(string $name, $data): self
     {
         $this->commands[] = [
             'type' => $name,
@@ -57,7 +55,7 @@ class AlterTable
      * @param string|null $name
      * @return $this
      */
-    protected function addKey(string $type, $columns, string $name = null)
+    protected function addKey(string $type, $columns, string $name = null): self
     {
         static $map = [
             'addPrimary' => 'pk',
@@ -81,12 +79,11 @@ class AlterTable
     }
 
     /**
-     * @param   string $name
-     * @param   string $type
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @param string $type
+     * @return AlterColumn
      */
-    protected function addColumn($name, $type)
+    protected function addColumn(string $name, string $type): AlterColumn
     {
         $columnObject = new AlterColumn($this, $name, $type);
         $this->addCommand('addColumn', $columnObject);
@@ -94,12 +91,11 @@ class AlterTable
     }
 
     /**
-     * @param   string $column
-     * @param   string $type
-     *
-     * @return  AlterColumn
+     * @param string $column
+     * @param string $type
+     * @return AlterColumn
      */
-    protected function modifyColumn($column, $type)
+    protected function modifyColumn(string $column, string $type): AlterColumn
     {
         $columnObject = new AlterColumn($this, $column, $type);
         $columnObject->set('handleDefault', false);
@@ -108,9 +104,9 @@ class AlterTable
     }
 
     /**
-     * @return  string
+     * @return string
      */
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->table;
     }
@@ -118,78 +114,71 @@ class AlterTable
     /**
      * @return array
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         return $this->commands;
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  $this
+     * @param string $name
+     * @return $this
      */
-    public function dropIndex($name)
+    public function dropIndex(string $name): self
     {
         return $this->addCommand('dropIndex', $name);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  $this
+     * @param string $name
+     * @return $this
      */
-    public function dropUnique($name)
+    public function dropUnique(string $name): self
     {
         return $this->addCommand('dropUniqueKey', $name);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  $this
+     * @param string $name
+     * @return $this
      */
-    public function dropPrimary($name)
+    public function dropPrimary(string $name): self
     {
         return $this->addCommand('dropPrimaryKey', $name);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  $this
+     * @param string $name
+     * @return $this
      */
-    public function dropForeign($name)
+    public function dropForeign(string $name): self
     {
         return $this->addCommand('dropForeignKey', $name);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  $this
+     * @param string $name
+     * @return $this
      */
-    public function dropColumn($name)
+    public function dropColumn(string $name): self
     {
         return $this->addCommand('dropColumn', $name);
     }
 
     /**
-     * @param $column
+     * @param string $column
      * @return $this
-     * @internal param string $name
      */
-    public function dropDefaultValue($column)
+    public function dropDefaultValue(string $column): self
     {
         return $this->addCommand('dropDefaultValue', $column);
     }
 
     /**
-     * @param   string $from
-     * @param   string $to
-     *
-     * @return  $this
+     * @param string $from
+     * @param string $to
+     * @return $this
      */
-    public function renameColumn($from, $to)
+    public function renameColumn(string $from, string $to): self
     {
         return $this->addCommand('renameColumn', [
             'from' => $from,
@@ -202,7 +191,7 @@ class AlterTable
      * @param string|null $name
      * @return $this
      */
-    public function primary($columns, string $name = null)
+    public function primary($columns, string $name = null): self
     {
         return $this->addKey('addPrimary', $columns, $name);
     }
@@ -212,7 +201,7 @@ class AlterTable
      * @param string|null $name
      * @return $this
      */
-    public function unique($columns, string $name = null)
+    public function unique($columns, string $name = null): self
     {
         return $this->addKey('addUnique', $columns, $name);
     }
@@ -222,7 +211,7 @@ class AlterTable
      * @param string|null $name
      * @return $this
      */
-    public function index($columns, string $name = null)
+    public function index($columns, string $name = null): self
     {
         return $this->addKey('addIndex', $columns, $name);
     }
@@ -232,7 +221,7 @@ class AlterTable
      * @param string|null $name
      * @return ForeignKey
      */
-    public function foreign($columns, string $name = null)
+    public function foreign($columns, string $name = null): self
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -253,12 +242,11 @@ class AlterTable
     }
 
     /**
-     * @param   string $column
-     * @param   mixed $value
-     *
-     * @return  $this
+     * @param string $column
+     * @param $value
+     * @return $this
      */
-    public function setDefaultValue($column, $value)
+    public function setDefaultValue(string $column, $value): self
     {
         return $this->addCommand('setDefaultValue', [
             'column' => $column,
@@ -267,205 +255,183 @@ class AlterTable
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function integer($name)
+    public function integer(string $name): AlterColumn
     {
         return $this->addColumn($name, 'integer');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function float($name)
+    public function float(string $name): AlterColumn
     {
         return $this->addColumn($name, 'float');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function double($name)
+    public function double(string $name): AlterColumn
     {
         return $this->addColumn($name, 'double');
     }
 
     /**
-     * @param   string $name
-     * @param   int|null $maximum (optional)
-     * @param   int|null $decimal (optional)
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @param int|null $length
+     * @param int|null $precision
+     * @return AlterColumn
      */
-    public function decimal(
-        $name,
-        $maximum = null,
-        /** @noinspection PhpUnusedParameterInspection */
-        $decimal = null
-    ) {
-        return $this->addColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
+    public function decimal(string $name, int $length = null, int $precision = null): AlterColumn
+    {
+        return $this->addColumn($name, 'decimal')
+            ->set('length', $length)
+            ->set('precision', $precision);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function boolean($name)
+    public function boolean(string $name): AlterColumn
     {
         return $this->addColumn($name, 'boolean');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function binary($name)
+    public function binary(string $name): AlterColumn
     {
         return $this->addColumn($name, 'binary');
     }
 
     /**
-     * @param   string $name
-     * @param   int $length (optional)
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @param int $length
+     * @return AlterColumn
      */
-    public function string($name, $length = 255)
+    public function string(string $name, int $length = 255): AlterColumn
     {
         return $this->addColumn($name, 'string')->set('length', $length);
     }
 
     /**
-     * @param   string $name
-     * @param   int $length (optional)
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @param int $length
+     * @return AlterColumn
      */
-    public function fixed($name, $length = 255)
+    public function fixed(string $name, int $length = 255): AlterColumn
     {
         return $this->addColumn($name, 'fixed')->set('length', $length);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function text($name)
+    public function text(string $name): AlterColumn
     {
         return $this->addColumn($name, 'text');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function time($name)
+    public function time(string $name): AlterColumn
     {
         return $this->addColumn($name, 'time');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function timestamp($name)
+    public function timestamp(string $name): AlterColumn
     {
         return $this->addColumn($name, 'timestamp');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function date($name)
+    public function date(string $name): AlterColumn
     {
         return $this->addColumn($name, 'date');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function dateTime($name)
+    public function dateTime(string $name): AlterColumn
     {
         return $this->addColumn($name, 'dateTime');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toInteger($name)
+    public function toInteger(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'integer');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toFloat($name)
+    public function toFloat(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'float');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toDouble($name)
+    public function toDouble(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'double');
     }
 
 
     /**
-     * @param $name
-     * @param null $maximum
-     * @param null $decimal
+     * @param string $name
+     * @param int|null $length
+     * @param int|null $precision
      * @return AlterColumn
      */
-    public function toDecimal(
-        $name,
-        $maximum = null,
-        /** @noinspection PhpUnusedParameterInspection */
-        $decimal = null
-    ) {
-        return $this->modifyColumn($name, 'decimal')->set('M', $maximum)->set('D', $maximum);
+    public function toDecimal(string $name, int $length = null, int $precision = null): AlterColumn
+    {
+        return $this->modifyColumn($name, 'decimal')
+            ->set('length', $length)
+            ->set('precision', $precision);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toBoolean($name)
+    public function toBoolean(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'boolean');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toBinary($name)
+    public function toBinary(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'binary');
     }
@@ -473,70 +439,64 @@ class AlterTable
     /**
      * @param $name
      * @param int $length
-     * @return $this|AlterColumn
+     * @return AlterColumn
      */
-    public function toString($name, $length = 255)
+    public function toString(string $name, int $length = 255): AlterColumn
     {
         return $this->modifyColumn($name, 'string')->set('length', $length);
     }
 
     /**
-     * @param   string $name
-     * @param   int $length (optional)
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @param int $length
+     * @return AlterColumn
      */
-    public function toFixed($name, $length = 255)
+    public function toFixed(string $name, int $length = 255): AlterColumn
     {
         return $this->modifyColumn($name, 'fixed')->set('length', $length);
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toText($name)
+    public function toText(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'text');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toTime($name)
+    public function toTime(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'time');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toTimestamp($name)
+    public function toTimestamp(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'timestamp');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toDate($name)
+    public function toDate(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'date');
     }
 
     /**
-     * @param   string $name
-     *
-     * @return  AlterColumn
+     * @param string $name
+     * @return AlterColumn
      */
-    public function toDateTime($name)
+    public function toDateTime(string $name): AlterColumn
     {
         return $this->modifyColumn($name, 'dateTime');
     }

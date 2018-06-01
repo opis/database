@@ -19,35 +19,34 @@ namespace Opis\Database\Schema;
 
 class CreateColumn extends BaseColumn
 {
-    /** @var    string */
+    /** @var string */
     protected $table;
 
     /**
-     * Constructor
-     *
-     * @param   CreateTable $table
-     * @param   string $name
-     * @param   string $type
+     * CreateColumn constructor.
+     * @param CreateTable $table
+     * @param string $name
+     * @param string $type
      */
-    public function __construct(CreateTable $table, $name, $type)
+    public function __construct(CreateTable $table, string $name, string $type)
     {
         $this->table = $table;
         parent::__construct($name, $type);
     }
 
     /**
-     * @return  string
+     * @return string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->table;
     }
 
     /**
-     * @param   string|null $name
-     * @return  $this
+     * @param string|null $name
+     * @return $this
      */
-    public function autoincrement(string $name = null)
+    public function autoincrement(string $name = null): self
     {
         $this->table->autoincrement($this, $name);
         return $this;
@@ -57,7 +56,7 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function primary(string $name = null)
+    public function primary(string $name = null): self
     {
         $this->table->primary($this->name, $name);
         return $this;
@@ -67,7 +66,7 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function unique(string $name = null)
+    public function unique(string $name = null): self
     {
         $this->table->unique($this->name, $name);
         return $this;
@@ -77,7 +76,7 @@ class CreateColumn extends BaseColumn
      * @param string|null $name
      * @return $this
      */
-    public function index(string $name = null)
+    public function index(string $name = null): self
     {
         $this->table->index($this->name, $name);
         return $this;

@@ -19,35 +19,33 @@ namespace Opis\Database\Schema;
 
 class ForeignKey
 {
-    /** @var    string */
+    /** @var string */
     protected $refTable;
 
-    /** @var    array */
+    /** @var string[]*/
     protected $refColumns;
 
-    /** @var    array */
+    /** @var array */
     protected $actions = [];
 
-    /** @var    array */
+    /** @var string[] */
     protected $columns;
 
     /**
-     * Constructor
-     *
-     * @param   array $columns
+     * ForeignKey constructor.
+     * @param string[] $columns
      */
-    public function __construct($columns)
+    public function __construct(array $columns)
     {
         $this->columns = $columns;
     }
 
     /**
-     * @param   string $on
-     * @param   string $action
-     *
-     * @return  $this
+     * @param string $on
+     * @param string $action
+     * @return $this
      */
-    protected function addAction($on, $action)
+    protected function addAction(string $on, string $action): self
     {
         $action = strtoupper($action);
 
@@ -60,65 +58,63 @@ class ForeignKey
     }
 
     /**
-     * @return  string
+     * @return string
      */
-    public function getReferencedTable()
+    public function getReferencedTable(): string
     {
         return $this->refTable;
     }
 
     /**
-     * @return  array
+     * @return string[]
      */
-    public function getReferencedColumns()
+    public function getReferencedColumns(): array
     {
         return $this->refColumns;
     }
 
     /**
-     * @return  array
+     * @return string[]
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
     /**
-     * @return  array
+     * @return array
      */
-    public function getActions()
+    public function getActions(): array
     {
         return $this->actions;
     }
 
     /**
-     * @param   string $table
-     * @param   string $column
-     * @return  $this
+     * @param string $table
+     * @param string ...$columns
+     * @return $this
      */
-    public function references($table, $column)
+    public function references(string $table, string ...$columns): self
     {
         $this->refTable = $table;
-        $this->refColumns = [$column];
+        $this->refColumns = $columns;
         return $this;
     }
 
     /**
-     * @param   string $action
-     *
-     * @return  $this
+     * @param string $action
+     * @return $this
      */
-    public function onDelete($action)
+    public function onDelete(string $action): self
     {
         return $this->addAction('ON DELETE', $action);
     }
 
     /**
-     * @param   string $action
-     *
-     * @return  $this
+     * @param string $action
+     * @return $this
      */
-    public function onUpdate($action)
+    public function onUpdate(string $action): self
     {
         return $this->addAction('ON UPDATE', $action);
     }
