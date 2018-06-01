@@ -119,68 +119,68 @@ class Where
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function is($value, bool $iscolumn = false): WhereStatement
+    public function is($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '=', $iscolumn);
+        return $this->addCondition($value, '=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function isNot($value, bool $iscolumn = false): WhereStatement
+    public function isNot($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '!=', $iscolumn);
+        return $this->addCondition($value, '!=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function lessThan($value, bool $iscolumn = false): WhereStatement
+    public function lessThan($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '<', $iscolumn);
+        return $this->addCondition($value, '<', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function greaterThan($value, bool $iscolumn = false): WhereStatement
+    public function greaterThan($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '>', $iscolumn);
+        return $this->addCondition($value, '>', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function atLeast($value, bool $iscolumn = false): WhereStatement
+    public function atLeast($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '>=', $iscolumn);
+        return $this->addCondition($value, '>=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function atMost($value, bool $iscolumn = false): WhereStatement
+    public function atMost($value, bool $is_column = false): WhereStatement
     {
-        return $this->addCondition($value, '<=', $iscolumn);
+        return $this->addCondition($value, '<=', $is_column);
     }
 
     /**
@@ -264,68 +264,68 @@ class Where
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function eq($value, bool $iscolumn = false): WhereStatement
+    public function eq($value, bool $is_column = false): WhereStatement
     {
-        return $this->is($value, $iscolumn);
+        return $this->is($value, $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function ne($value, bool $iscolumn = false): WhereStatement
+    public function ne($value, bool $is_column = false): WhereStatement
     {
-        return $this->isNot($value, $iscolumn);
+        return $this->isNot($value, $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function lt($value, bool $iscolumn = false): WhereStatement
+    public function lt($value, bool $is_column = false): WhereStatement
     {
-        return $this->lessThan($value, $iscolumn);
+        return $this->lessThan($value, $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function gt($value, bool $iscolumn = false): WhereStatement
+    public function gt($value, bool $is_column = false): WhereStatement
     {
-        return $this->greaterThan($value, $iscolumn);
+        return $this->greaterThan($value, $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function gte($value, bool $iscolumn = false): WhereStatement
+    public function gte($value, bool $is_column = false): WhereStatement
     {
-        return $this->atLeast($value, $iscolumn);
+        return $this->atLeast($value, $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      *
      * @return  WhereStatement|Select|Delete|Update
      */
-    public function lte($value, bool $iscolumn = false): WhereStatement
+    public function lte($value, bool $is_column = false): WhereStatement
     {
-        return $this->atMost($value, $iscolumn);
+        return $this->atMost($value, $is_column);
     }
 
     /**
