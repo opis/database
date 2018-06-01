@@ -17,6 +17,7 @@
 
 namespace Opis\Database\Test\Schema;
 
+use Opis\Database\Schema\AlterTable;
 use Opis\Database\Schema\CreateTable;
 use Opis\Database\Test\Connection;
 use Opis\Database\Test\Schema;
@@ -234,6 +235,43 @@ class BaseClass extends TestCase
                 ->references('bar', 'a', 'b')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+        });
+
+        $this->execTest(__FUNCTION__, $result);
+    }
+
+    public function testAlterTableAddColumn()
+    {
+        $result = $this->schema->alter('foo', function(AlterTable $table){
+            $table->integer('a');
+        });
+
+        $this->execTest(__FUNCTION__, $result);
+    }
+
+    public function testAlterTableAddMultipleColumns()
+    {
+        $result = $this->schema->alter('foo', function(AlterTable $table){
+            $table->integer('a');
+            $table->integer('b');
+        });
+
+        $this->execTest(__FUNCTION__, $result);
+    }
+
+    public function testAlterTableDropColumn()
+    {
+        $result = $this->schema->alter('foo', function(AlterTable $table){
+            $table->dropColumn('a');
+        });
+
+        $this->execTest(__FUNCTION__, $result);
+    }
+
+    public function testAlterTableAddDefaults()
+    {
+        $result = $this->schema->alter('foo', function(AlterTable $table){
+            $table->setDefaultValue('a', 100);
         });
 
         $this->execTest(__FUNCTION__, $result);

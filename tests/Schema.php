@@ -19,6 +19,7 @@ namespace Opis\Database\Test;
 
 use Opis\Database\Schema\CreateTable;
 use Opis\Database\Schema as BaseSchema;
+use Opis\Database\Schema\AlterTable;
 
 class Schema extends BaseSchema
 {
@@ -33,5 +34,45 @@ class Schema extends BaseSchema
         return implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->create($schema)));
+    }
+
+    public function alter(string $table, callable $callback)
+    {
+        $compiler = $this->connection->schemaCompiler();
+
+        $schema = new AlterTable($table);
+
+        $callback($schema);
+
+        return implode("\n", array_map(function ($value) {
+            return $value['sql'];
+        }, $compiler->alter($schema)));
+    }
+
+    public function renameTable(string $table, string $name)
+    {
+        $result = $this->connection->schemaCompiler()->renameTable($table, $name);
+
+        return implode("\n", array_map(function ($value) {
+            return $value['sql'];
+        }, $result));
+    }
+
+    public function drop(string $table)
+    {
+        $compiler = $this->connection->schemaCompiler();
+
+        return implode("\n", array_map(function ($value) {
+            return $value['sql'];
+        }, $compiler->drop($table)));
+    }
+
+    public function truncate(string $table)
+    {
+        $compiler = $this->connection->schemaCompiler();
+
+        return implode("\n", array_map(function ($value) {
+            return $value['sql'];
+        }, $compiler->truncate($table)));
     }
 }

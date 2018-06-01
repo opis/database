@@ -109,3 +109,12 @@ testForeignKeyMultiple: |
   `b` INT,
   CONSTRAINT `foo_fk_a_b` FOREIGN KEY (`a`, `b`) REFERENCES `bar` (`a`, `b`) ON UPDATE CASCADE ON DELETE CASCADE
   )
+testAlterTableAddColumn: |
+  ALTER TABLE `foo` ADD COLUMN `a` INT
+testAlterTableAddMultipleColumns: |
+  ALTER TABLE `foo` ADD COLUMN `a` INT
+  ALTER TABLE `foo` ADD COLUMN `b` INT
+testAlterTableDropColumn: |
+  ALTER TABLE `foo` DROP COLUMN `a`
+testAlterTableAddDefaults: |
+    ALTER TABLE `foo` ALTER `a` SET DEFAULT 100
