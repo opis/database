@@ -18,15 +18,41 @@
 namespace Opis\Database\Test\Schema;
 
 use Opis\Database\Schema\CreateTable;
+use Opis\Database\Test\Connection;
 use Opis\Database\Test\Schema;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Yaml;
 
 class BaseClass extends TestCase
 {
     protected static $data = [];
 
     /** @var Schema */
+    protected static $db_schema;
+
+    /** @var string|null */
+    protected static $schema_name;
+
+    /** @var Schema */
     protected $schema;
+
+    public static function setUpBeforeClass()
+    {
+        $name = static::$schema_name;
+
+        static::$data = array_map(function($value){
+            if (is_string($value)) {
+                $value = rtrim($value);
+            }
+            return $value;
+        }, Yaml::parseFile(__DIR__ . '/../data/schema/' . $name . '.yaml'));
+        static::$db_schema = new Schema(new Connection($name));
+    }
+
+    public function setUp()
+    {
+        $this->schema = static::$db_schema;
+    }
 
     public function testCreateTable()
     {
@@ -34,12 +60,7 @@ class BaseClass extends TestCase
 
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testAddSingleColumn()
@@ -48,12 +69,7 @@ class BaseClass extends TestCase
             $table->integer('a');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testAddMultipleColumns()
@@ -63,12 +79,7 @@ class BaseClass extends TestCase
             $table->integer('b');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testTypes()
@@ -93,12 +104,7 @@ class BaseClass extends TestCase
             $table->text('m');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testIntSizes()
@@ -111,12 +117,7 @@ class BaseClass extends TestCase
             $table->integer('e')->size('big');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testTextSizes()
@@ -129,12 +130,7 @@ class BaseClass extends TestCase
             $table->text('e')->size('big');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testBinarySizes()
@@ -147,12 +143,7 @@ class BaseClass extends TestCase
             $table->binary('e')->size('big');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testColumnProperties()
@@ -163,12 +154,7 @@ class BaseClass extends TestCase
             $table->string('c')->notNull();
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testColumnConstraints()
@@ -178,12 +164,7 @@ class BaseClass extends TestCase
             $table->integer('b')->unique();
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testColumnNamedConstraints()
@@ -193,12 +174,7 @@ class BaseClass extends TestCase
             $table->integer('b')->unique('uk_b');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testAutoincrement()
@@ -207,12 +183,7 @@ class BaseClass extends TestCase
             $table->integer('a')->autoincrement();
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testNamedAutoincrement()
@@ -221,12 +192,7 @@ class BaseClass extends TestCase
             $table->integer('a')->autoincrement('x');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testIndex()
@@ -243,12 +209,7 @@ class BaseClass extends TestCase
             $table->index(['c', 'd'], 'z');
         });
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testForeignKey()
@@ -259,14 +220,9 @@ class BaseClass extends TestCase
                 ->references('bar', 'a')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-        });
+        });;
 
-        $expected = static::$data[__FUNCTION__];
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->execTest(__FUNCTION__, $result);
     }
 
     public function testForeignKeyMultiple()
@@ -280,7 +236,12 @@ class BaseClass extends TestCase
                 ->onDelete('cascade');
         });
 
-        $expected = static::$data[__FUNCTION__];
+        $this->execTest(__FUNCTION__, $result);
+    }
+
+    private function execTest($test, $result)
+    {
+        $expected = static::$data[$test] ?? null;
         if ($expected === null) {
             $this->markTestSkipped();
         } else {

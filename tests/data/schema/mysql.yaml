@@ -1,0 +1,111 @@
+testCreateTable: |
+  CREATE TABLE `foo`(
+
+  )
+testAddSingleColumn: |
+  CREATE TABLE `foo`(
+  `a` INT
+  )
+testAddMultipleColumns: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` INT
+  )
+testTypes: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` FLOAT,
+  `c` DOUBLE,
+  `d` DECIMAL,
+  `d1` DECIMAL(4),
+  `d2` DECIMAL(4, 8),
+  `e` TINYINT(1),
+  `f` VARCHAR(255),
+  `f1` VARCHAR(32),
+  `g` CHAR(255),
+  `g1` CHAR(2),
+  `h` DATE,
+  `i` DATETIME,
+  `j` TIMESTAMP,
+  `k` TIME,
+  `l` BLOB,
+  `m` TEXT
+  )
+testIntSizes: |
+  CREATE TABLE `foo`(
+  `a` TINYINT,
+  `b` SMALLINT,
+  `c` INT,
+  `d` MEDIUMINT,
+  `e` BIGINT
+  )
+testTextSizes: |
+  CREATE TABLE `foo`(
+  `a` TINYTEXT,
+  `b` TINYTEXT,
+  `c` TEXT,
+  `d` MEDIUMTEXT,
+  `e` LONGTEXT
+  )
+testBinarySizes: |
+  CREATE TABLE `foo`(
+  `a` TINYBLOB,
+  `b` TINYBLOB,
+  `c` BLOB,
+  `d` MEDIUMBLOB,
+  `e` LONGBLOB
+  )
+testColumnProperties: |
+  CREATE TABLE `foo`(
+  `a` INT UNSIGNED,
+  `b` FLOAT DEFAULT 0.1,
+  `c` VARCHAR(255) NOT NULL
+  )
+testColumnConstraints: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` INT,
+  CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`),
+  CONSTRAINT `foo_uk_b` UNIQUE (`b`)
+  )
+testColumnNamedConstraints: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` INT,
+  CONSTRAINT `pk_a` PRIMARY KEY (`a`),
+  CONSTRAINT `uk_b` UNIQUE (`b`)
+  )
+testAutoincrement: |
+  CREATE TABLE `foo`(
+  `a` INT AUTO_INCREMENT,
+  CONSTRAINT `foo_pk_a` PRIMARY KEY (`a`)
+  )
+testNamedAutoincrement: |
+  CREATE TABLE `foo`(
+  `a` INT AUTO_INCREMENT,
+  CONSTRAINT `x` PRIMARY KEY (`a`)
+  )
+testIndex: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` INT,
+  `c` INT,
+  `d` INT
+  )
+  CREATE INDEX `foo_ik_a` ON `foo`(`a`)
+  CREATE INDEX `x` ON `foo`(`b`)
+  CREATE INDEX `foo_ik_c` ON `foo`(`c`)
+  CREATE INDEX `y` ON `foo`(`d`)
+  CREATE INDEX `foo_ik_a_b` ON `foo`(`a`, `b`)
+  CREATE INDEX `z` ON `foo`(`c`, `d`)
+testForeignKey: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  CONSTRAINT `foo_fk_a` FOREIGN KEY (`a`) REFERENCES `bar` (`a`) ON UPDATE CASCADE ON DELETE CASCADE
+  )
+testForeignKeyMultiple: |
+  CREATE TABLE `foo`(
+  `a` INT,
+  `b` INT,
+  CONSTRAINT `foo_fk_a_b` FOREIGN KEY (`a`, `b`) REFERENCES `bar` (`a`, `b`) ON UPDATE CASCADE ON DELETE CASCADE
+  )
