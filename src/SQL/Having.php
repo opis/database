@@ -42,11 +42,11 @@ class Having
     /**
      * @param   mixed $value
      * @param   string $operator
-     * @param   boolean $iscolumn
+     * @param   boolean $is_column
      */
-    protected function addCondition($value, string $operator, bool $iscolumn)
+    protected function addCondition($value, string $operator, bool $is_column)
     {
-        if ($iscolumn && is_string($value)) {
+        if ($is_column && is_string($value)) {
             $expr = new Expression();
             $value = $expr->column($value);
         }
@@ -69,56 +69,56 @@ class Having
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function eq($value, bool $iscolumn = false)
+    public function eq($value, bool $is_column = false)
     {
-        $this->addCondition($value, '=', $iscolumn);
+        $this->addCondition($value, '=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function ne($value, bool $iscolumn = false)
+    public function ne($value, bool $is_column = false)
     {
-        $this->addCondition($value, '!=', $iscolumn);
+        $this->addCondition($value, '!=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function lt($value, bool $iscolumn = false)
+    public function lt($value, bool $is_column = false)
     {
-        $this->addCondition($value, '<', $iscolumn);
+        $this->addCondition($value, '<', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function gt($value, bool $iscolumn = false)
+    public function gt($value, bool $is_column = false)
     {
-        $this->addCondition($value, '>', $iscolumn);
+        $this->addCondition($value, '>', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function lte($value, bool $iscolumn = false)
+    public function lte($value, bool $is_column = false)
     {
-        $this->addCondition($value, '<=', $iscolumn);
+        $this->addCondition($value, '<=', $is_column);
     }
 
     /**
      * @param   mixed $value
-     * @param   bool $iscolumn (optional)
+     * @param   bool $is_column (optional)
      */
-    public function gte($value, bool $iscolumn = false)
+    public function gte($value, bool $is_column = false)
     {
-        $this->addCondition($value, '>=', $iscolumn);
+        $this->addCondition($value, '>=', $is_column);
     }
 
     /**
