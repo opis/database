@@ -17,22 +17,19 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\Compiler;
-use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\AlterTable;
-use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\{
+    Compiler, BaseColumn, AlterTable, CreateTable
+};
 
 class PostgreSQL extends Compiler
 {
-    /** @var    array */
+    /** @var string[] */
     protected $modifiers = ['nullable', 'default'];
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeInteger(BaseColumn $column)
+    protected function handleTypeInteger(BaseColumn $column): string
     {
         $autoincrement = $column->get('autoincrement', false);
 
@@ -50,31 +47,25 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeFloat(BaseColumn $column)
+    protected function handleTypeFloat(BaseColumn $column): string
     {
         return 'REAL';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeDouble(BaseColumn $column)
+    protected function handleTypeDouble(BaseColumn $column): string
     {
         return 'DOUBLE PRECISION';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeDecimal(BaseColumn $column)
+    protected function handleTypeDecimal(BaseColumn $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -86,51 +77,41 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeBinary(BaseColumn $column)
+    protected function handleTypeBinary(BaseColumn $column): string
     {
         return 'BYTEA';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeTime(BaseColumn $column)
+    protected function handleTypeTime(BaseColumn $column): string
     {
         return 'TIME(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeTimestamp(BaseColumn $column)
+    protected function handleTypeTimestamp(BaseColumn $column): string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeDateTime(BaseColumn $column)
+    protected function handleTypeDateTime(BaseColumn $column): string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @param   CreateTable $schema
-     *
-     * @return  string[]
+     * @inheritdoc
      */
-    protected function handleIndexKeys(CreateTable $schema)
+    protected function handleIndexKeys(CreateTable $schema): array
     {
         $indexes = $schema->getIndexes();
 
@@ -150,12 +131,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleRenameColumn(AlterTable $table, $data)
+    protected function handleRenameColumn(AlterTable $table, $data): string
     {
         /** @var BaseColumn $column */
         $column = $data['column'];
@@ -164,44 +142,33 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleAddIndex(AlterTable $table, $data)
+    protected function handleAddIndex(AlterTable $table, $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropIndex(AlterTable $table, $data)
+    protected function handleDropIndex(AlterTable $table, $data): string
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
     }
 
     /**
-     * @param   CreateTable $schema
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleEngine(CreateTable $schema)
+    protected function handleEngine(CreateTable $schema): string
     {
         return '';
     }
 
     /**
-     * @param   string $database
-     * @param   string $table
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function getColumns($database, $table)
+    public function getColumns(string $database, string $table): array
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
             . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
@@ -216,11 +183,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   string $dsn
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function currentDatabase($dsn)
+    public function currentDatabase(string $dsn): array
     {
         return [
             'sql' => 'SELECT current_schema()',
@@ -229,15 +194,12 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @param   string $old
-     * @param   string $new
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function renameTable($old, $new)
+    public function renameTable(string $current, string $new): array
     {
         return [
-            'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
             'params' => [],
         ];
     }

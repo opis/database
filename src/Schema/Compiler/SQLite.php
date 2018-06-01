@@ -17,57 +17,49 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\AlterTable;
-use Opis\Database\Schema\Compiler;
-use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\{
+    AlterTable, Compiler, BaseColumn, CreateTable
+};
 
 class SQLite extends Compiler
 {
-    /** @var    array */
+    /** @var string[] */
     protected $modifiers = ['nullable', 'default', 'autoincrement'];
 
-    /** @var    string */
+    /** @var string */
     protected $autoincrement = 'AUTOINCREMENT';
 
     /** @var bool No primary key */
     private $nopk = false;
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeInteger(BaseColumn $column)
+    protected function handleTypeInteger(BaseColumn $column): string
     {
         return 'INTEGER';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeTime(BaseColumn $column)
+    protected function handleTypeTime(BaseColumn $column): string
     {
         return 'DATETIME';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeTimestamp(BaseColumn $column)
+    protected function handleTypeTimestamp(BaseColumn $column): string
     {
         return 'DATETIME';
     }
 
     /**
-     * @param BaseColumn $column
-     * @return string
+     * @inheritdoc
      */
-    public function handleModifierAutoincrement(BaseColumn $column)
+    public function handleModifierAutoincrement(BaseColumn $column): string
     {
         $modifier = parent::handleModifierAutoincrement($column);
 
@@ -80,10 +72,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param CreateTable $schema
-     * @return string
+     * @inheritdoc
      */
-    public function handlePrimaryKey(CreateTable $schema)
+    public function handlePrimaryKey(CreateTable $schema): string
     {
         if ($this->nopk) {
             return '';
@@ -93,54 +84,43 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   CreateTable $schema
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleEngine(CreateTable $schema)
+    protected function handleEngine(CreateTable $schema): string
     {
         return '';
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleAddUnique(AlterTable $table, $data)
+    protected function handleAddUnique(AlterTable $table, $data): string
     {
         return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
     }
 
     /**
-     * @param AlterTable $table
-     * @param mixed $data
-     * @return string
+     * @inheritdoc
      */
-    protected function handleAddIndex(AlterTable $table, $data)
+    protected function handleAddIndex(AlterTable $table, $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
     }
 
     /**
-     * @param   string $dsn
-     *
-     * @return  string
+     * @inheritdoc
      */
-    public function currentDatabase($dsn)
+    public function currentDatabase(string $dsn): array
     {
         return substr($dsn, strpos($dsn, ':') + 1);
     }
 
     /**
-     * @param   string $database
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function getTables($database)
+    public function getTables(string $database): array
     {
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
             . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
@@ -152,12 +132,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   string $database
-     * @param   string $table
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function getColumns($database, $table)
+    public function getColumns(string $database, string $table): array
     {
         return [
             'sql' => 'PRAGMA table_info(' . $this->wrap($table) . ')',
@@ -166,15 +143,12 @@ class SQLite extends Compiler
     }
 
     /**
-     * @param   string $old
-     * @param   string $new
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function renameTable($old, $new)
+    public function renameTable(string $current, string $new): array
     {
         return [
-            'sql' => 'ALTER TABLE ' . $this->wrap($old) . ' RENAME TO ' . $this->wrap($new),
+            'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
             'params' => [],
         ];
     }

@@ -17,21 +17,19 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\Compiler;
-use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\{
+    Compiler, BaseColumn, AlterTable
+};
 
 class MySQL extends Compiler
 {
-    /** @var    string */
+    /** @var string */
     protected $wrapper = '`%s`';
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeInteger(BaseColumn $column)
+    protected function handleTypeInteger(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -48,11 +46,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeDecimal(BaseColumn $column)
+    protected function handleTypeDecimal(BaseColumn $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -64,21 +60,17 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeBoolean(BaseColumn $column)
+    protected function handleTypeBoolean(BaseColumn $column): string
     {
         return 'TINYINT(1)';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeText(BaseColumn $column)
+    protected function handleTypeText(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -94,11 +86,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeBinary(BaseColumn $column)
+    protected function handleTypeBinary(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -114,79 +104,59 @@ class MySQL extends Compiler
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropPrimaryKey(AlterTable $table, $data)
+    protected function handleDropPrimaryKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropUniqueKey(AlterTable $table, $data)
+    protected function handleDropUniqueKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropIndex(AlterTable $table, $data)
+    protected function handleDropIndex(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropForeignKey(AlterTable $table, $data)
+    protected function handleDropForeignKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleSetDefaultValue(AlterTable $table, $data)
+    protected function handleSetDefaultValue(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleDropDefaultValue(AlterTable $table, $data)
+    protected function handleDropDefaultValue(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 
     /**
-     * @param AlterTable $table
-     * @param mixed $data
-     * @return string
+     * @inheritdoc
      * @throws \Exception
      */
-    protected function handleRenameColumn(AlterTable $table, $data)
+    protected function handleRenameColumn(AlterTable $table, $data): string
     {
         $table_name = $table->getTableName();
         $column_name = $data['from'];

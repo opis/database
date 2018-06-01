@@ -17,28 +17,25 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\Compiler;
-use Opis\Database\Schema\BaseColumn;
-use Opis\Database\Schema\AlterTable;
-use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\{
+    Compiler, BaseColumn, AlterTable, CreateTable
+};
 
 class SQLServer extends Compiler
 {
-    /** @var    string */
+    /** @var string */
     protected $wrapper = '[%s]';
 
-    /** @var    array */
+    /** @var string[] */
     protected $modifiers = ['nullable', 'default', 'autoincrement'];
 
-    /** @var    string */
+    /** @var string */
     protected $autoincrement = 'IDENTITY';
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeInteger(BaseColumn $column)
+    protected function handleTypeInteger(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -55,11 +52,9 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeDecimal(BaseColumn $column)
+    protected function handleTypeDecimal(BaseColumn $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -71,72 +66,57 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeBoolean(BaseColumn $column)
+    protected function handleTypeBoolean(BaseColumn $column): string
     {
         return 'BIT';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeString(BaseColumn $column)
+    protected function handleTypeString(BaseColumn $column): string
     {
         return 'NVARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeFixed(BaseColumn $column)
+    protected function handleTypeFixed(BaseColumn $column): string
     {
         return 'NCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeText(BaseColumn $column)
+    protected function handleTypeText(BaseColumn $column): string
     {
         return 'NVARCHAR(max)';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeBinary(BaseColumn $column)
+    protected function handleTypeBinary(BaseColumn $column): string
     {
         return 'VARBINARY(max)';
     }
 
     /**
-     * @param   BaseColumn $column
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleTypeTimestamp(BaseColumn $column)
+    protected function handleTypeTimestamp(BaseColumn $column): string
     {
         return 'DATETIME';
     }
 
     /**
-     * @param   AlterTable $table
-     * @param   mixed $data
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleRenameColumn(AlterTable $table, $data)
+    protected function handleRenameColumn(AlterTable $table, $data): string
     {
         /** @var BaseColumn $column */
         $column = $data['column'];
@@ -145,35 +125,28 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   CreateTable $schema
-     *
-     * @return  string
+     * @inheritdoc
      */
-    protected function handleEngine(CreateTable $schema)
+    protected function handleEngine(CreateTable $schema): string
     {
         return '';
     }
 
     /**
-     * @param   string $old
-     * @param   string $new
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function renameTable($old, $new)
+    public function renameTable(string $current, string $new): array
     {
         return [
-            'sql' => 'sp_rename ' . $this->wrap($old) . ', ' . $this->wrap($new),
+            'sql' => 'sp_rename ' . $this->wrap($current) . ', ' . $this->wrap($new),
             'params' => [],
         ];
     }
 
     /**
-     * @param   string $dsn
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function currentDatabase($dsn)
+    public function currentDatabase(string $dsn): array
     {
         return [
             'sql' => 'SELECT SCHEMA_NAME()',
@@ -182,12 +155,9 @@ class SQLServer extends Compiler
     }
 
     /**
-     * @param   string $database
-     * @param   string $table
-     *
-     * @return  array
+     * @inheritdoc
      */
-    public function getColumns($database, $table)
+    public function getColumns(string $database, string $table): array
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
             . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
