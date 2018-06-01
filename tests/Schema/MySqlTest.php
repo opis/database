@@ -144,6 +144,13 @@ class MySqlTest extends BaseClass
                     'CONSTRAINT `foo_fk_a` FOREIGN KEY (`a`) REFERENCES `bar` (`a`) ON UPDATE CASCADE ON DELETE CASCADE',
                 ]), ')'
             ]),
+            'testForeignKeyMultiple' => implode("\n", [
+                'CREATE TABLE `foo`(', implode(",\n", [
+                    '`a` INT',
+                    '`b` INT',
+                    'CONSTRAINT `foo_fk_a_b` FOREIGN KEY (`a`, `b`) REFERENCES `bar` (`a`, `b`) ON UPDATE CASCADE ON DELETE CASCADE',
+                ]), ')'
+            ]),
         ];
     }
 

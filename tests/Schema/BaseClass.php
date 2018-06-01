@@ -268,4 +268,23 @@ class BaseClass extends TestCase
             $this->assertEquals($expected, $result);
         }
     }
+
+    public function testForeignKeyMultiple()
+    {
+        $result = $this->schema->create('foo', function (CreateTable $table){
+            $table->integer('a');
+            $table->integer('b');
+            $table->foreign(['a', 'b'])
+                ->references('bar', 'a', 'b')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+        });
+
+        $expected = static::$data[__FUNCTION__];
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
+    }
 }
