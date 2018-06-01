@@ -221,7 +221,7 @@ class AlterTable
      * @param string|null $name
      * @return ForeignKey
      */
-    public function foreign($columns, string $name = null): self
+    public function foreign($columns, string $name = null): ForeignKey
     {
         if (!is_array($columns)) {
             $columns = [$columns];
