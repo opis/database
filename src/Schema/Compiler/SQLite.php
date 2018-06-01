@@ -97,7 +97,7 @@ class SQLite extends Compiler
     protected function handleAddUnique(AlterTable $table, $data): string
     {
         return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 
     /**
@@ -106,7 +106,7 @@ class SQLite extends Compiler
     protected function handleAddIndex(AlterTable $table, $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '('.$this->wrapArray($data['columns']).')';
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 
     /**

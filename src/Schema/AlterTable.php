@@ -19,10 +19,10 @@ namespace Opis\Database\Schema;
 
 class AlterTable
 {
-    /** @var string*/
+    /** @var string */
     protected $table;
 
-    /** @var array*/
+    /** @var array */
     protected $commands = [];
 
     /**

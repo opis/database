@@ -30,7 +30,7 @@ class BaseClass extends TestCase
 
     public function testCreateTable()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
 
         });
 
@@ -44,7 +44,7 @@ class BaseClass extends TestCase
 
     public function testAddSingleColumn()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a');
         });
 
@@ -58,7 +58,7 @@ class BaseClass extends TestCase
 
     public function testAddMultipleColumns()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a');
             $table->integer('b');
         });
@@ -73,7 +73,7 @@ class BaseClass extends TestCase
 
     public function testTypes()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a');
             $table->float('b');
             $table->double('c');
@@ -103,7 +103,7 @@ class BaseClass extends TestCase
 
     public function testIntSizes()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->size('tiny');
             $table->integer('b')->size('small');
             $table->integer('c')->size('normal');
@@ -121,7 +121,7 @@ class BaseClass extends TestCase
 
     public function testTextSizes()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->text('a')->size('tiny');
             $table->text('b')->size('small');
             $table->text('c')->size('normal');
@@ -139,7 +139,7 @@ class BaseClass extends TestCase
 
     public function testBinarySizes()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->binary('a')->size('tiny');
             $table->binary('b')->size('small');
             $table->binary('c')->size('normal');
@@ -157,7 +157,7 @@ class BaseClass extends TestCase
 
     public function testColumnProperties()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->unsigned();
             $table->float('b')->defaultValue(0.1);
             $table->string('c')->notNull();
@@ -173,7 +173,7 @@ class BaseClass extends TestCase
 
     public function testColumnConstraints()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->primary();
             $table->integer('b')->unique();
         });
@@ -188,7 +188,7 @@ class BaseClass extends TestCase
 
     public function testColumnNamedConstraints()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->primary('pk_a');
             $table->integer('b')->unique('uk_b');
         });
@@ -203,7 +203,7 @@ class BaseClass extends TestCase
 
     public function testAutoincrement()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->autoincrement();
         });
 
@@ -217,7 +217,7 @@ class BaseClass extends TestCase
 
     public function testNamedAutoincrement()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->autoincrement('x');
         });
 
@@ -231,7 +231,7 @@ class BaseClass extends TestCase
 
     public function testIndex()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a')->index();
             $table->integer('b')->index('x');
             $table->integer('c');
@@ -253,7 +253,7 @@ class BaseClass extends TestCase
 
     public function testForeignKey()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a');
             $table->foreign('a')
                 ->references('bar', 'a')
@@ -271,7 +271,7 @@ class BaseClass extends TestCase
 
     public function testForeignKeyMultiple()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table){
+        $result = $this->schema->create('foo', function (CreateTable $table) {
             $table->integer('a');
             $table->integer('b');
             $table->foreign(['a', 'b'])

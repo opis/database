@@ -30,7 +30,7 @@ class Schema extends BaseSchema
 
         $callback($schema);
 
-        return implode("\n", array_map(function($value){
+        return implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->create($schema)));
     }

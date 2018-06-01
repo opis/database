@@ -238,7 +238,7 @@ class CreateTable
      * @param string $name
      * @return CreateColumn
      */
-    public function integer(string $name):CreateColumn
+    public function integer(string $name): CreateColumn
     {
         return $this->addColumn($name, 'integer');
     }

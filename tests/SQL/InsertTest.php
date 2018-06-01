@@ -37,9 +37,11 @@ class InsertTest extends BaseClass
     public function testInsertExpressions()
     {
         $expected = 'INSERT INTO "users" ("name") VALUES (LCASE( \'foo\' ))';
-        $actual = $this->db->insert(['name' => function($expr){
-            $expr->{'LCASE('}->value('foo')->{')'};
-        }])->into('users');
+        $actual = $this->db->insert([
+            'name' => function ($expr) {
+                $expr->{'LCASE('}->value('foo')->{')'};
+            },
+        ])->into('users');
         $this->assertEquals($expected, $actual);
     }
 }

@@ -19,7 +19,7 @@ namespace Opis\Database\Schema;
 
 class AlterColumn extends BaseColumn
 {
-    /** @var string*/
+    /** @var string */
     protected $table;
 
     /**

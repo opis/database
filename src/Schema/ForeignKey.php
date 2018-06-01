@@ -22,7 +22,7 @@ class ForeignKey
     /** @var string */
     protected $refTable;
 
-    /** @var string[]*/
+    /** @var string[] */
     protected $refColumns;
 
     /** @var array */

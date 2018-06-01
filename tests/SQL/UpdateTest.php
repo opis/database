@@ -36,9 +36,11 @@ class UpdateTest extends BaseClass
     public function testUpdateColAsCol()
     {
         $expected = 'UPDATE "users" SET "name" = "username"';
-        $actual = $this->db->update('users')->set(['name' => function($expr){
-            $expr->column("username");
-        }]);
+        $actual = $this->db->update('users')->set([
+            'name' => function ($expr) {
+                $expr->column("username");
+            },
+        ]);
         $this->assertEquals($expected, $actual);
     }
 
