@@ -2,17 +2,17 @@
     "title": "Opis Database",
     "name": "Database",
     "github": "https://github.com/opis/database",
-    "version": "4.0.x-dev",
+    "version": "4.0.0",
     "url": "/database",
     "chapters": true,
-    "copyright": {
-        "owner": "The Opis Project",
-        "start": "2017",
-        "end": "2018"
-    },
+    "copyright": "2018 Zindex Software",
     "title_suffix": " | Opis Database",
     "ga": true,
-    "logo": "/assets/v2/logo.svg",
+    "brand": {
+        "logo": "/assets/v2/logo.svg",
+        "title": "opis",
+        "url": "https://opis.io/database"
+    },
     "favicon": "/assets/v2/favicon.png",
     "classes": {
         "body": "d-flex flex-column",
