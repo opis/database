@@ -14,8 +14,8 @@ compress_html:
   profile: false
   startings: []
 favicon: /assets/v2/favicon.png
-layouts_dir: shared/_private/_layouts
-includes_dir: shared/_private/_includes
+layouts_dir: shared/_layouts
+includes_dir: shared/_includes
 exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
 plugins:
   - jekyll-coffeescript
