@@ -13,7 +13,7 @@ compress_html:
   blanklines: true
   profile: false
   startings: []
-favicon: /assets/v2/favicon.png
+favicon: /assets/img/favicon.png
 layouts_dir: shared/_layouts
 includes_dir: shared/_includes
 exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
