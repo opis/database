@@ -2,7 +2,7 @@
     "name": "opis/database",
     "description": "A database abstraction layer over PDO, that provides a powerful and intuitive query builder, bundled with an easy to use schema builder",
     "keywords": ["database", "query", "abstraction layer", "mysql", "postgre", "sql", "sqlite",  "query builder", "schema builder"],
-    "homepage": "http://opis.io",
+    "homepage": "https://opis.io/database",
     "license": "Apache-2.0",
     "authors": [
         {
