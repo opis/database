@@ -21,4 +21,5 @@ plugins:
   - jekyll-coffeescript
   - jekyll-paginate
   - jekyll-redirect-from
+  - jekyll-sitemap
 
