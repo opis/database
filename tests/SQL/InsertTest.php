@@ -36,7 +36,7 @@ class InsertTest extends BaseClass
 
     public function testInsertBooleanValues()
     {
-        $expected = 'INSERT INTO "test" ("foo", "bar") VALUES (1, 0)';
+        $expected = 'INSERT INTO "test" ("foo", "bar") VALUES (TRUE, FALSE)';
         $actual = $this->db->insert(['foo' => true, 'bar' => false])->into('test');
         $this->assertEquals($expected, $actual);
     }
