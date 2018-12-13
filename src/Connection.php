@@ -565,7 +565,9 @@ class Connection implements Serializable
         }
 
         try {
-            $this->bindValues($prepared['statement'], $prepared['params']);
+            if ($prepared['params']) {
+                $this->bindValues($prepared['statement'], $prepared['params']);
+            }
             $result = $prepared['statement']->execute();
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($prepared['query'],
