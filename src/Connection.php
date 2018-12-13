@@ -562,7 +562,8 @@ class Connection implements Serializable
         }
 
         try {
-            $result = $prepared['statement']->execute($prepared['params']);
+            $this->bindValues($prepared['statement'], $prepared['params']);
+            $result = $prepared['statement']->execute();
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($prepared['query'],
                     $prepared['params']) . ' ] ', (int)$e->getCode(), $e->getPrevious());
@@ -574,6 +575,45 @@ class Connection implements Serializable
         }
 
         return $result;
+    }
+
+    /**
+     * Bind values to their parameters in the given statement.
+     *
+     * @param \PDOStatement $statement
+     * @param array $bindings
+     * @return array
+     */
+    protected function bindValues($statement, array $bindings)
+    {
+        foreach ($bindings as $key => $value) {
+            $statement->bindValue(
+                is_string($key) ? $key : $key + 1, $value,
+                $this->prepareBinding($value)
+            );
+        }
+
+        return $bindings;
+    }
+
+    /**
+     * Prepare binding value before execute query.
+     *
+     * @param $value
+     *
+     * @return int
+     */
+    protected function prepareBinding($value)
+    {
+        if (is_int($value)) {
+            $type = PDO::PARAM_INT;
+        } elseif (is_bool($value)) {
+            $type = PDO::PARAM_BOOL;
+        } else {
+            $type = PDO::PARAM_STR;
+        }
+
+        return $type;
     }
 
     /**
