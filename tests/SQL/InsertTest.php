@@ -34,6 +34,13 @@ class InsertTest extends BaseClass
         $this->assertEquals($expected, $actual);
     }
 
+    public function testInsertBooleanValues()
+    {
+        $expected = 'INSERT INTO "test" ("foo", "bar") VALUES (1, 0)';
+        $actual = $this->db->insert(['foo' => true, 'bar' => false])->into('test');
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testInsertExpressions()
     {
         $expected = 'INSERT INTO "users" ("name") VALUES (LCASE( \'foo\' ))';

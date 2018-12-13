@@ -210,9 +210,12 @@ class Compiler
             return $this->handleExpressions($value->getExpressions());
         } elseif ($value instanceof DateTime) {
             $this->params[] = $value->format($this->dateFormat);
+        } elseif (is_bool($value)) {
+            $this->params[] = $this->handleBooleans($value);
         } else {
             $this->params[] = $value;
         }
+
         return '?';
     }
 
@@ -255,6 +258,17 @@ class Compiler
         }
 
         return implode(' ', $sql);
+    }
+
+
+    /**
+     * Handle boolean values
+     * @param bool $value
+     * @return mixed
+     */
+    protected function handleBooleans(bool $value)
+    {
+        return $value ? 1 : 0;
     }
 
     /**
