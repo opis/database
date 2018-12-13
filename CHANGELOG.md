@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v4.0.1 - 2018-12-13
+
+### Added
+- Dependency to PDO extension in `composer.json` file
+
+### Fixed
+- Fixed [a bug](https://github.com/opis/database/issues/38) related to boolean values
+
 ## v4.0.0 - 2018-06-05
 
 ### Removed
