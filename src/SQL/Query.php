@@ -80,37 +80,34 @@ class Query extends BaseStatement
     /**
      * @param   string $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function having($column, Closure $value = null, bool $isExpr = false)
+    public function having($column, Closure $value = null)
     {
-        return $this->buildSelect()->having($column, $value, $isExpr);
+        return $this->buildSelect()->having($column, $value);
     }
 
     /**
      * @param   string $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function andHaving($column, Closure $value = null, bool $isExpr = false)
+    public function andHaving($column, Closure $value = null)
     {
-        return $this->buildSelect()->andHaving($column, $value, $isExpr);
+        return $this->buildSelect()->andHaving($column, $value);
     }
 
     /**
      * @param   string|Closure|Expression $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function orHaving($column, Closure $value = null, bool $isExpr = false)
+    public function orHaving($column, Closure $value = null)
     {
-        return $this->buildSelect()->orHaving($column, $value, $isExpr);
+        return $this->buildSelect()->orHaving($column, $value);
     }
 
     /**

@@ -80,39 +80,36 @@ class SelectStatement extends BaseStatement
     /**
      * @param   string $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function having($column, Closure $value = null, bool $isExpr = false): self
+    public function having($column, Closure $value = null): self
     {
-        $this->have->having($column, $value, $isExpr);
+        $this->have->having($column, $value);
         return $this;
     }
 
     /**
      * @param   string $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function andHaving($column, Closure $value = null, bool $isExpr = false): self
+    public function andHaving($column, Closure $value = null): self
     {
-        $this->have->andHaving($column, $value, $isExpr);
+        $this->have->andHaving($column, $value);
         return $this;
     }
 
     /**
      * @param   string $column
      * @param   Closure $value (optional)
-     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null, bool $isExpr = false): self
+    public function orHaving($column, Closure $value = null): self
     {
-        $this->have->orHaving($column, $value, $isExpr);
+        $this->have->orHaving($column, $value);
         return $this;
     }
 
