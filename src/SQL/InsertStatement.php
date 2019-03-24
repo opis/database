@@ -36,6 +36,7 @@ class InsertStatement
     }
 
     /**
+     * @internal
      * @return SQLStatement
      */
     public function getSQLStatement(): SQLStatement

@@ -33,6 +33,7 @@ class Subquery
     }
 
     /**
+     * @internal
      * @return SQLStatement
      */
     public function getSQLStatement(): SQLStatement

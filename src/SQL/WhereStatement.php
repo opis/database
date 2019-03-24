@@ -70,6 +70,7 @@ class WhereStatement
     }
 
     /**
+     * @internal
      * @return SQLStatement
      */
     public function getSQLStatement(): SQLStatement
