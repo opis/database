@@ -17,6 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\Expression;
 
 class InsertTest extends BaseClass
 {
@@ -45,7 +46,7 @@ class InsertTest extends BaseClass
     {
         $expected = 'INSERT INTO "users" ("name") VALUES (LCASE( \'foo\' ))';
         $actual = $this->db->insert([
-            'name' => function ($expr) {
+            'name' => function (Expression $expr) {
                 $expr->{'LCASE('}->value('foo')->{')'};
             },
         ])->into('users');

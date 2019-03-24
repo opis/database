@@ -17,6 +17,8 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\Expression;
+
 class SelectAggregateTest extends BaseClass
 {
     public function testCountNoColumns()
@@ -68,5 +70,13 @@ class SelectAggregateTest extends BaseClass
         $this->assertEquals($expected, $actual);
     }
 
+    public function testExpressionAggregate()
+    {
+        $expected = 'SELECT SUM("friends" - "enemies") FROM "users"';
+        $actual = $this->db->from('users')->sum(function (Expression $expr) {
+            $expr->column('friends')->{'-'}->column("enemies");
+        });
+        $this->assertEquals($expected, $actual);
+    }
 
 }

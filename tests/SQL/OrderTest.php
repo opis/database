@@ -17,6 +17,8 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\Expression;
+
 class OrderTest extends BaseClass
 {
     public function testOrderAsc()
@@ -65,6 +67,15 @@ class OrderTest extends BaseClass
     {
         $expected = 'SELECT * FROM "users" ORDER BY "name" ASC, (CASE WHEN "age" IS NULL THEN 1 ELSE 0 END), "age" DESC';
         $actual = $this->db->from('users')->orderBy('name')->orderBy('age', 'desc', 'nulls last')->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testOrderExpression()
+    {
+        $expected = 'SELECT * FROM "users" ORDER BY LEN("name") ASC';
+        $actual = $this->db->from('users')->orderBy(function (Expression $expr) {
+            $expr->len('name');
+        })->select();
         $this->assertEquals($expected, $actual);
     }
 }

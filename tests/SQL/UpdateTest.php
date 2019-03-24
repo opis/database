@@ -17,6 +17,8 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\Expression;
+
 class UpdateTest extends BaseClass
 {
     public function testUpdate()
@@ -37,7 +39,7 @@ class UpdateTest extends BaseClass
     {
         $expected = 'UPDATE "users" SET "name" = "username"';
         $actual = $this->db->update('users')->set([
-            'name' => function ($expr) {
+            'name' => function (Expression $expr) {
                 $expr->column("username");
             },
         ]);

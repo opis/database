@@ -17,6 +17,8 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\Expression;
+
 class WhereTest extends BaseClass
 {
     public function testWhereIs()
@@ -298,6 +300,18 @@ class WhereTest extends BaseClass
             ->where('c')->eq(function ($expr) {
                 $expr->column('a')->{'+'}->column('b');
             })
+            ->select();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWhereExpression3()
+    {
+        $expected = 'SELECT * FROM "names" WHERE LCASE("name") LIKE \'%test%\'';
+        $actual = $this->db->from('names')
+            ->where(function (Expression $expr) {
+                $expr->lcase('name');
+            }, true)
+            ->like('%test%')
             ->select();
         $this->assertEquals($expected, $actual);
     }

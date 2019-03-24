@@ -17,6 +17,9 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\SQL\ColumnExpression;
+use Opis\Database\SQL\Expression;
+
 class SelectTest extends BaseClass
 {
     public function testSelect()
@@ -100,6 +103,30 @@ class SelectTest extends BaseClass
     {
         $expected = 'SELECT "u"."name" AS "n", "s"."address" AS "s" FROM "users" AS "u", "sites" AS "s"';
         $actual = $this->db->from(['users' => 'u', 'sites' => 's'])->select(['u.name' => 'n', 's.address' => 's']);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSelectAliasedSingleExpression()
+    {
+        $expected = 'SELECT LCASE("name") AS "lower_name" FROM "users"';
+        $actual = $this->db->from('users')
+            ->select(function (ColumnExpression $expr) {
+                $expr->lcase('name', 'lower_name');
+            });
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSelectAliasedExpressionMultiple()
+    {
+        $expected = 'SELECT "name", LEN("name") AS "name_length", "age" AS "alias_age" FROM "users"';
+        $actual = $this->db->from('users')
+            ->select([
+                'name',
+                'name_length' => function (Expression $expr) {
+                    $expr->len('name');
+                },
+                'age' => 'alias_age',
+            ]);
         $this->assertEquals($expected, $actual);
     }
 
