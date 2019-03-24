@@ -390,8 +390,16 @@ class Compiler
         foreach ($joins as $join) {
             /** @var Join $joinObject */
             $joinObject = $join['join'];
-            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . ' ON ' .
-                $this->handleJoinConditions($joinObject->getJoinConditions());
+
+            $on = '';
+            if ($joinObject) {
+                $on = $this->handleJoinConditions($joinObject->getJoinConditions());
+            }
+            if ($on !== '') {
+                $on = ' ON ' . $on;
+            }
+
+            $sql[] = $join['type'] . ' JOIN ' . $this->handleTables($join['table']) . $on;
         }
         return ' ' . implode(' ', $sql);
     }
@@ -405,6 +413,9 @@ class Compiler
      */
     protected function handleJoinConditions(array $conditions)
     {
+        if (empty($conditions)) {
+            return '';
+        }
         $sql[] = $this->{$conditions[0]['type']}($conditions[0]);
         $count = count($conditions);
         for ($i = 1; $i < $count; $i++) {
@@ -548,7 +559,17 @@ class Compiler
      */
     protected function joinNested(array $join)
     {
-        return '(' . $this->handleJoinConditions($join['join']->getJoinCOnditions()) . ')';
+        return '(' . $this->handleJoinConditions($join['join']->getJoinConditions()) . ')';
+    }
+
+    /**
+     * @param   array $join
+     *
+     * @return string
+     */
+    protected function joinExpression(array $join)
+    {
+        return $this->wrap($join['expression']);
     }
 
     /**

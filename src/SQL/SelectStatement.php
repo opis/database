@@ -64,7 +64,7 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string|array $columns
+     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $columns
      *
      * @return  $this
      */
@@ -80,41 +80,44 @@ class SelectStatement extends BaseStatement
     /**
      * @param   string $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function having($column, Closure $value = null): self
+    public function having($column, Closure $value = null, bool $isExpr = false): self
     {
-        $this->have->having($column, $value);
+        $this->have->having($column, $value, $isExpr);
         return $this;
     }
 
     /**
      * @param   string $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function andHaving($column, Closure $value = null): self
+    public function andHaving($column, Closure $value = null, bool $isExpr = false): self
     {
-        $this->have->andHaving($column, $value);
+        $this->have->andHaving($column, $value, $isExpr);
         return $this;
     }
 
     /**
      * @param   string $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving($column, Closure $value = null, bool $isExpr = false): self
     {
-        $this->have->orHaving($column, $value);
+        $this->have->orHaving($column, $value, $isExpr);
         return $this;
     }
 
     /**
-     * @param $columns
+     * @param |Closure|Expression|string[]|Closure[]|Expression[] $columns
      * @param string $order
      * @param string|null $nulls
      * @return SelectStatement
@@ -149,7 +152,7 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string|array|Closure $columns
+     * @param string|Closure|Expression|string[]|Closure[]|Expression[] $columns
      *
      */
     public function select($columns = [])
@@ -167,15 +170,15 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string $name
+     * @param   string|Closure|Expression $name
      */
-    public function column(string $name)
+    public function column($name)
     {
         (new ColumnExpression($this->sql))->column($name);
     }
 
     /**
-     * @param   string $column (optional)
+     * @param   string|Closure|Expression $column (optional)
      * @param   bool $distinct (optional)
      */
     public function count($column = '*', bool $distinct = false)
@@ -184,37 +187,37 @@ class SelectStatement extends BaseStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      */
-    public function avg(string $column, bool $distinct = false)
+    public function avg($column, bool $distinct = false)
     {
         (new ColumnExpression($this->sql))->avg($column, null, $distinct);
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      */
-    public function sum(string $column, bool $distinct = false)
+    public function sum($column, bool $distinct = false)
     {
         (new ColumnExpression($this->sql))->sum($column, null, $distinct);
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      */
-    public function min(string $column, bool $distinct = false)
+    public function min($column, bool $distinct = false)
     {
         (new ColumnExpression($this->sql))->min($column, null, $distinct);
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      */
-    public function max(string $column, bool $distinct = false)
+    public function max($column, bool $distinct = false)
     {
         (new ColumnExpression($this->sql))->max($column, null, $distinct);
     }

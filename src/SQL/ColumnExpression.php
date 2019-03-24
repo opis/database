@@ -36,18 +36,13 @@ class ColumnExpression
     /**
      * Add a column
      *
-     * @param   string|Closure $name Column's name
+     * @param   string|Closure|Expression $name Column's name
      * @param   string $alias (optional) Alias
      *
      * @return  $this
      */
     public function column($name, string $alias = null): self
     {
-        if ($name instanceof Closure) {
-            $expression = new Expression();
-            $name($expression);
-            $name = $expression;
-        }
         $this->sql->addColumn($name, $alias);
         return $this;
     }
@@ -62,10 +57,14 @@ class ColumnExpression
     public function columns(array $columns): self
     {
         foreach ($columns as $name => $alias) {
-            if (is_string($name)) {
+            if (!is_string($name)) {
+                $this->column($alias, null);
+                continue;
+            }
+            if (is_string($alias)) {
                 $this->column($name, $alias);
             } else {
-                $this->column($alias, null);
+                $this->column($alias, $name);
             }
         }
         return $this;
@@ -74,7 +73,7 @@ class ColumnExpression
     /**
      * Add a `COUNT` expression
      *
-     * @param   string|array $column Column
+     * @param   string|array|Expression $column Column
      * @param   string $alias (optional) Column's alias
      * @param   bool $distinct (optional) Distinct column
      *
@@ -88,7 +87,7 @@ class ColumnExpression
     /**
      * Add an `AVG` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      * @param   bool $distinct (optional) Distinct column
      *
@@ -102,7 +101,7 @@ class ColumnExpression
     /**
      * Add a `SUM` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      * @param   bool $distinct (optional) Distinct column
      *
@@ -116,7 +115,7 @@ class ColumnExpression
     /**
      * Add a `MIN` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      * @param   bool $distinct (optional) Distinct column
      *
@@ -130,7 +129,7 @@ class ColumnExpression
     /**
      * Add a `MAX` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      * @param   bool $distinct (optional) Distinct column
      *
@@ -144,7 +143,7 @@ class ColumnExpression
     /**
      * Add a `UCASE` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      *
      * @return  $this
@@ -157,7 +156,7 @@ class ColumnExpression
     /**
      * Add a `LCASE` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      *
      * @return  $this
@@ -170,7 +169,7 @@ class ColumnExpression
     /**
      * Add a `MID` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   int $start (optional) Substring start
      * @param   string $alias (optional) Alias
      * @param   int $length (optional) Substring length
@@ -185,7 +184,7 @@ class ColumnExpression
     /**
      * Add a `LEN` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   string $alias (optional) Alias
      *
      * @return  $this
@@ -198,7 +197,7 @@ class ColumnExpression
     /**
      * Add a `FORMAT` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   int $decimals (optional) Decimals
      * @param   string $alias (optional) Alias
      *
@@ -212,7 +211,7 @@ class ColumnExpression
     /**
      * Add a `FORMAT` expression
      *
-     * @param   string $column Column
+     * @param   string|Expression $column Column
      * @param   int $format Decimals
      * @param   string $alias (optional) Alias
      *

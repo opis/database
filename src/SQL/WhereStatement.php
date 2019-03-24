@@ -44,14 +44,16 @@ class WhereStatement
     /**
      * @param $column
      * @param string $separator
+     * @param bool $isExpr
      * @return WhereStatement|Where
      */
-    protected function addWhereCondition($column, string $separator = 'AND')
+    protected function addWhereCondition($column, string $separator = 'AND', bool $isExpr = false)
     {
-        if ($column instanceof Closure) {
+        if (($column instanceof Closure) && !$isExpr) {
             $this->sql->addWhereConditionGroup($column, $separator);
             return $this;
         }
+
         return $this->where->init($column, $separator);
     }
 
@@ -76,30 +78,33 @@ class WhereStatement
     }
 
     /**
-     * @param $column
+     * @param string|Closure|Expression $column
+     * @param bool $isExpr
      * @return Where|Delete|Select|Update
      */
-    public function where($column)
+    public function where($column, bool $isExpr = false)
     {
-        return $this->addWhereCondition($column);
+        return $this->addWhereCondition($column, 'AND', $isExpr);
     }
 
     /**
-     * @param $column
+     * @param string|Closure|Expression $column
+     * @param bool $isExpr
      * @return Where|Delete|Select|Update
      */
-    public function andWhere($column)
+    public function andWhere($column, bool $isExpr = false)
     {
-        return $this->addWhereCondition($column);
+        return $this->addWhereCondition($column, 'AND', $isExpr);
     }
 
     /**
-     * @param $column
+     * @param string|Closure|Expression $column
+     * @param bool $isExpr
      * @return Where|Delete|Select|Update
      */
-    public function orWhere($column)
+    public function orWhere($column, bool $isExpr = false)
     {
-        return $this->addWhereCondition($column, 'OR');
+        return $this->addWhereCondition($column, 'OR', $isExpr);
     }
 
     /**

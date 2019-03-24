@@ -41,18 +41,22 @@ class HavingStatement
     }
 
     /**
-     * @param   string|Closure $column
+     * @param   string|Expression|Closure $column
      * @param   Closure $value
      * @param   string $separator
+     * @param   boolean $isExpr
      *
      * @return  $this
      */
-    protected function addCondition($column, Closure $value = null, $separator): self
+    protected function addCondition($column, Closure $value = null, $separator = 'AND', bool $isExpr = false): self
     {
-        if ($column instanceof Closure) {
+        if (($column instanceof Closure) && !$isExpr) {
             $this->sql->addHavingGroupCondition($column, $separator);
         } else {
-            $value($this->expression->init($column, $separator));
+            $expr = $this->expression->init($column, $separator);
+            if ($value) {
+                $value($expr);
+            }
         }
         return $this;
     }
@@ -66,36 +70,39 @@ class HavingStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Expression|Closure $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function having($column, Closure $value = null): self
+    public function having($column, Closure $value = null, bool $isExpr = false): self
     {
-        return $this->addCondition($column, $value, 'AND');
+        return $this->addCondition($column, $value, 'AND', $isExpr);
     }
 
     /**
-     * @param   string $column
+     * @param   string|Expression $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function andHaving($column, Closure $value = null): self
+    public function andHaving($column, Closure $value = null, bool $isExpr = false): self
     {
-        return $this->having($column, $value);
+        return $this->addCondition($column, $value, 'AND', $isExpr);
     }
 
     /**
-     * @param   string $column
+     * @param   string|Expression $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  $this
      */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving($column, Closure $value = null, bool $isExpr = false): self
     {
-        return $this->addCondition($column, $value, 'OR');
+        return $this->addCondition($column, $value, 'OR', $isExpr);
     }
 
     /**

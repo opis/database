@@ -21,7 +21,7 @@ use Closure;
 
 class Where
 {
-    /** @var    string */
+    /** @var    string|Expression */
     protected $column;
 
     /** @var    string */
@@ -40,12 +40,15 @@ class Where
     }
 
     /**
-     * @param   string $column
+     * @param   string|Expression|Closure $column
      * @param   string $separator
      * @return  Where
      */
-    public function init(string $column, string $separator): self
+    public function init($column, string $separator): self
     {
+        if ($column instanceof Closure) {
+            $column = Expression::fromClosure($column);
+        }
         $this->column = $column;
         $this->separator = $separator;
         return $this;
@@ -333,6 +336,9 @@ class Where
      */
     public function __clone()
     {
+        if ($this->column instanceof Expression) {
+            $this->column = clone $this->column;
+        }
         $this->sql = clone $this->sql;
         $this->statement = new WhereStatement($this->sql);
     }

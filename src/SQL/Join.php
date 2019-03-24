@@ -25,6 +25,27 @@ class Join
     protected $conditions = [];
 
     /**
+     * @param Closure|Expression $expression
+     * @param string $separator
+     *
+     * @return $this
+     */
+    protected function addJoinExpression($expression, string $separator = 'AND')
+    {
+        if ($expression instanceof Closure) {
+            $expression = Expression::fromClosure($expression);
+        }
+
+        $this->conditions[] = [
+            'type' => 'joinExpression',
+            'expression' => $expression,
+            'separator' => $separator,
+        ];
+
+        return $this;
+    }
+
+    /**
      * @param   string $column1
      * @param   string $column2
      * @param   string $operator
@@ -32,25 +53,42 @@ class Join
      *
      * @return $this
      */
-    protected function addJoinCondition($column1, $column2, $operator, $separator)
+    protected function addJoinCondition($column1, $column2, $operator, string $separator = 'AND')
     {
         if ($column1 instanceof Closure) {
-            $join = new Join();
-            $column1($join);
-            $this->conditions[] = [
-                'type' => 'joinNested',
-                'join' => $join,
-                'separator' => $separator,
-            ];
-        } else {
-            $this->conditions[] = [
-                'type' => 'joinColumn',
-                'column1' => $column1,
-                'column2' => $column2,
-                'operator' => $operator,
-                'separator' => $separator,
-            ];
+            if ($column2 === true) {
+                return $this->addJoinExpression($column1, $separator);
+            }
+
+            if ($column2 === null) {
+                $join = new Join();
+                $column1($join);
+
+                $this->conditions[] = [
+                    'type' => 'joinNested',
+                    'join' => $join,
+                    'separator' => $separator,
+                ];
+
+                return $this;
+            }
+
+            $column1 = Expression::fromClosure($column1);
+        } elseif (($column1 instanceof Expression) && $column2 === true) {
+            return $this->addJoinExpression($column1, $separator);
         }
+
+        if ($column2 instanceof Closure) {
+            $column2 = Expression::fromClosure($column2);
+        }
+
+        $this->conditions[] = [
+            'type' => 'joinColumn',
+            'column1' => $column1,
+            'column2' => $column2,
+            'operator' => $operator,
+            'separator' => $separator,
+        ];
 
         return $this;
     }
@@ -64,15 +102,15 @@ class Join
     }
 
     /**
-     * @param   string $column1
-     * @param   string $column2 (optional)
+     * @param   string|Closure $column1
+     * @param   string|Closure $column2 (optional)
      * @param   string $operator (optional)
      *
      * @return  $this
      */
     public function on($column1, $column2 = null, $operator = '=')
     {
-        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
+        return $this->addJoinCondition($column1, $column2, $operator);
     }
 
     /**
@@ -84,7 +122,7 @@ class Join
      */
     public function andOn($column1, $column2 = null, $operator = '=')
     {
-        return $this->on($column1, $column2, $operator);
+        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
     }
 
     /**

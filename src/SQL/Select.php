@@ -23,6 +23,7 @@ use Opis\Database\ResultSet;
 
 class Select extends SelectStatement
 {
+    /** @var Connection */
     protected $connection;
 
     /**
@@ -38,7 +39,7 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|array|Closure $columns (optional)
+     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $columns (optional)
      *
      * @return  ResultSet
      */
@@ -50,18 +51,18 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string $name
+     * @param   string|Closure|Expression $name
      *
      * @return  mixed|false
      */
-    public function column(string $name)
+    public function column($name)
     {
         parent::column($name);
         return $this->getColumnResult();
     }
 
     /**
-     * @param   string $column (optional)
+     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $column (optional)
      * @param   bool $distinct (optional)
      *
      * @return  int
@@ -73,48 +74,48 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
      */
-    public function avg(string $column, bool $distinct = false)
+    public function avg($column, bool $distinct = false)
     {
         parent::avg($column, $distinct);
         return $this->getColumnResult();
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
      */
-    public function sum(string $column, bool $distinct = false)
+    public function sum($column, bool $distinct = false)
     {
         parent::sum($column, $distinct);
         return $this->getColumnResult();
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
      */
-    public function min(string $column, bool $distinct = false)
+    public function min($column, bool $distinct = false)
     {
         parent::min($column, $distinct);
         return $this->getColumnResult();
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
      */
-    public function max(string $column, bool $distinct = false)
+    public function max($column, bool $distinct = false)
     {
         parent::max($column, $distinct);
         return $this->getColumnResult();

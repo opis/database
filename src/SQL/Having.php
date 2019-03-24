@@ -24,7 +24,7 @@ class Having
     /** @var  SQLStatement */
     protected $sql;
 
-    /** @var    string */
+    /** @var    string|Expression */
     protected $aggregate;
 
     /** @var    string */
@@ -55,13 +55,16 @@ class Having
     }
 
     /**
-     * @param   string $aggregate
+     * @param   string|Closure|Expression $aggregate
      * @param   string $separator
      *
      * @return  $this
      */
-    public function init(string $aggregate, string $separator): self
+    public function init($aggregate, string $separator): self
     {
+        if ($aggregate instanceof Closure) {
+            $aggregate = Expression::fromClosure($aggregate);
+        }
         $this->aggregate = $aggregate;
         $this->separator = $separator;
         return $this;
@@ -160,6 +163,9 @@ class Having
      */
     public function __clone()
     {
+        if ($this->aggregate instanceof Expression) {
+            $this->aggregate = clone $this->aggregate;
+        }
         $this->sql = clone $this->sql;
     }
 }

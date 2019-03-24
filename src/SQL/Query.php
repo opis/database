@@ -68,7 +68,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|array $columns
+     * @param   string|Closure|Expression|array $columns
      *
      * @return  Select
      */
@@ -80,38 +80,41 @@ class Query extends BaseStatement
     /**
      * @param   string $column
      * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function having($column, Closure $value = null)
+    public function having($column, Closure $value = null, bool $isExpr = false)
     {
-        return $this->buildSelect()->having($column, $value);
+        return $this->buildSelect()->having($column, $value, $isExpr);
     }
 
     /**
      * @param   string $column
-     * @param   Closure $value
+     * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function andHaving($column, Closure $value = null)
+    public function andHaving($column, Closure $value = null, bool $isExpr = false)
     {
-        return $this->buildSelect()->andHaving($column, $value);
+        return $this->buildSelect()->andHaving($column, $value, $isExpr);
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value
+     * @param   string|Closure|Expression $column
+     * @param   Closure $value (optional)
+     * @param   bool $isExpr (optional)
      *
      * @return  Select
      */
-    public function orHaving($column, Closure $value = null)
+    public function orHaving($column, Closure $value = null, bool $isExpr = false)
     {
-        return $this->buildSelect()->orHaving($column, $value);
+        return $this->buildSelect()->orHaving($column, $value, $isExpr);
     }
 
     /**
-     * @param   string|array $columns
+     * @param   string|Closure|Expression|array $columns
      * @param   string $order (optional)
      * @param   string $nulls (optional)
      *
@@ -164,7 +167,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $name
+     * @param   string|Closure|Expression $name
      *
      * @return  mixed|false
      */
@@ -174,7 +177,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column (optional)
+     * @param   string|Closure|Expression $column (optional)
      * @param   bool $distinct (optional)
      *
      * @return  int
@@ -185,7 +188,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
@@ -196,7 +199,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
@@ -207,7 +210,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
@@ -218,7 +221,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
+     * @param   string|Closure|Expression $column
      * @param   bool $distinct (optional)
      *
      * @return  int|float
@@ -229,7 +232,7 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   array $tables (optional)
+     * @param   string[] $tables (optional)
      *
      * @return  int
      */

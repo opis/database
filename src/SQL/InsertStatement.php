@@ -17,8 +17,6 @@
 
 namespace Opis\Database\SQL;
 
-use Closure;
-
 class InsertStatement
 {
 
@@ -53,13 +51,6 @@ class InsertStatement
     {
         foreach ($values as $column => $value) {
             $this->sql->addColumn($column);
-
-            if ($value instanceof Closure) {
-                $expression = new Expression();
-                $value($expression);
-                $value = $expression;
-            }
-
             $this->sql->addValue($value);
         }
 

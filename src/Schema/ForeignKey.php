@@ -91,7 +91,7 @@ class ForeignKey
 
     /**
      * @param string $table
-     * @param string ...$columns
+     * @param string[] $columns
      * @return $this
      */
     public function references(string $table, string ...$columns): self

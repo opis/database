@@ -17,6 +17,8 @@
 
 namespace Opis\Database\SQL;
 
+use Closure;
+
 class HavingExpression
 {
     /** @var  SQLStatement */
@@ -25,7 +27,7 @@ class HavingExpression
     /** @var    Having */
     protected $having;
 
-    /** @var    string */
+    /** @var    string|Expression */
     protected $column;
 
     /** @var    string */
@@ -47,8 +49,11 @@ class HavingExpression
      * @param string $separator
      * @return HavingExpression
      */
-    public function init(string $column, string $separator): self
+    public function init($column, string $separator): self
     {
+        if ($column instanceof Closure) {
+            $column = Expression::fromClosure($column);
+        }
         $this->column = $column;
         $this->separator = $separator;
         return $this;
@@ -109,6 +114,9 @@ class HavingExpression
      */
     public function __clone()
     {
+        if ($this->column instanceof Expression) {
+            $this->column = clone $this->column;
+        }
         $this->sql = clone $this->sql;
         $this->having = new Having($this->sql);
     }

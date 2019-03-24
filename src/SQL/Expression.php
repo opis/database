@@ -61,9 +61,13 @@ class Expression
     protected function addFunction(string $type, string $name, $column, array $arguments = []): self
     {
         if ($column instanceof Closure) {
-            $expression = new Expression();
-            $column($expression);
-            $column = $expression;
+            $column = Expression::fromClosure($column);
+        } elseif (is_array($column)) {
+            foreach ($column as &$c) {
+                if ($c instanceof Closure) {
+                    $c = Expression::fromClosure($c);
+                }
+            }
         }
 
         $func = array_merge(['type' => $type, 'name' => $name, 'column' => $column], $arguments);
@@ -262,5 +266,16 @@ class Expression
     public function __get($value)
     {
         return $this->addExpression('op', $value);
+    }
+
+    /**
+     * @param Closure $func
+     * @return self
+     */
+    public static function fromClosure(Closure $func): self
+    {
+        $expression = new Expression();
+        $func($expression);
+        return $expression;
     }
 }
