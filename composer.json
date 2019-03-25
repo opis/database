@@ -8,6 +8,10 @@
         {
             "name": "Marius Sarca",
             "email": "marius.sarca@gmail.com"
+        },
+        {
+            "name": "Sorin Sarca",
+            "email": "sarca_sorin@hotmail.com"
         }
     ],
     "scripts": {
@@ -33,7 +37,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "4.0.x-dev"
+            "dev-master": "4.1.x-dev"
         }
     }
 }
