@@ -17,6 +17,9 @@ favicon: /assets/img/favicon.png
 layouts_dir: shared/_next/layouts
 includes_dir: shared/_next/includes
 exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
+algolia:
+  application_id: NMQ2IFNV6E
+  index_name: opis_database
 plugins:
   - jekyll-coffeescript
   - jekyll-paginate
