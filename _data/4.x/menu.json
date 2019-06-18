@@ -1,0 +1,251 @@
+[
+    {
+        "chapter": null,
+        "pages": [
+            {
+                "title": "About",
+                "url": "/4.x/",
+                "description": "About this library",
+                "items": {
+                    "#license": "License",
+                    "#requirements": "Requirements",
+                    "#installation": "Installation"
+                }
+            },
+            {
+                "title": "Database connections",
+                "url": "/4.x/connections.html",
+                "description": "Learn how to connect to a database",
+                "items": {
+                    "#pdo-options": "PDO options",
+                    "#persistent-connections": "Persistent connections",
+                    "#logging": "Logging",
+                    "#init-commands": "Init commands"
+                }
+            }
+        ]
+    },
+    {
+        "chapter": "The basics",
+        "pages": [
+            {
+                "title": "Fetching records",
+                "url": "/4.x/fetching-records.html",
+                "description": "Learn how to fetch records from a database",
+                "items": {
+                    "#distinct-results": "Distinct results",
+                    "#columns-selection": "Columns selection",
+                    "#table-sources": "Table sources"
+                }
+            },
+            {
+                "title": "Results handling",
+                "url": "/4.x/results-handling.html",
+                "description": "Learn how to handle the results set of a query",
+                "items": {
+                    "#using-the-cursor": "Using the cursor",
+                    "#fetching-options": "Fetching options",
+                    "#callback-functions": "Callback functions"
+                }
+            },
+            {
+                "title": "Aggregate functions",
+                "url": "/4.x/aggregate-functions.html",
+                "description": "Learn about aggregate functions",
+                "items": {
+                    "#counting": "Counting",
+                    "#largest-value": "Largest value",
+                    "#smallest-value": "Smallest value",
+                    "#average-value": "Average value",
+                    "#total-sum": "Total sum"
+                }
+            },
+            {
+                "title": "Fields selection",
+                "url": "/4.x/fields-selection.html",
+                "description": "Learn how to add fields to selection",
+                "items": {
+                    "#adding-columns": "Adding columns",
+                    "#adding-aggregates": {
+                        "title": "Adding aggregates",
+                        "items": {
+                            "#counting": "Counting",
+                            "#largest-value": "Largest value",
+                            "#smallest-value": "Smallest value",
+                            "#summing": "Summing",
+                            "#average": "Average"
+                        }
+                    },
+                    "#adding-functions": {
+                        "title": "Adding functions",
+                        "items": {
+                            "#upper-case": "Upper case",
+                            "#lower-case": "Lower case",
+                            "#substring": "Substring",
+                            "#length": "Length",
+                            "#formatting": "Formatting"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "chapter": "Query builder",
+        "pages": [
+            {
+                "title": "Filters",
+                "url": "/4.x/filters.html",
+                "description": "Learn how to filter records",
+                "items": {
+                    "#adding-filters": {
+                        "title": "Adding filters",
+                        "items": {
+                            "#the-is-method": "The `is` method",
+                            "#the-isnot-method": "The `isNot` method",
+                            "#the-lessthan-method": "The `lessThan` method",
+                            "#the-greaterthan-method": "The `greaterThan` method",
+                            "#the-atleast-method": "The `atLeast` method",
+                            "#the-atmost-method": "The `atMost` method",
+                            "#the-between-method": "The `between` method",
+                            "#the-notbetween-method": "The `notBetween` method",
+                            "#the-in-method": "The `in` method",
+                            "#the-notin-method": "The `notIn` method",
+                            "#the-like-method": "The `like` method",
+                            "#the-notlike-method": "The `notLike` method",
+                            "#the-isnull-method": "The `isNull` method",
+                            "#the-notnull-method": "The `notNull` method"
+                        }
+                    },
+                    "#multiple-conditions": "Multiple conditions",
+                    "#columns-comparison": "Columns comparison",
+                    "#the-exists-condition": "The EXIST condition"
+                }
+            },
+            {
+                "title": "Expressions",
+                "url": "/4.x/expressions.html",
+                "description": "Learn about expressions"
+            },
+            {
+                "title": "Ordering criteria",
+                "url": "/4.x/ordering-criteria.html",
+                "description": "Learn how to order results",
+                "items": {
+                    "#ordering-null-values": "Ordering NULL values"
+                }
+            },
+            {
+                "title": "Limits and offsets",
+                "url": "/4.x/limits-and-offsets.html",
+                "description": "Learn about limits and offsets"
+            },
+            {
+                "title": "Joins",
+                "url": "/4.x/joins.html",
+                "description": "Learn how to perform joins"
+            },
+            {
+                "title": "Working with aggregates",
+                "url": "/4.x/aggregates-handling.html",
+                "description": "Learn how to work with aggregates",
+                "items": {
+                    "#grouping": "Grouping",
+                    "#having-clause": "Having clause"
+                }
+            }
+        ]
+    },
+    {
+        "chapter": "Other operations",
+        "pages": [
+            {
+                "title": "Insert records",
+                "url": "/4.x/insert-records.html",
+                "description": "Insert new records into a table"
+            },
+            {
+                "title": "Update records",
+                "url": "/4.x/update-records.html",
+                "description": "Learn how to update existing records"
+            },
+            {
+                "title": "Delete records",
+                "url": "/4.x/delete-records.html",
+                "description": "Learn how to delete existing records"
+            },
+            {
+                "title": "Transactions",
+                "url": "/4.x/transactions.html",
+                "description": "Learn how to use transactions",
+                "items": {
+                    "#performing-transactions": "Performing transactions",
+                    "#throwing-exceptions": "Throwing exceptions"
+                }
+            }
+        ]
+    },
+    {
+        "chapter": "Database schema",
+        "pages": [
+            {
+                "title": "Introduction",
+                "url": "/4.x/schema.html",
+                "description": "Learn about Opis Database Schema",
+                "items": {
+                    "#table-information": "Table information",
+                    "#getting-the-columns-of-a-table": "Get the columns of a table"
+                }
+            },
+            {
+                "title": "Creating tables",
+                "url": "/4.x/schema-creating-tables.html",
+                "description": "Learn how to create new tables",
+                "items": {
+                    "#adding-columns": {
+                        "title": "Adding columns",
+                        "items": {
+                            "#column-size": "Column size",
+                            "#column-properties": "Column properties",
+                            "#column-constraints": "Column constraints",
+                            "#indexing-a-column": "Indexing a column"
+                        }
+                    },
+                    "#primary-key": "Primary key",
+                    "#unique-keys": "Unique keys",
+                    "#foreign-keys": "Foreign keys",
+                    "#indexes": "Indexes"
+                }
+            },
+            {
+                "title": "Modifying tables",
+                "url": "/4.x/schema-modifying-tables.html",
+                "description": "Learn how to alter existing tables",
+                "items": {
+                    "#alter-tables": {
+                        "title": "Alter tables",
+                        "items": {
+                            "#adding-columns": "Adding columns",
+                            "#deleting-columns": "Deleting columns",
+                            "#renaming-columns": "Renaming columns",
+                            "#adding-default-values": "Adding default values",
+                            "#removing-default-values": "Removing default values",
+                            "#add-primary-key": "Add primary key",
+                            "#delete-primary-key": "Delete primary key",
+                            "#add-unique-keys": "Add unique keys",
+                            "#delete-unique-keys": "Delete unique keys",
+                            "#add-foreign-keys": "Add foreign keys",
+                            "#delete-foreign-keys": "Delete foreign keys",
+                            "#add-indexes": "Add indexes",
+                            "#delete-indexes": "Delete indexes"
+                        }
+                    },
+                    "#changing-a-column-s-type": "Changing a column's type",
+                    "#truncate-tables": "Truncate tables",
+                    "#rename-tables": "Rename tables",
+                    "#drop-tables": "Drop tables"
+                }
+            }
+        ]
+    }
+]

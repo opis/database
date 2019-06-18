@@ -4,7 +4,6 @@ version: 4.x
 title: Limits and offsets
 description: Learn about limits and offsets
 ---
-# Limits and offsets
 
 Limiting the number of results returned by a query, is achieved by using the `limit` method.
 

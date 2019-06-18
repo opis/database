@@ -4,14 +4,6 @@ version: 4.x
 title: Results handling
 description: Learn how to handle the result set of a query
 ---
-# Results handling
-
-1. [Introduction](#introduction)
-2. [Using the cursor](#using-the-cursor)
-3. [Fetching options](#fetching-options)
-4. [Callback functions](#callback-functions)
-
-## Introduction
 
 As you have already learned, [fetching records](fetching-records) 
 is done by using the `select` method. In order to improve performance and to
@@ -33,8 +25,7 @@ dealing with large data sets is to iterate through the entire result set and pro
 $result = $db->from('users')
              ->select(['name', 'email']);
              
-while(false !== $user = $result->next())
-{
+while (false !== $user = $result->next()) {
     echo $user->name, $user->email;
 }
 ```
@@ -54,8 +45,7 @@ $result = $db->from('users')
              ->fetchAssoc()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     echo $user['name'], $user['email'];
 }
 ```
@@ -69,8 +59,7 @@ $result = $db->from('users')
              ->fetchNum()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     echo $user[0], $user[1];
 }
 ```
@@ -83,8 +72,7 @@ $result = $db->from('users')
              ->fetchBoth()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     //prints name and email
     echo $user['name'], $user[1];
 }
@@ -98,10 +86,9 @@ You can map the columns of the result set to named properties in a custom class
 by using the `fetchClass` method. The method accepts as arguments a class name 
 and optionally an array of arguments that will be passed to the class constructor. 
 
-**Important!**{:.important}
 The named properties of your class that will be mapped to column
 names must have `public` access. 
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 ```php
 class User
@@ -120,8 +107,7 @@ $result = $db->from('users')
              ->fetchClass('User')
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     $user->test();
 }
 ```
@@ -169,8 +155,7 @@ $result = $db->from('users')
 
 $message = "Opis Database is great! http://www.opis.io/database";
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     $subject = "Hello " . $user->getName();
     $user->sendEmail($subject, $message);
 }

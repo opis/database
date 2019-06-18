@@ -1,0 +1,52 @@
+{
+    "title": "Opis Database",
+    "github": "https://github.com/opis/database",
+    "version": "3.6.0",
+    "url": "/database",
+    "copyright": "Copyright © Zindex Software. All rights reserved",
+    "title_suffix": " | Opis Database",
+    "ga": true,
+    "brand": {
+        "logo": "/assets/img/logo.svg",
+        "title": "Opis Database",
+        "url": "https://opis.io/database"
+    },
+    "favicon": "/assets/img/favicon.png",
+    "nav": {
+        "Home": "https://opis.io/",
+        "GitHub": {
+            "url": "https://github.com/opis/database",
+            "target": "_blank"
+        },
+        "Twitter": {
+            "url": "https://twitter.com/OpisProject",
+            "target": "_blank"
+        }
+    },
+    "search": {
+        "index": "opiscolibri",
+        "app_id": "NMQ2IFNV6E",
+        "api_key": "f8653941bd9a6d355cc22fb710a143fe"
+    },
+    "versions": {
+        "current": 0,
+        "list": [
+            {"name": "3.6", "path": "/3.6"},
+            {"name": "4.x", "path": "/4.x"}
+        ]
+    },
+    "styles": [
+        "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
+        "https://fonts.googleapis.com/css?family=Roboto+Mono:400&display=swap",
+        "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
+        "/assets/css/next/theme.css",
+        "/assets/css/next/style.css",
+        "/assets/css/next/prism.css"
+    ],
+    "scripts": [
+        "https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js",
+        "https://cdn.jsdelivr.net/npm/instantsearch.js@3.0.0/dist/instantsearch.production.min.js",
+        "/assets/js/next/prism.js",
+        "/assets/js/next/script.js"
+    ]
+}

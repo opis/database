@@ -155,8 +155,8 @@ $table->dateTime('appointment');
 
 Adds a `DATETIME` equivalent column
 
-### Column's size 
-{: #column-s-size }
+### Column size     
+{: #column-size }
 
 For `integer`, `text` and `binary` types you can specify the column size by calling 
 the `size` method. The valid sizes values are: `tiny`, `small`, `normal`, `medium` and `big`.
@@ -186,10 +186,10 @@ $db->schema()->create('users', function($table){
 |binary|normal|Adds an `BLOB` equivalent column to the table|
 |binary|medium|Adds an `MEDIUMBLOB` equivalent column to the table|
 |binary|big|Adds an `LONGBLOB` equivalent column to the table|
-{:.table .table-bordered .box-highlight}
+{:.table .table-align-center}
 
-### Column's properties 
-{: #column-s-properties }
+### Column properties 
+{: #column-properties }
 
 You can specify that an `integer` column contains an unsigned integer value 
 by using the `unsigned` method.
@@ -210,8 +210,8 @@ Specifying that a column in not nullable id bone by using the `notNull` method.
 $table->string('email')->notNull();
 ```
 
-### Column's constraints 
-{: #column-s-constraints }
+### Column constraints 
+{: #column-constraints }
 
 Adding a primary key constraint is done by using the `primary` method. 
 The name of the constraint will be the same as the column's name.

@@ -7,13 +7,6 @@ description: Define and establish a connection to a database.
 keywords: connection, settings, DSN
 ---
 
-# Database connections
-
-1. [Introduction](#introduction)
-2. [Connection options](#connection-options)
-
-## Introduction
-
 Interaction with a database is achieved with the help of the `Opis\Database\Database` class, 
 which provides various methods that will ease the process of manipulating tables and records. 
 The constructor of this class takes as an argument an instance of `Opis\Database\Connection`.
@@ -39,7 +32,7 @@ passing an instance of the `PDO` class as an argument to the method.
 $connection = Connection::fromPDO($pdo);
 ```
 
-## Connection options
+## PDO options
 
 The [DSN], the username and the password provided when instantiating a new
 `Opis\Database\Connection` class, will be further used to build a `PDO` object that will actually
@@ -63,12 +56,16 @@ $connection = Connection::create($dsn, $user, $password)
                         ]);
 ```
 
+## Persistent connections
+
 Making a connection persistent is done by using the `persistent` method. 
 
 ```php
 $connection = Connection::create($dsn, $user, $password)
                         ->persistent();
 ```
+
+## Logging
 
 You can keep a log with all of the queries sent to a database by calling the `logQueries` method. 
 Retrieving the list of logged queries is done using the `getLog` method. 
@@ -84,6 +81,8 @@ foreach($connection->getLog() as $entry)
     echo $entry;
 }
 ```
+
+## Init commands
 
 You also have the possibility to specify a list of commands that will be executed after connecting
 to a database by using the `initCommand` method. 

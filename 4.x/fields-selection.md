@@ -4,14 +4,6 @@ version: 4.x
 title: Fields selection
 description: Learn about how to add fields to selection
 ---
-# Fields selection
-
-1. [Introduction](#introduction)
-2. [Adding columns](#adding-columns)
-3. [Adding aggregates](#adding-aggregates)
-4. [Adding functions](#adding-functions)
-
-## Introduction
 
 Let's assume that you want to select from a table, the minimum, the maximum and 
 the average value of a column. Of course, to achieve this, you could simply use 
@@ -36,6 +28,9 @@ $result = $db->from('users')
 
 Adding columns to the result set is done using the `column` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -43,28 +38,45 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT `name` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
 
 If you want to provide an alias name for the column, you must pass that alias 
 as the second argument to the `column` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
-
-
 $result = $db->from('users')
              ->select(function($include){
                 $include->column('name', 'n');
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT `name` AS `n` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Of course, you can add multiple columns, by calling the `column` method multiple times, once for each column. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -73,13 +85,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT `name`, `age` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding multiple columns at once can be achieved by using the `columns` method 
 and passing as an argument to the method an array of column names. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -87,15 +109,25 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT `name`, `age` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Aliasing column names is done by passing as an argument to the `columns` method 
 a `key => value` mapped array, where the `key` represents the column name 
 and the `value` represents the alias name. If you want that a column to not being aliased,
  all you have to do is to omit the `key` for that column, providing only the `value`.
-
+ 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -103,9 +135,16 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT `user` AS `u`, `age` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 ## Adding aggregates
 
@@ -116,6 +155,9 @@ These methods can be used in conjunction with `column` and `columns` methods.
 
 Counting records is done using the count method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -123,13 +165,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT COUNT(*) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Counting all values(`NULL` values will not be counted) of a column is done by passing
 the column's name as an argument to the `count` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -137,13 +189,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT COUNT(`email`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `count` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -151,30 +213,48 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT COUNT(`email`) AS `email_count` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 If you want to count only the distinct values of a column, you must pass `true`
  as the third argument to the `count` method. 
-
+ 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
-
-
 $result = $db->from('users')
              ->select(function($include){
                 $include->count('email', 'email_count', true);
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT COUNT(DISTINCT `email`) AS `email_count` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Largest value
 
-Finding the largest value of a column is done using the `max` method. 
+Finding the largest value of a column is done using the `max` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -182,13 +262,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MAX(`age`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %} 
 
 Adding an alias for the value returned by this aggregate function is done by passing 
 the alias name as the second argument to the `max` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -196,14 +286,25 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MAX(`age`) AS `max_age` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
+
 
 #### Smallest value
 
 Finding the smallest value of a column is done using the `min` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -211,13 +312,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MIN(`age`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `min` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -225,14 +336,24 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MIN(`age`) AS `min_age` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Summing
 
 Findind the sum of a column is done using the `sum` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -240,13 +361,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT SUM(`wallet`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `sum` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -254,13 +385,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT SUM(`wallet`) AS `total_amount` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 If you want to sum only the distinct values of a column, you must pass `true` as 
 the third argument to the `sum` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -268,14 +409,24 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT SUM(DISTINCT `wallet`) AS `total_amount` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Average
 
 Finding the average value of a column is done using the `avg` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -283,13 +434,23 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT AVG(`wallet`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `avg` method. 
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -297,9 +458,16 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT SUM(`wallet`) AS `average_amount` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 ## Adding functions
 
@@ -310,6 +478,9 @@ Adding functions is done using one of the following methods: `ucase`, `lcase`,
 
 Selecting the upper case value of a column is done by using the `ucase` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -317,27 +488,47 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT UCASE(`name`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
-                $include->ucase('ucname');
+                $include->ucase('name', 'ucname');
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT UCASE(`name`) AS `ucname` FROM `users` 
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Lower case
 
 Selecting the lower case value of a column is done by using the `lcase` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -345,22 +536,39 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT LCASE(`name`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
-                $include->lcase('lcname');
+                $include->lcase('name', 'lcname');
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT LCASE(`name`) AS `lcname` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Substring
 
@@ -368,6 +576,9 @@ Extracting a substring from a column is done by using the `mid` method.
 The method takes as arguments the column's name and the starting position 
 from which the substring will be extracted. The substring counting starts from `1`.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -375,12 +586,22 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MID(`name`, 3) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also alias the returned value by passing an alias name as the third argument of the method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -388,12 +609,22 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MID(`name`, 3) AS `sname` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can limit the length of the substring by passing a fourth argument to the `mid` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -401,14 +632,25 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT MID(`name`, 3, 2) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
+
 
 #### Length
 
 Adding the length of a column is done by using the `len` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -416,28 +658,48 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT LENGTH(`name`) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
-                $include->len('lname');
+                $include->len('name', 'lname');
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT LENGTH(`name`) AS `lname` FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 #### Formatting
 
 Formatting the value of a column to a number with a specified number of decimals
 is done by using the `format` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -445,12 +707,22 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT FORMAT(`wallet`, 4) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
-The same effect can be obtained by using the `round` method.
+The same result can be obtained by using the `round` method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -458,12 +730,22 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT FORMAT(`wallet`, 4) FROM `users`
 ```
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->select(function($include){
@@ -471,7 +753,13 @@ $result = $db->from('users')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT FORMAT(`wallet`, 4) AS `fwallet` FROM `users`
 ```
-
+{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
