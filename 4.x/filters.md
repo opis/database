@@ -23,7 +23,6 @@ column's value equal to a given value, will be added to the result set.
 Alternatively, to add this filtering condition, you can use the `eq`(equal) method, 
 which is an alias of the `is` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -40,6 +39,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -52,7 +52,6 @@ column's value not equal to a given value, will be added to the result set.
 Alternatively, to add this filtering condition, you can use the `ne`(not equal) method,
  which is an alias of the `isNot` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -69,6 +68,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` != 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -81,7 +81,6 @@ column's value lesser than a given value, will be added to the result set.
 Alternatively, to add this filtering condition, you can use the `lt`(less than) method, 
 which is an alias of the `lessThan` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -98,6 +97,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` < 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -110,7 +110,6 @@ value greater than a given value, will be added to the result set.
 Alternatively, to add this filtering condition, you can use the `gt`(greater than) method,
  which is an alias of the `greaterThan` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -127,6 +126,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` > 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -139,7 +139,7 @@ column's value greater than or equal to a given value, will be added to the resu
 Alternatively, to add this filtering condition, you can use the `gte`(greater than or equal) method,
  which is an alias of the `atLeast` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -156,6 +156,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` >= 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -168,7 +169,6 @@ column's value lesser than or equal to a given value, will be added to the resul
  Alternatively, to add this filtering condition, you can use the `lte`(less than or equal) method,
  which is an alias of the `atMost` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -185,6 +185,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` <= 18
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -195,7 +196,6 @@ SELECT * FROM `users` WHERE `age` <= 18
 Adds a filtering condition, so that only those records, that have the specified 
 column's value within a given range, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -212,6 +212,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` BETWEEN 18 AND 21
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -222,7 +223,6 @@ SELECT * FROM `users` WHERE `age` BETWEEN 18 AND 21
 Adds a filtering condition, so that only those records, that don't have the specified column's 
 value within a given range, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -239,6 +239,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` NOT BETWEEN 18 AND 21
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -249,7 +250,7 @@ SELECT * FROM `users` WHERE `age` NOT BETWEEN 18 AND 21
 Adds a filtering condition, so that only those records, that have the specified 
 column's value contained within a given set of values, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -266,6 +267,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` IN ("London", "New York", "Paris")
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -276,7 +278,6 @@ obtain a set of values by using a subquery. To use a subquery, just pass an anon
 as an argument to the `in` method, then use the object that will be passed as an argument to your 
 callback function to build your query.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -301,6 +302,7 @@ SELECT * FROM `users`
 WHERE `city` IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -311,7 +313,7 @@ WHERE `city` IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 Adds a filtering condition, so that only those records, that don't have the specified column's
 value contained within a given set of values, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -328,6 +330,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` NOT IN ("London", "New York", "Paris")
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -336,7 +339,6 @@ SELECT * FROM `users` WHERE `city` NOT IN ("London", "New York", "Paris")
 As in the case of the `in` method, you could obtain a set of values to be used for comparison,
 by using a subquery.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -361,6 +363,7 @@ SELECT * FROM `users`
 WHERE `city` NOT IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -371,7 +374,6 @@ WHERE `city` NOT IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 Adds a filtering condition, so that only those records, whose specified column's 
 value match a given pattern, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -391,6 +393,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` LIKE "P%"
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -401,7 +404,6 @@ SELECT * FROM `users` WHERE `city` LIKE "P%"
 Adds a filtering condition, so that only those records, whose specified column's 
 value don't match a given pattern, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -421,6 +423,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` NOT LIKE "P%"
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -431,7 +434,6 @@ SELECT * FROM `users` WHERE `city` NOT LIKE "P%"
 Adds a filtering condition, so that only those records, that have the specified column's
 value equal to `NULL`, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -448,6 +450,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `website` IS NULL
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -458,7 +461,6 @@ SELECT * FROM `users` WHERE `website` IS NULL
 Adds a filtering condition, so that only those records, that have the specified 
 column's value not equal to `NULL`, will be added to the result set.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -475,6 +477,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `website` IS NOT NULL
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -489,7 +492,6 @@ they will combine with the previous declared condition by using an `AND` or an `
 To add an additional condition to your query, that combines with the previous declared condition by 
 using an `AND` operator, use the `andWhere` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -507,6 +509,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 AND `city` = "London"
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -515,7 +518,6 @@ SELECT * FROM `users` WHERE `age` = 18 AND `city` = "London"
 To add an additional condition to your query, that combines with the previous declared condition 
 by using an `OR` operator, use the `orWhere` method.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -533,6 +535,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 OR `age` = 21
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -543,7 +546,6 @@ Grouping conditions is done by passing as an argument to the `where`, `andWhere`
 methods an anonymous callback function. The callback functions takes a single argument 
 that will be further used to add filtering conditions to your query.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -567,6 +569,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 AND (`city` = "London" OR `city` = "Paris")
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -579,7 +582,6 @@ You can add comparison conditions between two columns, by passing `TRUE` as a se
 to the `is`, `isNot`, `lessThan`, `greaterThan`, `atLeast` and `atMost` methods, or to their 
 corresponding aliases `eq` , `ne`, `lt`, `gt`, `lte` and `gte` methods.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -598,6 +600,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` = `birthplace`
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -606,7 +609,7 @@ SELECT * FROM `users` WHERE `city` = `birthplace`
 Building the above query without passing `TRUE` as the second argument to the `eq` method, 
 will result into a query that will select all users that are living in a city named `birthplace`.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -621,6 +624,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` = "birthplace"
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
@@ -636,7 +640,7 @@ the `andWhereExists` or `andWhereNotExists` methods and the `orWhereExists` or `
 These methods are used in a similar manner as the `where`, `andWhere` and `orWhere` methods, 
 receiving as an argument an anonymous function callback, that will be further used to build a subquery.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+
 {% capture tabs %}
 {% capture php %}
 ```php
@@ -660,6 +664,7 @@ SELECT * FROM `users`
 WHERE EXISTS (SELECT * FROM `orders` WHERE `orders`.`name` = `users`.`name`)
 ```
 {% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% include tab.html id=tab_id title='PHP' content=php checked=true %}
 {% include tab.html id=tab_id title='SQL' content=sql %}
 {% endcapture %}
