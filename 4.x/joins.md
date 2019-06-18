@@ -4,7 +4,6 @@ version: 4.x
 title: Joins
 description: Learn how to perform joins
 ---
-# Joins
 
 Joins are used to combine rows from two or more tables, based on a common field between them.
 **Opis Database** allows you to perform four type of joins: **INNER** join by using the `join` method,
@@ -22,6 +21,8 @@ and optionally a third argument representing the comparison operator which
 can be one of the following: `=`, `!=`, `>`, `<`, `>=` and `<=`. 
 If no comparison operator is specified, the `=` operator will be used by default.
 
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->join('profiles', function($join){
@@ -30,9 +31,17 @@ $result = $db->from('users')
              ->select()
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT * FROM `users` INNER JOIN `profiles` ON `users`.`id` = `profiles`.`id`
 ```
+{% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Adding multiple join conditions is done by using the `andOn` and `orOn` method. 
 Depending on which method you use, the join condition will be combined with the 
@@ -41,6 +50,8 @@ previous declared join condition using the `AND` or the `OR` operator.
 To add an additional condition to your join expression, that combines with 
 the previous declared condition by using an `AND` operator, use the `andOn` method.
 
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->join('profiles', function($join){
@@ -50,16 +61,26 @@ $result = $db->from('users')
              ->select()
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT * FROM `users`
     INNER JOIN `profiles`
         ON `users`.`id` = `profiles`.`id`
         AND `users`.`email` = `profile`.`primary_email`
 ```
+{% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 To add an additional condition to your join expression, that combines with the previous 
 declared condition by using an `OR` operator, use the `orOn` method.
 
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->join('profiles', function($join){
@@ -69,16 +90,26 @@ $result = $db->from('users')
              ->select()
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT * FROM `users`
     INNER JOIN `profiles`
         ON `users`.`id` = `profiles`.`id`
         OR `users`.`email` = `profile`.`primary_email`
 ```
+{% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 You can also group your join conditions, by passing as an argument to the 
 `on`, `andOn` and `orOn` methods, an anonymous callback function.
 
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->join('profiles', function($join){
@@ -91,6 +122,8 @@ $result = $db->from('users')
              ->select()
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT * FROM `users`
     INNER JOIN `profiles`
@@ -99,11 +132,19 @@ SELECT * FROM `users`
                 OR
              `users`.`email` = `profiles`.`secondary_email`)
 ```
+{% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
 
 Aliasing the table name used within a join, is done by passing a `key => value` 
 mapped array to the used join method, where the `key` represents the table's name 
 and the `value` represents the alias name.
 
+{% capture tabs %}
+{% capture php %}
 ```php
 $result = $db->from('users')
              ->join(['profiles' => 'p'], function($join){
@@ -112,7 +153,14 @@ $result = $db->from('users')
              ->select()
              ->all();
 ```
+{% endcapture %}
+{% capture sql%}
 ```sql
 SELECT * FROM `users` INNER JOIN `profiles` AS `p` ON `users`.`id` = `p`.`id`
 ```
-
+{% endcapture %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
