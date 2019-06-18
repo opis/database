@@ -4,20 +4,6 @@ version: 4.x
 title: Creating tables
 description: Learn how to create new tables
 ---
-# Creating tables
-
-1. [Introduction](#introduction)
-2. [Adding columns](#adding-columns)
-    1. [Column's size](#column-s-size)
-    2. [Column's properties](#column-s-properties)
-    3. [Column's constraints](#column-s-constraints)
-    4. [Indexing a column](#indexing-a-column)
-3. [Primary key](#primary-key)
-4. [Unique keys](#unique-keys)
-5. [Foreign keys](#foreign-keys)
-6. [Indexes](#indexes)
-
-## Introduction
 
 You can create new tables by using the `create` method. This method takes two arguments:
 the name of the table you want to create and a callback. The callback that receive as an argument, 
@@ -263,9 +249,8 @@ $db->schema()->create('users', function($table){
 }));
 ```
 
-**Important!**{:.important}
 You can add only one primary key per table.
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Remember"}
 
 If you want add a composite primary key, you simply have to pass an array of column names
 to the `primary` method.

@@ -7,7 +7,7 @@ description: Fetching records from a database
 
 Fetching records from a database is done by using the `from` and the `select` methods. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -20,11 +20,7 @@ $result = $db->from('users')
 SELECT * FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 The result of calling the `all` method will be an array that will contain all of the records 
 that were found or an empty array if no records were found. 
@@ -70,7 +66,7 @@ issues when querying over large data sets.
 
 Retrieving only the distinct results is done using the `distinct` method. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -84,18 +80,14 @@ $result = $db->from('users')
 SELECT DISTINCT * FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 ## Columns selection
 
  You can specify which columns you want to include in the result set by passing as an 
 argument to the `select` method an array containing the column names. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -112,11 +104,7 @@ foreach ($result as $user) {
 SELECT `name` AS `n`, `email`, `age` AS `a` FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 ## Table sources
 
@@ -124,7 +112,7 @@ When fetching records from a database you can specify muliple table sources by
 passing as an argument to the `from` method an array containing all table names 
 you want to use. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from(['users', 'profiles'])
@@ -137,18 +125,14 @@ $result = $db->from(['users', 'profiles'])
 SELECT * FROM `users`, `profiles`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 As in the case of columns, you can alias table names by passing as an argument 
 a `key => value` mapped array, where the `key` represents the table's name and 
 the `value` represents the table's alias name. If you want a table name not being 
 aliased, just omit the `key` for that specific table. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from(['users' => 'u', 'profiles' => 'p'])
@@ -161,10 +145,6 @@ $result = $db->from(['users' => 'u', 'profiles' => 'p'])
 SELECT * FROM `users` AS `u`, `profiles` AS `p`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 

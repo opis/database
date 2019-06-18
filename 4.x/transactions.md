@@ -4,10 +4,6 @@ version: 4.x
 title: Transactions
 description: Learn how to perform transactions
 ---
-# Transactions
-
-1. [Performing transactions](#performing-transactions)
-2. [Throwing exceptions](#throwing-exceptions)
 
 ## Performing transactions
 
@@ -17,7 +13,12 @@ Transactions are performed with the help of the `transaction` method.
 use Opis\Database\Database;
 use Opis\Database\Connection;
 
-$connection = new Connection('mysql:host=localhost;dbname=test', 'username', 'password');
+$connection = new Connection(
+    'mysql:host=localhost;dbname=test', 
+    'username', 
+    'password'
+);
+
 $db = new Database($connection);
 
 $result = $db->transaction(function(Database $db){

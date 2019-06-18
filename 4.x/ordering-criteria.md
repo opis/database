@@ -7,7 +7,7 @@ description: Learn how to order results
 
 Adding an ordering criterion is done by using the `orderBy` method.
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -21,15 +21,11 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 Changing an ordering criterion is done by passing `desc` as the second argument to the `orderBy` method.
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -43,16 +39,12 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` DESC
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 You can provide multiple columns as an ordering criterion, by passing to the `orderBy` method 
 an array containing all column names.
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -66,17 +58,13 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name`, `age` ASC
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 
 Adding multiple ordering criteria to the same query is done by calling the `orderBy` 
 method as many times as you need.
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -91,18 +79,14 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC, `age` DESC
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 #### Ordering NULL values
 
 You can specify how `NULL` values should be ordered by passing `nulls first` or 
 `nulls last` as the third argument to the `orderBy` method.
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $result = $db->from('users')
@@ -117,8 +101,4 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC, `age` DESC NULLS FIRST
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}

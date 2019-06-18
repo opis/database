@@ -190,8 +190,9 @@
         "pages": [
             {
                 "title": "Introduction",
+                "page_title": "Schema",
                 "url": "/4.x/schema.html",
-                "description": "Learn about Opis Database Schema",
+                "description": "Learn how to create and alter tables",
                 "items": {
                     "#table-information": "Table information",
                     "#getting-the-columns-of-a-table": "Get the columns of a table"

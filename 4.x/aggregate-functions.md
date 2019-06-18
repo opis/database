@@ -12,7 +12,7 @@ keywords: aggregate, functions, count, average, sum, total
 
 Counting records is done using the `count` method. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->count();
@@ -25,17 +25,13 @@ echo 'There are ' . $count . ' users registred on this site.';
 SELECT COUNT(*) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 
 Counting all values(`NULL` values will not be counted) of a column is done by 
 passing the column's name as an argument to the `count` method. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->count('description');
@@ -48,18 +44,14 @@ echo 'There are ' . $count . ' users that have provided a description for their 
 SELECT COUNT(DISTINCT `country`) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 ## Largest value
 
 Finding the largest value of a column is done using the `max` method. 
 This method accepts the column's name as an argument. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->max('age');
@@ -72,18 +64,14 @@ echo 'Our oldest user is ' . $count . ' years old.';
 SELECT MAX(`age`) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 ## Smallest value
 
 Finding the smallest value of a column is done using the `min` method. 
 This method accepts the column's name as an argument. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->min('age');
@@ -96,18 +84,14 @@ echo 'Our youngest user is ' . $count . ' years old.';
 SELECT MIN(`age`) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 ## Average value
 
 Finding the average value of a numeric column is done using the `avg` method. 
 This method accepts the column's name as an argument. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->avg('age');
@@ -120,11 +104,7 @@ echo 'The average age of our users is ' . $count . ' years.';
 SELECT AVG(`age`) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
 
 
 ## Total sum
@@ -132,7 +112,7 @@ SELECT AVG(`age`) FROM `users`
 Finding the total sum of a numeric column is done using the `sum` method. 
 This method accepts the column's name as an argument. 
 
-{% capture tabs %}
+
 {% capture php %}
 ```php
 $count = $db->from('users')->sum('age');
@@ -145,8 +125,4 @@ echo 'Our users gathered together ' . $count . ' years of life experience.';
 SELECT SUM(`age`) FROM `users`
 ```
 {% endcapture %}
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% include tab.html id=tab_id title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id title='SQL' content=sql %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include_relative _tabs.html %}
