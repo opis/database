@@ -1,1 +1,6 @@
-../_helpers/tabs.html
+{% capture tabs %}
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='SQL' content=sql %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
