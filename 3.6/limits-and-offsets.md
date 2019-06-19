@@ -5,7 +5,6 @@ title: Limits and offsets
 description: Learn about limits and offsets
 canonical: /database/4.x/limits-and-offsets.html
 ---
-# Limits and offsets
 
 Limiting the number of results returned by a query, is achieved by using the `limit` method.
 

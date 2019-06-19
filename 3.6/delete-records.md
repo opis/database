@@ -5,7 +5,6 @@ title: Delete records
 description: Learn how to delete existing records
 canonical: /database/4.x/delete-records.html
 ---
-# Delete records
 
 Deleting records is done by using the `from` and `delete` methods.
 

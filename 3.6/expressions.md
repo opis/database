@@ -5,7 +5,6 @@ title: Expressions
 description: Learn about expressions
 canonical: /database/4.x/expressions.html
 ---
-# Expressions
 
 Expressions can be used to build complex queries. Using an expression to add a complex 
 filter condition is simply a matter of passing a closure to the condition method. 

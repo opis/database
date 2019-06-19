@@ -5,13 +5,6 @@ title: Modifying tables
 description: Learn how to alter existing new tables
 canonical: /database/4.x/schema-modifying-tables.html
 ---
-# Modifying tables
-
-1. [Alter tables](#alter-tables)
-2. [Changing a column's type](#changing-a-column-s-type)
-3. [Truncate tables](#truncate-tables)
-4. [Rename tables](#rename-tables)
-5. [Drop tables](#drop-tables)
 
 ## Alter tables
 

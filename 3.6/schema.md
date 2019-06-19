@@ -5,16 +5,10 @@ title: Schema
 description: Learn about Opis Database schema
 canonical: /database/4.x/schema.html
 ---
-# Schema
 
-1. [Introduction](#introduction)
-2. [Table information](#table-information)
-3. [Getting the columns of a table](#getting-the-columns-of-a-table)
-
-**Important!**
 At this moment all the features presented here are available only for
 **MySQL**, **SQLServer**, **PostgreSQL** and **SQLite** database systems.
-{:.alert.alert-info}
+{:.alert.alert-info data-title="Important"}
 
 ## Introduction
 

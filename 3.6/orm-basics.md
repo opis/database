@@ -4,15 +4,6 @@ version: 3.x
 title: Basic operations
 description: Learn how to use Opis Database ORM
 ---
-# Basic operations
-
-1. [Finding records by primary key](#finding-records-by-primary-key)
-2. [Accessing column values](#accessing-column-values)
-3. [Performing queries](#performing-queries)
-4. [Inserting records](#inserting-records)
-5. [Updating records](#updating-records)
-6. [Mass assignment](#mass-assignment)
-7. [Deleting records](#deleting-records)
 
 ## Finding records by primary key
 
@@ -194,9 +185,8 @@ $page->save();
 
 #### Custom type casting
 
-**Important!**{:.important}
 This feature is available starting with version `3.3.2`.
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 
 You can define a new casting type or how a casting operation is handled by using
@@ -283,10 +273,9 @@ $users = User::fullAged()
 
 #### Joins
 
-**Important!**{:.important}
 All records returned by a query that uses `joins` 
 will be marked as [read-only records](#read-only-records).
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 A possible use case for joins is when you want, for example, to return a list with 
 all users that have written at least one article.
@@ -422,10 +411,9 @@ Defining which properties of a model are not fillable is done by using the `$gua
 The property must contain an array with all the column names that can not receive 
 values through mass assignment.
 
-**Important!**{:.important}
 The `$guarded` attributes serve as a *black list* while 
 the `$fillable` attributes serve as a *white list*. You should only use one of this two, not both.
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 ```php
 class User extends BaseModel

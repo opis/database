@@ -4,10 +4,6 @@ version: 3.x
 title: Working with models
 description: Learn how to work with models
 ---
-# Working with models
-
-1. [Create related records](#create-related-records)
-2. [Eager loading](#eager-loading)
 
 ## Create related records
 
@@ -60,10 +56,9 @@ $article->save();
 
 #### Handling many-to-many relationships
 
-**Important!**{:.important}
 The `link` and the `unlink` methods are available 
 starting with version `3.3.0`.
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 Creating related models that have a many-to-many relationship is a bit different since 
 they use a junction table. Linking together two related models is done by using the `link` method.

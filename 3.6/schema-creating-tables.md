@@ -5,20 +5,6 @@ title: Creating tables
 description: Learn how to create new tables
 canonical: /database/4.x/schema-creating-tables.html
 ---
-# Creating tables
-
-1. [Introduction](#introduction)
-2. [Adding columns](#adding-columns)
-    1. [Column's size](#column-s-size)
-    2. [Column's properties](#column-s-properties)
-    3. [Column's constraints](#column-s-constraints)
-    4. [Indexing a column](#indexing-a-column)
-3. [Primary key](#primary-key)
-4. [Unique keys](#unique-keys)
-5. [Foreign keys](#foreign-keys)
-6. [Indexes](#indexes)
-
-## Introduction
 
 You can create new tables by using the `create` method. This method takes two arguments:
 its first argument represents the name of the table you want to create and the second 
@@ -164,8 +150,8 @@ $table->dateTime('appointment');
 
 Adds a `DATETIME` equivalent column
 
-### Column's size 
-{: #column-s-size }
+### Column size 
+{: #column-size }
 
 For `integer`, `text` and `binary` types you can specify the column size by calling 
 the `size` method. The valid sizes values are: `tiny`, `small`, `normal`, `medium` and `big`.
@@ -195,10 +181,10 @@ $db->schema()->create('users', function($table){
 |binary|normal|Adds an `BLOB` equivalent column to the table|
 |binary|medium|Adds an `MEDIUMBLOB` equivalent column to the table|
 |binary|big|Adds an `LONGBLOB` equivalent column to the table|
-{:.table .table-bordered .box-highlight}
+{:.table .table-align-center}
 
-### Column's properties 
-{: #column-s-properties }
+### Column properties 
+{: #column-properties }
 
 You can specify that an `integer` column contains an unsigned integer value 
 by using the `unsigned` method.
@@ -219,8 +205,8 @@ Specifying that a column in not nullable id bone by using the `notNull` method.
 $table->string('email')->notNull();
 ```
 
-### Column's constraints 
-{: #column-s-constraints }
+### Column constraints 
+{: #column-constraints }
 
 Adding a primary key constraint is done by using the `primary` method. 
 The name of the constraint will be the same as the column's name.
@@ -271,9 +257,8 @@ $db->schema()->create('users', function($table){
 }));
 ```
 
-**Important!**{:.important}
 You can add only one primary key per table.
-{:.alert.alert-warning}
+{:.alert.alert-info data-title="Remember"}
 
 Adding a primary key that has a custom name can be done by passing as arguments 
 to the `primary` method the name of the primary key and the name of the column on 

@@ -4,8 +4,9 @@
         "pages": [
             {
                 "title": "About",
+                "page_title": "Opis Database",
                 "url": "/4.x/",
-                "description": "About this library",
+                "description": "Installation, licensing and requirements",
                 "items": {
                     "#license": "License",
                     "#requirements": "Requirements",

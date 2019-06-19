@@ -8,7 +8,6 @@ lib:
     name: opis/database
     version: 3.6.8
 ---
-# Database abstraction layer
 
 **Opis Database** is a library that provides an abstraction layer over several database systems, 
 offering a standard way of handling database records, and thus, making the differences between various 

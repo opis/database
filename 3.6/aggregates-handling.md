@@ -5,10 +5,6 @@ title: Working with aggregates
 description: Learn how to work with aggregates
 canonical: /database/4.x/aggregates-handling.html
 ---
-# Working with aggregates
-
-1. [Grouping](#grouping)
-2. [Having clause](#having-clause)
 
 ## Grouping
 

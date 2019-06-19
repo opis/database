@@ -5,14 +5,6 @@ title: Extended selections
 description: Learn about how to define custom selections
 canonical: /database/4.x/fields-selection.html
 ---
-# Extended selections
-
-1. [Introduction](#introduction)
-2. [Adding columns](#adding-columns)
-3. [Adding aggregates](#adding-aggregates)
-4. [Adding functions](#adding-functions)
-
-## Introduction
 
 Let's assume that you want to select from a table, the minimum, the maximum and 
 the average value of a column. Of course, to achieve this, you could simply use 

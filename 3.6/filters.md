@@ -5,15 +5,6 @@ title: Filters
 description: Learn how to filter records
 canonical: /database/4.x/filters.html
 ---
-# Filters
-
-1. [Introduction](#introduction)
-2. [Adding filters](#adding-filters)
-3. [Multiple conditions](#multiple-conditions)
-4. [Columns comparison](#columns-comparison)
-5. [The EXISTS condition](#the-exists-condition)
-
-## Introduction
 
 Filtering records is one of the most important and intensively used operation in SQL. 
 **Opis Database** aims to make data filtering an easy task for the developers, 

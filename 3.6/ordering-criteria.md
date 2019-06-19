@@ -5,7 +5,6 @@ title: Ordering criteria
 description: Learn how to order results
 canonical: /database/4.x/ordering-criteria.html
 ---
-# Ordering criteria
 
 Adding an ordering criterion is done by using the `orderBy` method.
 

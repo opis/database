@@ -6,13 +6,6 @@ description: Learn how to connect to a database
 canonical: /database/4.x/connections.html
 ---
 
-# Database connections
-
-1. [Introduction](#introduction)
-2. [Connection options](#connection-options)
-
-## Introduction
-
 Working with databases is done with the help of the `Opis\Database\Database` class, which provides various methods
 that will ease the process of manipulating tables and records. 
 The constructor of the `Database` class takes as an argument an instance of the `Opis\Database\Connection` class. 

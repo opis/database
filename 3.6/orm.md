@@ -4,13 +4,6 @@ version: 3.x
 title: Object Relational Mapper
 description: Learn about Opis Database ORM
 ---
-# ORM
-
-1. [Introduction](#introduction)
-2. [Mapping models to tables](#mapping-models-to-tables)
-3. [Table's primary key](#table-s-primary-key)
-
-## Introduction
 
 **Opis Database ORM** provides a simple and elegant *ActiveRecord* implementation for 
 working with database records, allowing you to map each table to a model. 
@@ -85,9 +78,8 @@ By default, **Opis Database ORM** assumes that the table's primary key is an aut
 If you want to provide a custom primary key you must set the `$primaryKeyType` property to 
 `Model::PRIMARY_KEY_CUSTOM` and overwrite the `generatePrimaryKey` method.
 
-**Important!**{:.important}
 You must make sure that the generated primary key is a unique value.
-{:.alert.alert-warning}
+{:.alert.alert-warning data-title="Important"}
 
 
 ```php

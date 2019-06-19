@@ -1,16 +1,25 @@
 [
     {
-        "chapter": "Getting started",
+        "chapter": null,
         "pages": [
             {
                 "title": "About",
+                "page_title": "Opis Database",
                 "url": "/3.6/",
-                "description": "About this library"
+                "description": "Installation, licensing and requirements",
+                "items": {
+                    "#license": "License",
+                    "#requirements": "Requirements",
+                    "#installation": "Installation"
+                }
             },
             {
                 "title": "Database connections",
                 "url": "/3.6/connections.html",
-                "description": "Learn how to connect to a database"
+                "description": "Learn how to connect to a database",
+                "items": {
+                    "#connection-options": "Connection options"
+                }
             }
         ]
     },
@@ -20,27 +29,55 @@
             {
                 "title": "Fetching records",
                 "url": "/3.6/fetching-records.html",
-                "description": "Fetching records from a database"
+                "description": "Fetching records from a database",
+                "items": {
+                    "#distinct-results": "Distinct results",
+                    "#columns-selection": "Columns selection",
+                    "#table-sources": "Table sources"
+                }
             },
             {
                 "title": "Results handling",
                 "url": "/3.6/results-handling.html",
-                "description": "Learn how to handle the results set of a query"
+                "description": "Learn how to handle the results set of a query",
+                "items": {
+                    "#using-the-cursor": "Using the cursor",
+                    "#fetching-options": "Fetching options",
+                    "#callback-functions": "Callback functions"
+                }
             },
             {
                 "title": "Aggregate functions",
                 "url": "/3.6/aggregate-functions.html",
-                "description": "Learn about aggregate functions"
+                "description": "Learn about aggregate functions",
+                "items": {
+                    "#counting": "Counting",
+                    "#largest-value": "Largest value",
+                    "#smallest-value": "Smallest value",
+                    "#average-value": "Average value",
+                    "#total-sum": "Total sum"
+                }
             },
             {
                 "title": "Extended selections",
                 "url": "/3.6/extended-selections.html",
-                "description": "Learn how to define custom selections"
+                "description": "Learn how to define custom selections",
+                "items": {
+                    "#adding-columns": "Adding columns",
+                    "#adding-aggregates": "Adding aggregates",
+                    "#adding-functions": "Adding functions"
+                }
             },
             {
                 "title": "Filters",
                 "url": "/3.6/filters.html",
-                "description": "Learn how to filter records"
+                "description": "Learn how to filter records",
+                "items": {
+                    "#adding-filters": "Adding filters",
+                    "#multiple-conditions": "Multiple conditions",
+                    "#columns-comparison": "Columns comparison",
+                    "#the-exists-condition": "The EXIST condition"
+                }
             },
             {
                 "title": "Expressions",
@@ -65,7 +102,11 @@
             {
                 "title": "Working with aggregates",
                 "url": "/3.6/aggregates-handling.html",
-                "description": "Learn how to work with aggregates"
+                "description": "Learn how to work with aggregates",
+                "items": {
+                    "#grouping": "Grouping",
+                    "#having-clause": "Having clause"
+                }
             },
             {
                 "title": "Insert records",
@@ -90,7 +131,12 @@
             {
                 "title": "Performing transactions",
                 "url": "/3.6/transactions.html",
-                "description": "Learn how to use transactions"
+                "description": "Learn how to use transactions",
+                "items": {
+                    "#performing-transactions": "Performing transactions",
+                    "#receiving-notifications": "Receiving notifications",
+                    "#ctrling-transaction-s-flow": "Controlling transaction's flow"
+                }
             }
         ]
     },
@@ -99,18 +145,45 @@
         "pages": [
             {
                 "title": "Introduction",
+                "page_title": "Schema",
                 "url": "/3.6/schema.html",
-                "description": "Learn about Opis Database Schema"
+                "description": "Learn about Opis Database Schema",
+                "items": {
+                    "#table-information": "Table information",
+                    "#getting-the-columns-of-a-table": "Get the columns of a table"
+                }
             },
             {
                 "title": "Creating tables",
                 "url": "/3.6/schema-creating-tables.html",
-                "description": "Learn how to create new tables"
+                "description": "Learn how to create new tables",
+                "items": {
+                    "#adding-columns": {
+                        "title": "Adding columns",
+                        "items": {
+                            "#column-size": "Column size",
+                            "#column-properties": "Column properties",
+                            "#column-constraints": "Column constraints",
+                            "#indexing-a-column": "Indexing a column"
+                        }
+                    },
+                    "#primary-key": "Primary key",
+                    "#unique-keys": "Unique keys",
+                    "#foreign-keys": "Foreign keys",
+                    "#indexes": "Indexes"
+                }
             },
             {
                 "title": "Modifying tables",
                 "url": "/3.6/schema-modifying-tables.html",
-                "description": "Learn how to alter existing tables"
+                "description": "Learn how to alter existing tables",
+                "items": {
+                    "#alter-tables": "Alter tables",
+                    "#changing-a-column-s-type": "Changing a column's type",
+                    "#truncate-tables": "Truncate tables",
+                    "#rename-tables": "Rename tables",
+                    "#drop-tables": "Drop tables"
+                }
             }
         ]
     },
@@ -119,23 +192,46 @@
         "pages": [
             {
                 "title": "Introduction",
+                "page_title": "ORM",
                 "url": "/3.6/orm.html",
-                "description": "Learn about Opis Database ORM"
+                "description": "Learn about Opis Database ORM",
+                "items": {
+                    "#mapping-models-to-tables": "Mapping models to tables",
+                    "#table-s-primary-key": "Table's primary key"
+                }
             },
             {
                 "title": "Basic operations",
                 "url": "/3.6/orm-basics.html",
-                "description": "Learn how to use Opis Database ORM"
+                "description": "Learn how to use the ORM",
+                "items": {
+                    "#finding-records-by-primary-key": "Finding records by primary key",
+                    "#accessing-column-values": "Accessing column values",
+                    "#performing-queries": "Performing queries",
+                    "#inserting-records": "Inserting records",
+                    "#updating-records": "Updating records",
+                    "#mass-assignment": "Mass assignment",
+                    "#deleting-records": "Deleting records"
+                }
             },
             {
                 "title": "Relationships",
                 "url": "/3.6/orm-relationships.html",
-                "description": "Learn about ORM relationships"
+                "description": "Learn about ORM relationships",
+                "items": {
+                    "#one-to-one": "One to one",
+                    "#one-to-many": "One to many",
+                    "#many-to-many": "Many to many"
+                }
             },
             {
                 "title": "Working with models",
                 "url": "/3.6/orm-models.html",
-                "description": "Learn how to work with models"
+                "description": "Learn how to work with models",
+                "items": {
+                    "#create-related-records": "Create related records",
+                    "#eager-loading": "Eager loading"
+                }
             }
         ]
     }

@@ -5,7 +5,6 @@ title: Insert records
 description: Insert new records into a table
 canonical: /database/4.x/insert-records.html
 ---
-# Insert records
 
 Adding new records into a table is done using the `insert` method. 
 The method accepts a single argument that represents a `key => value` mapped array

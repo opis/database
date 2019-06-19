@@ -5,13 +5,6 @@ title: Aggregate functions
 description: Learn about aggregate functions
 canonical: /database/4.x/aggregate-functions.html
 ---
-# Aggregate functions
-
-1. [Counting](#counting)
-2. [Largest value](#largest-value)
-3. [Smallest value](#smallest-value)
-4. [Average value](#average-value)
-5. [Total sum](#total-sum)
 
 **Opis Database** provides support for most common and widely used aggregate functions.
 

@@ -4,14 +4,6 @@ version: 3.x
 title: Relationships
 description: Learn about ORM relationships
 ---
-# Relationships
-
-1. [Introduction](#introduction)
-2. [One to one](#one-to-one)
-3. [One to many](#one-to-many)
-4. [Many to many](#many-to-many)
-
-## Introduction
 
 The relationships between tables can be described by adding methods to your model 
 class and utilize the `hasOne`, `hasMany`, `belongsTo` and `belongsToMany`, inside those methods,

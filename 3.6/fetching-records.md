@@ -5,14 +5,6 @@ title: Fetching records
 description: Fetching records from a database
 canonical: /database/4.x/fetching-records.html
 ---
-# Fetching records
-
-1. [Basic usage](#basic-usage)
-2. [Distinct results](#distinct-results)
-3. [Columns selection](#columns-selection)
-4. [Table sources](#table-sources)
-
-## Basic usage
 
 Fetching records from a database is done using the `from` and the `select` methods. 
 

@@ -5,7 +5,6 @@ title: Update records
 description: Learn how to update existing records
 canonical: /database/4.x/update-records.html
 ---
-# Update records
 
 Updating existing records is done by using the `update` method. 
 This method takes a single argument representing the table name which needs to be updated

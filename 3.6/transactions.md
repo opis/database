@@ -5,11 +5,6 @@ title: Transactions
 description: Learn how to use transactions
 canonical: /database/4.x/transactions.html
 ---
-# Transactions
-
-1. [Performing transactions](#performing-transactions)
-2. [Receiving notifications](#receiving-notifications)
-3. [Controlling transaction's flow](#ctrling-transaction-s-flow)
 
 ## Performing transactions
 

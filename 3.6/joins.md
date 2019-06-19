@@ -5,7 +5,6 @@ title: Joins
 description: Learn how to perform joins
 canonical: /database/4.x/joins.html
 ---
-# Joins
 
 Joins are used to combine rows from two or more tables, based on a common field between them.
 **Opis Database** allows you to perform four type of joins: **INNER** join by using the `join` method,
