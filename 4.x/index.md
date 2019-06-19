@@ -7,7 +7,7 @@ description: A database abstraction layer over PDO,
 keywords: DAL, database, sql, query builder, schema builder, abstraction layer
 lib: 
     name: opis/database
-    version: 4.0
+    version: 4.1
 ---
 
 **Opis Database** is a library that implements an abstraction layer over the PDO extension, 
