@@ -20,7 +20,7 @@ $result = $db->from('users')
 DELETE FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Deleting a specific set of records is done by adding filters.
 
@@ -38,7 +38,7 @@ $result = $db->from('users')
 DELETE FROM `users` WHERE `description` IS NULL
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also delete from multiple tables simultaneously by performing a join 
 and passing to the `delete` method a list of tables as an array argument.
@@ -62,4 +62,4 @@ DELETE `users`, `orders` FROM `users`
 WHERE `users`.`id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

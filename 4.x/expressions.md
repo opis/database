@@ -27,7 +27,7 @@ $result = $db->from('numbers')
 SELECT * FROM `numbers` WHERE `c` = `b` + 10
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 The `column` method is used to add to the expression a value that must be treated 
 as a column name. The `value` method is used to add an arbitrary value that must 
@@ -52,4 +52,4 @@ $result = $db->from('numbers')
 SELECT * FROM `numbers` WHERE `c` = `a` + `b`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

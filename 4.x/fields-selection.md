@@ -43,7 +43,7 @@ $result = $db->from('users')
 SELECT `name` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 If you want to provide an alias name for the column, you must pass that alias 
 as the second argument to the `column` method. 
@@ -63,7 +63,7 @@ $result = $db->from('users')
 SELECT `name` AS `n` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Of course, you can add multiple columns, by calling the `column` method multiple times, once for each column. 
 
@@ -83,7 +83,7 @@ $result = $db->from('users')
 SELECT `name`, `age` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding multiple columns at once can be achieved by using the `columns` method 
 and passing as an argument to the method an array of column names. 
@@ -103,7 +103,7 @@ $result = $db->from('users')
 SELECT `name`, `age` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Aliasing column names is done by passing as an argument to the `columns` method 
 a `key => value` mapped array, where the `key` represents the column name 
@@ -125,7 +125,7 @@ $result = $db->from('users')
 SELECT `user` AS `u`, `age` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Adding aggregates
 
@@ -151,7 +151,7 @@ $result = $db->from('users')
 SELECT COUNT(*) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Counting all values(`NULL` values will not be counted) of a column is done by passing
 the column's name as an argument to the `count` method. 
@@ -171,7 +171,7 @@ $result = $db->from('users')
 SELECT COUNT(`email`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `count` method.
@@ -192,7 +192,7 @@ $result = $db->from('users')
 SELECT COUNT(`email`) AS `email_count` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 If you want to count only the distinct values of a column, you must pass `true`
  as the third argument to the `count` method. 
@@ -212,7 +212,7 @@ $result = $db->from('users')
 SELECT COUNT(DISTINCT `email`) AS `email_count` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Largest value
 
@@ -234,7 +234,7 @@ $result = $db->from('users')
 SELECT MAX(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %} 
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %} 
 
 Adding an alias for the value returned by this aggregate function is done by passing 
 the alias name as the second argument to the `max` method. 
@@ -254,7 +254,7 @@ $result = $db->from('users')
 SELECT MAX(`age`) AS `max_age` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 
 #### Smallest value
@@ -276,7 +276,7 @@ $result = $db->from('users')
 SELECT MIN(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `min` method. 
@@ -296,7 +296,7 @@ $result = $db->from('users')
 SELECT MIN(`age`) AS `min_age` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Summing
 
@@ -317,7 +317,7 @@ $result = $db->from('users')
 SELECT SUM(`wallet`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `sum` method.
@@ -337,7 +337,7 @@ $result = $db->from('users')
 SELECT SUM(`wallet`) AS `total_amount` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 If you want to sum only the distinct values of a column, you must pass `true` as 
 the third argument to the `sum` method. 
@@ -357,7 +357,7 @@ $result = $db->from('users')
 SELECT SUM(DISTINCT `wallet`) AS `total_amount` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Average
 
@@ -378,7 +378,7 @@ $result = $db->from('users')
 SELECT AVG(`wallet`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding an alias for the value returned by this aggregate function is done by passing
 the alias name as the second argument to the `avg` method. 
@@ -398,7 +398,7 @@ $result = $db->from('users')
 SELECT SUM(`wallet`) AS `average_amount` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Adding functions
 
@@ -424,7 +424,7 @@ $result = $db->from('users')
 SELECT UCASE(`name`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
@@ -443,7 +443,7 @@ $result = $db->from('users')
 SELECT UCASE(`name`) AS `ucname` FROM `users` 
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Lower case
 
@@ -464,7 +464,7 @@ $result = $db->from('users')
 SELECT LCASE(`name`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
@@ -483,7 +483,7 @@ $result = $db->from('users')
 SELECT LCASE(`name`) AS `lcname` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Substring
 
@@ -506,7 +506,7 @@ $result = $db->from('users')
 SELECT MID(`name`, 3) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also alias the returned value by passing an alias name as the third argument of the method.
 
@@ -525,7 +525,7 @@ $result = $db->from('users')
 SELECT MID(`name`, 3) AS `sname` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can limit the length of the substring by passing a fourth argument to the `mid` method.
 
@@ -544,7 +544,7 @@ $result = $db->from('users')
 SELECT MID(`name`, 3, 2) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 
 #### Length
@@ -566,7 +566,7 @@ $result = $db->from('users')
 SELECT LENGTH(`name`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
@@ -585,7 +585,7 @@ $result = $db->from('users')
 SELECT LENGTH(`name`) AS `lname` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Formatting
 
@@ -607,7 +607,7 @@ $result = $db->from('users')
 SELECT FORMAT(`wallet`, 4) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 The same result can be obtained by using the `round` method.
 
@@ -626,7 +626,7 @@ $result = $db->from('users')
 SELECT FORMAT(`wallet`, 4) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also alias the returned value by passing an alias name as the second argument of the method.
 
@@ -645,4 +645,4 @@ $result = $db->from('users')
 SELECT FORMAT(`wallet`, 4) AS `fwallet` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

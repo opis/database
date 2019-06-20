@@ -25,7 +25,7 @@ INSERT INTO `users` (`name`, `email`)
 VALUES ("John Doe", "john.doe@example.com")
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 This method returns `true` on success and `false` otherwise.
  

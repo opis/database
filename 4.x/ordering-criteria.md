@@ -21,7 +21,7 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Changing an ordering criterion is done by passing `desc` as the second argument to the `orderBy` method.
 
@@ -39,7 +39,7 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` DESC
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can provide multiple columns as an ordering criterion, by passing to the `orderBy` method 
 an array containing all column names.
@@ -58,7 +58,7 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name`, `age` ASC
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 
 Adding multiple ordering criteria to the same query is done by calling the `orderBy` 
@@ -79,7 +79,7 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC, `age` DESC
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### Ordering NULL values
 
@@ -101,4 +101,4 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC, `age` DESC NULLS FIRST
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

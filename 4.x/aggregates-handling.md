@@ -32,7 +32,7 @@ LEFT JOIN `orders` ON `customers`.`id` = `orders`.`cid`
 GROUP BY `customers`.`name`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Having clause
 
@@ -68,7 +68,7 @@ GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can use multiple having filters by using the `andHaving` and `orHaving` methods.
 
@@ -101,7 +101,7 @@ GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10 AND SUM(`orders`.`value`) >= 1000
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 {% capture php %}
 ```php
@@ -132,7 +132,7 @@ GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10 OR SUM(`orders`.`value`) >= 1000
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Grouping conditions is done by passing a closure as the first argument to the 
 `having`, `andHaving` or `orHaving` methods.
@@ -172,4 +172,4 @@ HAVING COUNT(`orders`.`id`) > 10 AND
     (SUM(`orders`.`value`) >= 1000 OR MIN(`orders`.`value`) >= 500)
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

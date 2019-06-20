@@ -28,7 +28,7 @@ $result = $db->update('users')
 UPDATE `users` SET `description` = "Some description"
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Updating a specific set of records is done by adding filtering conditions.
 
@@ -52,7 +52,7 @@ UPDATE `users` SET
 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also use expressions when you update a table by setting a closure as the value for the column.
 
@@ -74,7 +74,7 @@ $result = $db->update('users')
 UPDATE `users` SET `friends_no` = `friends_no` + 1 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Incrementing a column's value can be achieved by using the `increment` method.
 
@@ -92,7 +92,7 @@ $result = $db->update('users')
 UPDATE `users` SET `friends_no` = `friends_no` + 1 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Decrementing a column's value can be achieved by using the `decrement` method.
 
@@ -110,7 +110,7 @@ $result = $db->update('users')
 UPDATE `users` SET `friends_no` = `friends_no` - 1 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can increment or decrement the value of a column by specifying an explicit quantity.
 
@@ -128,7 +128,7 @@ $result = $db->update('users')
 UPDATE `users` SET `friends_no` = `friends_no` + 2 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also increment or decrement multiple columns at the same time and you can use different
 incrementing/decrementing values for each column.
@@ -152,4 +152,4 @@ UPDATE `users` SET
 WHERE `id` = 2014
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

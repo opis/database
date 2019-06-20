@@ -25,7 +25,7 @@ echo 'There are ' . $count . ' users registred on this site.';
 SELECT COUNT(*) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 
 Counting all values(`NULL` values will not be counted) of a column is done by 
@@ -44,7 +44,7 @@ echo 'There are ' . $count . ' users that have provided a description for their 
 SELECT COUNT(DISTINCT `country`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Largest value
 
@@ -64,7 +64,7 @@ echo 'Our oldest user is ' . $count . ' years old.';
 SELECT MAX(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Smallest value
 
@@ -84,7 +84,7 @@ echo 'Our youngest user is ' . $count . ' years old.';
 SELECT MIN(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Average value
 
@@ -104,7 +104,7 @@ echo 'The average age of our users is ' . $count . ' years.';
 SELECT AVG(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 
 ## Total sum
@@ -125,4 +125,4 @@ echo 'Our users gathered together ' . $count . ' years of life experience.';
 SELECT SUM(`age`) FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

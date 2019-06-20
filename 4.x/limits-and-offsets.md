@@ -22,7 +22,7 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC LIMIT 25
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can skip a certain number of records by using the `offset` method. 
 The skipped records will not be added to the results set. 
@@ -44,4 +44,4 @@ $result = $db->from('users')
 SELECT * FROM `users` ORDER BY `name` ASC LIMIT 25 OFFSET 10
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

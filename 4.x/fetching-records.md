@@ -20,7 +20,7 @@ $result = $db->from('users')
 SELECT * FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 The result of calling the `all` method will be an array that will contain all of the records 
 that were found or an empty array if no records were found. 
@@ -80,7 +80,7 @@ $result = $db->from('users')
 SELECT DISTINCT * FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Columns selection
 
@@ -104,7 +104,7 @@ foreach ($result as $user) {
 SELECT `name` AS `n`, `email`, `age` AS `a` FROM `users`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Table sources
 
@@ -125,7 +125,7 @@ $result = $db->from(['users', 'profiles'])
 SELECT * FROM `users`, `profiles`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 As in the case of columns, you can alias table names by passing as an argument 
 a `key => value` mapped array, where the `key` represents the table's name and 
@@ -145,6 +145,6 @@ $result = $db->from(['users' => 'u', 'profiles' => 'p'])
 SELECT * FROM `users` AS `u`, `profiles` AS `p`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 

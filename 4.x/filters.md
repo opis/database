@@ -39,7 +39,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *isNot* method {#the-isnot-method}
 
@@ -64,7 +64,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` != 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *lessThan* method {#the-lessthan-method}
 
@@ -89,7 +89,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` < 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *greaterThan* method {#the-greaterthan-method}
 
@@ -114,7 +114,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` > 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *atLeast* method {#the-atleast-method}
 
@@ -140,7 +140,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` >= 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *atMost* method {#the-atmost-method}
 
@@ -165,7 +165,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` <= 18
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *between* method {#the-between-method}
 
@@ -188,7 +188,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` BETWEEN 18 AND 21
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *notBetween* method {#the-notbetween-method}
 
@@ -211,7 +211,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` NOT BETWEEN 18 AND 21
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *in* method {#the-in-method}
 
@@ -235,7 +235,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` IN ("London", "New York", "Paris")
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Instead of providing a set of values by passing an array to the `in` method, you could also 
 obtain a set of values by using a subquery. To use a subquery, just pass an anonymous function callback
@@ -266,7 +266,7 @@ SELECT * FROM `users`
 WHERE `city` IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *notIn* method {#the-notin-method}
 
@@ -290,7 +290,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` NOT IN ("London", "New York", "Paris")
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 As in the case of the `in` method, you could obtain a set of values to be used for comparison,
 by using a subquery.
@@ -319,7 +319,7 @@ SELECT * FROM `users`
 WHERE `city` NOT IN (SELECT `name` FROM `cities` WHERE `population` >= 10000000)
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *like* method {#the-like-method}
 
@@ -345,7 +345,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` LIKE "P%"
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *notLike* method {#the-notlike-method}
 
@@ -371,7 +371,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` NOT LIKE "P%"
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *isNull* method {#the-isnull-method}
 
@@ -394,7 +394,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `website` IS NULL
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 #### The *notNull* method {#the-notnull-method}
 
@@ -417,7 +417,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `website` IS NOT NULL
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
  
 ## Multiple conditions
 
@@ -445,7 +445,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 AND `city` = "London"
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 To add an additional condition to your query, that combines with the previous declared condition 
 by using an `OR` operator, use the `orWhere` method.
@@ -467,7 +467,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 OR `age` = 21
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can group your conditions in order to add a more complex filter to your query. 
 Grouping conditions is done by passing as an argument to the `where`, `andWhere` or the `orWhere`
@@ -497,7 +497,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `age` = 18 AND (`city` = "London" OR `city` = "Paris")
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Columns comparison
 
@@ -524,7 +524,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` = `birthplace`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Building the above query without passing `TRUE` as the second argument to the `eq` method, 
 will result into a query that will select all users that are living in a city named `birthplace`.
@@ -544,7 +544,7 @@ $result = $db->from('users')
 SELECT * FROM `users` WHERE `city` = "birthplace"
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## The EXISTS condition
 
@@ -580,4 +580,4 @@ SELECT * FROM `users`
 WHERE EXISTS (SELECT * FROM `orders` WHERE `orders`.`name` = `users`.`name`)
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}

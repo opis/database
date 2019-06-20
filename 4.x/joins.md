@@ -37,7 +37,7 @@ $result = $db->from('users')
 SELECT * FROM `users` INNER JOIN `profiles` ON `users`.`id` = `profiles`.`id`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Adding multiple join conditions is done by using the `andOn` and `orOn` method. 
 Depending on which method you use, the join condition will be combined with the 
@@ -66,7 +66,7 @@ SELECT * FROM `users`
         AND `users`.`email` = `profile`.`primary_email`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 To add an additional condition to your join expression, that combines with the previous 
 declared condition by using an `OR` operator, use the `orOn` method.
@@ -91,7 +91,7 @@ SELECT * FROM `users`
         OR `users`.`email` = `profile`.`primary_email`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can also group your join conditions, by passing as an argument to the 
 `on`, `andOn` and `orOn` methods, an anonymous callback function.
@@ -121,7 +121,7 @@ SELECT * FROM `users`
              `users`.`email` = `profiles`.`secondary_email`)
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Aliasing the table name used within a join, is done by passing a `key => value` 
 mapped array to the used join method, where the `key` represents the table's name 
@@ -143,4 +143,4 @@ $result = $db->from('users')
 SELECT * FROM `users` INNER JOIN `profiles` AS `p` ON `users`.`id` = `p`.`id`
 ```
 {% endcapture %}
-{% include_relative _tabs.html %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
