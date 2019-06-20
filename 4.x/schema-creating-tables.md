@@ -172,7 +172,7 @@ $db->schema()->create('users', function($table){
 |binary|normal|Adds an `BLOB` equivalent column to the table|
 |binary|medium|Adds an `MEDIUMBLOB` equivalent column to the table|
 |binary|big|Adds an `LONGBLOB` equivalent column to the table|
-{:.table .table-align-center}
+{:.table .table-bordered}
 
 ### Column properties 
 {: #column-properties }
