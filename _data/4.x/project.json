@@ -39,9 +39,9 @@
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
         "https://fonts.googleapis.com/css?family=Roboto+Mono:400&display=swap",
         "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
+        "/assets/css/next/prism.css",
         "/assets/css/next/theme.css",
-        "/assets/css/next/style.css",
-        "/assets/css/next/prism.css"
+        "/assets/css/next/style.css"
     ],
     "scripts": [
         "https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js",
