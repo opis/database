@@ -138,8 +138,7 @@ Now, let's retrieve the first 10 articles and display the name of their author.
 ```php
 $articles = Article::limit(10)->orderBy('title')->all();
 
-foreach($articles as $article)
-{
+foreach ($articles as $article) {
     echo $article->author->name;
 }
 ```
@@ -154,8 +153,7 @@ Specifying which relationships to be eager loaded is done with the help of the `
 ```php
 $articles = Article::with('author')->limit(10)->orderBy('title')->all();
 
-foreach($articles as $article)
-{
+foreach ($articles as $article) {
     echo $article->author->name;
 }
 ```
@@ -189,8 +187,7 @@ dynamic property associated with the relationship is accessed for the first time
 // Articles are loaded. The execution of the eager loading query is deferred.
 $articles = Article::with('author')->limit(10)->orderBy('title')->all();
 
-foreach($articles as $article)
-{
+foreach ($articles as $article) {
     // The eager loading query is executed (once only).
     echo $article->author->name;
 }
@@ -202,8 +199,7 @@ Changing this behavior is done by passing `true` as the second argument to the `
 // Articles are loaded and the eager loading query is executed.
 $articles = Article::with('author', true)->limit(10)->orderBy('title')->all();
 
-foreach($articles as $article)
-{
+foreach ($articles as $article) {
     echo $article->author->name;
 }
 ```

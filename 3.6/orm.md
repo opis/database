@@ -25,8 +25,7 @@ class BaseModel extends Model
     
     public static function getConnection()
     {
-        if(static::$connection === null)
-        {
+        if (static::$connection === null) {
             static::$connection = new Connection('mysql:dbname=mydatabase',
                                                  'username',
                                                  'password');

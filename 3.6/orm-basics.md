@@ -13,8 +13,7 @@ This method returns `false` if no records were found.
 ```php
 $user = User::find(1);
 
-if($user !== false)
-{
+if ($user !== false) {
     // do something
 }
 ```
@@ -26,8 +25,7 @@ This method takes as an argument an array containing primary key values.
 ```php
 $users = User::findMany([1, 2, 3]);
 
-foreach($users as $user)
-{
+foreach ($users as $user) {
     // do something
 }
 ```
@@ -37,8 +35,7 @@ You can load all records from a model's table by using the `findAll` method.
 ```php
 $users = User::findAll();
 
-foreach($users as $user)
-{
+foreach ($users as $user) {
     // do something
 }
 ```
@@ -60,8 +57,7 @@ Accessing the column values of the model is done by accessing the corresponding 
 of the model instance.
 
 ```php
-foreach(User::findAll() as $user)
-{
+foreach (User::findAll() as $user) {
     echo $user->name, PHP_EOL;
 }
 ```
@@ -80,8 +76,7 @@ Now we can access the `registrationEmail` property on a model instance to retrie
 the value of the `registration_email` column.
 
 ```php
-foreach(User::findAll() as $user)
-{
+foreach (User::findAll() as $user) {
     echo $user->registrationEmail, PHP_EOL;
 }
 ```
@@ -151,8 +146,7 @@ class User extends BaseModel
 
 $user = User::find(1);
 
-if($user->isAdmin)
-{
+if ($user->isAdmin) {
     // do something
 }
 ```
@@ -174,8 +168,7 @@ $page = Page::find(1);
 
 $keywords = $page->keywords;
 
-if(!in_array('ORM', $keywords))
-{
+if (!in_array('ORM', $keywords)) {
     $keyowrds[] = 'ORM';
 }
 

@@ -68,8 +68,7 @@ $connection = Connection::create($dsn, $user, $password)
 
 //Your queries...
 
-foreach($connection->getLog() as $entry)
-{
+foreach ($connection->getLog() as $entry) {
     echo $entry;
 }
 ```

@@ -11,6 +11,7 @@ The method accepts a single argument that represents a `key => value` mapped arr
 where the `key` is the name of the column and `value` is the actual value that 
 will be inserted into the column.
 
+{% capture php %}
 ```php
 $result = $db->insert(array(
                 'name' => 'John Doe',
@@ -18,9 +19,13 @@ $result = $db->insert(array(
             ))
             ->into('users');
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 INSERT INTO `users` (`name`, `email`) VALUES ("John Doe", "john.doe@example.com")
 ```
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 This method returns `true` on success and `false` otherwise.
  

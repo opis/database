@@ -27,8 +27,7 @@ class User extends BaseModel
 $user = User::find(1);
 
 // Get the related models
-foreach($user->articles as $article)
-{
+foreach ($user->articles as $article) {
     echo $article->title, PHP_EOL;
 }
 ```

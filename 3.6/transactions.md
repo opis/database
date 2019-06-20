@@ -131,8 +131,7 @@ $result = $db->transaction(function(Database $db){
 })
 ->execute(function(Transaction $transaction, Closure $callback){
     
-    try
-    {
+    try {
         // Begin the transaction
         $transaction->begin();
         // Execute the callback
@@ -141,9 +140,7 @@ $result = $db->transaction(function(Database $db){
         $transaction->commit();
         // Return the result of the transaction
         return $result;
-    }
-    catch(PDOException $e)
-    {
+    } catch(PDOException $e) {
         // Rollback the transaction
         $transaction->rollBack();
     }
@@ -169,8 +166,7 @@ $result = $db->transaction(function(Database $db){
 })
 ->execute(function(Transaction $transaction, Closure $callback){
     
-    try
-    {
+    try {
         // Begin the transaction
         $transaction->begin();
         // Execute the callback
@@ -184,14 +180,11 @@ $result = $db->transaction(function(Database $db){
         }
         // Return the result of the transaction
         return $result;
-    }
-    catch(PDOException $e)
-    {
+    } catch(PDOException $e) {
         // Rollback the transaction
         $transaction->rollBack();
         // Get the error callback
-        if(null !== $error = $transaction->getOnErrorCallback())
-        {
+        if (null !== $error = $transaction->getOnErrorCallback()) {
             $error($e, $transaction);
         }
     }

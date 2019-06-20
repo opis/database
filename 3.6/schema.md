@@ -35,8 +35,7 @@ Obtaining a list of tables from the current database is done by using the `getTa
 ```php
 $tables = $db->schema()->getTables();
 
-foreach($tables as $table)
-{
+foreach ($tables as $table) {
     //do something
 }
 ```
@@ -47,8 +46,7 @@ If you want to obtain an uncached list of tables then pass `true` as an argument
 ```php
 $tables = $db->schema()->getTables(true);
 
-foreach($tables as $table)
-{
+foreach ($tables as $table) {
     //do something
 }
 ```
@@ -57,8 +55,7 @@ You can check if a specific table exists by passing the table name
 as the first argument to the `hasTable` method.
 
 ```php
-if($db->schema()->hasTable('users'));
-{
+if ($db->schema()->hasTable('users')) {
     //do something
 }
 ```
@@ -68,8 +65,7 @@ if the checking for the table's existence should be done by using an uncached li
 The default value of this optional argument is `false`.
 
 ```php
-if($db->schema()->hasTable('users', true));
-{
+if ($db->schema()->hasTable('users', true)) {
     //do something
 }
 ```
@@ -82,8 +78,7 @@ The method takes as an argument the name of the table.
 ```php
 $columns = $db->schema()->getColumns('users');
 
-foreach($columns as $column)
-{
+foreach ($columns as $column) {
     //do something
 }
 ```
@@ -94,8 +89,7 @@ to the `getColumns` method.
 ```php
 $columns = $db->schema()->getColumns('users', true);
 
-foreach($columns as $column)
-{
+foreach ($columns as $column) {
     //do something
 }
 ```

@@ -26,8 +26,7 @@ dealing with large data sets is to iterate through the entire result set and pro
 $result = $db->from('users')
              ->select(['name', 'email']);
              
-while(false !== $user = $result->next())
-{
+while (false !== $user = $result->next()) {
     echo $user->name, $user->email;
 }
 ```
@@ -47,8 +46,7 @@ $result = $db->from('users')
              ->fetchAssoc()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     echo $user['name'], $user['email'];
 }
 ```
@@ -62,8 +60,7 @@ $result = $db->from('users')
              ->fetchNum()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     echo $user[0], $user[1];
 }
 ```
@@ -76,8 +73,7 @@ $result = $db->from('users')
              ->fetchBoth()
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     //prints name and email
     echo $user['name'], $user[1];
 }
@@ -112,8 +108,7 @@ $result = $db->from('users')
              ->fetchClass('User')
              ->all();
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     $user->test();
 }
 ```
@@ -161,8 +156,7 @@ $result = $db->from('users')
 
 $message = "Opis Database is great! http://www.opis.io/database";
              
-foreach($result as $user)
-{
+foreach ($result as $user) {
     $subject = "Hello " . $user->getName();
     $user->sendEmail($subject, $message);
 }

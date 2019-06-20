@@ -10,6 +10,7 @@ canonical: /database/4.x/aggregates-handling.html
 
 Grouping the result-set by a column is done by using the `groupBy` method.
 
+{% capture php %}
 ```php
 $result = $db->from('customers')
              ->leftJoin('orders', function($join){
@@ -22,12 +23,16 @@ $result = $db->from('customers')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 SELECT COUNT(`orders`.`id`) AS `total_orders`,
 `customers`.`name` AS `name` FROM `customers`
 LEFT JOIN `orders` ON `customers`.`id` = `orders`.`cid`
 GROUP BY `customers`.`name`
 ```
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 ## Having clause
 
@@ -37,6 +42,7 @@ The available aggregating methods are `count`, `sum`, `min`, `max` and `avg`.
 The condition methods are `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `notIn`, `between` and `notBetween`.
 Each condition method was described in the [filters](filters) section.
 
+{% capture php %}
 ```php
 $result = $db->from('customers')
              ->leftJoin('orders', function($join){
@@ -52,6 +58,8 @@ $result = $db->from('customers')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 SELECT COUNT(`orders`.`id`) AS `total_orders`,
 `customers`.`name` AS `name` FROM `customers`
@@ -59,9 +67,12 @@ LEFT JOIN `orders` ON `customers`.`id` = `orders`.`cid`
 GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10
 ```
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 You can use multiple having filters by using the `andHaving` and `orHaving` methods.
 
+{% capture php %}
 ```php
 $result = $db->from('customers')
              ->leftJoin('orders', function($join){
@@ -80,6 +91,8 @@ $result = $db->from('customers')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 SELECT COUNT(`orders`.`id`) AS `total_orders`,
 `customers`.`name` AS `name` FROM `customers`
@@ -87,7 +100,10 @@ LEFT JOIN `orders` ON `customers`.`id` = `orders`.`cid`
 GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10 AND SUM(`orders`.`value`) >= 1000
 ```
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
+{% capture php %}
 ```php
 $result = $db->from('customers')
              ->leftJoin('orders', function($join){
@@ -106,6 +122,8 @@ $result = $db->from('customers')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 SELECT COUNT(`orders`.`id`) AS `total_orders`,
 `customers`.`name` AS `name` FROM `customers`
@@ -113,10 +131,13 @@ LEFT JOIN `orders` ON `customers`.`id` = `orders`.`cid`
 GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10 OR SUM(`orders`.`value`) >= 1000
 ```
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
 
 Grouping conditions is done by passing a closure as the first argument to the 
 `having`, `andHaving` or `orHaving` methods.
 
+{% capture php %}
 ```php
 $result = $db->from('customers')
              ->leftJoin('orders', function($join){
@@ -140,6 +161,8 @@ $result = $db->from('customers')
              })
              ->all();
 ```
+{% endcapture %}
+{% capture sql %}
 ```sql
 SELECT COUNT(`orders`.`id`) AS `total_orders`,
 `customers`.`name` AS `name` FROM `customers`
@@ -148,4 +171,5 @@ GROUP BY `customers`.`name`
 HAVING COUNT(`orders`.`id`) > 10 AND
     (SUM(`orders`.`value`) >= 1000 OR MIN(`orders`.`value`) >= 500)
 ```
- 
+{% endcapture %}
+{% include tabs.html 1="PHP" 2="SQL" _1=php _2=sql %}
