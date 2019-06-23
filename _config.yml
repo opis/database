@@ -14,8 +14,8 @@ compress_html:
   profile: false
   startings: []
 favicon: /assets/img/favicon.png
-layouts_dir: shared/_next/layouts
-includes_dir: shared/_next/includes
+layouts_dir: shared/_layouts/next
+includes_dir: shared/_includes/next
 exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
 algolia:
   application_id: NMQ2IFNV6E
