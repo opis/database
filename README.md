@@ -52,6 +52,6 @@ Or you could directly reference it into your `composer.json` file as a dependenc
 
 [documentation]: https://opis.io/database
 [apache_license]: https://www.apache.org/licenses/LICENSE-2.0 "Apache License"
-[Packagist]: https://packagist.org/packages/opis/orm "Packagist"
+[Packagist]: https://packagist.org/packages/opis/database "Packagist"
 [Composer]: https://getcomposer.org "Composer"
 
