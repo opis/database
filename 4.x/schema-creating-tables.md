@@ -15,7 +15,7 @@ Opis\Database\Schema\CreateTable;
 
 $db->schema()->create('users', function(CreateTable $table){
     //add table members
-}));
+});
 ```
 
 ## Adding columns
@@ -152,7 +152,7 @@ $db->schema()->create('users', function($table){
 
     $table->integer('id')->size('big');
 
-}));
+});
 ```
 
 | Type | Size | Description |
@@ -246,7 +246,7 @@ $db->schema()->create('users', function($table){
     //Add primary key
     $table->primary('id');
 
-}));
+});
 ```
 
 You can add only one primary key per table.
@@ -264,7 +264,7 @@ $db->schema()->create('users', function($table){
     //Add a composite primary key on `id` and `group` columns
     $table->primary(['id', 'group']);
     
-}));
+});
 ```
 
 Specifying a custom name for a primary key is also possible.
@@ -277,7 +277,7 @@ $db->schema()->create('users', function($table){
     //Add a primary key named `my_custom_pk` on column `id`
     $table->primary('id', 'my_custom_pk');
     
-}));
+});
 ```
 
 ## Unique keys
@@ -293,7 +293,7 @@ $db->schema()->create('users', function($table){
     //Add unique key
     $table->unique('email');
 
-}));
+});
 ```
 
 Composite unique keys are supported as well.
@@ -307,7 +307,7 @@ $db->schema()->create('users', function($table){
     //Add a unique key on `email` and `uesername` columns
     $table->unique(['email', 'username']);
 
-}));
+});
 ```
 And, of course, you can always add a custom name for a unique key.
 
@@ -322,7 +322,7 @@ $db->schema()->create('users', function($table){
     //Add a unique key named `uk_composite` on `email` and `uesername` columns
     $table->unique(['email', 'username'], 'uk_composite');
     
-}));
+});
 ```
 
 
@@ -342,7 +342,7 @@ $db->schema()->create('users', function($table){
     $table->foreign('profile_id')
           ->references('profiles', 'id');
 
-}));
+});
 ```
 
 You may also specify options for the `on delete` and `on update` actions by using the 
@@ -360,7 +360,7 @@ $db->schema()->create('users', function($table){
           ->onDelete('cascade')
           ->onUpdate('cascade');
 
-}));
+});
 ```
 
 Adding a foreign key that has a custom name can be done by passing a second argument
@@ -377,7 +377,7 @@ $db->schema()->create('users', function($table){
           ->onDelete('cascade')
           ->onUpdate('cascade');
 
-}));
+});
 ```
 
 ## Indexes
@@ -392,7 +392,7 @@ $db->schema()->create('users', function($table){
     //Add index
     $table->index('name');
 
-}));
+});
 ```
 
 You can set an index on multiple columns
@@ -406,7 +406,7 @@ $db->schema()->create('users', function($table){
     //Add an index on `email` and `name` columns
     $table->index(['name', 'email']);
 
-}));
+});
 ```
 
 Adding a custom named index is simply a matter of passing a 
@@ -420,5 +420,5 @@ $db->schema()->create('users', function($table){
     //Add an index named `idx_name` on column `name`
     $table->index('name', 'idx_name');
 
-}));
+});
 ```
