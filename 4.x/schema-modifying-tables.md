@@ -16,7 +16,7 @@ $db->schema()->alter('users', function(AlterTable $table){
     
     //code
     
-}));
+});
 ```
 
 #### Adding columns
@@ -30,7 +30,7 @@ $db->schema()->alter('users', function($table){
     
     $table->integer('age')->size('small')->unsigned();
     
-}));
+});
 ```
 
 #### Deleting columns
@@ -43,7 +43,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropColumn('age');
     
-}));
+});
 ```
 
 #### Renaming columns
@@ -56,7 +56,7 @@ $db->schema()->alter('users', function($table){
     
     $table->renameColumn('name', 'username');
     
-}));
+});
 ```
 
 #### Adding default values
@@ -69,7 +69,7 @@ $db->schema()->alter('users', function($table){
     
     $table->setDefaultValue('age', 18);
     
-}));
+});
 ```
 
 #### Removing default values
@@ -82,7 +82,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropDefaultValue('age');
     
-}));
+});
 ```
 
 #### Add primary key
@@ -94,7 +94,7 @@ $db->schema()->alter('users', function($table){
     
     $table->primary('age');
     
-}));
+});
 ```
 
 #### Delete primary key
@@ -107,7 +107,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropPrimary('id');
     
-}));
+});
 ```
 
 #### Add unique keys
@@ -119,7 +119,7 @@ $db->schema()->alter('users', function($table){
     
     $table->unique('email');
     
-}));
+});
 ```
 
 #### Delete unique keys
@@ -132,7 +132,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropUnique('email');
     
-}));
+});
 ```
 
 #### Add foreign keys
@@ -144,7 +144,7 @@ $db->schema()->alter('users', function($table){
 
     $table->foreign('profile_id')->references('profiles', 'id');
 
-}));
+});
 ```
 
 #### Delete foreign keys
@@ -157,7 +157,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropForeign('fk_profile');
     
-}));
+});
 ```
 
 #### Add indexes
@@ -169,7 +169,7 @@ $db->schema()->alter('users', function($table){
     
     $table->index('username');
     
-}));
+});
 ```
 
 #### Delete indexes
@@ -182,7 +182,7 @@ $db->schema()->alter('users', function($table){
     
     $table->dropIndex('username');
     
-}));
+});
 ```
 
 ## Changing a column's type 
@@ -195,7 +195,7 @@ When a table is altered you may change the types of its columns by using the fol
 ```php
 $db->schema()->alter('users', function($table){
     $table->toDouble('height');
-}));
+});
 ```
 
 ## Truncate tables
