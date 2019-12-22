@@ -114,7 +114,9 @@ class SQLite extends Compiler
      */
     public function currentDatabase(string $dsn): array
     {
-        return substr($dsn, strpos($dsn, ':') + 1);
+        return [
+            'result' => substr($dsn, strpos($dsn, ':') + 1),
+        ];
     }
 
     /**
