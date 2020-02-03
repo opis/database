@@ -2,7 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## v4.1.0 - 2018-03-25
+## v4.1.1 - 2020-02-03
+
+### Fixed 
+
+- SQLite compatibility [issue](/opis/database/issues/58)
+
+## v4.1.0 - 2019-03-25
 
 ### Added
 
