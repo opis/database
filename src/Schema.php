@@ -56,10 +56,10 @@ class Schema
             $compiler = $this->connection->schemaCompiler();
             $result = $compiler->currentDatabase($this->connection->getDSN());
 
-            if (is_array($result)) {
-                $this->currentDatabase = $this->connection->column($result['sql'], $result['params']);
+            if (isset($result['result'])) {
+                $this->currentDatabase = $result['result'];
             } else {
-                $this->currentDatabase = $result;
+                $this->currentDatabase = $this->connection->column($result['sql'], $result['params']);
             }
         }
 
