@@ -44,7 +44,7 @@ Or you could directly reference it into your `composer.json` file as a dependenc
 ```json
 {
     "require": {
-        "opis/database": "^4.1"
+        "opis/database": "^4.0"
     }
 }
 ```
