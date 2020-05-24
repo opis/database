@@ -663,6 +663,15 @@ class Compiler
     }
 
     /**
+     * @param array $where
+     *
+     * @return string
+     */
+    protected function whereNop(array $where) {
+        return $this->wrap($where['column']);
+    }
+
+    /**
      * @param   array $having
      *
      * @return  string

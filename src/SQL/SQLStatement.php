@@ -151,6 +151,18 @@ class SQLStatement
     }
 
     /**
+     * @param string|Closure|Expression $column
+     * @param string $separator
+     */
+    public function addWhereNop($column, string $separator) {
+        $this->wheres[] = [
+            'type' => 'whereNop',
+            'column' => $column,
+            'separator' => $separator,
+        ];
+    }
+
+    /**
      * @param Closure $closure
      * @param string $separator
      * @param bool $not

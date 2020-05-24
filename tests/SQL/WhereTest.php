@@ -315,4 +315,15 @@ class WhereTest extends BaseClass
             ->select();
         $this->assertEquals($expected, $actual);
     }
+
+    public function testWhereNop() {
+        $expected = 'SELECT * FROM "users" WHERE match( "username" ) against( \'expression\' )';
+        $actual = $this->db->from('users')
+            ->where(function (Expression $expr) {
+                $expr->op('match(')->column('username')->op(') against(')
+                    ->value('expression')->op(')');
+            }, true)->nop()
+            ->select();
+        $this->assertEquals($expected, $actual);
+    }
 }

@@ -332,6 +332,14 @@ class Where
     }
 
     /**
+     * @return  WhereStatement|Select|Delete|Update
+     */
+    public function nop(): WhereStatement {
+        $this->sql->addWhereNop($this->column, $this->separator);
+        return $this->statement;
+    }
+
+    /**
      * @inheritDoc
      */
     public function __clone()
