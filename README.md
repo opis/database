@@ -17,15 +17,15 @@ Currently, we are officially supporting MySQL, PostgreSQL, Microsoft SQL, and SQ
 We also provide experimental support - without any commitment regarding bug fixes and updates - for Firebird, 
 IBM DB2, Oracle, and NuoDB query builder.
 
-### Documentation
+## Documentation
 
 The full documentation for this library can be found [here][documentation]
 
-### License
+## License
 
 **Opis Database** is licensed under the [Apache License, Version 2.0][apache_license]
 
-### Requirements
+## Requirements
 
 * PHP 7.0.* or higher
 * PDO
