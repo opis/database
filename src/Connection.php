@@ -62,6 +62,9 @@ class Connection implements Serializable
     /** @var    string  Driver's name */
     protected $driver;
 
+    /** @var Database Database instance */
+    protected $database;
+
     /** @var    Schema   Schema instance */
     protected $schema;
 
@@ -278,6 +281,20 @@ class Connection implements Serializable
         }
 
         return $this->schema;
+    }
+
+    /**
+     * Returns the database object associated with this connection
+     *
+     * @return Database
+     */
+    public function getDatabase(): Database
+    {
+        if ($this->database === null) {
+            $this->database = new Database($this);
+        }
+
+        return $this->database;
     }
 
     /**
