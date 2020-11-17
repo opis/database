@@ -5,3 +5,4 @@ shared/
 Gemfile.lock
 tests/db.sql
 composer.lock
+.phpunit.result.cache
