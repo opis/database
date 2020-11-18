@@ -25,10 +25,11 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: pdo, pdo-sqlite
+          tools: composer:v2
           coverage: none
 
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
+        run: composer update --no-interaction --no-progress
 
       - name: Execute tests
         run: vendor/bin/phpunit --verbose
