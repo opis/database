@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,20 @@
 
 namespace Opis\Database;
 
-use Opis\Database\SQL\InsertStatement;
-use Opis\Database\SQL\Query as QueryCommand;
-use Opis\Database\SQL\Insert as InsertCommand;
-use Opis\Database\SQL\Update as UpdateCommand;
+use Opis\Database\SQL\{
+    InsertStatement,
+    Query as QueryCommand,
+    Insert as InsertCommand,
+    Update as UpdateCommand
+};
 
 class Database
 {
-    /** @var   Connection   Connection instance. */
-    protected $connection;
-
-    /** @var    Schema       Schema instance. */
-    protected $schema;
+    protected Connection $connection;
 
     /**
-     * Constructor
-     *
-     * @param   Connection $connection Connection instance.
+     * Database constructor.
+     * @param Connection $connection
      */
     public function __construct(Connection $connection)
     {
@@ -55,7 +52,7 @@ class Database
      *
      * @return array
      */
-    public function getLog()
+    public function getLog(): array
     {
         return $this->connection->getLog();
     }
@@ -63,11 +60,10 @@ class Database
     /**
      * Execute a query in order to fetch or to delete records.
      *
-     * @param   string|array $tables Table name or an array of tables
-     *
-     * @return  QueryCommand
+     * @param string|array $tables
+     * @return QueryCommand
      */
-    public function from($tables): QueryCommand
+    public function from(string|array $tables): QueryCommand
     {
         return new QueryCommand($this->connection, $tables);
     }
@@ -75,11 +71,10 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @param   array $values An array of values.
-     *
-     * @return  InsertCommand|InsertStatement
+     * @param array $values
+     * @return InsertStatement
      */
-    public function insert(array $values): InsertCommand
+    public function insert(array $values): InsertStatement
     {
         return (new InsertCommand($this->connection))->insert($values);
     }
@@ -91,7 +86,7 @@ class Database
      *
      * @return  UpdateCommand
      */
-    public function update($table): UpdateCommand
+    public function update(string $table): UpdateCommand
     {
         return new UpdateCommand($this->connection, $table);
     }
@@ -103,22 +98,17 @@ class Database
      */
     public function schema(): Schema
     {
-        if ($this->schema === null) {
-            $this->schema = $this->connection->getSchema();
-        }
-
-        return $this->schema;
+        return $this->connection->getSchema();
     }
 
     /**
-     * Performs a transaction
+     * Perform a transaction
      *
      * @param callable $query
      * @param mixed|null $default
-     * @return mixed|null
-     * @throws \PDOException
+     * @return mixed
      */
-    public function transaction(callable $query, $default = null)
+    public function transaction(callable $query, mixed $default = null): mixed
     {
         return $this->connection->transaction($query, $this, $default);
     }

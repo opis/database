@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,16 @@
 
 namespace Opis\Database;
 
-use Opis\Database\Schema\CreateTable;
-use Opis\Database\Schema\AlterTable;
+use RuntimeException;
+use Opis\Database\Schema\{CreateTable, AlterTable};
 
 class Schema
 {
-    /** @var    \Opis\Database\Connection   Connection. */
-    protected $connection;
+    protected Connection $connection;
+    protected ?array $tableList = null;
+    protected ?string $currentDatabase = null;
+    protected array $columns = [];
 
-    /** @var    array   Table list. */
-    protected $tableList;
-
-    /** @var    string  Currently used database name. */
-    protected $currentDatabase;
-
-    /** @var    array   Column list */
-    protected $columns = [];
-
-    /**
-     * Constructor
-     *
-     * @param   \Opis\Database\Connection $connection Connection.
-     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -47,10 +35,9 @@ class Schema
     /**
      * Get the name of the currently used database
      *
-     * @return  string
-     * @throws \Exception
+     * @return string
      */
-    public function getCurrentDatabase()
+    public function getCurrentDatabase(): string
     {
         if ($this->currentDatabase === null) {
             $compiler = $this->connection->schemaCompiler();
@@ -69,11 +56,9 @@ class Schema
     /**
      * Check if the specified table exists
      *
-     * @param   string $table Table name
-     * @param   boolean $clear (optional) Refresh table list
-     *
-     * @return  boolean
-     * @throws \Exception
+     * @param string $table
+     * @param bool $clear
+     * @return bool
      */
     public function hasTable(string $table, bool $clear = false): bool
     {
@@ -84,10 +69,8 @@ class Schema
     /**
      * Get a list with all tables that belong to the currently used database
      *
-     * @param   boolean $clear (optional) Refresh table list
-     *
-     * @return  string[]
-     * @throws \Exception
+     * @param bool $clear
+     * @return string[]
      */
     public function getTables(bool $clear = false): array
     {
@@ -120,21 +103,19 @@ class Schema
     /**
      * Get a list with all columns that belong to the specified table
      *
-     * @param   string $table
-     * @param   boolean $clear (optional) Refresh column list
-     * @param   boolean $names (optional) Return only the column names
-     *
-     * @return false|string[]
-     * @throws \Exception
+     * @param string $table
+     * @param bool $clear
+     * @param bool $names
+     * @return string[]
      */
-    public function getColumns(string $table, bool $clear = false, bool $names = true)
+    public function getColumns(string $table, bool $clear = false, bool $names = true): array
     {
         if ($clear) {
             unset($this->columns[$table]);
         }
 
         if (!$this->hasTable($table, $clear)) {
-            return false;
+            throw new RuntimeException(sprintf("Invalid table name '%s'", $table));
         }
 
         if (!isset($this->columns[$table])) {
@@ -167,11 +148,10 @@ class Schema
     /**
      * Creates a new table
      *
-     * @param   string $table Table name
-     * @param   callable $callback A callback that will define table's fields and indexes
-     * @throws \Exception
+     * @param string $table
+     * @param callable $callback
      */
-    public function create(string $table, callable $callback)
+    public function create(string $table, callable $callback): void
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -190,11 +170,10 @@ class Schema
     /**
      * Alters a table's definition
      *
-     * @param   string $table Table name
-     * @param   callable $callback A callback that will add or remove fields or indexes
-     * @throws \Exception
+     * @param string $table
+     * @param callable $callback
      */
-    public function alter(string $table, callable $callback)
+    public function alter(string $table, callable $callback): void
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -212,11 +191,10 @@ class Schema
     /**
      * Change a table's name
      *
-     * @param   string $table The table
-     * @param   string $name The new name of the table
-     * @throws \Exception
+     * @param string $table
+     * @param string $name
      */
-    public function renameTable(string $table, string $name)
+    public function renameTable(string $table, string $name): void
     {
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
         $this->connection->command($result['sql'], $result['params']);
@@ -227,10 +205,9 @@ class Schema
     /**
      * Deletes a table
      *
-     * @param   string $table Table name
-     * @throws \Exception
+     * @param string $table
      */
-    public function drop(string $table)
+    public function drop(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -246,10 +223,9 @@ class Schema
     /**
      * Deletes all records from a table
      *
-     * @param   string $table Table name
-     * @throws \Exception
+     * @param string $table
      */
-    public function truncate(string $table)
+    public function truncate(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 

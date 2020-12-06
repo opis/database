@@ -17,33 +17,45 @@
 
 namespace Opis\Database\Test;
 
-class Connection extends \Opis\Database\Connection
-{
+use Opis\Database\Connection as BaseConnection;
 
-    public function __construct($driver)
+class Connection extends BaseConnection
+{
+    private string $result = '';
+
+    public function __construct(?string $driver)
     {
         parent::__construct('');
         $this->driver = $driver;
         //$this->setWrapperFormat('`%s`');
     }
 
-    public function query(string $sql, array $params = [])
+    public function query(string $sql, array $params = []): ResultSet
     {
-        return $this->replaceParams($sql, $params);
+        $this->result = $this->replaceParams($sql, $params);
+        return new ResultSet();
     }
 
-    public function column(string $sql, array $params = [])
+    public function column(string $sql, array $params = []): mixed
     {
-        return $this->replaceParams($sql, $params);
+        $this->result = $this->replaceParams($sql, $params);
+        return null;
     }
 
-    public function count(string $sql, array $params = [])
+    public function count(string $sql, array $params = []): int
     {
-        return $this->replaceParams($sql, $params);
+        $this->result = $this->replaceParams($sql, $params);
+        return 0;
     }
 
-    public function command(string $sql, array $params = [])
+    public function command(string $sql, array $params = []): bool
     {
-        return $this->replaceParams($sql, $params);
+        $this->result = $this->replaceParams($sql, $params);
+        return true;
+    }
+
+    public function getResult(): string
+    {
+        return $this->result;
     }
 }

@@ -24,81 +24,81 @@ class UpdateTest extends BaseClass
     public function testUpdate()
     {
         $expected = 'UPDATE "users" SET "age" = 18';
-        $actual = $this->db->update('users')->set(['age' => 18]);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->set(['age' => 18]);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateMultiple()
     {
         $expected = 'UPDATE "users" SET "age" = 18, "name" = \'foo\'';
-        $actual = $this->db->update('users')->set(['age' => 18, 'name' => 'foo']);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->set(['age' => 18, 'name' => 'foo']);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateColAsCol()
     {
         $expected = 'UPDATE "users" SET "name" = "username"';
-        $actual = $this->db->update('users')->set([
+        $this->db->update('users')->set([
             'name' => function (Expression $expr) {
                 $expr->column("username");
             },
         ]);
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateIncrementByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 1';
-        $actual = $this->db->update('users')->increment("age");
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->increment("age");
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateIncrementMultipleByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 1, "foo" = "foo" + 1';
-        $actual = $this->db->update('users')->increment(["age", "foo"]);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->increment(["age", "foo"]);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateIncrementByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 5';
-        $actual = $this->db->update('users')->increment("age", 5);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->increment("age", 5);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateIncrementMultipleByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 5, "foo" = "foo" + 5';
-        $actual = $this->db->update('users')->increment(["age", "foo"], 5);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->increment(["age", "foo"], 5);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateDecrementByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 1';
-        $actual = $this->db->update('users')->decrement("age");
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->decrement("age");
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateDecrementMultipleByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 1, "foo" = "foo" - 1';
-        $actual = $this->db->update('users')->decrement(["age", "foo"]);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->decrement(["age", "foo"]);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateDecrementByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 5';
-        $actual = $this->db->update('users')->decrement("age", 5);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->decrement("age", 5);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testUpdateDecrementMultipleByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 5, "foo" = "foo" - 5';
-        $actual = $this->db->update('users')->decrement(["age", "foo"], 5);
-        $this->assertEquals($expected, $actual);
+        $this->db->update('users')->decrement(["age", "foo"], 5);
+        $this->assertEquals($expected, $this->getSQL());
     }
 }

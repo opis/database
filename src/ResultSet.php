@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,12 @@
 namespace Opis\Database;
 
 use PDO;
-use Closure;
 use PDOStatement;
 
 class ResultSet
 {
-    /** @var    \PDOStatement   The PDOStatement associated with this result set. */
-    protected $statement;
+    protected PDOStatement $statement;
 
-    /**
-     * Constructor
-     *
-     * @param   \PDOStatement $statement The PDOStatement associated with this result set.
-     */
     public function __construct(PDOStatement $statement)
     {
         $this->statement = $statement;
@@ -49,7 +42,7 @@ class ResultSet
      *
      * @return  int
      */
-    public function count()
+    public function count(): int
     {
         return $this->statement->rowCount();
     }
@@ -57,42 +50,42 @@ class ResultSet
     /**
      * Fetch all results
      *
-     * @param   callable $callable (optional) Callback function
-     * @param   int $fetchStyle (optional) PDO fetch style
-     *
-     * @return  array
+     * @param callable|null $callable
+     * @param int $fetchStyle
+     * @return array
      */
-    public function all($callable = null, $fetchStyle = 0)
+    public function all(callable $callable = null, int $fetchStyle = 0): array
     {
         if ($callable === null) {
             return $this->statement->fetchAll($fetchStyle);
         }
+
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
 
     /**
-     * @param   bool $uniq (optional)
-     * @param   callable $callable (optional)
-     *
-     * @return  array
+     * @param bool $uniq
+     * @param callable|null $callable
+     * @return array
      */
-    public function allGroup($uniq = false, $callable = null)
+    public function allGroup(bool $uniq = false, callable $callable = null): array
     {
         $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
+
         if ($callable === null) {
             return $this->statement->fetchAll($fetchStyle);
         }
+
         return $this->statement->fetchAll($fetchStyle | PDO::FETCH_FUNC, $callable);
     }
 
     /**
      * Fetch first result
      *
-     * @param   callable $callable (optional) Callback function
-     *
-     * @return  mixed
+     * @param callable|null $callable
+     * @return mixed
      */
-    public function first($callable = null)
+    public function first(callable $callable = null): mixed
     {
         if ($callable !== null) {
             $result = $this->statement->fetch(PDO::FETCH_ASSOC);
@@ -111,9 +104,9 @@ class ResultSet
     /**
      * Fetch next result
      *
-     * @return  mixed
+     * @return mixed
      */
-    public function next()
+    public function next(): mixed
     {
         return $this->statement->fetch();
     }
@@ -121,9 +114,9 @@ class ResultSet
     /**
      * Close current cursor
      *
-     * @return  mixed
+     * @return bool
      */
-    public function flush()
+    public function flush(): bool
     {
         return $this->statement->closeCursor();
     }
@@ -131,11 +124,10 @@ class ResultSet
     /**
      * Return a column
      *
-     * @param   int $col 0-indexed number of the column you wish to retrieve
-     *
-     * @return  mixed
+     * @param int $col
+     * @return mixed
      */
-    public function column($col = 0)
+    public function column(int $col = 0): mixed
     {
         return $this->statement->fetchColumn($col);
     }
@@ -143,9 +135,9 @@ class ResultSet
     /**
      * Fetch each result as an associative array
      *
-     * @return  $this
+     * @return $this
      */
-    public function fetchAssoc()
+    public function fetchAssoc(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
         return $this;
@@ -154,69 +146,66 @@ class ResultSet
     /**
      * Fetch each result as an stdClass object
      *
-     * @return  $this
+     * @return $this
      */
-    public function fetchObject()
+    public function fetchObject(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_OBJ);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
-    public function fetchNamed()
+    public function fetchNamed(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_NAMED);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
-    public function fetchNum()
+    public function fetchNum(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_NUM);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
-    public function fetchBoth()
+    public function fetchBoth(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_BOTH);
         return $this;
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
-    public function fetchKeyPair()
+    public function fetchKeyPair(): static
     {
         $this->statement->setFetchMode(PDO::FETCH_KEY_PAIR);
         return $this;
     }
 
     /**
-     * @param   string $class
-     * @param   array $ctorargs (optional)
-     *
-     * @return  $this
+     * @param string $class
+     * @param array $params
+     * @return $this
      */
-    public function fetchClass($class, array $ctorargs = [])
+    public function fetchClass(string $class, array $params = []): static
     {
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
+        $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $params);
         return $this;
     }
 
     /**
-     * @param   Closure $func
-     *
-     * @return  $this
+     * @param callable $func
+     * @return $this
      */
-    public function fetchCustom(Closure $func)
+    public function fetchCustom(callable $func): static
     {
         $func($this->statement);
         return $this;

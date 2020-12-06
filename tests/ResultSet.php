@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\Test\SQL;
+namespace Opis\Database\Test;
 
-use Opis\Database\Database;
-use Opis\Database\Test\Connection;
-use PHPUnit\Framework\TestCase;
+use Opis\Database\ResultSet as BaseResultSet;
 
-class BaseClass extends TestCase
+class ResultSet extends BaseResultSet
 {
-    protected static $database;
-
-    /** @var  Database */
-    protected $db;
-
-    public static function setUpBeforeClass(): void
+    public function __construct()
     {
-        static::$database = new Database(new Connection(''));
     }
 
-    public function setUp(): void
+    public function __destruct()
     {
-        $this->db = static::$database;
-    }
 
-    protected function getSQL(): string
-    {
-        /** @var Connection $connection */
-        $connection = $this->db->getConnection();
-        return $connection->getResult();
     }
 }

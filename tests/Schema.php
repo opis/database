@@ -23,7 +23,9 @@ use Opis\Database\Schema\AlterTable;
 
 class Schema extends BaseSchema
 {
-    public function create(string $table, callable $callback)
+    private string $result = '';
+
+    public function create(string $table, callable $callback): void
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -31,12 +33,12 @@ class Schema extends BaseSchema
 
         $callback($schema);
 
-        return implode("\n", array_map(function ($value) {
+        $this->result = implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->create($schema)));
     }
 
-    public function alter(string $table, callable $callback)
+    public function alter(string $table, callable $callback): void
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -44,35 +46,40 @@ class Schema extends BaseSchema
 
         $callback($schema);
 
-        return implode("\n", array_map(function ($value) {
+        $this->result = implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->alter($schema)));
     }
 
-    public function renameTable(string $table, string $name)
+    public function renameTable(string $table, string $name): void
     {
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
 
-        return implode("\n", array_map(function ($value) {
+        $this->result = implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $result));
     }
 
-    public function drop(string $table)
+    public function drop(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 
-        return implode("\n", array_map(function ($value) {
+        $this->result = implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->drop($table)));
     }
 
-    public function truncate(string $table)
+    public function truncate(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 
-        return implode("\n", array_map(function ($value) {
+        $this->result = implode("\n", array_map(function ($value) {
             return $value['sql'];
         }, $compiler->truncate($table)));
+    }
+
+    public function getResult(): string
+    {
+        return $this->result;
     }
 }

@@ -24,28 +24,28 @@ class DeleteTest extends BaseClass
     public function testDeleteAll()
     {
         $expected = 'DELETE FROM "users"';
-        $actual = $this->db->from("users")->delete();
-        $this->assertEquals($expected, $actual);
+        $this->db->from("users")->delete();
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testDeleteWhereCondition()
     {
         $expected = 'DELETE FROM "users" WHERE "age" < 18';
-        $actual = $this->db->from("users")
+        $this->db->from("users")
             ->where('age')->lt(18)
             ->delete();
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $this->getSQL());
     }
 
     public function testDeleteWhereExpression()
     {
         $expected = 'DELETE FROM "users" WHERE LEN("name") < 18';
-        $actual = $this->db->from("users")
+        $this->db->from("users")
             ->where(function (Expression $expr) {
                 $expr->len("name");
             }, true)
             ->lt(18)
             ->delete();
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $this->getSQL());
     }
 }
