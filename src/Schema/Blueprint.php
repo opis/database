@@ -229,7 +229,7 @@ class Blueprint
     public function setDefaultValue(string $column, mixed $value): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('setDefaultValue', [
@@ -241,7 +241,7 @@ class Blueprint
     public function renameColumn(string $from, string $to): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('renameColumn', [
@@ -253,7 +253,7 @@ class Blueprint
     public function dropIndex(string $name): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropIndex', $name);
@@ -262,7 +262,7 @@ class Blueprint
     public function dropUnique(string $name): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropUniqueKey', $name);
@@ -271,7 +271,7 @@ class Blueprint
     public function dropPrimary(string $name): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropPrimaryKey', $name);
@@ -280,7 +280,7 @@ class Blueprint
     public function dropForeign(string $name): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropForeignKey', $name);
@@ -289,7 +289,7 @@ class Blueprint
     public function dropColumn(string $name): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropColumn', $name);
@@ -298,7 +298,7 @@ class Blueprint
     public function dropDefaultValue(string $column): static
     {
         if (!$this->alter) {
-            return $this;
+            throw new InvalidOperation();
         }
 
         return $this->addCommand('dropDefaultValue', $column);
@@ -464,8 +464,7 @@ class Blueprint
     protected function modifyColumn(string $column, string $type): Column
     {
         if (!$this->alter) {
-            // Add fake Blueprint context
-            return new Column(new static('', true), $column, $type);
+            throw new InvalidOperation();
         }
 
         $columnObject = new Column($this, $column, $type);
