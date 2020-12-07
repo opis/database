@@ -23,12 +23,8 @@ use Opis\Database\Schema\{
 
 class MySQL extends Compiler
 {
-    /** @var string */
-    protected $wrapper = '`%s`';
+    protected string $wrapper = '`%s`';
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeInteger(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
@@ -45,9 +41,6 @@ class MySQL extends Compiler
         return 'INT';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeDecimal(BaseColumn $column): string
     {
         if (null !== $l = $column->get('length')) {
@@ -59,17 +52,11 @@ class MySQL extends Compiler
         return 'DECIMAL';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeBoolean(BaseColumn $column): string
     {
         return 'TINYINT(1)';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeText(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
@@ -85,9 +72,6 @@ class MySQL extends Compiler
         return 'TEXT';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeBinary(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
@@ -103,59 +87,37 @@ class MySQL extends Compiler
         return 'BLOB';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleDropPrimaryKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleDropUniqueKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleDropIndex(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleDropForeignKey(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleSetDefaultValue(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleDropDefaultValue(AlterTable $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 
-    /**
-     * @inheritdoc
-     * @throws \Exception
-     */
     protected function handleRenameColumn(AlterTable $table, $data): string
     {
         $table_name = $table->getTableName();

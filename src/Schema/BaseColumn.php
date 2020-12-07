@@ -19,95 +19,54 @@ namespace Opis\Database\Schema;
 
 class BaseColumn
 {
-    /** @var string */
-    protected $name;
+    protected string $name;
+    protected ?string $type;
+    protected array $properties = [];
 
-    /** @var string */
-    protected $type;
-
-    /** @var array */
-    protected $properties = [];
-
-    /**
-     * BaseColumn constructor.
-     * @param string $name
-     * @param string|null $type
-     */
     public function __construct(string $name, string $type = null)
     {
         $this->name = $name;
         $this->type = $type;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @return array
-     */
     public function getProperties(): array
     {
         return $this->properties;
     }
 
-    /**
-     * @param string $type
-     * @return $this
-     */
-    public function setType(string $type): self
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param $value
-     * @return $this
-     */
-    public function set(string $name, $value): self
+    public function set(string $name, mixed $value): static
     {
         $this->properties[$name] = $value;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function has(string $name): bool
     {
         return isset($this->properties[$name]);
     }
 
-    /**
-     * @param string $name
-     * @param mixed|null $default
-     * @return mixed|null
-     */
-    public function get(string $name, $default = null)
+    public function get(string $name, mixed $default = null): mixed
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : $default;
     }
 
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function size(string $value): self
+    public function size(string $value): static
     {
         $value = strtolower($value);
 
@@ -118,46 +77,27 @@ class BaseColumn
         return $this->set('size', $value);
     }
 
-    /**
-     * @return $this
-     */
-    public function notNull(): self
+    public function notNull(): static
     {
         return $this->set('nullable', false);
     }
 
-    /**
-     * @param string $comment
-     * @return $this
-     */
-    public function description(string $comment): self
+    public function description(string $comment): static
     {
         return $this->set('description', $comment);
     }
 
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function defaultValue($value): self
+    public function defaultValue($value): static
     {
         return $this->set('default', $value);
     }
 
-    /**
-     * @param bool $value
-     * @return $this
-     */
-    public function unsigned(bool $value = true): self
+    public function unsigned(bool $value = true): static
     {
         return $this->set('unsigned', $value);
     }
 
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function length($value): self
+    public function length($value): static
     {
         return $this->set('length', $value);
     }

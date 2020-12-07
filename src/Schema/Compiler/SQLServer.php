@@ -23,18 +23,40 @@ use Opis\Database\Schema\{
 
 class SQLServer extends Compiler
 {
-    /** @var string */
-    protected $wrapper = '[%s]';
+    protected string $wrapper = '[%s]';
+    protected array $modifiers = ['nullable', 'default', 'autoincrement'];
+    protected string $autoincrement = 'IDENTITY';
 
-    /** @var string[] */
-    protected $modifiers = ['nullable', 'default', 'autoincrement'];
+    public function renameTable(string $current, string $new): array
+    {
+        return [
+            'sql' => 'sp_rename ' . $this->wrap($current) . ', ' . $this->wrap($new),
+            'params' => [],
+        ];
+    }
 
-    /** @var string */
-    protected $autoincrement = 'IDENTITY';
+    public function currentDatabase(string $dsn): array
+    {
+        return [
+            'sql' => 'SELECT SCHEMA_NAME()',
+            'params' => [],
+        ];
+    }
 
-    /**
-     * @inheritdoc
-     */
+    public function getColumns(string $database, string $table): array
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
+            . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
+            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+
+        return [
+            'sql' => $sql,
+            'params' => [$database, $table],
+        ];
+    }
+
     protected function handleTypeInteger(BaseColumn $column): string
     {
         switch ($column->get('size', 'normal')) {
@@ -51,9 +73,6 @@ class SQLServer extends Compiler
         return 'INTEGER';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeDecimal(BaseColumn $column): string
     {
         if (null !== $l = $column->get('length')) {
@@ -65,57 +84,36 @@ class SQLServer extends Compiler
         return 'DECIMAL';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeBoolean(BaseColumn $column): string
     {
         return 'BIT';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeString(BaseColumn $column): string
     {
         return 'NVARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeFixed(BaseColumn $column): string
     {
         return 'NCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeText(BaseColumn $column): string
     {
         return 'NVARCHAR(max)';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeBinary(BaseColumn $column): string
     {
         return 'VARBINARY(max)';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleTypeTimestamp(BaseColumn $column): string
     {
         return 'DATETIME';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleRenameColumn(AlterTable $table, $data): string
     {
         /** @var BaseColumn $column */
@@ -124,50 +122,8 @@ class SQLServer extends Compiler
             . $this->wrap($column->getName()) . ', COLUMN';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function handleEngine(CreateTable $schema): string
     {
         return '';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renameTable(string $current, string $new): array
-    {
-        return [
-            'sql' => 'sp_rename ' . $this->wrap($current) . ', ' . $this->wrap($new),
-            'params' => [],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function currentDatabase(string $dsn): array
-    {
-        return [
-            'sql' => 'SELECT SCHEMA_NAME()',
-            'params' => [],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getColumns(string $database, string $table): array
-    {
-        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
-            . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
-            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
-            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
-            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
-
-        return [
-            'sql' => $sql,
-            'params' => [$database, $table],
-        ];
     }
 }

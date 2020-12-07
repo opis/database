@@ -23,95 +23,12 @@ use Opis\Database\Schema\{
 
 class SQLite extends Compiler
 {
-    /** @var string[] */
-    protected $modifiers = ['nullable', 'default', 'autoincrement'];
-
-    /** @var string */
-    protected $autoincrement = 'AUTOINCREMENT';
-
     /** @var bool No primary key */
-    private $nopk = false;
+    private bool $nopk = false;
 
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeInteger(BaseColumn $column): string
-    {
-        return 'INTEGER';
-    }
+    protected array $modifiers = ['nullable', 'default', 'autoincrement'];
+    protected string $autoincrement = 'AUTOINCREMENT';
 
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeTime(BaseColumn $column): string
-    {
-        return 'DATETIME';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeTimestamp(BaseColumn $column): string
-    {
-        return 'DATETIME';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function handleModifierAutoincrement(BaseColumn $column): string
-    {
-        $modifier = parent::handleModifierAutoincrement($column);
-
-        if ($modifier !== '') {
-            $this->nopk = true;
-            $modifier = 'PRIMARY KEY ' . $modifier;
-        }
-
-        return $modifier;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function handlePrimaryKey(CreateTable $schema): string
-    {
-        if ($this->nopk) {
-            return '';
-        }
-
-        return parent::handlePrimaryKey($schema);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleEngine(CreateTable $schema): string
-    {
-        return '';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleAddUnique(AlterTable $table, $data): string
-    {
-        return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleAddIndex(AlterTable $table, $data): string
-    {
-        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function currentDatabase(string $dsn): array
     {
         return [
@@ -119,9 +36,6 @@ class SQLite extends Compiler
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTables(string $database): array
     {
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
@@ -133,9 +47,6 @@ class SQLite extends Compiler
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getColumns(string $database, string $table): array
     {
         return [
@@ -144,14 +55,64 @@ class SQLite extends Compiler
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function renameTable(string $current, string $new): array
     {
         return [
             'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
             'params' => [],
         ];
+    }
+
+    protected function handleTypeInteger(BaseColumn $column): string
+    {
+        return 'INTEGER';
+    }
+
+    protected function handleTypeTime(BaseColumn $column): string
+    {
+        return 'DATETIME';
+    }
+
+    protected function handleTypeTimestamp(BaseColumn $column): string
+    {
+        return 'DATETIME';
+    }
+
+    protected function handleModifierAutoincrement(BaseColumn $column): string
+    {
+        $modifier = parent::handleModifierAutoincrement($column);
+
+        if ($modifier !== '') {
+            $this->nopk = true;
+            $modifier = 'PRIMARY KEY ' . $modifier;
+        }
+
+        return $modifier;
+    }
+
+    protected function handlePrimaryKey(CreateTable $schema): string
+    {
+        if ($this->nopk) {
+            return '';
+        }
+
+        return parent::handlePrimaryKey($schema);
+    }
+
+    protected function handleEngine(CreateTable $schema): string
+    {
+        return '';
+    }
+
+    protected function handleAddUnique(AlterTable $table, $data): string
+    {
+        return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
+    }
+
+    protected function handleAddIndex(AlterTable $table, $data): string
+    {
+        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 }
