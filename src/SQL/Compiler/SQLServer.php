@@ -22,29 +22,20 @@ use Opis\Database\SQL\SQLStatement;
 
 class SQLServer extends Compiler
 {
-    /** @var string Date format. */
-    protected $dateFormat = 'Y-m-d H:i:s.0000000';
+    protected string $dateFormat = 'Y-m-d H:i:s.0000000';
+    protected string $wrapper = '[%s]';
 
-    /** @var string Wrapper used to escape table and column names. */
-    protected $wrapper = '[%s]';
-
-    /**
-     * Compiles a SELECT query
-     *
-     * @param SQLStatement $select
-     * @return string
-     */
     public function select(SQLStatement $select): string
     {
         $limit = $select->getLimit();
 
-        if ($limit <= 0) {
+        if ($limit === null) {
             return parent::select($select);
         }
 
         $offset = $select->getOffset();
 
-        if ($offset < 0) {
+        if ($offset === null) {
             $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
             $sql .= 'TOP ' . $limit . ' ';
             $sql .= $this->handleColumns($select->getColumns());
@@ -82,11 +73,6 @@ class SQLServer extends Compiler
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' . $limit;
     }
 
-    /**
-     * @param   SQLStatement $update
-     *
-     * @return  string
-     */
     public function update(SQLStatement $update): string
     {
         $joins = $this->handleJoins($update->getJoins());

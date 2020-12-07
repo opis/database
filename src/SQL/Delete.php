@@ -21,29 +21,15 @@ use Opis\Database\Connection;
 
 class Delete extends DeleteStatement
 {
-    /** @var    Connection */
-    protected $connection;
+    protected Connection $connection;
 
-    /**
-     * Delete constructor.
-     * @param Connection $connection
-     * @param string|array $from
-     * @param SQLStatement|null $statement
-     */
-    public function __construct(Connection $connection, $from, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $from, SQLStatement $statement = null)
     {
         parent::__construct($from, $statement);
         $this->connection = $connection;
     }
 
-    /**
-     * Delete records
-     *
-     * @param   string|array $tables (optional)
-     *
-     * @return  int
-     */
-    public function delete($tables = [])
+    public function delete(string|array $tables = []): int
     {
         parent::delete($tables);
         $compiler = $this->connection->getCompiler();

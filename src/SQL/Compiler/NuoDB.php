@@ -21,30 +21,15 @@ use Opis\Database\SQL\Compiler;
 
 class NuoDB extends Compiler
 {
-    /** @var string Wrapper used to escape table and column names. */
-    protected $wrapper = '"%s"';
+    protected string $wrapper = '"%s"';
 
-    /**
-     * Compiles LIMIT clauses.
-     *
-     * @param   int $limit Limit
-     *
-     * @return  string
-     */
-    protected function handleLimit($limit)
+    protected function handleLimit(?int $limit, ?int $offset): string
     {
-        return ($limit <= 0) ? '' : ' FETCH ' . $limit;
+        return is_null($limit) ? '' : ' FETCH ' . $limit;
     }
 
-    /**
-     * Compiles OFFSET clauses.
-     *
-     * @param   int $offset Limit
-     *
-     * @return  string
-     */
-    protected function handleOffset($offset)
+    protected function handleOffset(?int $offset, ?int $limit): string
     {
-        return ($offset < 0) ? '' : ' OFFSET ' . $offset;
+        return is_null($offset) ? '' : ' OFFSET ' . $offset;
     }
 }

@@ -21,26 +21,26 @@ use Closure;
 
 class SQLStatement
 {
-    protected $wheres = [];
-    protected $having = [];
-    protected $joins = [];
-    protected $tables = [];
-    protected $columns = [];
-    protected $order = [];
-    protected $distinct = false;
-    protected $group = [];
-    protected $limit = 0;
-    protected $offset = -1;
-    protected $intoTable;
-    protected $intoDatabase;
-    protected $from = [];
-    protected $values = [];
+    protected array $wheres = [];
+    protected array $having = [];
+    protected array $joins = [];
+    protected array $tables = [];
+    protected array $columns = [];
+    protected array $order = [];
+    protected bool $distinct = false;
+    protected array $group = [];
+    protected ?int $limit = null;
+    protected ?int $offset = null;
+    protected ?string $intoTable = null;
+    protected ?string $intoDatabase = null;
+    protected array $from = [];
+    protected array $values = [];
 
     /**
      * @param Closure $callback
-     * @param $separator
+     * @param string $separator
      */
-    public function addWhereConditionGroup(Closure $callback, $separator)
+    public function addWhereConditionGroup(Closure $callback, string $separator): void
     {
         $where = new WhereStatement();
         $callback($where);
@@ -51,13 +51,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param $value
-     * @param string $operator
-     * @param string $separator
-     */
-    public function addWhereCondition($column, $value, string $operator, string $separator)
+    public function addWhereCondition(mixed $column, $value, string $operator, string $separator): void
     {
         $this->wheres[] = [
             'type' => 'whereColumn',
@@ -68,13 +62,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param string $pattern
-     * @param string $separator
-     * @param bool $not
-     */
-    public function addWhereLikeCondition($column, string $pattern, string $separator, bool $not)
+    public function addWhereLikeCondition(mixed $column, string $pattern, string $separator, bool $not): void
     {
         $this->wheres[] = [
             'type' => 'whereLike',
@@ -85,14 +73,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param $value1
-     * @param $value2
-     * @param string $separator
-     * @param bool $not
-     */
-    public function addWhereBetweenCondition($column, $value1, $value2, string $separator, bool $not)
+    public function addWhereBetweenCondition(mixed $column, mixed $value1, mixed $value2, string $separator, bool $not): void
     {
         $this->wheres[] = [
             'type' => 'whereBetween',
@@ -104,18 +85,12 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param $value
-     * @param string $separator
-     * @param bool $not
-     */
-    public function addWhereInCondition($column, $value, string $separator, bool $not)
+    public function addWhereInCondition(mixed $column, mixed $value, string $separator, bool $not): void
     {
         $column = $this->closureToExpression($column);
 
         if ($value instanceof Closure) {
-            $select = new Subquery();
+            $select = new SubQuery();
             $value($select);
             $this->wheres[] = [
                 'type' => 'whereInSelect',
@@ -135,12 +110,7 @@ class SQLStatement
         }
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param string $separator
-     * @param bool $not
-     */
-    public function addWhereNullCondition($column, string $separator, bool $not)
+    public function addWhereNullCondition(mixed $column, string $separator, bool $not): void
     {
         $this->wheres[] = [
             'type' => 'whereNull',
@@ -150,11 +120,8 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param string $separator
-     */
-    public function addWhereNop($column, string $separator) {
+    public function addWhereNop(mixed $column, string $separator): void
+    {
         $this->wheres[] = [
             'type' => 'whereNop',
             'column' => $column,
@@ -162,14 +129,9 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param Closure $closure
-     * @param string $separator
-     * @param bool $not
-     */
-    public function addWhereExistsCondition(Closure $closure, string $separator, bool $not)
+    public function addWhereExistsCondition(Closure $closure, string $separator, bool $not): void
     {
-        $select = new Subquery();
+        $select = new SubQuery();
         $closure($select);
 
         $this->wheres[] = [
@@ -180,12 +142,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param  string $type
-     * @param  string|array $table
-     * @param  Closure $closure
-     */
-    public function addJoinClause(string $type, $table, Closure $closure = null)
+    public function addJoinClause(string $type, mixed $table, Closure $closure = null): void
     {
         $join = null;
         if ($closure) {
@@ -208,11 +165,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param   Closure $callback
-     * @param   string $separator
-     */
-    public function addHavingGroupCondition(Closure $callback, string $separator)
+    public function addHavingGroupCondition(Closure $callback, string $separator): void
     {
         $having = new HavingStatement();
         $callback($having);
@@ -224,13 +177,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   mixed $value
-     * @param   string $operator
-     * @param   string $separator
-     */
-    public function addHavingCondition($aggregate, $value, string $operator, string $separator)
+    public function addHavingCondition(mixed $aggregate, mixed $value, string $operator, string $separator): void
     {
         $this->having[] = [
             'type' => 'havingCondition',
@@ -241,18 +188,12 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   mixed $value
-     * @param   string $separator
-     * @param   bool $not
-     */
-    public function addHavingInCondition($aggregate, $value, string $separator, bool $not)
+    public function addHavingInCondition(mixed $aggregate, mixed $value, string $separator, bool $not): void
     {
         $aggregate = $this->closureToExpression($aggregate);
 
         if ($value instanceof Closure) {
-            $select = new Subquery();
+            $select = new SubQuery();
             $value($select);
             $this->having[] = [
                 'type' => 'havingInSelect',
@@ -272,14 +213,7 @@ class SQLStatement
         }
     }
 
-    /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   int $value1
-     * @param   int $value2
-     * @param   string $separator
-     * @param   bool $not
-     */
-    public function addHavingBetweenCondition($aggregate, $value1, $value2, string $separator, bool $not)
+    public function addHavingBetweenCondition(mixed $aggregate, mixed $value1, mixed $value2, string $separator, bool $not): void
     {
         $this->having[] = [
             'type' => 'havingBetween',
@@ -294,7 +228,7 @@ class SQLStatement
     /**
      * @param array $tables
      */
-    public function addTables(array $tables)
+    public function addTables(array $tables): void
     {
         $this->tables = $tables;
     }
@@ -302,7 +236,7 @@ class SQLStatement
     /**
      * @param array $columns
      */
-    public function addUpdateColumns(array $columns)
+    public function addUpdateColumns(array $columns): void
     {
         foreach ($columns as $column => $value) {
             $this->columns[] = [
@@ -312,12 +246,7 @@ class SQLStatement
         }
     }
 
-    /**
-     * @param string[]|Expression[]|Closure[] $columns
-     * @param string $order
-     * @param string|null $nulls
-     */
-    public function addOrder(array $columns, string $order, string $nulls = null)
+    public function addOrder(array $columns, string $order, string $nulls = null): void
     {
         foreach ($columns as &$column) {
             $column = $this->closureToExpression($column);
@@ -344,10 +273,7 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param string[]|Expression[]|Closure[] $columns
-     */
-    public function addGroupBy(array $columns)
+    public function addGroupBy(array $columns): void
     {
         foreach ($columns as &$column) {
             $column = $this->closureToExpression($column);
@@ -356,11 +282,7 @@ class SQLStatement
         $this->group = $columns;
     }
 
-    /**
-     * @param string|Closure|Expression $column
-     * @param null $alias
-     */
-    public function addColumn($column, $alias = null)
+    public function addColumn(mixed $column, string $alias = null): void
     {
         $this->columns[] = [
             'name' => $this->closureToExpression($column),
@@ -368,173 +290,108 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param bool $value
-     */
-    public function setDistinct(bool $value)
+    public function setDistinct(bool $value): void
     {
         $this->distinct = $value;
     }
 
-    /**
-     * @param int $value
-     */
-    public function setLimit(int $value)
+    public function setLimit(int $value): void
     {
         $this->limit = $value;
     }
 
-    /**
-     * @param int $value
-     */
-    public function setOffset(int $value)
+    public function setOffset(int $value): void
     {
         $this->offset = $value;
     }
 
-    /**
-     * @param string $table
-     * @param string|null $database
-     */
-    public function setInto(string $table, string $database = null)
+    public function setInto(string $table, ?string $database = null): void
     {
         $this->intoTable = $table;
         $this->intoDatabase = $database;
     }
 
-    /**
-     * @param array $from
-     */
     public function setFrom(array $from)
     {
         $this->from = $from;
     }
 
-    /**
-     * @param $value
-     */
-    public function addValue($value)
+    public function addValue(mixed $value)
     {
         $this->values[] = $this->closureToExpression($value);
     }
 
-    /**
-     * @return array
-     */
     public function getWheres(): array
     {
         return $this->wheres;
     }
 
-    /**
-     * @return array
-     */
     public function getHaving(): array
     {
         return $this->having;
     }
 
-    /**
-     * @return array
-     */
     public function getJoins(): array
     {
         return $this->joins;
     }
 
-    /**
-     * @return bool
-     */
     public function getDistinct(): bool
     {
         return $this->distinct;
     }
 
-    /**
-     * @return array
-     */
     public function getTables(): array
     {
         return $this->tables;
     }
 
-    /**
-     * @return array
-     */
     public function getColumns(): array
     {
         return $this->columns;
     }
 
-    /**
-     * @return array
-     */
     public function getOrder(): array
     {
         return $this->order;
     }
 
-    /**
-     * @return array
-     */
     public function getGroupBy(): array
     {
         return $this->group;
     }
 
-    /**
-     * @return int
-     */
-    public function getLimit(): int
+    public function getLimit(): ?int
     {
         return $this->limit;
     }
 
-    /**
-     * @return int
-     */
-    public function getOffset(): int
+    public function getOffset(): ?int
     {
         return $this->offset;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getIntoTable()
+    public function getIntoTable(): ?string
     {
         return $this->intoTable;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getIntoDatabase()
+    public function getIntoDatabase(): ?string
     {
         return $this->intoDatabase;
     }
 
-    /**
-     * @return array
-     */
     public function getFrom(): array
     {
         return $this->from;
     }
 
-    /**
-     * @return array
-     */
     public function getValues(): array
     {
         return $this->values;
     }
 
-    /**
-     * @param $value
-     * @return mixed|Expression
-     */
-    protected function closureToExpression($value)
+    protected function closureToExpression(mixed $value): mixed
     {
         if ($value instanceof Closure) {
             return Expression::fromClosure($value);

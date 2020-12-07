@@ -21,15 +21,9 @@ use Closure;
 
 class SelectStatement extends BaseStatement
 {
-    /** @var    HavingStatement */
-    protected $have;
+    protected HavingStatement $have;
 
-    /**
-     * SelectStatement constructor.
-     * @param string|array $tables
-     * @param SQLStatement|null $statement
-     */
-    public function __construct($tables, SQLStatement $statement = null)
+    public function __construct(string|array $tables, SQLStatement $statement = null)
     {
         parent::__construct($statement);
 
@@ -41,34 +35,19 @@ class SelectStatement extends BaseStatement
         $this->have = new HavingStatement($this->sql);
     }
 
-    /**
-     * @param string $table
-     * @param string|null $database
-     * @return SelectStatement
-     */
-    public function into(string $table, string $database = null): self
+    public function into(string $table, string $database = null): static
     {
         $this->sql->setInto($table, $database);
         return $this;
     }
 
-
-    /**
-     * @param bool $value
-     * @return SelectStatement
-     */
-    public function distinct(bool $value = true): self
+    public function distinct(bool $value = true): static
     {
         $this->sql->setDistinct($value);
         return $this;
     }
 
-    /**
-     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $columns
-     *
-     * @return  $this
-     */
-    public function groupBy($columns): self
+    public function groupBy(mixed $columns): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -77,49 +56,25 @@ class SelectStatement extends BaseStatement
         return $this;
     }
 
-    /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function having($column, Closure $value = null): self
+    public function having(mixed $column, Closure $value = null): static
     {
         $this->have->having($column, $value);
         return $this;
     }
 
-    /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function andHaving($column, Closure $value = null): self
+    public function andHaving(mixed $column, Closure $value = null): static
     {
         $this->have->andHaving($column, $value);
         return $this;
     }
 
-    /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving(mixed $column, Closure $value = null): static
     {
         $this->have->orHaving($column, $value);
         return $this;
     }
 
-    /**
-     * @param |Closure|Expression|string[]|Closure[]|Expression[] $columns
-     * @param string $order
-     * @param string|null $nulls
-     * @return SelectStatement
-     */
-    public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
+    public function orderBy(mixed $columns, string $order = 'ASC', string $nulls = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -128,31 +83,19 @@ class SelectStatement extends BaseStatement
         return $this;
     }
 
-    /**
-     * @param int $value
-     * @return SelectStatement
-     */
-    public function limit(int $value): self
+    public function limit(int $value): static
     {
         $this->sql->setLimit($value);
         return $this;
     }
 
-    /**
-     * @param int $value
-     * @return SelectStatement
-     */
-    public function offset(int $value): self
+    public function offset(int $value): static
     {
         $this->sql->setOffset($value);
         return $this;
     }
 
-    /**
-     * @param string|Closure|Expression|string[]|Closure[]|Expression[] $columns
-     *
-     */
-    public function select($columns = [])
+    public function select(mixed $columns = []): mixed
     {
         $expr = new ColumnExpression($this->sql);
 
@@ -164,64 +107,46 @@ class SelectStatement extends BaseStatement
             }
             $expr->columns($columns);
         }
+
+        return null;
     }
 
-    /**
-     * @param   string|Closure|Expression $name
-     */
-    public function column($name)
+    public function column(mixed $name): mixed
     {
         (new ColumnExpression($this->sql))->column($name);
+        return null;
     }
 
-    /**
-     * @param   string|Closure|Expression $column (optional)
-     * @param   bool $distinct (optional)
-     */
-    public function count($column = '*', bool $distinct = false)
+    public function count(mixed $column = '*', bool $distinct = false): mixed
     {
         (new ColumnExpression($this->sql))->count($column, null, $distinct);
+        return 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     */
-    public function avg($column, bool $distinct = false)
+    public function avg(mixed $column, bool $distinct = false): mixed
     {
         (new ColumnExpression($this->sql))->avg($column, null, $distinct);
+        return 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     */
-    public function sum($column, bool $distinct = false)
+    public function sum(mixed $column, bool $distinct = false): mixed
     {
         (new ColumnExpression($this->sql))->sum($column, null, $distinct);
+        return 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     */
-    public function min($column, bool $distinct = false)
+    public function min(mixed $column, bool $distinct = false): mixed
     {
         (new ColumnExpression($this->sql))->min($column, null, $distinct);
+        return 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     */
-    public function max($column, bool $distinct = false)
+    public function max(mixed $column, bool $distinct = false): mixed
     {
         (new ColumnExpression($this->sql))->max($column, null, $distinct);
+        return 0;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __clone()
     {
         parent::__clone();

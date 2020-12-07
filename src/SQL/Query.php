@@ -19,222 +19,112 @@ namespace Opis\Database\SQL;
 
 use Closure;
 use Opis\Database\Connection;
+use Opis\Database\ResultSet;
 
 class Query extends BaseStatement
 {
-    /** @var    Connection */
-    protected $connection;
+    protected Connection $connection;
+    protected string|array $tables;
 
-    /** @var    array */
-    protected $tables;
-
-    /**
-     * Query constructor.
-     * @param Connection $connection
-     * @param $tables
-     * @param SQLStatement|null $statement
-     */
-    public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $tables, SQLStatement $statement = null)
     {
         parent::__construct($statement);
         $this->tables = $tables;
         $this->connection = $connection;
     }
 
-    /**
-     * @return  Select
-     */
+    public function distinct(bool $value = true): Select
+    {
+        return $this->buildSelect()->distinct($value);
+    }
+
+    public function groupBy(mixed $columns): Select
+    {
+        return $this->buildSelect()->groupBy($columns);
+    }
+
+    public function having(mixed $column, Closure $value = null): Select
+    {
+        return $this->buildSelect()->having($column, $value);
+    }
+
+    public function andHaving(mixed $column, Closure $value = null): Select
+    {
+        return $this->buildSelect()->andHaving($column, $value);
+    }
+
+    public function orHaving(mixed $column, Closure $value = null): Select
+    {
+        return $this->buildSelect()->orHaving($column, $value);
+    }
+
+    public function orderBy(mixed $columns, string $order = 'ASC', string $nulls = null): Select
+    {
+        return $this->buildSelect()->orderBy($columns, $order, $nulls);
+    }
+
+    public function limit(int $value): Select
+    {
+        return $this->buildSelect()->limit($value);
+    }
+
+    public function offset(int $value): Select
+    {
+        return $this->buildSelect()->offset($value);
+    }
+
+    public function into(string $table, string $database = null): Select
+    {
+        return $this->buildSelect()->into($table, $database);
+    }
+
+    public function select(mixed $columns = []): ResultSet
+    {
+        return $this->buildSelect()->select($columns);
+    }
+
+    public function column(mixed $name): mixed
+    {
+        return $this->buildSelect()->column($name);
+    }
+
+    public function count(mixed $column = '*', bool $distinct = false): int
+    {
+        return $this->buildSelect()->count($column, $distinct);
+    }
+
+    public function avg(mixed $column, bool $distinct = false): int|float
+    {
+        return $this->buildSelect()->avg($column, $distinct);
+    }
+
+    public function sum(mixed $column, bool $distinct = false): int|float
+    {
+        return $this->buildSelect()->sum($column, $distinct);
+    }
+
+    public function min(mixed $column, bool $distinct = false): int|float
+    {
+        return $this->buildSelect()->min($column, $distinct);
+    }
+
+    public function max(mixed $column, bool $distinct = false): int|float
+    {
+        return $this->buildSelect()->max($column, $distinct);
+    }
+
+    public function delete(string|array $tables = []): int
+    {
+        return $this->buildDelete()->delete($tables);
+    }
+
     protected function buildSelect(): Select
     {
         return new Select($this->connection, $this->tables, $this->sql);
     }
 
-    /**
-     * @return  Delete
-     */
     protected function buildDelete(): Delete
     {
         return new Delete($this->connection, $this->tables, $this->sql);
-    }
-
-    /**
-     * @param   bool $value (optional)
-     *
-     * @return  Select|SelectStatement
-     */
-    public function distinct($value = true)
-    {
-        return $this->buildSelect()->distinct($value);
-    }
-
-    /**
-     * @param   string|Closure|Expression|array $columns
-     *
-     * @return  Select
-     */
-    public function groupBy($columns)
-    {
-        return $this->buildSelect()->groupBy($columns);
-    }
-
-    /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  Select
-     */
-    public function having($column, Closure $value = null)
-    {
-        return $this->buildSelect()->having($column, $value);
-    }
-
-    /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  Select
-     */
-    public function andHaving($column, Closure $value = null)
-    {
-        return $this->buildSelect()->andHaving($column, $value);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   Closure $value (optional)
-     *
-     * @return  Select
-     */
-    public function orHaving($column, Closure $value = null)
-    {
-        return $this->buildSelect()->orHaving($column, $value);
-    }
-
-    /**
-     * @param   string|Closure|Expression|array $columns
-     * @param   string $order (optional)
-     * @param   string $nulls (optional)
-     *
-     * @return  Select|SelectStatement
-     */
-    public function orderBy($columns, $order = 'ASC', $nulls = null)
-    {
-        return $this->buildSelect()->orderBy($columns, $order, $nulls);
-    }
-
-    /**
-     * @param   int $value
-     *
-     * @return  Select|SelectStatement
-     */
-    public function limit($value)
-    {
-        return $this->buildSelect()->limit($value);
-    }
-
-    /**
-     * @param   int $value
-     *
-     * @return  Select|SelectStatement
-     */
-    public function offset($value)
-    {
-        return $this->buildSelect()->offset($value);
-    }
-
-    /**
-     * @param   string $table
-     * @param   string $database (optional)
-     *
-     * @return  Select|SelectStatement
-     */
-    public function into($table, $database = null)
-    {
-        return $this->buildSelect()->into($table, $database);
-    }
-
-    /**
-     * @param   array $columns (optional)
-     *
-     * @return  \Opis\Database\ResultSet
-     */
-    public function select($columns = [])
-    {
-        return $this->buildSelect()->select($columns);
-    }
-
-    /**
-     * @param   string|Closure|Expression $name
-     *
-     * @return  mixed|false
-     */
-    public function column($name)
-    {
-        return $this->buildSelect()->column($name);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column (optional)
-     * @param   bool $distinct (optional)
-     *
-     * @return  int
-     */
-    public function count($column = '*', $distinct = false)
-    {
-        return $this->buildSelect()->count($column, $distinct);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function avg($column, $distinct = false)
-    {
-        return $this->buildSelect()->avg($column, $distinct);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function sum($column, $distinct = false)
-    {
-        return $this->buildSelect()->sum($column, $distinct);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function min($column, $distinct = false)
-    {
-        return $this->buildSelect()->min($column, $distinct);
-    }
-
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function max($column, $distinct = false)
-    {
-        return $this->buildSelect()->max($column, $distinct);
-    }
-
-    /**
-     * @param   string[] $tables (optional)
-     *
-     * @return  int
-     */
-    public function delete($tables = [])
-    {
-        return $this->buildDelete()->delete($tables);
     }
 }

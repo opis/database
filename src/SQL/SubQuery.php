@@ -17,17 +17,11 @@
 
 namespace Opis\Database\SQL;
 
-class Subquery
+class SubQuery
 {
-    /** @var    SelectStatement */
-    protected $select;
+    protected ?SelectStatement $select = null;
 
-    /**
-     * @param   string|array $tables
-     *
-     * @return  SelectStatement
-     */
-    public function from($tables)
+    public function from(string|array $tables): SelectStatement
     {
         return $this->select = new SelectStatement($tables);
     }
@@ -41,9 +35,6 @@ class Subquery
         return $this->select->getSQLStatement();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function __clone()
     {
         $this->select = clone $this->select;

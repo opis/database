@@ -22,19 +22,11 @@ use Opis\Database\SQL\SQLStatement;
 
 class DB2 extends Compiler
 {
-
-    /**
-     * Returns the SQL for a select statement
-     *
-     * @param   SQLStatement $select
-     *
-     * @return  string
-     */
     public function select(SQLStatement $select): string
     {
         $limit = $select->getLimit();
 
-        if ($limit <= 0) {
+        if ($limit === null) {
             return parent::select($select);
         }
 
@@ -56,7 +48,7 @@ class DB2 extends Compiler
 
         $offset = $select->getOffset();
 
-        if ($offset < 0) {
+        if ($offset === null) {
             $offset = 0;
         }
 

@@ -23,105 +23,58 @@ use Opis\Database\ResultSet;
 
 class Select extends SelectStatement
 {
-    /** @var Connection */
-    protected $connection;
+    protected Connection $connection;
 
-    /**
-     * Select constructor.
-     * @param Connection $connection
-     * @param array|string $tables
-     * @param SQLStatement|null $statement
-     */
-    public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $tables, SQLStatement $statement = null)
     {
         parent::__construct($tables, $statement);
         $this->connection = $connection;
     }
 
-    /**
-     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $columns (optional)
-     *
-     * @return  ResultSet
-     */
-    public function select($columns = [])
+    public function select(mixed $columns = []): ResultSet
     {
         parent::select($columns);
         $compiler = $this->connection->getCompiler();
         return $this->connection->query($compiler->select($this->sql), $compiler->getParams());
     }
 
-    /**
-     * @param   string|Closure|Expression $name
-     *
-     * @return  mixed|false
-     */
-    public function column($name)
+    public function column(mixed $name): mixed
     {
         parent::column($name);
         return $this->getColumnResult();
     }
 
-    /**
-     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $column (optional)
-     * @param   bool $distinct (optional)
-     *
-     * @return  int
-     */
-    public function count($column = '*', bool $distinct = false)
+    public function count(mixed $column = '*', bool $distinct = false): int
     {
         parent::count($column, $distinct);
-        return $this->getColumnResult();
+        return $this->getColumnResult() ?? 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function avg($column, bool $distinct = false)
+    public function avg(mixed $column, bool $distinct = false): int|float
     {
         parent::avg($column, $distinct);
-        return $this->getColumnResult();
+        return $this->getColumnResult() ?? 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function sum($column, bool $distinct = false)
+    public function sum(mixed $column, bool $distinct = false): int|float
     {
         parent::sum($column, $distinct);
-        return $this->getColumnResult();
+        return $this->getColumnResult() ?? 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function min($column, bool $distinct = false)
+    public function min(mixed $column, bool $distinct = false): int|float
     {
         parent::min($column, $distinct);
-        return $this->getColumnResult();
+        return $this->getColumnResult() ?? 0;
     }
 
-    /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
-     *
-     * @return  int|float
-     */
-    public function max($column, bool $distinct = false)
+    public function max(mixed $column, bool $distinct = false): int|float
     {
         parent::max($column, $distinct);
-        return $this->getColumnResult();
+        return $this->getColumnResult() ?? 0;
     }
 
-    protected function getColumnResult()
+    protected function getColumnResult(): mixed
     {
         $compiler = $this->connection->getCompiler();
         return $this->connection->column($compiler->select($this->sql), $compiler->getParams());

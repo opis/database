@@ -21,17 +21,10 @@ use Closure;
 
 class Where
 {
-    /** @var    string|Expression */
-    protected $column;
-
-    /** @var    string */
-    protected $separator;
-
-    /** @var  SQLStatement */
-    protected $sql;
-
-    /** @var  WhereStatement */
-    protected $statement;
+    protected mixed $column = null;
+    protected ?string $separator = null;
+    protected SQLStatement $sql;
+    protected WhereStatement $statement;
 
     public function __construct(WhereStatement $statement, SQLStatement $sql)
     {
@@ -39,12 +32,7 @@ class Where
         $this->statement = $statement;
     }
 
-    /**
-     * @param   string|Expression|Closure $column
-     * @param   string $separator
-     * @return  Where
-     */
-    public function init($column, string $separator): self
+    public function init(mixed $column, string $separator): static
     {
         if ($column instanceof Closure) {
             $column = Expression::fromClosure($column);
@@ -54,14 +42,122 @@ class Where
         return $this;
     }
 
-    /**
-     * @param   mixed $value
-     * @param   string $operator
-     * @param   bool $isColumn (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    protected function addCondition($value, string $operator, bool $isColumn = false): WhereStatement
+    public function is(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '=', $is_column);
+    }
+
+    public function isNot(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '!=', $is_column);
+    }
+
+    public function lessThan(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '<', $is_column);
+    }
+
+    public function greaterThan(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '>', $is_column);
+    }
+
+    public function atLeast(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '>=', $is_column);
+    }
+
+    public function atMost(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->addCondition($value, '<=', $is_column);
+    }
+
+    public function between(mixed $value1, mixed $value2): WhereStatement|Select|Update|Delete
+    {
+        return $this->addBetweenCondition($value1, $value2, false);
+    }
+
+    public function notBetween(mixed $value1, mixed $value2): WhereStatement|Select|Update|Delete
+    {
+        return $this->addBetweenCondition($value1, $value2, true);
+    }
+
+    public function like(string $value): WhereStatement|Select|Update|Delete
+    {
+        return $this->addLikeCondition($value, false);
+    }
+
+    public function notLike(string $value): WhereStatement|Select|Update|Delete
+    {
+        return $this->addLikeCondition($value, true);
+    }
+
+    public function in(mixed $value): WhereStatement|Select|Update|Delete
+    {
+        return $this->addInCondition($value, false);
+    }
+
+    public function notIn(mixed $value): WhereStatement|Select|Update|Delete
+    {
+        return $this->addInCondition($value, true);
+    }
+
+    public function isNull(): WhereStatement|Select|Update|Delete
+    {
+        return $this->addNullCondition(false);
+    }
+
+    public function notNull(): WhereStatement|Select|Update|Delete
+    {
+        return $this->addNullCondition(true);
+    }
+
+    public function eq(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->is($value, $is_column);
+    }
+
+    public function ne(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->isNot($value, $is_column);
+    }
+
+    public function lt(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->lessThan($value, $is_column);
+    }
+
+    public function gt(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->greaterThan($value, $is_column);
+    }
+
+    public function gte(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->atLeast($value, $is_column);
+    }
+
+    public function lte(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
+    {
+        return $this->atMost($value, $is_column);
+    }
+
+    public function nop(): WhereStatement|Select|Update|Delete
+    {
+        $this->sql->addWhereNop($this->column, $this->separator);
+        return $this->statement;
+    }
+
+    public function __clone()
+    {
+        if ($this->column instanceof Expression) {
+            $this->column = clone $this->column;
+        }
+        $this->sql = clone $this->sql;
+        $this->statement = new WhereStatement($this->sql);
+    }
+
+    protected function addCondition(mixed $value, string $operator, bool $isColumn = false): WhereStatement|Select|Update|Delete
     {
         if ($isColumn && is_string($value)) {
             $value = function (Expression $expr) use ($value) {
@@ -72,282 +168,27 @@ class Where
         return $this->statement;
     }
 
-    /**
-     * @param   int|float|string $value1
-     * @param   int|float|string $value2
-     * @param   bool $not
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    protected function addBetweenCondition($value1, $value2, bool $not): WhereStatement
+    protected function addBetweenCondition(mixed $value1, mixed $value2, bool $not): WhereStatement|Select|Update|Delete
     {
         $this->sql->addWhereBetweenCondition($this->column, $value1, $value2, $this->separator, $not);
         return $this->statement;
     }
 
-    /**
-     * @param   string $pattern
-     * @param   bool $not
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    protected function addLikeCondition(string $pattern, bool $not): WhereStatement
+    protected function addLikeCondition(string $pattern, bool $not): WhereStatement|Select|Update|Delete
     {
         $this->sql->addWhereLikeCondition($this->column, $pattern, $this->separator, $not);
         return $this->statement;
     }
 
-    /**
-     * @param   mixed $value
-     * @param   bool $not
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    protected function addInCondition($value, bool $not): WhereStatement
+    protected function addInCondition(mixed $value, bool $not): WhereStatement|Select|Update|Delete
     {
         $this->sql->addWhereInCondition($this->column, $value, $this->separator, $not);
         return $this->statement;
     }
 
-    /**
-     * @param   bool $not
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    protected function addNullCondition(bool $not): WhereStatement
+    protected function addNullCondition(bool $not): WhereStatement|Select|Update|Delete
     {
         $this->sql->addWhereNullCondition($this->column, $this->separator, $not);
         return $this->statement;
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function is($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '=', $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function isNot($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '!=', $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function lessThan($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '<', $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function greaterThan($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '>', $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function atLeast($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '>=', $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function atMost($value, bool $is_column = false): WhereStatement
-    {
-        return $this->addCondition($value, '<=', $is_column);
-    }
-
-    /**
-     * @param   int|float|string $value1
-     * @param   int|float|string $value2
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function between($value1, $value2): WhereStatement
-    {
-        return $this->addBetweenCondition($value1, $value2, false);
-    }
-
-    /**
-     * @param   int|float|string $value1
-     * @param   int|float|string $value2
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function notBetween($value1, $value2): WhereStatement
-    {
-        return $this->addBetweenCondition($value1, $value2, true);
-    }
-
-    /**
-     * @param   string $value
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function like(string $value): WhereStatement
-    {
-        return $this->addLikeCondition($value, false);
-    }
-
-    /**
-     * @param   string $value
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function notLike(string $value): WhereStatement
-    {
-        return $this->addLikeCondition($value, true);
-    }
-
-    /**
-     * @param   array|Closure $value
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function in($value): WhereStatement
-    {
-        return $this->addInCondition($value, false);
-    }
-
-    /**
-     * @param   array|Closure $value
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function notIn($value): WhereStatement
-    {
-        return $this->addInCondition($value, true);
-    }
-
-    /**
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function isNull(): WhereStatement
-    {
-        return $this->addNullCondition(false);
-    }
-
-    /**
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function notNull(): WhereStatement
-    {
-        return $this->addNullCondition(true);
-    }
-    //Aliases
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function eq($value, bool $is_column = false): WhereStatement
-    {
-        return $this->is($value, $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function ne($value, bool $is_column = false): WhereStatement
-    {
-        return $this->isNot($value, $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function lt($value, bool $is_column = false): WhereStatement
-    {
-        return $this->lessThan($value, $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function gt($value, bool $is_column = false): WhereStatement
-    {
-        return $this->greaterThan($value, $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function gte($value, bool $is_column = false): WhereStatement
-    {
-        return $this->atLeast($value, $is_column);
-    }
-
-    /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
-     *
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function lte($value, bool $is_column = false): WhereStatement
-    {
-        return $this->atMost($value, $is_column);
-    }
-
-    /**
-     * @return  WhereStatement|Select|Delete|Update
-     */
-    public function nop(): WhereStatement {
-        $this->sql->addWhereNop($this->column, $this->separator);
-        return $this->statement;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        if ($this->column instanceof Expression) {
-            $this->column = clone $this->column;
-        }
-        $this->sql = clone $this->sql;
-        $this->statement = new WhereStatement($this->sql);
     }
 }

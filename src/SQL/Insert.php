@@ -21,26 +21,15 @@ use Opis\Database\Connection;
 
 class Insert extends InsertStatement
 {
-    /** @var    Connection */
-    protected $connection;
+    protected Connection $connection;
 
-    /**
-     * Insert constructor.
-     * @param Connection $connection
-     * @param SQLStatement|null $statement
-     */
     public function __construct(Connection $connection, SQLStatement $statement = null)
     {
         parent::__construct($statement);
         $this->connection = $connection;
     }
 
-    /**
-     * @param   string $table
-     *
-     * @return  boolean
-     */
-    public function into(string $table)
+    public function into(string $table): bool
     {
         parent::into($table);
         $compiler = $this->connection->getCompiler();

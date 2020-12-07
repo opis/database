@@ -20,12 +20,7 @@ namespace Opis\Database\SQL;
 class DeleteStatement extends BaseStatement
 {
 
-    /**
-     * DeleteStatement constructor.
-     * @param string|array $from
-     * @param SQLStatement|null $statement
-     */
-    public function __construct($from, SQLStatement $statement = null)
+    public function __construct(string|array $from, SQLStatement $statement = null)
     {
         parent::__construct($statement);
 
@@ -36,16 +31,14 @@ class DeleteStatement extends BaseStatement
         $this->sql->setFrom($from);
     }
 
-    /**
-     * Delete records
-     *
-     * @param   string|array $tables
-     */
-    public function delete($tables = [])
+    protected function delete(string|array $tables = []): mixed
     {
         if (!is_array($tables)) {
             $tables = [$tables];
         }
+
         $this->sql->addTables($tables);
+
+        return null;
     }
 }

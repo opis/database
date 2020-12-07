@@ -21,22 +21,11 @@ use DateTime;
 
 class Compiler
 {
-    /** @var    string  Date format. */
-    protected $dateFormat = 'Y-m-d H:i:s';
-
-    /** @var    string  Wrapper used to escape table and column names. */
-    protected $wrapper = '"%s"';
-
-    /** @var    array   Query params */
-    protected $params = [];
+    protected string $dateFormat = 'Y-m-d H:i:s';
+    protected string $wrapper = '"%s"';
+    protected array $params = [];
 
 
-    /**
-     * Returns the SQL for a select statement
-     *
-     * @param SQLStatement $select
-     * @return string
-     */
     public function select(SQLStatement $select): string
     {
         $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
@@ -49,18 +38,12 @@ class Compiler
         $sql .= $this->handleGroupings($select->getGroupBy());
         $sql .= $this->handleOrderings($select->getOrder());
         $sql .= $this->handleHavings($select->getHaving());
-        $sql .= $this->handleLimit($select->getLimit());
-        $sql .= $this->handleOffset($select->getOffset());
+        $sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
+        $sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
 
         return $sql;
     }
 
-    /**
-     * Returns the SQL for an insert statement
-     *
-     * @param SQLStatement $insert
-     * @return string
-     */
     public function insert(SQLStatement $insert): string
     {
         $columns = $this->handleColumns($insert->getColumns());
@@ -73,13 +56,6 @@ class Compiler
         return $sql;
     }
 
-
-    /**
-     * Returns the SQL for an update statement
-     *
-     * @param SQLStatement $update
-     * @return string
-     */
     public function update(SQLStatement $update): string
     {
         $sql = 'UPDATE ';
@@ -91,12 +67,6 @@ class Compiler
         return $sql;
     }
 
-    /**
-     * Returns the SQL for a delete statement
-     *
-     * @param SQLStatement $delete
-     * @return string
-     */
     public function delete(SQLStatement $delete): string
     {
         $sql = 'DELETE ' . $this->handleTables($delete->getTables());
@@ -108,21 +78,11 @@ class Compiler
         return $sql;
     }
 
-    /**
-     * Returns the data format used
-     *
-     * @return string
-     */
-    public function getDateFormat()
+    public function getDateFormat(): string
     {
         return $this->dateFormat;
     }
 
-    /**
-     * Sets compiler options
-     *
-     * @param   array $options
-     */
     public function setOptions(array $options)
     {
         foreach ($options as $name => $value) {
@@ -130,26 +90,12 @@ class Compiler
         }
     }
 
-    /**
-     * Stores an array of params
-     *
-     * @param   array $params
-     *
-     * @return  string
-     */
-    public function params(array $params)
+    public function params(array $params): string
     {
         return implode(', ', array_map([$this, 'param'], $params));
     }
 
-    /**
-     * Add an array of columns
-     *
-     * @param   array $columns
-     *
-     * @return  string
-     */
-    public function columns(array $columns)
+    public function columns(array $columns): string
     {
         return implode(', ', array_map([$this, 'wrap'], $columns));
     }
@@ -159,26 +105,14 @@ class Compiler
         return "'" . str_replace("'", "''", $value) . "'";
     }
 
-    /**
-     * Return the stored params
-     *
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
         $params = $this->params;
         $this->params = [];
         return $params;
     }
 
-    /**
-     * Wrap a value
-     *
-     * @param   mixed $value
-     *
-     * @return  string
-     */
-    protected function wrap($value)
+    protected function wrap(mixed $value): string
     {
         if ($value instanceof Expression) {
             return $this->handleExpressions($value->getExpressions());
@@ -197,14 +131,7 @@ class Compiler
         return implode('.', $wrapped);
     }
 
-    /**
-     * Stores a query param
-     *
-     * @param   mixed $value
-     *
-     * @return  string
-     */
-    protected function param($value)
+    protected function param(mixed $value): string
     {
         if ($value instanceof Expression) {
             return $this->handleExpressions($value->getExpressions());
@@ -217,14 +144,7 @@ class Compiler
         return '?';
     }
 
-    /**
-     * Handle all expressions
-     *
-     * @param   array $expressions
-     *
-     * @return string
-     */
-    protected function handleExpressions(array $expressions)
+    protected function handleExpressions(array $expressions): string
     {
         $sql = [];
 
@@ -248,7 +168,7 @@ class Compiler
                     $sql[] = $this->handleSqlFunction($expr['value']);
                     break;
                 case 'subquery':
-                    /** @var Subquery $subquery */
+                    /** @var SubQuery $subquery */
                     $subquery = $expr['value'];
                     $sql[] = '(' . $this->select($subquery->getSQLStatement()) . ')';
                     break;
@@ -258,27 +178,13 @@ class Compiler
         return implode(' ', $sql);
     }
 
-    /**
-     * Handle SQL functions
-     *
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function handleSqlFunction(array $func)
+    protected function handleSqlFunction(array $func): string
     {
         $method = $func['type'] . $func['name'];
         return $this->{$method}($func);
     }
 
-    /**
-     * Handle tables
-     *
-     * @param   array $tables
-     *
-     * @return string
-     */
-    protected function handleTables(array $tables)
+    protected function handleTables(array $tables): string
     {
         if (empty($tables)) {
             return '';
@@ -296,14 +202,7 @@ class Compiler
         return implode(', ', $sql);
     }
 
-    /**
-     * Handle columns
-     *
-     * @param   array $columns
-     *
-     * @return  string
-     */
-    protected function handleColumns(array $columns)
+    protected function handleColumns(array $columns): string
     {
         if (empty($columns)) {
             return '*';
@@ -321,15 +220,7 @@ class Compiler
         return implode(', ', $sql);
     }
 
-    /**
-     * Handle INTO
-     *
-     * @param   string $table
-     * @param   string $database
-     *
-     * @return  string
-     */
-    protected function handleInto($table, $database)
+    protected function handleInto(?string $table, ?string $database): string
     {
         if ($table === null) {
             return '';
@@ -337,15 +228,7 @@ class Compiler
         return ' INTO ' . $this->wrap($table) . ($database === null ? '' : ' IN ' . $this->wrap($database));
     }
 
-    /**
-     * Handle WHERE conditions
-     *
-     * @param   array $wheres
-     * @param   bool $prefix (optional)
-     *
-     * @return string
-     */
-    protected function handleWheres(array $wheres, $prefix = true)
+    protected function handleWheres(array $wheres, bool $prefix = true): string
     {
         if (empty($wheres)) {
             return '';
@@ -362,26 +245,12 @@ class Compiler
         return ($prefix ? ' WHERE ' : '') . implode(' ', $sql);
     }
 
-    /**
-     * Handle groups
-     *
-     * @param   array $grouping
-     *
-     * @return  string
-     */
-    protected function handleGroupings(array $grouping)
+    protected function handleGroupings(array $grouping): string
     {
         return empty($grouping) ? '' : ' GROUP BY ' . $this->columns($grouping);
     }
 
-    /**
-     * Handle JOIN clauses
-     *
-     * @param   array $joins
-     *
-     * @return  string
-     */
-    protected function handleJoins(array $joins)
+    protected function handleJoins(array $joins): string
     {
         if (empty($joins)) {
             return '';
@@ -404,14 +273,7 @@ class Compiler
         return ' ' . implode(' ', $sql);
     }
 
-    /**
-     * Handle JOIN conditions
-     *
-     * @param   array $conditions
-     *
-     * @return  string
-     */
-    protected function handleJoinConditions(array $conditions)
+    protected function handleJoinConditions(array $conditions): string
     {
         if (empty($conditions)) {
             return '';
@@ -424,15 +286,7 @@ class Compiler
         return implode(' ', $sql);
     }
 
-    /**
-     * Handle HAVING clause
-     *
-     * @param   array $havings
-     * @param   bool $prefix (optional)
-     *
-     * @return  string
-     */
-    protected function handleHavings(array $havings, $prefix = true)
+    protected function handleHavings(array $havings, bool $prefix = true): string
     {
         if (empty($havings)) {
             return '';
@@ -450,14 +304,7 @@ class Compiler
         return ($prefix ? ' HAVING ' : '') . implode(' ', $sql);
     }
 
-    /**
-     * Handle ORDER BY
-     *
-     * @param   array $ordering
-     *
-     * @return  string
-     */
-    protected function handleOrderings(array $ordering)
+    protected function handleOrderings(array $ordering): string
     {
         if (empty($ordering)) {
             return '';
@@ -484,14 +331,7 @@ class Compiler
         return ' ORDER BY ' . implode(', ', $sql);
     }
 
-    /**
-     * Handle SET
-     *
-     * @param   array $columns
-     *
-     * @return  string
-     */
-    protected function handleSetColumns(array $columns)
+    protected function handleSetColumns(array $columns): string
     {
         if (empty($columns)) {
             return '';
@@ -506,158 +346,77 @@ class Compiler
         return ' SET ' . implode(', ', $sql);
     }
 
-    /**
-     * Handle insert values
-     *
-     * @param   array $values
-     *
-     * @return  string
-     */
-    protected function handleInsertValues(array $values)
+    protected function handleInsertValues(array $values): string
     {
         return ' VALUES (' . $this->params($values) . ')';
     }
 
-    /**
-     * Handle limits
-     *
-     * @param   int|null $limit
-     *
-     * @return  string
-     */
-    protected function handleLimit($limit)
+    protected function handleLimit(?int $limit, ?int $offset): string
     {
-        return ($limit === 0) ? '' : ' LIMIT ' . $this->param($limit);
+        return ($limit === null) ? '' : ' LIMIT ' . $this->param($limit);
     }
 
-    /**
-     * Handle offsets
-     *
-     * @param   int|null $offset
-     *
-     * @return  string
-     */
-    protected function handleOffset($offset)
+    protected function handleOffset(?int $offset, ?int $limit): string
     {
-        return ($offset === -1) ? '' : ' OFFSET ' . $this->param($offset);
+        return ($offset === null) ? '' : ' OFFSET ' . $this->param($offset);
     }
 
-    /**
-     * @param   array $join
-     *
-     * @return  string
-     */
-    protected function joinColumn(array $join)
+    protected function joinColumn(array $join): string
     {
         return $this->wrap($join['column1']) . ' ' . $join['operator'] . ' ' . $this->wrap($join['column2']);
     }
 
-    /**
-     * @param   array $join
-     *
-     * @return  string
-     */
-    protected function joinNested(array $join)
+    protected function joinNested(array $join): string
     {
         return '(' . $this->handleJoinConditions($join['join']->getJoinConditions()) . ')';
     }
 
-    /**
-     * @param   array $join
-     *
-     * @return string
-     */
-    protected function joinExpression(array $join)
+    protected function joinExpression(array $join): string
     {
         return $this->wrap($join['expression']);
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereColumn(array $where)
+    protected function whereColumn(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . $where['operator'] . ' ' . $this->param($where['value']);
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereIn(array $where)
+    protected function whereIn(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ' : 'IN ') . '(' . $this->params($where['value']) . ')';
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereInSelect(array $where)
+    protected function whereInSelect(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT IN ' : 'IN ') . '(' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereNested(array $where)
+    protected function whereNested(array $where): string
     {
         return '(' . $this->handleWheres($where['clause'], false) . ')';
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereExists(array $where)
+    protected function whereExists(array $where): string
     {
         return ($where['not'] ? 'NOT EXISTS ' : 'EXISTS ') . '(' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereNull(array $where)
+    protected function whereNull(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'IS NOT NULL' : 'IS NULL');
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereBetween(array $where)
+    protected function whereBetween(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT BETWEEN' : 'BETWEEN') . ' ' . $this->param($where['value1']) . ' AND ' . $this->param($where['value2']);
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereLike(array $where)
+    protected function whereLike(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . ($where['not'] ? 'NOT LIKE' : 'LIKE') . ' ' . $this->param($where['pattern']);
     }
 
-    /**
-     * @param   array $where
-     *
-     * @return  string
-     */
-    protected function whereSubquery(array $where)
+    protected function whereSubQuery(array $where): string
     {
         return $this->wrap($where['column']) . ' ' . $where['operator'] . ' (' . $this->select($where['subquery']->getSQLStatement()) . ')';
     }
@@ -667,180 +426,93 @@ class Compiler
      *
      * @return string
      */
-    protected function whereNop(array $where) {
+    protected function whereNop(array $where): string
+    {
         return $this->wrap($where['column']);
     }
 
-    /**
-     * @param   array $having
-     *
-     * @return  string
-     */
-    protected function havingCondition(array $having)
+    protected function havingCondition(array $having): string
     {
         return $this->wrap($having['aggregate']) . ' ' . $having['operator'] . ' ' . $this->param($having['value']);
     }
 
-    /**
-     * @param   array $having
-     *
-     * @return  string
-     */
-    protected function havingNested(array $having)
+    protected function havingNested(array $having): string
     {
         return '(' . $this->handleHavings($having['conditions'], false) . ')';
     }
 
-    /**
-     * @param   array $having
-     *
-     * @return  string
-     */
-    protected function havingBetween(array $having)
+    protected function havingBetween(array $having): string
     {
         return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT BETWEEN ' : ' BETWEEN ') . $this->param($having['value1']) . ' AND ' . $this->param($having['value2']);
     }
 
-    /**
-     * @param   array $having
-     *
-     * @return  string
-     */
-    protected function havingInSelect(array $having)
+    protected function havingInSelect(array $having): string
     {
         return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '(' . $this->select($having['subquery']->getSQLStatement()) . ')';
     }
 
-    /**
-     * @param   array $having
-     *
-     * @return  string
-     */
-    protected function havingIn(array $having)
+    protected function havingIn(array $having): string
     {
         return $this->wrap($having['aggregate']) . ($having['not'] ? ' NOT IN ' : ' IN ') . '(' . $this->params($having['value']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function aggregateFunctionCOUNT(array $func)
+    protected function aggregateFunctionCOUNT(array $func): string
     {
         return 'COUNT(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->columns($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function aggregateFunctionAVG(array $func)
+    protected function aggregateFunctionAVG(array $func): string
     {
         return 'AVG(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function aggregateFunctionSUM(array $func)
+    protected function aggregateFunctionSUM(array $func): string
     {
         return 'SUM(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function aggregateFunctionMIN(array $func)
+    protected function aggregateFunctionMIN(array $func): string
     {
         return 'MIN(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function aggregateFunctionMAX(array $func)
+    protected function aggregateFunctionMAX(array $func): string
     {
         return 'MAX(' . ($func['distinct'] ? 'DISTINCT ' : '') . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionUCASE(array $func)
+    protected function sqlFunctionUCASE(array $func): string
     {
         return 'UCASE(' . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return string
-     */
-    protected function sqlFunctionLCASE(array $func)
+    protected function sqlFunctionLCASE(array $func): string
     {
         return 'LCASE(' . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionMID(array $func)
+    protected function sqlFunctionMID(array $func): string
     {
         return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? $this->param($func['length']) . ')' : ')');
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionLEN(array $func)
+    protected function sqlFunctionLEN(array $func): string
     {
         return 'LEN(' . $this->wrap($func['column']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionROUND(array $func)
+    protected function sqlFunctionROUND(array $func): string
     {
         return 'ROUND(' . $this->wrap($func['column']) . ', ' . $this->param($func['decimals']) . ')';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionNOW(
-        /** @noinspection PhpUnusedParameterInspection */
-        array $func
-    ) {
+    protected function sqlFunctionNOW(array $func): string
+    {
         return 'NOW()';
     }
 
-    /**
-     * @param   array $func
-     *
-     * @return  string
-     */
-    protected function sqlFunctionFORMAT(array $func)
+    protected function sqlFunctionFORMAT(array $func): string
     {
         return 'FORMAT(' . $this->wrap($func['column']) . ', ' . $this->param($func['format']) . ')';
     }
-
 }

@@ -22,53 +22,17 @@ use Opis\Database\SQL\SQLStatement;
 
 class Firebird extends Compiler
 {
-
-    /**
-     * Handle limits
-     * @param int|null $limit
-     * @param null $offset
-     * @return string
-     */
-    protected function handleLimit($limit, $offset = null)
+    protected function handleLimit(?int $limit, ?int $offset): string
     {
-        return ($limit <= 0) ? '' : ' TO ' . ($limit + (($offset < 0) ? 0 : $offset));
+        if (is_null($limit)) {
+            return  '';
+        }
+
+        return ' TO ' . ($limit + ($offset ?? 0));
     }
 
-    /**
-     * Compiles OFFSET clause.
-     *
-     * @access  protected
-     * @param   int $limit Offset
-     * @param   int $offset Limit
-     * @return  string
-     */
-    protected function handleOffset($offset, $limit = null)
+    protected function handleOffset(?int $offset, ?int $limit): string
     {
-        return ($offset < 0) ? ($limit <= 0) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
-    }
-
-    /**
-     * Compiles a SELECT query.
-     *
-     * @access  public
-     * @param   SQLStatement $select
-     * @return  string
-     */
-    public function select(SQLStatement $select): string
-    {
-        $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
-        $sql .= $this->handleColumns($select->getColumns());
-        $sql .= $this->handleInto($select->getIntoTable(), $select->getIntoDatabase());
-        $sql .= ' FROM ';
-        $sql .= $this->handleTables($select->getTables());
-        $sql .= $this->handleJoins($select->getJoins());
-        $sql .= $this->handleWheres($select->getWheres());
-        $sql .= $this->handleGroupings($select->getGroupBy());
-        $sql .= $this->handleOrderings($select->getOrder());
-        $sql .= $this->handleHavings($select->getHaving());
-        $sql .= $this->handleOffset($select->getOffset(), $select->getLimit());
-        $sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
-
-        return $sql;
+        return is_null($offset) ? (is_null($limit) ? '' : ' ROWS 1 ') : ' ROWS ' . ($offset + 1);
     }
 }

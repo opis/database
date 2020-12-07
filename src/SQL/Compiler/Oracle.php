@@ -24,18 +24,11 @@ use Opis\Database\SQL\SQLStatement;
 class Oracle extends Compiler
 {
 
-    /**
-     * Compiles a SELECT query.
-     *
-     * @param   SQLStatement $select
-     *
-     * @return  string
-     */
     public function select(SQLStatement $select): string
     {
         $limit = $select->getLimit();
 
-        if ($limit <= 0) {
+        if ($limit === null) {
             return parent::select($select);
         }
 
@@ -51,7 +44,7 @@ class Oracle extends Compiler
 
         $offset = $select->getOffset();
 
-        if ($offset < 0) {
+        if ($offset === null) {
             return 'SELECT * FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit;
         }
 
@@ -61,12 +54,7 @@ class Oracle extends Compiler
         return 'SELECT * FROM (SELECT M1.*, ROWNUM AS OPIS_ROWNUM FROM (' . $sql . ') M1 WHERE ROWNUM <= ' . $limit . ') WHERE OPIS_ROWNUM >= ' . $offset;
     }
 
-    /**
-     * @param   mixed $value
-     *
-     * @return  string
-     */
-    protected function wrap($value)
+    protected function wrap(mixed $value): string
     {
         if ($value instanceof Expression) {
             return $this->handleExpressions($value->getExpressions());
@@ -85,12 +73,7 @@ class Oracle extends Compiler
         return implode('.', $wrapped);
     }
 
-    /**
-     * @param   array $ordering
-     *
-     * @return  string
-     */
-    protected function handleOrderings(array $ordering)
+    protected function handleOrderings(array $ordering): string
     {
         if (empty($ordering)) {
             return '';

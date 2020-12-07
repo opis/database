@@ -22,60 +22,32 @@ use Closure;
 class BaseStatement extends WhereStatement
 {
 
-    /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
-     *
-     * @return  Delete|Select|BaseStatement
-     */
-    public function join($table, Closure $closure)
+    public function join(mixed $table, Closure $closure): static
     {
         $this->sql->addJoinClause('INNER', $table, $closure);
         return $this;
     }
 
-    /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
-     *
-     * @return  Delete|Select|BaseStatement
-     */
-    public function leftJoin($table, Closure $closure)
+    public function leftJoin(mixed $table, Closure $closure): static
     {
         $this->sql->addJoinClause('LEFT', $table, $closure);
         return $this;
     }
 
-    /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
-     *
-     * @return  Delete|Select|BaseStatement
-     */
-    public function rightJoin($table, Closure $closure)
+    public function rightJoin(mixed $table, Closure $closure): static
     {
         $this->sql->addJoinClause('RIGHT', $table, $closure);
         return $this;
     }
 
-    /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
-     *
-     * @return  Delete|Select|BaseStatement
-     */
-    public function fullJoin($table, Closure $closure)
+    public function fullJoin(mixed $table, Closure $closure): static
     {
         $this->sql->addJoinClause('FULL', $table, $closure);
         return $this;
     }
 
-    /**
-     * @param   string|string[] $table
-     *
-     * @return  Delete|Select|BaseStatement
-     */
-    public function crossJoin($table)
+
+    public function crossJoin(mixed $table): static
     {
         $this->sql->addJoinClause('CROSS', $table, null);
         return $this;

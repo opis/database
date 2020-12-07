@@ -19,12 +19,7 @@ namespace Opis\Database\SQL;
 
 class UpdateStatement extends BaseStatement
 {
-    /**
-     * UpdateStatement constructor.
-     * @param string|array $table
-     * @param SQLStatement|null $statement
-     */
-    public function __construct($table, SQLStatement $statement = null)
+    public function __construct(string|array $table, SQLStatement $statement = null)
     {
         if (!is_array($table)) {
             $table = [$table];
@@ -35,12 +30,9 @@ class UpdateStatement extends BaseStatement
         $this->sql->addTables($table);
     }
 
-    /**
-     * @param   array $columns
-     */
-    public function set(array $columns)
+    public function set(array $columns): mixed
     {
         $this->sql->addUpdateColumns($columns);
+        return null;
     }
-
 }

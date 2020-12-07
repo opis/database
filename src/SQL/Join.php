@@ -21,16 +21,29 @@ use Closure;
 
 class Join
 {
-    /** @var    array */
-    protected $conditions = [];
+    protected array $conditions = [];
 
-    /**
-     * @param Closure|Expression $expression
-     * @param string $separator
-     *
-     * @return $this
-     */
-    protected function addJoinExpression($expression, string $separator = 'AND')
+    public function getJoinConditions(): array
+    {
+        return $this->conditions;
+    }
+
+    public function on(mixed $column1, mixed $column2 = null, string $operator = '='): static
+    {
+        return $this->addJoinCondition($column1, $column2, $operator);
+    }
+
+    public function andOn(mixed $column1, mixed $column2 = null, string $operator = '='): static
+    {
+        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
+    }
+
+    public function orOn(mixed $column1, mixed $column2 = null, string $operator = '='): static
+    {
+        return $this->addJoinCondition($column1, $column2, $operator, 'OR');
+    }
+
+    protected function addJoinExpression(mixed $expression, string $separator = 'AND'): static
     {
         if ($expression instanceof Closure) {
             $expression = Expression::fromClosure($expression);
@@ -45,15 +58,7 @@ class Join
         return $this;
     }
 
-    /**
-     * @param   string $column1
-     * @param   string $column2
-     * @param   string $operator
-     * @param   string $separator
-     *
-     * @return $this
-     */
-    protected function addJoinCondition($column1, $column2, $operator, string $separator = 'AND')
+    protected function addJoinCondition(mixed $column1, mixed $column2, string $operator, string $separator = 'AND'): static
     {
         if ($column1 instanceof Closure) {
             if ($column2 === true) {
@@ -91,49 +96,5 @@ class Join
         ];
 
         return $this;
-    }
-
-    /**
-     * @return  array
-     */
-    public function getJoinConditions()
-    {
-        return $this->conditions;
-    }
-
-    /**
-     * @param   string|Closure $column1
-     * @param   string|Closure $column2 (optional)
-     * @param   string $operator (optional)
-     *
-     * @return  $this
-     */
-    public function on($column1, $column2 = null, $operator = '=')
-    {
-        return $this->addJoinCondition($column1, $column2, $operator);
-    }
-
-    /**
-     * @param   string $column1
-     * @param   string $column2 (optional)
-     * @param   string $operator (optional)
-     *
-     * @return  $this
-     */
-    public function andOn($column1, $column2 = null, $operator = '=')
-    {
-        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
-    }
-
-    /**
-     * @param   string $column1
-     * @param   string $column2 (optional)
-     * @param   string $operator (optional)
-     *
-     * @return  $this
-     */
-    public function orOn($column1, $column2 = null, $operator = '=')
-    {
-        return $this->addJoinCondition($column1, $column2, $operator, 'OR');
     }
 }
