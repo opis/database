@@ -17,8 +17,7 @@
 
 namespace Opis\Database\Test\Schema;
 
-use Opis\Database\Schema\AlterTable;
-use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\Blueprint;
 use Opis\Database\Test\Connection;
 use Opis\Database\Test\Schema;
 use PHPUnit\Framework\TestCase;
@@ -57,7 +56,7 @@ class BaseClass extends TestCase
 
     public function testCreateTable()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
 
         });
 
@@ -66,7 +65,7 @@ class BaseClass extends TestCase
 
     public function testAddSingleColumn()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a');
         });
 
@@ -75,7 +74,7 @@ class BaseClass extends TestCase
 
     public function testAddMultipleColumns()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a');
             $table->integer('b');
         });
@@ -85,7 +84,7 @@ class BaseClass extends TestCase
 
     public function testTypes()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a');
             $table->float('b');
             $table->double('c');
@@ -110,7 +109,7 @@ class BaseClass extends TestCase
 
     public function testIntSizes()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->size('tiny');
             $table->integer('b')->size('small');
             $table->integer('c')->size('normal');
@@ -123,7 +122,7 @@ class BaseClass extends TestCase
 
     public function testTextSizes()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->text('a')->size('tiny');
             $table->text('b')->size('small');
             $table->text('c')->size('normal');
@@ -136,7 +135,7 @@ class BaseClass extends TestCase
 
     public function testBinarySizes()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->binary('a')->size('tiny');
             $table->binary('b')->size('small');
             $table->binary('c')->size('normal');
@@ -149,7 +148,7 @@ class BaseClass extends TestCase
 
     public function testColumnProperties()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->unsigned();
             $table->float('b')->defaultValue(0.1);
             $table->string('c')->notNull();
@@ -160,7 +159,7 @@ class BaseClass extends TestCase
 
     public function testColumnConstraints()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->primary();
             $table->integer('b')->unique();
         });
@@ -170,7 +169,7 @@ class BaseClass extends TestCase
 
     public function testColumnNamedConstraints()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->primary('pk_a');
             $table->integer('b')->unique('uk_b');
         });
@@ -180,7 +179,7 @@ class BaseClass extends TestCase
 
     public function testAutoincrement()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->autoincrement();
         });
 
@@ -189,7 +188,7 @@ class BaseClass extends TestCase
 
     public function testNamedAutoincrement()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->autoincrement('x');
         });
 
@@ -198,7 +197,7 @@ class BaseClass extends TestCase
 
     public function testIndex()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a')->index();
             $table->integer('b')->index('x');
             $table->integer('c');
@@ -215,7 +214,7 @@ class BaseClass extends TestCase
 
     public function testForeignKey()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a');
             $table->foreign('a')
                 ->references('bar', 'a')
@@ -228,7 +227,7 @@ class BaseClass extends TestCase
 
     public function testForeignKeyMultiple()
     {
-        $this->schema->create('foo', function (CreateTable $table) {
+        $this->schema->create('foo', function (Blueprint $table) {
             $table->integer('a');
             $table->integer('b');
             $table->foreign(['a', 'b'])
@@ -242,7 +241,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddColumn()
     {
-        $this->schema->alter('foo', function(AlterTable $table){
+        $this->schema->alter('foo', function(Blueprint $table){
             $table->integer('a');
         });
 
@@ -251,7 +250,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddMultipleColumns()
     {
-        $this->schema->alter('foo', function(AlterTable $table){
+        $this->schema->alter('foo', function(Blueprint $table){
             $table->integer('a');
             $table->integer('b');
         });
@@ -261,7 +260,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableDropColumn()
     {
-        $this->schema->alter('foo', function(AlterTable $table){
+        $this->schema->alter('foo', function(Blueprint $table){
             $table->dropColumn('a');
         });
 
@@ -270,7 +269,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddDefaults()
     {
-        $this->schema->alter('foo', function(AlterTable $table){
+        $this->schema->alter('foo', function(Blueprint $table){
             $table->setDefaultValue('a', 100);
         });
 

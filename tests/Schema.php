@@ -17,9 +17,8 @@
 
 namespace Opis\Database\Test;
 
-use Opis\Database\Schema\CreateTable;
+use Opis\Database\Schema\Blueprint;
 use Opis\Database\Schema as BaseSchema;
-use Opis\Database\Schema\AlterTable;
 
 class Schema extends BaseSchema
 {
@@ -29,7 +28,7 @@ class Schema extends BaseSchema
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $schema = new CreateTable($table);
+        $schema = new Blueprint($table);
 
         $callback($schema);
 
@@ -42,7 +41,7 @@ class Schema extends BaseSchema
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $schema = new AlterTable($table);
+        $schema = new Blueprint($table, true);
 
         $callback($schema);
 

@@ -18,7 +18,7 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\{
-    AlterTable, Compiler, BaseColumn, CreateTable
+    Compiler, Column, Blueprint
 };
 
 class SQLite extends Compiler
@@ -63,22 +63,22 @@ class SQLite extends Compiler
         ];
     }
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         return 'INTEGER';
     }
 
-    protected function handleTypeTime(BaseColumn $column): string
+    protected function handleTypeTime(Column $column): string
     {
         return 'DATETIME';
     }
 
-    protected function handleTypeTimestamp(BaseColumn $column): string
+    protected function handleTypeTimestamp(Column $column): string
     {
         return 'DATETIME';
     }
 
-    protected function handleModifierAutoincrement(BaseColumn $column): string
+    protected function handleModifierAutoincrement(Column $column): string
     {
         $modifier = parent::handleModifierAutoincrement($column);
 
@@ -90,7 +90,7 @@ class SQLite extends Compiler
         return $modifier;
     }
 
-    protected function handlePrimaryKey(CreateTable $schema): string
+    protected function handlePrimaryKey(Blueprint $schema): string
     {
         if ($this->nopk) {
             return '';
@@ -99,18 +99,18 @@ class SQLite extends Compiler
         return parent::handlePrimaryKey($schema);
     }
 
-    protected function handleEngine(CreateTable $schema): string
+    protected function handleEngine(Blueprint $schema): string
     {
         return '';
     }
 
-    protected function handleAddUnique(AlterTable $table, $data): string
+    protected function handleAddUnique(Blueprint $table, $data): string
     {
         return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleAddIndex(AlterTable $table, $data): string
+    protected function handleAddIndex(Blueprint $table, $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';

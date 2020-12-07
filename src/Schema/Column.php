@@ -17,16 +17,23 @@
 
 namespace Opis\Database\Schema;
 
-class BaseColumn
+class Column
 {
+    protected Blueprint $blueprint;
     protected string $name;
     protected ?string $type;
     protected array $properties = [];
 
-    public function __construct(string $name, string $type = null)
+    public function __construct(Blueprint $blueprint, string $name, string $type = null)
     {
         $this->name = $name;
         $this->type = $type;
+        $this->blueprint = $blueprint;
+    }
+
+    public function getTable(): string
+    {
+        return $this->blueprint->getTableName();
     }
 
     public function getName(): string
@@ -87,9 +94,15 @@ class BaseColumn
         return $this->set('description', $comment);
     }
 
-    public function defaultValue($value): static
+    public function defaultValue(mixed $value): static
     {
-        return $this->set('default', $value);
+        if (!$this->blueprint->alterContext()) {
+            return $this->set('default', $value);
+        }
+
+        $this->blueprint->setDefaultValue($this->name, $value);
+
+        return $this;
     }
 
     public function unsigned(bool $value = true): static
@@ -97,8 +110,32 @@ class BaseColumn
         return $this->set('unsigned', $value);
     }
 
-    public function length($value): static
+    public function length(int $value): static
     {
         return $this->set('length', $value);
+    }
+
+    public function autoincrement(string $name = null): static
+    {
+        $this->blueprint->autoincrement($this, $name);
+        return $this;
+    }
+
+    public function primary(string $name = null): static
+    {
+        $this->blueprint->primary($this->name, $name);
+        return $this;
+    }
+
+    public function unique(string $name = null): static
+    {
+        $this->blueprint->unique($this->name, $name);
+        return $this;
+    }
+
+    public function index(string $name = null): static
+    {
+        $this->blueprint->index($this->name, $name);
+        return $this;
     }
 }

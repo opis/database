@@ -18,7 +18,7 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable
+    Compiler, Column, Blueprint
 };
 
 class Oracle extends Compiler
@@ -60,7 +60,7 @@ class Oracle extends Compiler
         ];
     }
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -76,12 +76,12 @@ class Oracle extends Compiler
         return 'NUMBER(10)';
     }
 
-    protected function handleTypeDouble(BaseColumn $column): string
+    protected function handleTypeDouble(Column $column): string
     {
         return 'FLOAT(24)';
     }
 
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(Column $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -93,12 +93,12 @@ class Oracle extends Compiler
         return 'NUMBER(10)';
     }
 
-    protected function handleTypeBoolean(BaseColumn $column): string
+    protected function handleTypeBoolean(Column $column): string
     {
         return 'NUMBER(1)';
     }
 
-    protected function handleTypeText(BaseColumn $column): string
+    protected function handleTypeText(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -112,22 +112,22 @@ class Oracle extends Compiler
         return 'CLOB';
     }
 
-    protected function handleTypeString(BaseColumn $column): string
+    protected function handleTypeString(Column $column): string
     {
         return 'VARCHAR2(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    protected function handleTypeTime(BaseColumn $column): string
+    protected function handleTypeTime(Column $column): string
     {
         return 'DATE';
     }
 
-    protected function handleTypeDateTime(BaseColumn $column): string
+    protected function handleTypeDateTime(Column $column): string
     {
         return 'DATE';
     }
 
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -141,23 +141,23 @@ class Oracle extends Compiler
         return 'BLOB';
     }
 
-    protected function handleModifyColumn(AlterTable $table, $data): string
+    protected function handleModifyColumn(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY ' . $this->handleColumns([$data]);
     }
 
-    protected function handleAddColumn(AlterTable $table, $data): string
+    protected function handleAddColumn(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD ' . $this->handleColumns([$data]);
     }
 
-    protected function handleSetDefaultValue(AlterTable $table, $data): string
+    protected function handleSetDefaultValue(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
             . $this->wrap($data) . ' DEFAULT ' . $this->value($data['value']);
     }
 
-    protected function handleDropDefaultValue(AlterTable $table, $data): string
+    protected function handleDropDefaultValue(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
             . $this->wrap($data) . ' DEFAULT NULL';

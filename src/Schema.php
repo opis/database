@@ -18,7 +18,7 @@
 namespace Opis\Database;
 
 use RuntimeException;
-use Opis\Database\Schema\{CreateTable, AlterTable};
+use Opis\Database\Schema\Blueprint;
 
 class Schema
 {
@@ -155,7 +155,7 @@ class Schema
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $schema = new CreateTable($table);
+        $schema = new Blueprint($table);
 
         $callback($schema);
 
@@ -177,7 +177,7 @@ class Schema
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $schema = new AlterTable($table);
+        $schema = new Blueprint($table, true);
 
         $callback($schema);
 

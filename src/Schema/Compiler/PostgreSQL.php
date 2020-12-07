@@ -18,7 +18,7 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable, CreateTable
+    Compiler, Column, Blueprint
 };
 
 class PostgreSQL extends Compiler
@@ -55,7 +55,7 @@ class PostgreSQL extends Compiler
         ];
     }
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         $autoincrement = $column->get('autoincrement', false);
 
@@ -72,17 +72,17 @@ class PostgreSQL extends Compiler
         return $autoincrement ? 'SERIAL' : 'INTEGER';
     }
 
-    protected function handleTypeFloat(BaseColumn $column): string
+    protected function handleTypeFloat(Column $column): string
     {
         return 'REAL';
     }
 
-    protected function handleTypeDouble(BaseColumn $column): string
+    protected function handleTypeDouble(Column $column): string
     {
         return 'DOUBLE PRECISION';
     }
 
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(Column $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -93,27 +93,27 @@ class PostgreSQL extends Compiler
         return 'DECIMAL';
     }
 
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(Column $column): string
     {
         return 'BYTEA';
     }
 
-    protected function handleTypeTime(BaseColumn $column): string
+    protected function handleTypeTime(Column $column): string
     {
         return 'TIME(0) WITHOUT TIME ZONE';
     }
 
-    protected function handleTypeTimestamp(BaseColumn $column): string
+    protected function handleTypeTimestamp(Column $column): string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
-    protected function handleTypeDateTime(BaseColumn $column): string
+    protected function handleTypeDateTime(Column $column): string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
-    protected function handleIndexKeys(CreateTable $schema): array
+    protected function handleIndexKeys(Blueprint $schema): array
     {
         $indexes = $schema->getIndexes();
 
@@ -132,25 +132,25 @@ class PostgreSQL extends Compiler
         return $sql;
     }
 
-    protected function handleRenameColumn(AlterTable $table, $data): string
+    protected function handleRenameColumn(Blueprint $table, $data): string
     {
-        /** @var BaseColumn $column */
+        /** @var Column $column */
         $column = $data['column'];
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
             . $this->wrap($data['from']) . ' TO ' . $this->wrap($column->getName());
     }
 
-    protected function handleAddIndex(AlterTable $table, $data): string
+    protected function handleAddIndex(Blueprint $table, $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleDropIndex(AlterTable $table, $data): string
+    protected function handleDropIndex(Blueprint $table, $data): string
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
     }
 
-    protected function handleEngine(CreateTable $schema): string
+    protected function handleEngine(Blueprint $schema): string
     {
         return '';
     }

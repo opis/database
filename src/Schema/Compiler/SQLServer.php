@@ -18,7 +18,7 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable, CreateTable
+    Compiler, Column, Blueprint
 };
 
 class SQLServer extends Compiler
@@ -57,7 +57,7 @@ class SQLServer extends Compiler
         ];
     }
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -73,7 +73,7 @@ class SQLServer extends Compiler
         return 'INTEGER';
     }
 
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(Column $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -84,45 +84,45 @@ class SQLServer extends Compiler
         return 'DECIMAL';
     }
 
-    protected function handleTypeBoolean(BaseColumn $column): string
+    protected function handleTypeBoolean(Column $column): string
     {
         return 'BIT';
     }
 
-    protected function handleTypeString(BaseColumn $column): string
+    protected function handleTypeString(Column $column): string
     {
         return 'NVARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    protected function handleTypeFixed(BaseColumn $column): string
+    protected function handleTypeFixed(Column $column): string
     {
         return 'NCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    protected function handleTypeText(BaseColumn $column): string
+    protected function handleTypeText(Column $column): string
     {
         return 'NVARCHAR(max)';
     }
 
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(Column $column): string
     {
         return 'VARBINARY(max)';
     }
 
-    protected function handleTypeTimestamp(BaseColumn $column): string
+    protected function handleTypeTimestamp(Column $column): string
     {
         return 'DATETIME';
     }
 
-    protected function handleRenameColumn(AlterTable $table, $data): string
+    protected function handleRenameColumn(Blueprint $table, $data): string
     {
-        /** @var BaseColumn $column */
+        /** @var Column $column */
         $column = $data['column'];
         return 'sp_rename ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data['from']) . ', '
             . $this->wrap($column->getName()) . ', COLUMN';
     }
 
-    protected function handleEngine(CreateTable $schema): string
+    protected function handleEngine(Blueprint $schema): string
     {
         return '';
     }

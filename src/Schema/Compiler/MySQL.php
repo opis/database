@@ -18,14 +18,14 @@
 namespace Opis\Database\Schema\Compiler;
 
 use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable
+    Compiler, Column, Blueprint
 };
 
 class MySQL extends Compiler
 {
     protected string $wrapper = '`%s`';
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -41,7 +41,7 @@ class MySQL extends Compiler
         return 'INT';
     }
 
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(Column $column): string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -52,12 +52,12 @@ class MySQL extends Compiler
         return 'DECIMAL';
     }
 
-    protected function handleTypeBoolean(BaseColumn $column): string
+    protected function handleTypeBoolean(Column $column): string
     {
         return 'TINYINT(1)';
     }
 
-    protected function handleTypeText(BaseColumn $column): string
+    protected function handleTypeText(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -72,7 +72,7 @@ class MySQL extends Compiler
         return 'TEXT';
     }
 
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(Column $column): string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
@@ -87,42 +87,42 @@ class MySQL extends Compiler
         return 'BLOB';
     }
 
-    protected function handleDropPrimaryKey(AlterTable $table, $data): string
+    protected function handleDropPrimaryKey(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
     }
 
-    protected function handleDropUniqueKey(AlterTable $table, $data): string
+    protected function handleDropUniqueKey(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    protected function handleDropIndex(AlterTable $table, $data): string
+    protected function handleDropIndex(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    protected function handleDropForeignKey(AlterTable $table, $data): string
+    protected function handleDropForeignKey(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
     }
 
-    protected function handleSetDefaultValue(AlterTable $table, $data): string
+    protected function handleSetDefaultValue(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
-    protected function handleDropDefaultValue(AlterTable $table, $data): string
+    protected function handleDropDefaultValue(Blueprint $table, $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 
-    protected function handleRenameColumn(AlterTable $table, $data): string
+    protected function handleRenameColumn(Blueprint $table, $data): string
     {
         $table_name = $table->getTableName();
         $column_name = $data['from'];
-        /** @var BaseColumn $column */
+        /** @var Column $column */
         $column = $data['column'];
         $new_name = $column->getName();
         $columns = $this->connection->getSchema()->getColumns($table_name, false, false);

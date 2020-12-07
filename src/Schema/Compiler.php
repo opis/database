@@ -89,7 +89,7 @@ class Compiler
         ];
     }
 
-    public function create(CreateTable $schema): array
+    public function create(Blueprint $schema): array
     {
         $sql = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
         $sql .= "(\n";
@@ -116,7 +116,7 @@ class Compiler
         return $commands;
     }
 
-    public function alter(AlterTable $schema): array
+    public function alter(Blueprint $schema): array
     {
         $commands = [];
 
@@ -191,7 +191,7 @@ class Compiler
     }
 
     /**
-     * @param BaseColumn[] $columns
+     * @param Column[] $columns
      * @return string
      */
     protected function handleColumns(array $columns): string
@@ -208,7 +208,7 @@ class Compiler
         return implode(",\n", $sql);
     }
 
-    protected function handleColumnType(BaseColumn $column): string
+    protected function handleColumnType(Column $column): string
     {
         $type = 'handleType' . ucfirst($column->getType());
         $result = trim($this->{$type}($column));
@@ -220,7 +220,7 @@ class Compiler
         return $result;
     }
 
-    protected function handleColumnModifiers(BaseColumn $column): string
+    protected function handleColumnModifiers(Column $column): string
     {
         $line = '';
 
@@ -238,77 +238,77 @@ class Compiler
         return $line;
     }
 
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(Column $column): string
     {
         return 'INT';
     }
 
-    protected function handleTypeFloat(BaseColumn $column): string
+    protected function handleTypeFloat(Column $column): string
     {
         return 'FLOAT';
     }
 
-    protected function handleTypeDouble(BaseColumn $column): string
+    protected function handleTypeDouble(Column $column): string
     {
         return 'DOUBLE';
     }
 
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(Column $column): string
     {
         return 'DECIMAL';
     }
 
-    protected function handleTypeBoolean(BaseColumn $column): string
+    protected function handleTypeBoolean(Column $column): string
     {
         return 'BOOLEAN';
     }
 
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(Column $column): string
     {
         return 'BLOB';
     }
 
-    protected function handleTypeText(BaseColumn $column): string
+    protected function handleTypeText(Column $column): string
     {
         return 'TEXT';
     }
 
-    protected function handleTypeString(BaseColumn $column): string
+    protected function handleTypeString(Column $column): string
     {
         return 'VARCHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    protected function handleTypeFixed(BaseColumn $column): string
+    protected function handleTypeFixed(Column $column): string
     {
         return 'CHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
-    protected function handleTypeTime(BaseColumn $column): string
+    protected function handleTypeTime(Column $column): string
     {
         return 'TIME';
     }
 
-    protected function handleTypeTimestamp(BaseColumn $column): string
+    protected function handleTypeTimestamp(Column $column): string
     {
         return 'TIMESTAMP';
     }
 
-    protected function handleTypeDate(BaseColumn $column): string
+    protected function handleTypeDate(Column $column): string
     {
         return 'DATE';
     }
 
-    protected function handleTypeDateTime(BaseColumn $column): string
+    protected function handleTypeDateTime(Column $column): string
     {
         return 'DATETIME';
     }
 
-    protected function handleModifierUnsigned(BaseColumn $column): string
+    protected function handleModifierUnsigned(Column $column): string
     {
         return $column->get('unsigned', false) ? 'UNSIGNED' : '';
     }
 
-    protected function handleModifierNullable(BaseColumn $column): string
+    protected function handleModifierNullable(Column $column): string
     {
         if ($column->get('nullable', true)) {
             return '';
@@ -317,12 +317,12 @@ class Compiler
         return 'NOT NULL';
     }
 
-    protected function handleModifierDefault(BaseColumn $column): string
+    protected function handleModifierDefault(Column $column): string
     {
         return null === $column->get('default') ? '' : 'DEFAULT ' . $this->value($column->get('default'));
     }
 
-    protected function handleModifierAutoincrement(BaseColumn $column): string
+    protected function handleModifierAutoincrement(Column $column): string
     {
         if ($column->getType() !== 'integer' || !in_array($column->get('size', 'normal'), $this->serials)) {
             return '';
@@ -331,7 +331,7 @@ class Compiler
         return $column->get('autoincrement', false) ? $this->autoincrement : '';
     }
 
-    protected function handlePrimaryKey(CreateTable $schema): string
+    protected function handlePrimaryKey(Blueprint $schema): string
     {
         if (null === $pk = $schema->getPrimaryKey()) {
             return '';
@@ -340,7 +340,7 @@ class Compiler
         return ",\n" . 'CONSTRAINT ' . $this->wrap($pk['name']) . ' PRIMARY KEY (' . $this->wrapArray($pk['columns']) . ')';
     }
 
-    protected function handleUniqueKeys(CreateTable $schema): string
+    protected function handleUniqueKeys(Blueprint $schema): string
     {
         $indexes = $schema->getUniqueKeys();
 
@@ -357,7 +357,7 @@ class Compiler
         return ",\n" . implode(",\n", $sql);
     }
 
-    protected function handleIndexKeys(CreateTable $schema): array
+    protected function handleIndexKeys(Blueprint $schema): array
     {
         $indexes = $schema->getIndexes();
 
@@ -375,7 +375,7 @@ class Compiler
         return $sql;
     }
 
-    protected function handleForeignKeys(CreateTable $schema): string
+    protected function handleForeignKeys(Blueprint $schema): string
     {
         /** @var ForeignKey[] $keys */
         $keys = $schema->getForeignKeys();
@@ -400,7 +400,7 @@ class Compiler
         return ",\n" . implode(",\n", $sql);
     }
 
-    protected function handleEngine(CreateTable $schema): string
+    protected function handleEngine(Blueprint $schema): string
     {
         if (null !== $engine = $schema->getEngine()) {
             return ' ENGINE = ' . strtoupper($engine);
@@ -409,64 +409,64 @@ class Compiler
         return '';
     }
 
-    protected function handleDropPrimaryKey(AlterTable $table, mixed $data): string
+    protected function handleDropPrimaryKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
 
-    protected function handleDropUniqueKey(AlterTable $table, mixed $data): string
+    protected function handleDropUniqueKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
 
-    protected function handleDropIndex(AlterTable $table, mixed $data): string
+    protected function handleDropIndex(Blueprint $table, mixed $data): string
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName()) . '.' . $this->wrap($data);
     }
 
-    protected function handleDropForeignKey(AlterTable $table, mixed $data): string
+    protected function handleDropForeignKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP CONSTRAINT ' . $this->wrap($data);
     }
 
-    protected function handleDropColumn(AlterTable $table, mixed $data): string
+    protected function handleDropColumn(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP COLUMN ' . $this->wrap($data);
     }
 
-    protected function handleRenameColumn(AlterTable $table, mixed $data): string
+    protected function handleRenameColumn(Blueprint $table, mixed $data): string
     {
         return '';
     }
 
-    protected function handleModifyColumn(AlterTable $table, mixed $data): string
+    protected function handleModifyColumn(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY COLUMN ' . $this->handleColumns([$data]);
     }
 
-    protected function handleAddColumn(AlterTable $table, mixed $data): string
+    protected function handleAddColumn(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD COLUMN ' . $this->handleColumns([$data]);
     }
 
-    protected function handleAddPrimary(AlterTable $table, mixed $data): string
+    protected function handleAddPrimary(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
             . $this->wrap($data['name']) . ' PRIMARY KEY (' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleAddUnique(AlterTable $table, mixed $data): string
+    protected function handleAddUnique(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD CONSTRAINT '
             . $this->wrap($data['name']) . ' UNIQUE (' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleAddIndex(AlterTable $table, mixed $data): string
+    protected function handleAddIndex(Blueprint $table, mixed $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleAddForeign(AlterTable $table, mixed $data): string
+    protected function handleAddForeign(Blueprint $table, mixed $data): string
     {
         /** @var ForeignKey $key */
         $key = $data['foreign'];
@@ -475,13 +475,13 @@ class Compiler
             . 'REFERENCES ' . $this->wrap($key->getReferencedTable()) . '(' . $this->wrapArray($key->getReferencedColumns()) . ')';
     }
 
-    protected function handleSetDefaultValue(AlterTable $table, mixed $data): string
+    protected function handleSetDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
-    protected function handleDropDefaultValue(AlterTable $table, mixed $data): string
+    protected function handleDropDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER COLUMN '
             . $this->wrap($data) . ' DROP DEFAULT';
