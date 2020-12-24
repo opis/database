@@ -483,6 +483,8 @@ class Connection
                 return 'NULL';
             } elseif (is_bool($param)) {
                 return $param ? 'TRUE' : 'FALSE';
+            } elseif (is_resource($param)) {
+                return $compiler->quote('RESOURCE#' . get_resource_id($param));
             } else {
                 return $compiler->quote($param);
             }
@@ -553,10 +555,12 @@ class Connection
 
             if (is_null($value)) {
                 $param = PDO::PARAM_NULL;
-            } elseif (is_integer($value)) {
+            } elseif (is_int($value)) {
                 $param = PDO::PARAM_INT;
             } elseif (is_bool($value)) {
                 $param = PDO::PARAM_BOOL;
+            } elseif (is_resource($value)) {
+                $param = PDO::PARAM_LOB;
             }
 
             $statement->bindValue($key + 1, $value, $param);
