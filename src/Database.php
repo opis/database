@@ -112,4 +112,13 @@ class Database
     {
         return $this->connection->transaction($query, $this, $default);
     }
+
+    /**
+     * @param string|null $name
+     * @return string
+     */
+    public function lastInsertId(?string $name = null): string
+    {
+        return $this->connection->getPDO()->lastInsertId($name);
+    }
 }
