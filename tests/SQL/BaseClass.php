@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Closure;
 use Opis\Database\Database;
 use Opis\Database\Test\Connection;
 use PHPUnit\Framework\TestCase;
 
-class BaseClass extends TestCase
+abstract class BaseClass extends TestCase
 {
-    protected static $database;
+    protected static Database $database;
 
-    /** @var  Database */
-    protected $db;
+    protected Database $db;
 
     public static function setUpBeforeClass(): void
     {
@@ -44,4 +44,15 @@ class BaseClass extends TestCase
         $connection = $this->db->getConnection();
         return $connection->getResult();
     }
+
+    /**
+     * @dataProvider sqlDataProvider
+     */
+    public function testSQL(string $message, string $expected, Closure $sql): void
+    {
+        $sql($this->db);
+        $this->assertEquals($expected, $this->getSQL(), $message);
+    }
+
+    abstract public function sqlDataProvider(): iterable;
 }

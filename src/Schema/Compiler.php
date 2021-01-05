@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,7 +173,7 @@ class Compiler
         return implode($separator, array_map([$this, 'wrap'], $value));
     }
 
-    protected function value(mixed $value): mixed
+    protected function value(mixed $value): int|float|string
     {
         if (is_numeric($value)) {
             return $value;

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,7 +142,7 @@ class SQLStatement
         ];
     }
 
-    public function addJoinClause(string $type, mixed $table, Closure $closure = null): void
+    public function addJoinClause(string $type, mixed $table, ?Closure $closure = null): void
     {
         $join = null;
         if ($closure) {
@@ -225,17 +225,11 @@ class SQLStatement
         ];
     }
 
-    /**
-     * @param array $tables
-     */
     public function addTables(array $tables): void
     {
         $this->tables = $tables;
     }
 
-    /**
-     * @param array $columns
-     */
     public function addUpdateColumns(array $columns): void
     {
         foreach ($columns as $column => $value) {
@@ -246,7 +240,7 @@ class SQLStatement
         }
     }
 
-    public function addOrder(array $columns, string $order, string $nulls = null): void
+    public function addOrder(array $columns, string $order, ?string $nulls = null): void
     {
         foreach ($columns as &$column) {
             $column = $this->closureToExpression($column);
@@ -282,7 +276,7 @@ class SQLStatement
         $this->group = $columns;
     }
 
-    public function addColumn(mixed $column, string $alias = null): void
+    public function addColumn(mixed $column, ?string $alias = null): void
     {
         $this->columns[] = [
             'name' => $this->closureToExpression($column),
@@ -311,12 +305,12 @@ class SQLStatement
         $this->intoDatabase = $database;
     }
 
-    public function setFrom(array $from)
+    public function setFrom(array $from): void
     {
         $this->from = $from;
     }
 
-    public function addValue(mixed $value)
+    public function addValue(mixed $value): void
     {
         $this->values[] = $this->closureToExpression($value);
     }

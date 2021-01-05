@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class Update extends UpdateStatement
 {
     protected Connection $connection;
 
-    public function __construct(Connection $connection, string|array $table, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $table, ?SQLStatement $statement = null)
     {
         parent::__construct($table, $statement);
         $this->connection = $connection;
@@ -56,13 +56,9 @@ class Update extends UpdateStatement
 
         foreach ($columns as $k => $v) {
             if (is_numeric($k)) {
-                $values[$v] = function (Expression $expr) use ($sign, $v, $value) {
-                    $expr->column($v)->{$sign}->value($value);
-                };
+                $values[$v] = static fn (Expression $expr) => $expr->column($v)->{$sign}->value($value);
             } else {
-                $values[$k] = function (Expression $expr) use ($sign, $k, $v) {
-                    $expr->column($k)->{$sign}->value($v);
-                };
+                $values[$k] = static fn (Expression $expr) => $expr->column($k)->{$sign}->value($v);
             }
         }
 

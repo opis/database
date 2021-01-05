@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +107,11 @@ class Where
         return $this->addNullCondition(false);
     }
 
+    public function isNotNull(): WhereStatement|Select|Update|Delete
+    {
+        return $this->addNullCondition(true);
+    }
+
     public function notNull(): WhereStatement|Select|Update|Delete
     {
         return $this->addNullCondition(true);
@@ -160,9 +165,7 @@ class Where
     protected function addCondition(mixed $value, string $operator, bool $isColumn = false): WhereStatement|Select|Update|Delete
     {
         if ($isColumn && is_string($value)) {
-            $value = function (Expression $expr) use ($value) {
-                $expr->column($value);
-            };
+            $value = static fn (Expression $expr) => $expr->column($value);
         }
         $this->sql->addWhereCondition($this->column, $value, $operator, $this->separator);
         return $this->statement;

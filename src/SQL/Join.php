@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class Join
 
     public function andOn(mixed $column1, mixed $column2 = null, string $operator = '='): static
     {
-        return $this->addJoinCondition($column1, $column2, $operator, 'AND');
+        return $this->addJoinCondition($column1, $column2, $operator);
     }
 
     public function orOn(mixed $column1, mixed $column2 = null, string $operator = '='): static

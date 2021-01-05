@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,13 @@
 
 namespace Opis\Database\SQL;
 
-use Closure;
-use Opis\Database\Connection;
-use Opis\Database\ResultSet;
+use Opis\Database\{Connection, ResultSet};
 
 class Select extends SelectStatement
 {
     protected Connection $connection;
 
-    public function __construct(Connection $connection, string|array $tables, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $tables, ?SQLStatement $statement = null)
     {
         parent::__construct($tables, $statement);
         $this->connection = $connection;

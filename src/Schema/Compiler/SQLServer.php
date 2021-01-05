@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,18 +59,13 @@ class SQLServer extends Compiler
 
     protected function handleTypeInteger(Column $column): string
     {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-                return 'TINYINT';
-            case 'small':
-                return 'SMALLINT';
-            case 'medium':
-                return 'INTEGER';
-            case 'big':
-                return 'BIGINT';
-        }
-
-        return 'INTEGER';
+        return match($column->get('size', 'normal')) {
+            'tiny' => 'TINYINT',
+            'small' => 'SMALLINT',
+            // 'medium' => 'INTEGER',
+            'big' => 'BIGINT',
+            default => 'INTEGER',
+        };
     }
 
     protected function handleTypeDecimal(Column $column): string

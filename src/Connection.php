@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ class Connection
      * @param PDO $pdo
      * @return Connection
      */
-    public static function fromPDO(PDO $pdo): self
+    public static function fromPDO(PDO $pdo): static
     {
         return new static(null, null, null, null, $pdo);
     }
@@ -276,34 +276,15 @@ class Connection
     public function getCompiler(): SQL\Compiler
     {
         if ($this->compiler === null) {
-            switch ($this->getDriver()) {
-                case 'mysql':
-                    $this->compiler = new SQL\Compiler\MySQL();
-                    break;
-                case 'dblib':
-                case 'mssql':
-                case 'sqlsrv':
-                case 'sybase':
-                    $this->compiler = new SQL\Compiler\SQLServer();
-                    break;
-                case 'oci':
-                case 'oracle':
-                    $this->compiler = new SQL\Compiler\Oracle();
-                    break;
-                case 'firebird':
-                    $this->compiler = new SQL\Compiler\Firebird();
-                    break;
-                case 'db2':
-                case 'ibm':
-                case 'odbc':
-                    $this->compiler = new SQL\Compiler\DB2();
-                    break;
-                case 'nuodb':
-                    $this->compiler = new SQL\Compiler\NuoDB();
-                    break;
-                default:
-                    $this->compiler = new SQL\Compiler();
-            }
+            $this->compiler = match ($this->getDriver()) {
+                'mysql' => new SQL\Compiler\MySQL(),
+                'dblib', 'mssql', 'sqlsrv', 'sybase' => new SQL\Compiler\SQLServer(),
+                'oci', 'oracle' => new SQL\Compiler\Oracle(),
+                'firebird' => new SQL\Compiler\Firebird(),
+                'db2', 'ibm', 'odbc' => new SQL\Compiler\DB2(),
+                'nuodb' => new SQL\Compiler\NuoDB(),
+                default => new SQL\Compiler(),
+            };
 
             $this->compiler->setOptions($this->compilerOptions);
         }
@@ -319,29 +300,14 @@ class Connection
     public function schemaCompiler(): Schema\Compiler
     {
         if ($this->schemaCompiler === null) {
-            switch ($this->getDriver()) {
-                case 'mysql':
-                    $this->schemaCompiler = new Schema\Compiler\MySQL($this);
-                    break;
-                case 'pgsql':
-                    $this->schemaCompiler = new Schema\Compiler\PostgreSQL($this);
-                    break;
-                case 'dblib':
-                case 'mssql':
-                case 'sqlsrv':
-                case 'sybase':
-                    $this->schemaCompiler = new Schema\Compiler\SQLServer($this);
-                    break;
-                case 'sqlite':
-                    $this->schemaCompiler = new Schema\Compiler\SQLite($this);
-                    break;
-                case 'oci':
-                case 'oracle':
-                    $this->schemaCompiler = new Schema\Compiler\Oracle($this);
-                    break;
-                default:
-                    throw new RuntimeException('Schema not supported yet');
-            }
+            $this->schemaCompiler = match ($driver = $this->getDriver()) {
+                'mysql' => new Schema\Compiler\MySQL($this),
+                'pgsql' => new Schema\Compiler\PostgreSQL($this),
+                'dblib', 'mssql', 'sqlsrv', 'sybase' => new Schema\Compiler\SQLServer($this),
+                'sqlite' => new Schema\Compiler\SQLite($this),
+                'oci', 'oracle' => new Schema\Compiler\Oracle($this),
+                default => throw new RuntimeException("Schema {$driver} is not supported"),
+            };
 
             $this->schemaCompiler->setOptions($this->schemaCompilerOptions);
         }
@@ -372,7 +338,7 @@ class Connection
      *
      * @param string $sql
      * @param array $params
-     * @return ResultSet|string
+     * @return ResultSet
      */
     public function query(string $sql, array $params = []): ResultSet
     {
@@ -473,7 +439,7 @@ class Connection
     {
         $compiler = $this->getCompiler();
 
-        return preg_replace_callback('/\?/', function () use (&$params, $compiler) {
+        return preg_replace_callback('/\?/', static function () use (&$params, $compiler) {
             $param = array_shift($params);
             $param = is_object($param) ? get_class($param) : $param;
 

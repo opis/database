@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,66 +17,55 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\Database;
 use Opis\Database\SQL\Expression;
 
 class SelectAggregateTest extends BaseClass
 {
-    public function testCountNoColumns()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'SELECT COUNT(*) FROM "users"';
-        $this->db->from('users')->count();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'count *',
+                'SELECT COUNT(*) FROM "users"',
+                fn(Database $db) => $db->from('users')->count(),
+            ],
+            [
+                'count column',
+                'SELECT COUNT("description") FROM "users"',
+                fn(Database $db) => $db->from('users')->count('description'),
+            ],
+            [
+                'count distinct column',
+                'SELECT COUNT(DISTINCT "description") FROM "users"',
+                fn(Database $db) => $db->from('users')->count('description', true),
+            ],
+            [
+                'max value',
+                'SELECT MAX("age") FROM "users"',
+                fn(Database $db) => $db->from('users')->max('age'),
+            ],
+            [
+                'min value',
+                'SELECT MIN("age") FROM "users"',
+                fn(Database $db) => $db->from('users')->min('age'),
+            ],
+            [
+                'avg value',
+                'SELECT AVG("age") FROM "users"',
+                fn(Database $db) => $db->from('users')->avg('age'),
+            ],
+            [
+                'sum value',
+                'SELECT SUM("age") FROM "users"',
+                fn(Database $db) => $db->from('users')->sum('age'),
+            ],
+            [
+                'expression aggregate',
+                'SELECT SUM("friends" - "enemies") FROM "users"',
+                fn(Database $db) => $db->from('users')
+                    ->sum(fn (Expression $expr) => $expr->column('friends')->{'-'}->column("enemies")),
+            ],
+        ];
     }
-
-    public function testCountOneColumn()
-    {
-        $expected = 'SELECT COUNT("description") FROM "users"';
-        $this->db->from('users')->count('description');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testCountOneColumnDistinct()
-    {
-        $expected = 'SELECT COUNT(DISTINCT "description") FROM "users"';
-        $this->db->from('users')->count('description', true);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testLargestValue()
-    {
-        $expected = 'SELECT MAX("age") FROM "users"';
-        $this->db->from('users')->max('age');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSmallestValue()
-    {
-        $expected = 'SELECT MIN("age") FROM "users"';
-        $this->db->from('users')->min('age');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testAverageValue()
-    {
-        $expected = 'SELECT AVG("age") FROM "users"';
-        $this->db->from('users')->avg('age');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testTotalSum()
-    {
-        $expected = 'SELECT SUM("age") FROM "users"';
-        $this->db->from('users')->sum('age');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testExpressionAggregate()
-    {
-        $expected = 'SELECT SUM("friends" - "enemies") FROM "users"';
-        $this->db->from('users')->sum(function (Expression $expr) {
-            $expr->column('friends')->{'-'}->column("enemies");
-        });
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
 }

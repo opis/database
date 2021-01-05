@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -351,11 +351,13 @@ class Compiler
         return ' VALUES (' . $this->params($values) . ')';
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function handleLimit(?int $limit, ?int $offset): string
     {
         return ($limit === null) ? '' : ' LIMIT ' . $this->param($limit);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function handleOffset(?int $offset, ?int $limit): string
     {
         return ($offset === null) ? '' : ' OFFSET ' . $this->param($offset);
@@ -506,6 +508,7 @@ class Compiler
         return 'ROUND(' . $this->wrap($func['column']) . ', ' . $this->param($func['decimals']) . ')';
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function sqlFunctionNOW(array $func): string
     {
         return 'NOW()';

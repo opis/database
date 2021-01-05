@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,12 +96,7 @@ class Blueprint
         return $this;
     }
 
-    /**
-     * @param string|string[] $columns
-     * @param string|null $name
-     * @return $this
-     */
-    public function primary(string|array $columns, string $name = null): static
+    public function primary(string|array $columns, ?string $name = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -126,12 +121,7 @@ class Blueprint
         return $this;
     }
 
-    /**
-     * @param string|string[] $columns
-     * @param string|null $name
-     * @return $this
-     */
-    public function unique(string|array $columns, string $name = null): static
+    public function unique(string|array $columns, ?string $name = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -153,12 +143,7 @@ class Blueprint
         return $this;
     }
 
-    /**
-     * @param string|string[] $columns
-     * @param string|null $name
-     * @return $this
-     */
-    public function index(string|array $columns, string $name = null): static
+    public function index(string|array $columns, ?string $name = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -181,12 +166,7 @@ class Blueprint
         return $this;
     }
 
-    /**
-     * @param string|string[] $columns
-     * @param string|null $name
-     * @return ForeignKey
-     */
-    public function foreign(string|array $columns, string $name = null): ForeignKey
+    public function foreign(string|array $columns, ?string $name = null): ForeignKey
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -210,7 +190,7 @@ class Blueprint
         return $foreign;
     }
 
-    public function autoincrement(Column $column, string $name = null): static
+    public function autoincrement(Column $column, ?string $name = null): static
     {
         if ($column->getType() !== 'integer') {
             return $this;
@@ -319,7 +299,7 @@ class Blueprint
         return $this->addColumn($name, 'double');
     }
 
-    public function decimal(string $name, int $length = null, int $precision = null): Column
+    public function decimal(string $name, ?int $length = null, ?int $precision = null): Column
     {
         return $this->addColumn($name, 'decimal')
             ->set('length', $length)
@@ -399,7 +379,7 @@ class Blueprint
         return $this->modifyColumn($name, 'double');
     }
 
-    public function toDecimal(string $name, int $length = null, int $precision = null): Column
+    public function toDecimal(string $name, ?int $length = null, ?int $precision = null): Column
     {
         return $this->modifyColumn($name, 'decimal')
             ->set('length', $length)

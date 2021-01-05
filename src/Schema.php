@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,7 +132,7 @@ class Schema
 
             $columns = [];
 
-            foreach ($results as $ord => &$col) {
+            foreach ($results as $ord => $col) {
                 $columns[$col['name']] = [
                     'name' => $col['name'],
                     'type' => $col['type'],

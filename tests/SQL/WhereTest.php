@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,313 +17,278 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\SQL\Expression;
+use Opis\Database\Database;
+use Opis\Database\SQL\{Expression, SubQuery, WhereStatement};
 
 class WhereTest extends BaseClass
 {
-    public function testWhereIs()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'SELECT * FROM "users" WHERE "age" = 21';
-        $this->db->from('users')->where('age')->is(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'where is',
+                'SELECT * FROM "users" WHERE "age" = 21',
+                fn(Database $db) => $db->from('users')->where('age')->is(21)->select(),
+            ],
+            [
+                'where is not',
+                'SELECT * FROM "users" WHERE "age" != 21',
+                fn(Database $db) => $db->from('users')->where('age')->isNot(21)->select(),
+            ],
+            [
+                'where is lessThan',
+                'SELECT * FROM "users" WHERE "age" < 21',
+                fn(Database $db) => $db->from('users')->where('age')->lessThan(21)->select(),
+            ],
+            [
+                'where is lt',
+                'SELECT * FROM "users" WHERE "age" < 21',
+                fn(Database $db) => $db->from('users')->where('age')->lt(21)->select(),
+            ],
+            [
+                'where is greaterThan',
+                'SELECT * FROM "users" WHERE "age" > 21',
+                fn(Database $db) => $db->from('users')->where('age')->greaterThan(21)->select(),
+            ],
+            [
+                'where is gt',
+                'SELECT * FROM "users" WHERE "age" > 21',
+                fn(Database $db) => $db->from('users')->where('age')->gt(21)->select(),
+            ],
+            [
+                'where is atMost',
+                'SELECT * FROM "users" WHERE "age" <= 21',
+                fn(Database $db) => $db->from('users')->where('age')->atMost(21)->select(),
+            ],
+            [
+                'where is lte',
+                'SELECT * FROM "users" WHERE "age" <= 21',
+                fn(Database $db) => $db->from('users')->where('age')->lte(21)->select(),
+            ],
+            [
+                'where is atLeast',
+                'SELECT * FROM "users" WHERE "age" >= 21',
+                fn(Database $db) => $db->from('users')->where('age')->atLeast(21)->select(),
+            ],
+            [
+                'where is gte',
+                'SELECT * FROM "users" WHERE "age" >= 21',
+                fn(Database $db) => $db->from('users')->where('age')->gte(21)->select(),
+            ],
+            [
+                'where between',
+                'SELECT * FROM "users" WHERE "age" BETWEEN 18 AND 21',
+                fn(Database $db) => $db->from('users')->where('age')->between(18, 21)->select(),
+            ],
+            [
+                'where not between',
+                'SELECT * FROM "users" WHERE "age" NOT BETWEEN 18 AND 21',
+                fn(Database $db) => $db->from('users')->where('age')->notBetween(18, 21)->select(),
+            ],
+            [
+                'where in array',
+                'SELECT * FROM "users" WHERE "age" IN (18, 21, 31)',
+                fn(Database $db) => $db->from('users')->where('age')->in([18, 21, 31])->select(),
+            ],
+            [
+                'where not in array',
+                'SELECT * FROM "users" WHERE "age" NOT IN (18, 21, 31)',
+                fn(Database $db) => $db->from('users')->where('age')->notIn([18, 21, 31])->select(),
+            ],
+            [
+                'where in query',
+                'SELECT * FROM "users" WHERE "age" IN (SELECT "name" FROM "customers")',
+                fn(Database $db) => $db->from('users')->where('age')->in(function (SubQuery $query) {
+                    $query->from('customers')->select('name');
+                })->select(),
+            ],
+            [
+                'where not in query',
+                'SELECT * FROM "users" WHERE "age" NOT IN (SELECT "name" FROM "customers")',
+                fn(Database $db) => $db->from('users')->where('age')->notIn(function (SubQuery $query) {
+                    $query->from('customers')->select('name');
+                })->select(),
+            ],
+            [
+                'where like',
+                'SELECT * FROM "users" WHERE "name" LIKE \'%foo%\'',
+                fn(Database $db) => $db->from('users')->where('name')->like('%foo%')->select(),
+            ],
+            [
+                'where not like',
+                'SELECT * FROM "users" WHERE "name" NOT LIKE \'%foo%\'',
+                fn(Database $db) => $db->from('users')->where('name')->notLike('%foo%')->select(),
+            ],
+            [
+                'where is null',
+                'SELECT * FROM "users" WHERE "name" IS NULL',
+                fn(Database $db) => $db->from('users')->where('name')->isNull()->select(),
+            ],
+            [
+                'where is not null',
+                'SELECT * FROM "users" WHERE "name" IS NOT NULL',
+                fn(Database $db) => $db->from('users')->where('name')->notNull()->select(),
+            ],
+            [
+                'where and condition',
+                'SELECT * FROM "users" WHERE "age" = 18 AND "city" = \'London\'',
+                fn(Database $db) => $db->from('users')
+                    ->where('age')->is(18)
+                    ->andWhere('city')->is('London')
+                    ->select(),
+            ],
+            [
+                'where or condition',
+                'SELECT * FROM "users" WHERE "age" = 18 OR "city" = \'London\'',
+                fn(Database $db) => $db->from('users')
+                    ->where('age')->is(18)
+                    ->orWhere('city')->is('London')
+                    ->select(),
+            ],
+            [
+                'where group condition',
+                'SELECT * FROM "users" WHERE "age" = 18 AND ("city" = \'London\' OR "city" = \'Paris\')',
+                fn(Database $db) => $db->from('users')
+                    ->where('age')->is(18)
+                    ->andWhere(function (WhereStatement $group) {
+                        $group->where('city')->is('London')
+                            ->orWhere('city')->is('Paris');
+                    })
+                    ->select(),
+            ],
+            [
+                'where is column',
+                'SELECT * FROM "users" WHERE "age" = "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->is('foo', true)->select(),
+            ],
+            [
+                'where is not column',
+                'SELECT * FROM "users" WHERE "age" != "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->isNot('foo', true)->select(),
+            ],
+            [
+                'where is lessThan column',
+                'SELECT * FROM "users" WHERE "age" < "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->lessThan('foo', true)->select(),
+            ],
+            [
+                'where is lt column',
+                'SELECT * FROM "users" WHERE "age" < "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->lt('foo', true)->select(),
+            ],
+            [
+                'where is greaterThan column',
+                'SELECT * FROM "users" WHERE "age" > "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->greaterThan('foo', true)->select(),
+            ],
+            [
+                'where is gt column',
+                'SELECT * FROM "users" WHERE "age" > "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->gt('foo', true)->select(),
+            ],
+            [
+                'where is atMost column',
+                'SELECT * FROM "users" WHERE "age" <= "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->atMost('foo', true)->select(),
+            ],
+            [
+                'where is lte column',
+                'SELECT * FROM "users" WHERE "age" <= "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->lte('foo', true)->select(),
+            ],
+            [
+                'where is atLeast column',
+                'SELECT * FROM "users" WHERE "age" >= "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->atLeast('foo', true)->select(),
+            ],
+            [
+                'where is gte column',
+                'SELECT * FROM "users" WHERE "age" >= "foo"',
+                fn(Database $db) => $db->from('users')->where('age')->gte('foo', true)->select(),
+            ],
+            [
+                'where exists',
+                'SELECT * FROM "users" WHERE EXISTS (SELECT * FROM "orders" WHERE "orders"."name" = "users"."name")',
+                fn(Database $db) => $db->from('users')
+                    ->whereExists(function (SubQuery $query) {
+                        $query->from('orders')
+                            ->where('orders.name')->eq('users.name', true)
+                            ->select();
+                    })
+                    ->select(),
+            ],
+            [
+                'where eq 1',
+                'SELECT * FROM "numbers" WHERE "c" = "b" + 10',
+                fn(Database $db) => $db->from('numbers')
+                    ->where('c')
+                    ->eq(fn (Expression $expr) => $expr->column('b')->op('+')->value(10))
+                    ->select(),
+            ],
+            [
+                'where eq 2',
+                'SELECT * FROM "numbers" WHERE "c" = "a" + "b"',
+                fn(Database $db) => $db->from('numbers')
+                    ->where('c')
+                    ->eq(function (Expression $expr) {
+                        $expr->column('a')->{'+'}->column('b');
+                    })
+                    ->select(),
+            ],
+            [
+                'where with expression (old style)',
+                'SELECT * FROM "names" WHERE LCASE("name") LIKE \'%test%\'',
+                fn(Database $db) => $db->from('names')
+                    ->where(function (Expression $expr) {
+                        $expr->lcase('name');
+                    }, true) // true indicates an expression
+                    ->like('%test%')
+                    ->select(),
+            ],
+            [
+                'where expression',
+                'SELECT * FROM "names" WHERE LCASE("name") LIKE \'%test%\'',
+                fn(Database $db) => $db->from('names')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->lcase('name');
+                    })
+                    ->like('%test%')
+                    ->select(),
+            ],
+            [
+                'and where expression',
+                'SELECT * FROM "names" WHERE "age" = 21 AND LCASE("name") LIKE \'%test%\'',
+                fn(Database $db) => $db->from('names')
+                    ->where('age')->is(21)
+                    ->andWhereExpression(function (Expression $expr) {
+                        $expr->lcase('name');
+                    })
+                    ->like('%test%')
+                    ->select(),
+            ],
+            [
+                'or where expression',
+                'SELECT * FROM "names" WHERE "age" = 21 OR LCASE("name") LIKE \'%test%\'',
+                fn(Database $db) => $db->from('names')
+                    ->where('age')->is(21)
+                    ->orWhereExpression(function (Expression $expr) {
+                        $expr->lcase('name');
+                    })
+                    ->like('%test%')
+                    ->select(),
+            ],
+            [
+                'where expression nop',
+                'SELECT * FROM "users" WHERE match( "username" ) against( \'expression\' )',
+                fn(Database $db) => $db->from('users')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->op('match(')->column('username')->op(') against(')
+                            ->value('expression')->op(')');
+                    })
+                    ->nop()
+                    ->select(),
+            ],
+        ];
     }
 
-    public function testWhereIsNot()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" != 21';
-        $this->db->from('users')->where('age')->isNot(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLT()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" < 21';
-        $this->db->from('users')->where('age')->lessThan(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTAlt()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" < 21';
-        $this->db->from('users')->where('age')->lt(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGT()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" > 21';
-        $this->db->from('users')->where('age')->greaterThan(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTAlt()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" > 21';
-        $this->db->from('users')->where('age')->gt(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTE()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" <= 21';
-        $this->db->from('users')->where('age')->atMost(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTEAlt()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" <= 21';
-        $this->db->from('users')->where('age')->lte(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTE()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" >= 21';
-        $this->db->from('users')->where('age')->atLeast(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTEAlt()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" >= 21';
-        $this->db->from('users')->where('age')->gte(21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testBetween()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" BETWEEN 18 AND 21';
-        $this->db->from('users')->where('age')->between(18, 21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testNotBetween()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" NOT BETWEEN 18 AND 21';
-        $this->db->from('users')->where('age')->notBetween(18, 21)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereInArray()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" IN (18, 21, 31)';
-        $this->db->from('users')->where('age')->in([18, 21, 31])->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereNotInArray()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" NOT IN (18, 21, 31)';
-        $this->db->from('users')->where('age')->notIn([18, 21, 31])->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereInQuery()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" IN (SELECT "name" FROM "customers")';
-        $this->db->from('users')->where('age')->in(function ($query) {
-            $query->from('customers')->select('name');
-        })->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-
-    public function testWhereNotInQuery()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" NOT IN (SELECT "name" FROM "customers")';
-        $this->db->from('users')->where('age')->notIn(function ($query) {
-            $query->from('customers')->select('name');
-        })->select();;
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLike()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "name" LIKE \'%foo%\'';
-        $this->db->from('users')->where('name')->like('%foo%')->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereNotLike()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "name" NOT LIKE \'%foo%\'';
-        $this->db->from('users')->where('name')->notLike('%foo%')->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereIsNull()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "name" IS NULL';
-        $this->db->from('users')->where('name')->isNull()->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereIsNotNull()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "name" IS NOT NULL';
-        $this->db->from('users')->where('name')->notNull()->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereAndCondition()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" = 18 AND "city" = \'London\'';
-        $this->db->from('users')
-            ->where('age')->is(18)
-            ->andWhere('city')->is('London')
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereOrCondition()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" = 18 OR "city" = \'London\'';
-        $this->db->from('users')
-            ->where('age')->is(18)
-            ->orWhere('city')->is('London')
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGroupCondition()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" = 18 AND ("city" = \'London\' OR "city" = \'Paris\')';
-        $this->db->from('users')
-            ->where('age')->is(18)
-            ->andWhere(function ($group) {
-                $group->where('city')->is('London')
-                    ->orWhere('city')->is('Paris');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereIsColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" = "foo"';
-        $this->db->from('users')->where('age')->is('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereIsNotColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" != "foo"';
-        $this->db->from('users')->where('age')->isNot('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" < "foo"';
-        $this->db->from('users')->where('age')->lessThan('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTAltColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" < "foo"';
-        $this->db->from('users')->where('age')->lt('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" > "foo"';
-        $this->db->from('users')->where('age')->greaterThan('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTAltColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" > "foo"';
-        $this->db->from('users')->where('age')->gt('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTEColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" <= "foo"';
-        $this->db->from('users')->where('age')->atMost('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereLTEAltColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" <= "foo"';
-        $this->db->from('users')->where('age')->lte('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTEColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" >= "foo"';
-        $this->db->from('users')->where('age')->atLeast('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereGTEAltColumn()
-    {
-        $expected = 'SELECT * FROM "users" WHERE "age" >= "foo"';
-        $this->db->from('users')->where('age')->gte('foo', true)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereExists()
-    {
-        $expected = 'SELECT * FROM "users" WHERE EXISTS (SELECT * FROM "orders" WHERE "orders"."name" = "users"."name")';
-        $this->db->from('users')
-            ->whereExists(function ($query) {
-                $query->from('orders')
-                    ->where('orders.name')->eq('users.name', true)
-                    ->select();
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereExpression1()
-    {
-        $expected = 'SELECT * FROM "numbers" WHERE "c" = "b" + 10';
-        $this->db->from('numbers')
-            ->where('c')->eq(function ($expr) {
-                $expr->column('b')->op('+')->value(10);
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereExpression2()
-    {
-        $expected = 'SELECT * FROM "numbers" WHERE "c" = "a" + "b"';
-        $this->db->from('numbers')
-            ->where('c')->eq(function ($expr) {
-                $expr->column('a')->{'+'}->column('b');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereExpression3()
-    {
-        $expected = 'SELECT * FROM "names" WHERE LCASE("name") LIKE \'%test%\'';
-        $this->db->from('names')
-            ->where(function (Expression $expr) {
-                $expr->lcase('name');
-            }, true)
-            ->like('%test%')
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testWhereNop() {
-        $expected = 'SELECT * FROM "users" WHERE match( "username" ) against( \'expression\' )';
-        $this->db->from('users')
-            ->where(function (Expression $expr) {
-                $expr->op('match(')->column('username')->op(') against(')
-                    ->value('expression')->op(')');
-            }, true)->nop()
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
 }

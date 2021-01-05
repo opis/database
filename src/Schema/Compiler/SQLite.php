@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ use Opis\Database\Schema\{
 
 class SQLite extends Compiler
 {
-    /** @var bool No primary key */
-    private bool $nopk = false;
+    private bool $noPrimaryKey = false;
 
     protected array $modifiers = ['nullable', 'default', 'autoincrement'];
     protected string $autoincrement = 'AUTOINCREMENT';
@@ -83,7 +82,7 @@ class SQLite extends Compiler
         $modifier = parent::handleModifierAutoincrement($column);
 
         if ($modifier !== '') {
-            $this->nopk = true;
+            $this->noPrimaryKey = true;
             $modifier = 'PRIMARY KEY ' . $modifier;
         }
 
@@ -92,7 +91,7 @@ class SQLite extends Compiler
 
     protected function handlePrimaryKey(Blueprint $schema): string
     {
-        if ($this->nopk) {
+        if ($this->noPrimaryKey) {
             return '';
         }
 
@@ -104,13 +103,13 @@ class SQLite extends Compiler
         return '';
     }
 
-    protected function handleAddUnique(Blueprint $table, $data): string
+    protected function handleAddUnique(Blueprint $table, mixed $data): string
     {
         return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleAddIndex(Blueprint $table, $data): string
+    protected function handleAddIndex(Blueprint $table, mixed $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
             . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';

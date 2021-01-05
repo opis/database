@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class SelectStatement extends BaseStatement
 {
     protected HavingStatement $have;
 
-    public function __construct(string|array $tables, SQLStatement $statement = null)
+    public function __construct(string|array $tables, ?SQLStatement $statement = null)
     {
         parent::__construct($statement);
 
@@ -35,7 +35,7 @@ class SelectStatement extends BaseStatement
         $this->have = new HavingStatement($this->sql);
     }
 
-    public function into(string $table, string $database = null): static
+    public function into(string $table, ?string $database = null): static
     {
         $this->sql->setInto($table, $database);
         return $this;
@@ -56,25 +56,25 @@ class SelectStatement extends BaseStatement
         return $this;
     }
 
-    public function having(mixed $column, Closure $value = null): static
+    public function having(mixed $column, ?Closure $value = null): static
     {
         $this->have->having($column, $value);
         return $this;
     }
 
-    public function andHaving(mixed $column, Closure $value = null): static
+    public function andHaving(mixed $column, ?Closure $value = null): static
     {
         $this->have->andHaving($column, $value);
         return $this;
     }
 
-    public function orHaving(mixed $column, Closure $value = null): static
+    public function orHaving(mixed $column, ?Closure $value = null): static
     {
         $this->have->orHaving($column, $value);
         return $this;
     }
 
-    public function orderBy(mixed $columns, string $order = 'ASC', string $nulls = null): static
+    public function orderBy(mixed $columns, string $order = 'ASC', ?string $nulls = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -117,31 +117,31 @@ class SelectStatement extends BaseStatement
         return null;
     }
 
-    public function count(mixed $column = '*', bool $distinct = false): mixed
+    public function count(mixed $column = '*', bool $distinct = false): int
     {
         (new ColumnExpression($this->sql))->count($column, null, $distinct);
         return 0;
     }
 
-    public function avg(mixed $column, bool $distinct = false): mixed
+    public function avg(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->sql))->avg($column, null, $distinct);
         return 0;
     }
 
-    public function sum(mixed $column, bool $distinct = false): mixed
+    public function sum(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->sql))->sum($column, null, $distinct);
         return 0;
     }
 
-    public function min(mixed $column, bool $distinct = false): mixed
+    public function min(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->sql))->min($column, null, $distinct);
         return 0;
     }
 
-    public function max(mixed $column, bool $distinct = false): mixed
+    public function max(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->sql))->max($column, null, $distinct);
         return 0;

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,14 @@
 namespace Opis\Database\SQL;
 
 use Closure;
-use Opis\Database\Connection;
-use Opis\Database\ResultSet;
+use Opis\Database\{Connection, ResultSet};
 
 class Query extends BaseStatement
 {
     protected Connection $connection;
     protected string|array $tables;
 
-    public function __construct(Connection $connection, string|array $tables, SQLStatement $statement = null)
+    public function __construct(Connection $connection, string|array $tables, ?SQLStatement $statement = null)
     {
         parent::__construct($statement);
         $this->tables = $tables;
@@ -58,7 +57,7 @@ class Query extends BaseStatement
         return $this->buildSelect()->orHaving($column, $value);
     }
 
-    public function orderBy(mixed $columns, string $order = 'ASC', string $nulls = null): Select
+    public function orderBy(mixed $columns, string $order = 'ASC', ?string $nulls = null): Select
     {
         return $this->buildSelect()->orderBy($columns, $order, $nulls);
     }
@@ -73,7 +72,7 @@ class Query extends BaseStatement
         return $this->buildSelect()->offset($value);
     }
 
-    public function into(string $table, string $database = null): Select
+    public function into(string $table, ?string $database = null): Select
     {
         return $this->buildSelect()->into($table, $database);
     }

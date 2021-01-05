@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,35 +17,34 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\Database;
 use Opis\Database\SQL\Expression;
 
 class DeleteTest extends BaseClass
 {
-    public function testDeleteAll()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'DELETE FROM "users"';
-        $this->db->from("users")->delete();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDeleteWhereCondition()
-    {
-        $expected = 'DELETE FROM "users" WHERE "age" < 18';
-        $this->db->from("users")
-            ->where('age')->lt(18)
-            ->delete();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDeleteWhereExpression()
-    {
-        $expected = 'DELETE FROM "users" WHERE LEN("name") < 18';
-        $this->db->from("users")
-            ->where(function (Expression $expr) {
-                $expr->len("name");
-            }, true)
-            ->lt(18)
-            ->delete();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'delete all',
+                'DELETE FROM "users"',
+                fn(Database $db) => $db->from("users")->delete(),
+            ],
+            [
+                'delete where condition',
+                'DELETE FROM "users" WHERE "age" < 18',
+                fn(Database $db) => $db->from("users")
+                    ->where('age')->lt(18)
+                    ->delete(),
+            ],
+            [
+                'delete where expression',
+                'DELETE FROM "users" WHERE LEN("name") < 18',
+                fn(Database $db) => $db->from("users")
+                    ->whereExpression(fn (Expression $expr) => $expr->len("name"))
+                    ->lt(18)
+                    ->delete()
+            ],
+        ];
     }
 }

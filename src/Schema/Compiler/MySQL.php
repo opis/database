@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,18 +27,13 @@ class MySQL extends Compiler
 
     protected function handleTypeInteger(Column $column): string
     {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-                return 'TINYINT';
-            case 'small':
-                return 'SMALLINT';
-            case 'medium':
-                return 'MEDIUMINT';
-            case 'big':
-                return 'BIGINT';
-        }
-
-        return 'INT';
+        return match($column->get('size', 'normal')) {
+            'tiny' => 'TINYINT',
+            'small' => 'SMALLINT',
+            'medium' => 'MEDIUMINT',
+            'big' => 'BIGINT',
+            default => 'INT',
+        };
     }
 
     protected function handleTypeDecimal(Column $column): string
@@ -59,66 +54,56 @@ class MySQL extends Compiler
 
     protected function handleTypeText(Column $column): string
     {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-            case 'small':
-                return 'TINYTEXT';
-            case 'medium':
-                return 'MEDIUMTEXT';
-            case 'big':
-                return 'LONGTEXT';
-        }
-
-        return 'TEXT';
+        return match($column->get('size', 'normal')) {
+            'tiny', 'small' => 'TINYTEXT',
+            'medium' => 'MEDIUMTEXT',
+            'big' => 'LONGTEXT',
+            default => 'TEXT',
+        };
     }
 
     protected function handleTypeBinary(Column $column): string
     {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-            case 'small':
-                return 'TINYBLOB';
-            case 'medium':
-                return 'MEDIUMBLOB';
-            case 'big':
-                return 'LONGBLOB';
-        }
-
-        return 'BLOB';
+        return match($column->get('size', 'normal')) {
+            'tiny', 'small' => 'TINYBLOB',
+            'medium' => 'MEDIUMBLOB',
+            'big' => 'LONGBLOB',
+            default => 'BLOB',
+        };
     }
 
-    protected function handleDropPrimaryKey(Blueprint $table, $data): string
+    protected function handleDropPrimaryKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
     }
 
-    protected function handleDropUniqueKey(Blueprint $table, $data): string
+    protected function handleDropUniqueKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    protected function handleDropIndex(Blueprint $table, $data): string
+    protected function handleDropIndex(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
-    protected function handleDropForeignKey(Blueprint $table, $data): string
+    protected function handleDropForeignKey(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
     }
 
-    protected function handleSetDefaultValue(Blueprint $table, $data): string
+    protected function handleSetDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
-    protected function handleDropDefaultValue(Blueprint $table, $data): string
+    protected function handleDropDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 
-    protected function handleRenameColumn(Blueprint $table, $data): string
+    protected function handleRenameColumn(Blueprint $table, mixed $data): string
     {
         $table_name = $table->getTableName();
         $column_name = $data['from'];

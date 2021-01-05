@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,10 @@ class WhereStatement
     protected ?SQLStatement $sql;
     protected Where $where;
 
-    public function __construct(SQLStatement $statement = null)
+    public function __construct(?SQLStatement $statement = null)
     {
-        if ($statement === null) {
-            $statement = new SQLStatement();
-        }
-
-        $this->sql = $statement;
-        $this->where = new Where($this, $statement);
+        $this->sql = $statement ?? new SQLStatement();
+        $this->where = new Where($this, $this->sql);
     }
 
     public function getSQLStatement(): SQLStatement
@@ -39,51 +35,65 @@ class WhereStatement
         return $this->sql;
     }
 
-    public function where(mixed $column, bool $isExpr = false): static|Where
+    public function where(mixed $column, bool $isExpression = false): static|Where
     {
-        return $this->addWhereCondition($column, 'AND', $isExpr);
+        return $this->addWhereCondition($column, 'AND', $isExpression);
     }
 
-    public function andWhere(mixed $column, bool $isExpr = false): static|Where
+    public function andWhere(mixed $column, bool $isExpression = false): static|Where
     {
-        return $this->addWhereCondition($column, 'AND', $isExpr);
+        return $this->addWhereCondition($column, 'AND', $isExpression);
     }
 
-    public function orWhere(mixed $column, bool $isExpr = false): static|Where
+    public function orWhere(mixed $column, bool $isExpression = false): static|Where
     {
-        return $this->addWhereCondition($column, 'OR', $isExpr);
+        return $this->addWhereCondition($column, 'OR', $isExpression);
     }
 
-    public function whereExists(Closure $select): static|Where
+    public function whereExpression(Closure $expression): Where
+    {
+        return $this->addWhereCondition($expression, 'AND', true);
+    }
+
+    public function andWhereExpression(Closure $expression): Where
+    {
+        return $this->addWhereCondition($expression, 'AND', true);
+    }
+
+    public function orWhereExpression(Closure $expression): Where
+    {
+        return $this->addWhereCondition($expression, 'OR', true);
+    }
+
+    public function whereExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select);
     }
 
-    public function andWhereExists(Closure $select): static|Where
+    public function andWhereExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select);
     }
 
-    public function orWhereExists(Closure $select): static|Where
+    public function orWhereExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select, 'OR');
     }
 
-    public function whereNotExists(Closure $select): static|Where
+    public function whereNotExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select, 'AND', true);
     }
 
-    public function andWhereNotExists(Closure $select): static|Where
+    public function andWhereNotExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select, 'AND', true);
     }
 
-    public function orWhereNotExists(Closure $select): static|Where
+    public function orWhereNotExists(Closure $select): static
     {
         return $this->addWhereExistCondition($select, 'OR', true);
     }
-
 
     public function __clone()
     {
@@ -93,7 +103,7 @@ class WhereStatement
 
     protected function addWhereCondition(mixed $column, string $separator = 'AND', bool $isExpr = false): static|Where
     {
-        if (($column instanceof Closure) && !$isExpr) {
+        if (!$isExpr && ($column instanceof Closure)) {
             $this->sql->addWhereConditionGroup($column, $separator);
             return $this;
         }

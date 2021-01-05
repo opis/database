@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,29 @@
 
 namespace Opis\Database\Test\SQL;
 
+use Opis\Database\Database;
+
 class LimitTest extends BaseClass
 {
-    public function testLimit()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25';
-        $this->db->from('users')->orderBy('name')->limit(25)->select();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'limit',
+                'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25',
+                fn(Database $db) => $db->from('users')->orderBy('name')->limit(25)->select(),
+            ],
+            [
+                'offset',
+                'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25 OFFSET 10',
+                fn(Database $db) => $db->from('users')->orderBy('name')->limit(25)->offset(10)->select(),
+            ],
+            /*
+            [
+                'offset without limit',
+                'SELECT * FROM "users" ORDER BY "name" ASC OFFSET 10',
+                fn(Database $db) => $db->from('users')->orderBy('name')->offset(10)->select(),
+            ],*/
+        ];
     }
-
-    public function testOffset()
-    {
-        $expected = 'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25 OFFSET 10';
-        $this->db->from('users')->orderBy('name')->limit(25)->offset(10)->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    /*
-    public function testOffsetWithoutLimit()
-    {
-        $expected = 'SELECT * FROM "users" ORDER BY "name" ASC';
-        $actual = $this->db->from('users')->orderBy('name')->offset(10)->select();
-        $this->assertEquals($expected, $actual);
-    }*/
 }

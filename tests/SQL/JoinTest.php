@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,102 +17,92 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\SQL\Expression;
-use Opis\Database\SQL\Join;
+use Opis\Database\Database;
+use Opis\Database\SQL\{Expression, Join};
 
 class JoinTest extends BaseClass
 {
-    public function testDefaultJoin()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id"';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on('users.id', 'profiles.id');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDefaultJoinGTE()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" >= "profiles"."id"';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on('users.id', 'profiles.id', '>=');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDefaultJoinAnd()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND "users"."email" = "profile"."primary_email"';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on('users.id', 'profiles.id')
-                    ->andOn('users.email', 'profile.primary_email');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDefaultJoinOr()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" OR "users"."email" = "profile"."primary_email"';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on('users.id', 'profiles.id')
-                    ->orOn('users.email', 'profile.primary_email');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDefaultJoinGroup()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND ("users"."email" = "profiles"."primary_email" OR "users"."email" = "profiles"."secondary_email")';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on('users.id', 'profiles.id')
-                    ->andOn(function (Join $join) {
-                        $join->on('users.email', 'profiles.primary_email')
-                            ->orOn('users.email', 'profiles.secondary_email');
-                    });
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testDefaultJoinAlias()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" AS "p" ON "users"."id" = "p"."id"';
-        $this->db->from('users')
-            ->join(['profiles' => 'p'], function (Join $join) {
-                $join->on('users.id', 'p.id');
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testCrossJoin()
-    {
-        $expected = 'SELECT * FROM "users" CROSS JOIN "profiles"';
-        $this->db->from('users')
-            ->crossJoin('profiles')
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testJoinExpression()
-    {
-        $expected = 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = LEN("profiles"."name")';
-        $this->db->from('users')
-            ->join('profiles', function (Join $join) {
-                $join->on(function (Expression $expr) {
-                    $expr->column('users.id')->{'='}->len('profiles.name');
-                }, true);
-            })
-            ->select();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'default join',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id"',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on('users.id', 'profiles.id');
+                    })
+                    ->select(),
+            ],
+            [
+                'default join gte',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" >= "profiles"."id"',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on('users.id', 'profiles.id', '>=');
+                    })
+                    ->select(),
+            ],
+            [
+                'default join and',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND "users"."email" = "profile"."primary_email"',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on('users.id', 'profiles.id')
+                            ->andOn('users.email', 'profile.primary_email');
+                    })
+                    ->select(),
+            ],
+            [
+                'default join or',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" OR "users"."email" = "profile"."primary_email"',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on('users.id', 'profiles.id')
+                            ->orOn('users.email', 'profile.primary_email');
+                    })
+                    ->select(),
+            ],
+            [
+                'default join group',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND ("users"."email" = "profiles"."primary_email" OR "users"."email" = "profiles"."secondary_email")',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on('users.id', 'profiles.id')
+                            ->andOn(function (Join $join) {
+                                $join->on('users.email', 'profiles.primary_email')
+                                    ->orOn('users.email', 'profiles.secondary_email');
+                            });
+                    })
+                    ->select(),
+            ],
+            [
+                'default join alias',
+                'SELECT * FROM "users" INNER JOIN "profiles" AS "p" ON "users"."id" = "p"."id"',
+                fn(Database $db) => $db->from('users')
+                    ->join(['profiles' => 'p'], function (Join $join) {
+                        $join->on('users.id', 'p.id');
+                    })
+                    ->select(),
+            ],
+            [
+                'cross join',
+                'SELECT * FROM "users" CROSS JOIN "profiles"',
+                fn(Database $db) => $db->from('users')
+                    ->crossJoin('profiles')
+                    ->select(),
+            ],
+            [
+                'join expression',
+                'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = LEN("profiles"."name")',
+                fn(Database $db) => $db->from('users')
+                    ->join('profiles', function (Join $join) {
+                        $join->on(function (Expression $expr) {
+                            $expr->column('users.id')->{'='}->len('profiles.name');
+                        }, true);
+                    })
+                    ->select(),
+            ],
+        ];
     }
 }

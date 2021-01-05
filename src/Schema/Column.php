@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ class Column
     protected ?string $type;
     protected array $properties = [];
 
-    public function __construct(Blueprint $blueprint, string $name, string $type = null)
+    public function __construct(Blueprint $blueprint, string $name, ?string $type = null)
     {
         $this->name = $name;
         $this->type = $type;
@@ -115,25 +115,25 @@ class Column
         return $this->set('length', $value);
     }
 
-    public function autoincrement(string $name = null): static
+    public function autoincrement(?string $name = null): static
     {
         $this->blueprint->autoincrement($this, $name);
         return $this;
     }
 
-    public function primary(string $name = null): static
+    public function primary(?string $name = null): static
     {
         $this->blueprint->primary($this->name, $name);
         return $this;
     }
 
-    public function unique(string $name = null): static
+    public function unique(?string $name = null): static
     {
         $this->blueprint->unique($this->name, $name);
         return $this;
     }
 
-    public function index(string $name = null): static
+    public function index(?string $name = null): static
     {
         $this->blueprint->index($this->name, $name);
         return $this;

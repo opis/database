@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,8 @@ class HavingStatement
 
     public function __construct(SQLStatement $statement = null)
     {
-        if ($statement === null) {
-            $statement = new SQLStatement();
-        }
-        $this->sql = $statement;
-        $this->expression = new HavingExpression($statement);
+        $this->sql = $statement ?? new SQLStatement();
+        $this->expression = new HavingExpression($this->sql);
     }
 
     /**
@@ -42,17 +39,17 @@ class HavingStatement
         return $this->sql;
     }
 
-    public function having(mixed $column, Closure $value = null): static
+    public function having(mixed $column, ?Closure $value = null): static
     {
-        return $this->addCondition($column, $value, 'AND');
+        return $this->addCondition($column, $value);
     }
 
-    public function andHaving(mixed $column, Closure $value = null): static
+    public function andHaving(mixed $column, ?Closure $value = null): static
     {
-        return $this->addCondition($column, $value, 'AND');
+        return $this->addCondition($column, $value);
     }
 
-    public function orHaving(mixed $column, Closure $value = null): static
+    public function orHaving(mixed $column, ?Closure $value = null): static
     {
         return $this->addCondition($column, $value, 'OR');
     }
@@ -63,7 +60,7 @@ class HavingStatement
         $this->expression = new HavingExpression($this->sql);
     }
 
-    protected function addCondition(mixed $column, Closure $value = null, $separator = 'AND'): static
+    protected function addCondition(mixed $column, ?Closure $value = null, string $separator = 'AND'): static
     {
         if (($column instanceof Closure) && $value === null) {
             $this->sql->addHavingGroupCondition($column, $separator);

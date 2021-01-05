@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,18 +62,13 @@ class Oracle extends Compiler
 
     protected function handleTypeInteger(Column $column): string
     {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-                return 'NUMBER(3)';
-            case 'small':
-                return 'NUMBER(5)';
-            case 'medium':
-                return 'NUMBER(7)';
-            case 'big':
-                return 'NUMBER(19)';
-        }
-
-        return 'NUMBER(10)';
+        return match($column->get('size', 'normal')) {
+            'tiny' => 'NUMBER(3)',
+            'small' => 'NUMBER(5)',
+            'medium' => 'NUMBER(7)',
+            'big' => 'NUMBER(19)',
+            default => 'NUMBER(10)',
+        };
     }
 
     protected function handleTypeDouble(Column $column): string
@@ -141,23 +136,23 @@ class Oracle extends Compiler
         return 'BLOB';
     }
 
-    protected function handleModifyColumn(Blueprint $table, $data): string
+    protected function handleModifyColumn(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY ' . $this->handleColumns([$data]);
     }
 
-    protected function handleAddColumn(Blueprint $table, $data): string
+    protected function handleAddColumn(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD ' . $this->handleColumns([$data]);
     }
 
-    protected function handleSetDefaultValue(Blueprint $table, $data): string
+    protected function handleSetDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
             . $this->wrap($data) . ' DEFAULT ' . $this->value($data['value']);
     }
 
-    protected function handleDropDefaultValue(Blueprint $table, $data): string
+    protected function handleDropDefaultValue(Blueprint $table, mixed $data): string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
             . $this->wrap($data) . ' DEFAULT NULL';

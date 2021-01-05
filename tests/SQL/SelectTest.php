@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,117 +17,90 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\SQL\ColumnExpression;
-use Opis\Database\SQL\Expression;
+use Opis\Database\Database;
+use Opis\Database\SQL\{ColumnExpression, Expression};
 
 class SelectTest extends BaseClass
 {
-    public function testSelect()
+    public function sqlDataProvider(): iterable
     {
-        $expected = 'SELECT * FROM "users"';
-        $this->db->from('users')->select();
-        $this->assertEquals($expected, $this->getSQL());
+        return [
+            [
+                'select *',
+                'SELECT * FROM "users"',
+                fn(Database $db) => $db->from('users')->select(),
+            ],
+            [
+                'select distinct *',
+                'SELECT DISTINCT * FROM "users"',
+                fn(Database $db) => $db->from('users')->distinct()->select(),
+            ],
+            [
+                'select column',
+                'SELECT "name" FROM "users"',
+                fn(Database $db) => $db->from('users')->select('name'),
+            ],
+            [
+                'select single column array',
+                'SELECT "name" FROM "users"',
+                fn(Database $db) => $db->from('users')->select(['name']),
+            ],
+            [
+                'select multiple columns',
+                'SELECT "name", "age" FROM "users"',
+                fn(Database $db) => $db->from('users')->select(['name', 'age']),
+            ],
+            [
+                'select multiple columns aliased',
+                'SELECT "name" AS "n", "age" AS "a" FROM "users"',
+                fn(Database $db) => $db->from('users')->select(['name' => 'n', 'age' => 'a']),
+            ],
+            [
+                'select multiple columns - first aliased',
+                'SELECT "name" AS "n", "age" FROM "users"',
+                fn(Database $db) => $db->from('users')->select(['name' => 'n', 'age']),
+            ],
+            [
+                'select multiple columns - last aliased',
+                'SELECT "name", "age" AS "a" FROM "users"',
+                fn(Database $db) => $db->from('users')->select(['name', 'age' => 'a']),
+            ],
+            [
+                'select from multiple tables',
+                'SELECT * FROM "users", "sites"',
+                fn(Database $db) => $db->from(['users', 'sites'])->select(),
+            ],
+            [
+                'select from multiple tables aliased',
+                'SELECT * FROM "users" AS "u", "sites" AS "s"',
+                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(),
+            ],
+            [
+                'select columns from multiple tables aliased',
+                'SELECT "u"."name", "s"."address" FROM "users" AS "u", "sites" AS "s"',
+                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name', 's.address']),
+            ],
+            [
+                'select aliased columns from multiple tables aliased',
+                'SELECT "u"."name" AS "n", "s"."address" AS "s" FROM "users" AS "u", "sites" AS "s"',
+                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name' => 'n', 's.address' => 's']),
+            ],
+            [
+                'select aliased expression',
+                'SELECT LCASE("name") AS "lower_name" FROM "users"',
+                fn(Database $db) => $db->from('users')
+                    ->select(fn (ColumnExpression $expr) => $expr->lcase('name', 'lower_name')),
+            ],
+            [
+                'select multiple aliased expressions',
+                'SELECT "name", LEN("name") AS "name_length", "age" AS "alias_age" FROM "users"',
+                fn(Database $db) => $db->from('users')
+                    ->select([
+                        'name',
+                        'name_length' => fn (Expression $expr) => $expr->len('name'),
+                        'age' => 'alias_age',
+                    ]),
+            ],
+        ];
     }
-
-    public function testSelectDistinct()
-    {
-        $expected = 'SELECT DISTINCT * FROM "users"';
-        $this->db->from('users')->distinct()->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectSingleColumn()
-    {
-        $expected = 'SELECT "name" FROM "users"';
-        $this->db->from('users')->select('name');
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectSingleColumnArray()
-    {
-        $expected = 'SELECT "name" FROM "users"';
-        $this->db->from('users')->select(['name']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectMultipleColumns()
-    {
-        $expected = 'SELECT "name", "age" FROM "users"';
-        $this->db->from('users')->select(['name', 'age']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectColumnsAliases()
-    {
-        $expected = 'SELECT "name" AS "n", "age" AS "a" FROM "users"';
-        $this->db->from('users')->select(['name' => 'n', 'age' => 'a']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectColumnsFirstAliased()
-    {
-        $expected = 'SELECT "name" AS "n", "age" FROM "users"';
-        $this->db->from('users')->select(['name' => 'n', 'age']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectColumnsLastAliased()
-    {
-        $expected = 'SELECT "name", "age" AS "a" FROM "users"';
-        $this->db->from('users')->select(['name', 'age' => 'a']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectFromMultipleTables()
-    {
-        $expected = 'SELECT * FROM "users", "sites"';
-        $this->db->from(['users', 'sites'])->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectFromMultipleTablesAliased()
-    {
-        $expected = 'SELECT * FROM "users" AS "u", "sites" AS "s"';
-        $this->db->from(['users' => 'u', 'sites' => 's'])->select();
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectColumnsFromMultipleTablesAliased()
-    {
-        $expected = 'SELECT "u"."name", "s"."address" FROM "users" AS "u", "sites" AS "s"';
-        $this->db->from(['users' => 'u', 'sites' => 's'])->select(['u.name', 's.address']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectAliasedColumnsFromMultipleTablesAliased()
-    {
-        $expected = 'SELECT "u"."name" AS "n", "s"."address" AS "s" FROM "users" AS "u", "sites" AS "s"';
-        $this->db->from(['users' => 'u', 'sites' => 's'])->select(['u.name' => 'n', 's.address' => 's']);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectAliasedSingleExpression()
-    {
-        $expected = 'SELECT LCASE("name") AS "lower_name" FROM "users"';
-        $this->db->from('users')
-            ->select(function (ColumnExpression $expr) {
-                $expr->lcase('name', 'lower_name');
-            });
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
-    public function testSelectAliasedExpressionMultiple()
-    {
-        $expected = 'SELECT "name", LEN("name") AS "name_length", "age" AS "alias_age" FROM "users"';
-        $this->db->from('users')
-            ->select([
-                'name',
-                'name_length' => function (Expression $expr) {
-                    $expr->len('name');
-                },
-                'age' => 'alias_age',
-            ]);
-        $this->assertEquals($expected, $this->getSQL());
-    }
-
 }

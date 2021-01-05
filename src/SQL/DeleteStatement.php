@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@ namespace Opis\Database\SQL;
 
 class DeleteStatement extends BaseStatement
 {
-
-    public function __construct(string|array $from, SQLStatement $statement = null)
+    public function __construct(string|array $from, ?SQLStatement $statement = null)
     {
         parent::__construct($statement);
 
@@ -31,7 +30,7 @@ class DeleteStatement extends BaseStatement
         $this->sql->setFrom($from);
     }
 
-    protected function delete(string|array $tables = []): mixed
+    protected function delete(string|array $tables = []): int
     {
         if (!is_array($tables)) {
             $tables = [$tables];
@@ -39,6 +38,6 @@ class DeleteStatement extends BaseStatement
 
         $this->sql->addTables($tables);
 
-        return null;
+        return 0;
     }
 }

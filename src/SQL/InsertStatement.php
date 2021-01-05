@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,9 @@ class InsertStatement
 {
     protected ?SQLStatement $sql;
 
-    public function __construct(SQLStatement $statement = null)
+    public function __construct(?SQLStatement $statement = null)
     {
-        if ($statement === null) {
-            $statement = new SQLStatement();
-        }
-
-        $this->sql = $statement;
+        $this->sql = $statement ?? new SQLStatement();
     }
 
     /**

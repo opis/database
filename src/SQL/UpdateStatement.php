@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Opis\Database\SQL;
 
 class UpdateStatement extends BaseStatement
 {
-    public function __construct(string|array $table, SQLStatement $statement = null)
+    public function __construct(string|array $table, ?SQLStatement $statement = null)
     {
         if (!is_array($table)) {
             $table = [$table];

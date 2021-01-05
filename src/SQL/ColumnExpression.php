@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class ColumnExpression
         $this->sql = $statement;
     }
 
-    public function column(mixed $name, string $alias = null): static
+    public function column(mixed $name, ?string $alias = null): static
     {
         $this->sql->addColumn($name, $alias);
         return $this;
@@ -36,7 +36,7 @@ class ColumnExpression
     {
         foreach ($columns as $name => $alias) {
             if (!is_string($name)) {
-                $this->column($alias, null);
+                $this->column($alias);
                 continue;
             }
             if (is_string($alias)) {
@@ -48,62 +48,62 @@ class ColumnExpression
         return $this;
     }
 
-    public function count(mixed $column = '*', string $alias = null, bool $distinct = false): static
+    public function count(mixed $column = '*', ?string $alias = null, bool $distinct = false): static
     {
         return $this->column((new Expression())->count($column, $distinct), $alias);
     }
 
-    public function avg(mixed $column, string $alias = null, bool $distinct = false): static
+    public function avg(mixed $column, ?string $alias = null, bool $distinct = false): static
     {
         return $this->column((new Expression())->avg($column, $distinct), $alias);
     }
 
-    public function sum(mixed $column, string $alias = null, bool $distinct = false): static
+    public function sum(mixed $column, ?string $alias = null, bool $distinct = false): static
     {
         return $this->column((new Expression())->sum($column, $distinct), $alias);
     }
 
-    public function min(mixed $column, string $alias = null, bool $distinct = false): static
+    public function min(mixed $column, ?string $alias = null, bool $distinct = false): static
     {
         return $this->column((new Expression())->min($column, $distinct), $alias);
     }
 
-    public function max(mixed $column, string $alias = null, bool $distinct = false): static
+    public function max(mixed $column, ?string $alias = null, bool $distinct = false): static
     {
         return $this->column((new Expression())->max($column, $distinct), $alias);
     }
 
-    public function ucase(mixed $column, string $alias = null): static
+    public function ucase(mixed $column, ?string $alias = null): static
     {
         return $this->column((new Expression())->ucase($column), $alias);
     }
 
-    public function lcase(mixed $column, string $alias = null): static
+    public function lcase(mixed $column, ?string $alias = null): static
     {
         return $this->column((new Expression())->lcase($column), $alias);
     }
 
-    public function mid(mixed $column, int $start = 1, string $alias = null, int $length = 0): static
+    public function mid(mixed $column, int $start = 1, ?string $alias = null, int $length = 0): static
     {
         return $this->column((new Expression())->mid($column, $start, $length), $alias);
     }
 
-    public function len(mixed $column, string $alias = null): static
+    public function len(mixed $column, ?string $alias = null): static
     {
         return $this->column((new Expression())->len($column), $alias);
     }
 
-    public function round(mixed $column, int $decimals = 0, string $alias = null): static
+    public function round(mixed $column, int $decimals = 0, ?string $alias = null): static
     {
         return $this->column((new Expression())->format($column, $decimals), $alias);
     }
 
-    public function format(mixed $column, int $format, string $alias = null): static
+    public function format(mixed $column, int $format, ?string $alias = null): static
     {
         return $this->column((new Expression())->format($column, $format), $alias);
     }
 
-    public function now(string $alias = null): static
+    public function now(?string $alias = null): static
     {
         return $this->column((new Expression())->now(), $alias);
     }

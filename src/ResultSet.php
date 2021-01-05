@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ class ResultSet
      * @param int $fetchStyle
      * @return array
      */
-    public function all(callable $callable = null, int $fetchStyle = 0): array
+    public function all(?callable $callable = null, int $fetchStyle = 0): array
     {
         if ($callable === null) {
             return $this->statement->fetchAll($fetchStyle);
@@ -68,7 +68,7 @@ class ResultSet
      * @param callable|null $callable
      * @return array
      */
-    public function allGroup(bool $uniq = false, callable $callable = null): array
+    public function allGroup(bool $uniq = false, ?callable $callable = null): array
     {
         $fetchStyle = PDO::FETCH_GROUP | ($uniq ? PDO::FETCH_UNIQUE : 0);
 
@@ -85,7 +85,7 @@ class ResultSet
      * @param callable|null $callable
      * @return mixed
      */
-    public function first(callable $callable = null): mixed
+    public function first(?callable $callable = null): mixed
     {
         if ($callable !== null) {
             $result = $this->statement->fetch(PDO::FETCH_ASSOC);

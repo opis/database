@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,17 +59,12 @@ class PostgreSQL extends Compiler
     {
         $autoincrement = $column->get('autoincrement', false);
 
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-            case 'small':
-                return $autoincrement ? 'SMALLSERIAL' : 'SMALLINT';
-            case 'medium':
-                return $autoincrement ? 'SERIAL' : 'INTEGER';
-            case 'big':
-                return $autoincrement ? 'BIGSERIAL' : 'BIGINT';
-        }
-
-        return $autoincrement ? 'SERIAL' : 'INTEGER';
+        return match($column->get('size', 'normal')) {
+            'tiny', 'small' => $autoincrement ? 'SMALLSERIAL' : 'SMALLINT',
+            // 'medium' => $autoincrement ? 'SERIAL' : 'INTEGER', // same as default
+            'big' => $autoincrement ? 'BIGSERIAL' : 'BIGINT',
+            default => $autoincrement ? 'SERIAL' : 'INTEGER',
+        };
     }
 
     protected function handleTypeFloat(Column $column): string
@@ -132,7 +127,7 @@ class PostgreSQL extends Compiler
         return $sql;
     }
 
-    protected function handleRenameColumn(Blueprint $table, $data): string
+    protected function handleRenameColumn(Blueprint $table, mixed $data): string
     {
         /** @var Column $column */
         $column = $data['column'];
@@ -140,12 +135,12 @@ class PostgreSQL extends Compiler
             . $this->wrap($data['from']) . ' TO ' . $this->wrap($column->getName());
     }
 
-    protected function handleAddIndex(Blueprint $table, $data): string
+    protected function handleAddIndex(Blueprint $table, mixed $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
-    protected function handleDropIndex(Blueprint $table, $data): string
+    protected function handleDropIndex(Blueprint $table, mixed $data): string
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
     }
