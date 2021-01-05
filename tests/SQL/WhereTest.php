@@ -327,13 +327,25 @@ class WhereTest extends BaseClass
                 'SELECT * FROM "users" WHERE CUSTOM_AGE_CALC(HASH(\'secret\'), CONCAT(\'prefix-\', "name"), "age" - 10) = "age"',
                 fn(Database $db) => $db->from('users')
                     ->whereExpression(function (Expression $expr) {
-                        $expr->CUSTOM_AGE_CALC(
-                            fn (Expression $e) => $e->HASH('secret'),
-                            fn (Expression $e) => $e->CONCAT('prefix-', fn (Expression $e) => $e->column('name')),
+                        $expr->{'CUSTOM_AGE_CALC'}(
+                            fn (Expression $e) => $e->{'HASH'}('secret'),
+                            fn (Expression $e) => $e->{'CONCAT'}('prefix-', fn(Expression $e) => $e->column('name')),
                             fn (Expression $e) => $e->column('age')->op('-')->value(10)
                         );
                     })
                     ->is('age', true)
+                    ->select(),
+            ],
+            [
+                'where using expression\'sshortcuts',
+                'SELECT * FROM "users" WHERE FIND_IN_SET("name", \'a,b,c\')',
+                fn (Database $db) => $db->from('users')
+                    ->whereExpression(Expression::fromCall(
+                        'FIND_IN_SET',
+                        Expression::fromColumn('name'),
+                        'a,b,c'
+                    ))
+                    ->nop()
                     ->select(),
             ],
         ];

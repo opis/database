@@ -151,6 +151,20 @@ class Expression
         return $expression;
     }
 
+    public static function fromColumn(string $column): static
+    {
+        $expression = new static();
+        $expression->column($column);
+        return $expression;
+    }
+
+    public static function fromCall(string $func, mixed ...$args): static
+    {
+        $expression = new static();
+        $expression->call($func, ...$args);
+        return $expression;
+    }
+
     protected function addExpression(string $type, mixed $value): static
     {
         $this->expressions[] = [

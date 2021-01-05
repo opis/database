@@ -50,17 +50,17 @@ class WhereStatement
         return $this->addWhereCondition($column, 'OR', $isExpression);
     }
 
-    public function whereExpression(Closure $expression): Where
+    public function whereExpression(Closure|Expression $expression): Where
     {
         return $this->addWhereCondition($expression, 'AND', true);
     }
 
-    public function andWhereExpression(Closure $expression): Where
+    public function andWhereExpression(Closure|Expression $expression): Where
     {
         return $this->addWhereCondition($expression, 'AND', true);
     }
 
-    public function orWhereExpression(Closure $expression): Where
+    public function orWhereExpression(Closure|Expression $expression): Where
     {
         return $this->addWhereCondition($expression, 'OR', true);
     }
