@@ -293,8 +293,8 @@ class WhereTest extends BaseClass
                 'SELECT * FROM "users" WHERE match("username") against(\'expression\')',
                 fn(Database $db) => $db->from('users')
                     ->whereExpression(function (Expression $expr) {
-                        $expr->call('match', fn(Expression $e) => $e->column('username'));
-                        $expr->call('against', 'expression');
+                        $expr->call('match', [fn(Expression $e) => $e->column('username')]);
+                        $expr->call('against', ['expression']);
                     })
                     ->nop()
                     ->select(),
@@ -315,9 +315,9 @@ class WhereTest extends BaseClass
                 'SELECT * FROM "users" WHERE CUSTOM_AGE_CALC(\'secret\', 5, "age" - 10) = "age"',
                 fn(Database $db) => $db->from('users')
                     ->whereExpression(function (Expression $expr) {
-                        $expr->call('CUSTOM_AGE_CALC', 'secret', 5, function (Expression $expr) {
+                        $expr->call('CUSTOM_AGE_CALC', ['secret', 5, function (Expression $expr) {
                             $expr->column('age')->op('-')->value(10);
-                        });
+                        }]);
                     })
                     ->is('age', true)
                     ->select(),
@@ -338,7 +338,7 @@ class WhereTest extends BaseClass
             ],
             [
                 'where using expression\'sshortcuts',
-                'SELECT * FROM "users" WHERE FIND_IN_SET("name", \'a,b,c\')',
+                'SELECT JSON_EXTRACT("data", \'$.bio.info\') AS "info" FROM "users" WHERE FIND_IN_SET("name", \'a,b,c\')',
                 fn (Database $db) => $db->from('users')
                     ->whereExpression(Expression::fromCall(
                         'FIND_IN_SET',
@@ -346,7 +346,15 @@ class WhereTest extends BaseClass
                         'a,b,c'
                     ))
                     ->nop()
-                    ->select(),
+                    ->select(
+                        [
+                            'info' => Expression::fromCall(
+                                'JSON_EXTRACT',
+                                Expression::fromColumn('data'),
+                                '$.bio.info'
+                            )
+                        ]
+                    ),
             ],
         ];
     }

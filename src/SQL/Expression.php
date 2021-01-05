@@ -121,7 +121,7 @@ class Expression
         return $this->addFunction('sqlFunction', 'FORMAT', $column, ['format' => $format]);
     }
 
-    public function call(string $func, mixed ...$args): static
+    public function call(string $func, array $args = []): static
     {
         if ($args) {
             foreach ($args as $key => $arg) {
@@ -141,7 +141,7 @@ class Expression
 
     public function __call(string $name, array $arguments): static
     {
-        return $this->call($name, ...$arguments);
+        return $this->call($name, $arguments);
     }
 
     public static function fromClosure(Closure $func): static
@@ -161,7 +161,7 @@ class Expression
     public static function fromCall(string $func, mixed ...$args): static
     {
         $expression = new static();
-        $expression->call($func, ...$args);
+        $expression->call($func, $args);
         return $expression;
     }
 
