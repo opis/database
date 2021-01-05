@@ -121,9 +121,27 @@ class Expression
         return $this->addFunction('sqlFunction', 'FORMAT', $column, ['format' => $format]);
     }
 
+    public function call(string $func, mixed ...$args): static
+    {
+        if ($args) {
+            foreach ($args as $key => $arg) {
+                if ($arg instanceof Closure) {
+                    $args[$key] = self::fromClosure($arg);
+                }
+            }
+        }
+
+        return $this->addExpression('call', ['name' => $func, 'args' => $args]);
+    }
+
     public function __get(mixed $value): static
     {
         return $this->addExpression('op', $value);
+    }
+
+    public function __call(string $name, array $arguments): static
+    {
+        return $this->call($name, ...$arguments);
     }
 
     public static function fromClosure(Closure $func): static
@@ -155,7 +173,11 @@ class Expression
             }
         }
 
-        $func = array_merge(['type' => $type, 'name' => $name, 'column' => $column], $arguments);
+        $func = ['type' => $type, 'name' => $name, 'column' => $column];
+
+        if ($arguments) {
+            $func = array_merge($func, $arguments);
+        }
 
         return $this->addExpression('function', $func);
     }

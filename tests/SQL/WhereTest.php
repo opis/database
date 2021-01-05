@@ -222,7 +222,7 @@ class WhereTest extends BaseClass
                 'SELECT * FROM "numbers" WHERE "c" = "b" + 10',
                 fn(Database $db) => $db->from('numbers')
                     ->where('c')
-                    ->eq(fn (Expression $expr) => $expr->column('b')->op('+')->value(10))
+                    ->eq(fn(Expression $expr) => $expr->column('b')->op('+')->value(10))
                     ->select(),
             ],
             [
@@ -286,6 +286,54 @@ class WhereTest extends BaseClass
                             ->value('expression')->op(')');
                     })
                     ->nop()
+                    ->select(),
+            ],
+            [
+                'where expression call 1 - nop',
+                'SELECT * FROM "users" WHERE match("username") against(\'expression\')',
+                fn(Database $db) => $db->from('users')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->call('match', fn(Expression $e) => $e->column('username'));
+                        $expr->call('against', 'expression');
+                    })
+                    ->nop()
+                    ->select(),
+            ],
+            [
+                'where expression call 1 magic - nop',
+                'SELECT * FROM "users" WHERE match("username") against(\'expression\')',
+                fn(Database $db) => $db->from('users')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->match(fn(Expression $e) => $e->column('username'));
+                        $expr->against('expression');
+                    })
+                    ->nop()
+                    ->select(),
+            ],
+            [
+                'where expression call 2',
+                'SELECT * FROM "users" WHERE CUSTOM_AGE_CALC(\'secret\', 5, "age" - 10) = "age"',
+                fn(Database $db) => $db->from('users')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->call('CUSTOM_AGE_CALC', 'secret', 5, function (Expression $expr) {
+                            $expr->column('age')->op('-')->value(10);
+                        });
+                    })
+                    ->is('age', true)
+                    ->select(),
+            ],
+            [
+                'where expression call 3 - magic',
+                'SELECT * FROM "users" WHERE CUSTOM_AGE_CALC(HASH(\'secret\'), CONCAT(\'prefix-\', "name"), "age" - 10) = "age"',
+                fn(Database $db) => $db->from('users')
+                    ->whereExpression(function (Expression $expr) {
+                        $expr->CUSTOM_AGE_CALC(
+                            fn (Expression $e) => $e->HASH('secret'),
+                            fn (Expression $e) => $e->CONCAT('prefix-', fn (Expression $e) => $e->column('name')),
+                            fn (Expression $e) => $e->column('age')->op('-')->value(10)
+                        );
+                    })
+                    ->is('age', true)
                     ->select(),
             ],
         ];

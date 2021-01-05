@@ -167,6 +167,9 @@ class Compiler
                 case 'function':
                     $sql[] = $this->handleSqlFunction($expr['value']);
                     break;
+                case 'call':
+                    $sql[] = $this->handleCustomCall($expr['value']);
+                    break;
                 case 'subquery':
                     /** @var SubQuery $subquery */
                     $subquery = $expr['value'];
@@ -176,6 +179,22 @@ class Compiler
         }
 
         return implode(' ', $sql);
+    }
+
+    protected function handleCustomCall(array $func): string
+    {
+        $args = array_map(function (mixed $arg) {
+            if ($arg instanceof Expression) {
+                return $this->handleExpressions($arg->getExpressions());
+            }
+            return $this->param($arg);
+        }, $func['args']);
+
+        if (!$args) {
+            return $func['name'] . '()';
+        }
+
+        return $func['name'] . '(' . implode(', ', $args) . ')';
     }
 
     protected function handleSqlFunction(array $func): string
