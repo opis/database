@@ -32,11 +32,11 @@ class Compiler
     protected array $serials = ['tiny', 'small', 'normal', 'medium', 'big'];
 
     protected string $autoincrement = 'AUTO_INCREMENT';
-    protected Connection $connection;
+    protected ?Connection $connection = null;
 
-
-    public function __construct(Connection $connection)
+    public function __construct(?Connection $connection = null)
     {
+        // Not all compilers require a connection
         $this->connection = $connection;
     }
 
@@ -436,7 +436,12 @@ class Compiler
 
     protected function handleRenameColumn(Blueprint $table, mixed $data): string
     {
-        return '';
+        // supported by: postgres, mysql 8, sqlite >= 3.25, oracle 9i release 2
+
+        /** @var Column $column */
+        $column = $data['column'];
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
+            . $this->wrap($data['from']) . ' TO ' . $this->wrap($column->getName());
     }
 
     protected function handleModifyColumn(Blueprint $table, mixed $data): string

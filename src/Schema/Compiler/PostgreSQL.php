@@ -127,14 +127,6 @@ class PostgreSQL extends Compiler
         return $sql;
     }
 
-    protected function handleRenameColumn(Blueprint $table, mixed $data): string
-    {
-        /** @var Column $column */
-        $column = $data['column'];
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' RENAME COLUMN '
-            . $this->wrap($data['from']) . ' TO ' . $this->wrap($column->getName());
-    }
-
     protected function handleAddIndex(Blueprint $table, mixed $data): string
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';

@@ -105,6 +105,11 @@ class MySQL extends Compiler
 
     protected function handleRenameColumn(Blueprint $table, mixed $data): string
     {
+        if ($this->connection === null) {
+            // mysql 8 doesn't need a connection
+            return parent::handleRenameColumn($table, $data);
+        }
+
         $table_name = $table->getTableName();
         $column_name = $data['from'];
         /** @var Column $column */

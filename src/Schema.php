@@ -153,14 +153,13 @@ class Schema
      */
     public function create(string $table, callable $callback): void
     {
-        $compiler = $this->connection->schemaCompiler();
-
         $schema = new Blueprint($table);
 
         $callback($schema);
 
-        foreach ($compiler->create($schema) as $result) {
-            $this->connection->command($result['sql'], $result['params']);
+        $connection = $this->connection;
+        foreach ($connection->schemaCompiler()->create($schema) as $result) {
+            $connection->command($result['sql'], $result['params']);
         }
 
         //clear table list
@@ -175,16 +174,15 @@ class Schema
      */
     public function alter(string $table, callable $callback): void
     {
-        $compiler = $this->connection->schemaCompiler();
-
         $schema = new Blueprint($table, true);
 
         $callback($schema);
 
         unset($this->columns[strtolower($table)]);
 
-        foreach ($compiler->alter($schema) as $result) {
-            $this->connection->command($result['sql'], $result['params']);
+        $connection = $this->connection;
+        foreach ($connection->schemaCompiler()->alter($schema) as $result) {
+            $connection->command($result['sql'], $result['params']);
         }
     }
 
