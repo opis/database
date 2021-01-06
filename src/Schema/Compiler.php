@@ -283,6 +283,11 @@ class Compiler
         return 'CHAR(' . $this->value($column->get('length', 255)) . ')';
     }
 
+    protected function handleTypeJson(Column $column): string
+    {
+        return 'JSON';
+    }
+
     protected function handleTypeTime(Column $column): string
     {
         return 'TIME';

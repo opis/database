@@ -104,6 +104,11 @@ class SQLServer extends Compiler
         return 'VARBINARY(max)';
     }
 
+    protected function handleTypeJson(Column $column): string
+    {
+        return 'NVARCHAR(max)';
+    }
+
     protected function handleTypeTimestamp(Column $column): string
     {
         return 'DATETIME';

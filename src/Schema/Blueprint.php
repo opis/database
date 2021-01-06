@@ -331,6 +331,11 @@ class Blueprint
         return $this->addColumn($name, 'text');
     }
 
+    public function json(string $name): Column
+    {
+        return $this->addColumn($name, 'json');
+    }
+
     public function time(string $name): Column
     {
         return $this->addColumn($name, 'time');
@@ -409,6 +414,11 @@ class Blueprint
     public function toText(string $name): Column
     {
         return $this->modifyColumn($name, 'text');
+    }
+
+    public function toJson(string $name): Column
+    {
+        return $this->modifyColumn($name, 'json');
     }
 
     public function toTime(string $name): Column

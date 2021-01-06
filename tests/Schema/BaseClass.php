@@ -102,6 +102,7 @@ class BaseClass extends TestCase
             $table->time('k');
             $table->binary('l');
             $table->text('m');
+            $table->json('n');
         });
 
         $this->execTest(__FUNCTION__, $this->schema->getResult());

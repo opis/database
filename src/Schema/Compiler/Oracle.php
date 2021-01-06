@@ -112,6 +112,11 @@ class Oracle extends Compiler
         return 'VARCHAR2(' . $this->value($column->get('length', 255)) . ')';
     }
 
+    protected function handleTypeJson(Column $column): string
+    {
+        return 'BLOB';
+    }
+
     protected function handleTypeTime(Column $column): string
     {
         return 'DATE';

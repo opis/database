@@ -29,7 +29,8 @@ testTypes: |
   `j` TIMESTAMP,
   `k` TIME,
   `l` BLOB,
-  `m` TEXT
+  `m` TEXT,
+  `n` JSON
   )
 testIntSizes: |
   CREATE TABLE `foo`(
