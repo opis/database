@@ -51,7 +51,7 @@ class Connection
         string $username = null,
         string $password = null,
         string $driver = null,
-        PDO $pdo = null
+        ?PDO $pdo = null
     ) {
         $this->dsn = $dsn;
         $this->username = $username;
