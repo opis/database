@@ -32,9 +32,7 @@ class Schema extends BaseSchema
 
         $callback($schema);
 
-        $this->result = implode("\n", array_map(function ($value) {
-            return $value['sql'];
-        }, $compiler->create($schema)));
+        $this->result = $this->implode($compiler->create($schema));
     }
 
     public function alter(string $table, callable $callback): void
@@ -45,38 +43,37 @@ class Schema extends BaseSchema
 
         $callback($schema);
 
-        $this->result = implode("\n", array_map(function ($value) {
-            return $value['sql'];
-        }, $compiler->alter($schema)));
+        $this->result = $this->implode($compiler->alter($schema));
     }
 
     public function renameTable(string $table, string $name): void
     {
         $result = $this->connection->schemaCompiler()->renameTable($table, $name);
 
-        $this->result = implode("\n", array_map(function ($value) {
-            return $value['sql'];
-        }, $result));
+        $this->result = $this->implode($result);
     }
 
     public function drop(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $this->result = implode("\n", array_map(function ($value) {
-            return $value['sql'];
-        }, $compiler->drop($table)));
+        $this->result = $this->implode($compiler->drop($table));
     }
 
     public function truncate(string $table): void
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $this->result = implode("\n", array_map(fn (array $v) => $v['sql'], $compiler->truncate($table)));
+        $this->result = $this->implode($compiler->truncate($table));
     }
 
     public function getResult(): string
     {
         return $this->result;
+    }
+
+    protected function implode(array $list, string $delimiter = "\n"): string
+    {
+        return implode($delimiter, array_map(static fn(array $v) => $v['sql'], $list));
     }
 }
