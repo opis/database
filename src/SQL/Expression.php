@@ -18,6 +18,7 @@
 namespace Opis\Database\SQL;
 
 use Closure;
+use RuntimeException;
 
 class Expression
 {
@@ -137,6 +138,11 @@ class Expression
     public function __get(mixed $value): static
     {
         return $this->addExpression('op', $value);
+    }
+
+    public function __set(string $name, mixed $value): void
+    {
+        throw new RuntimeException("Not allowed!");
     }
 
     public function __call(string $name, array $arguments): static
