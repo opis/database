@@ -44,11 +44,17 @@ class Where
 
     public function is(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
     {
+        if ($value === null && !$is_column) {
+            return $this->addNullCondition(false);
+        }
         return $this->addCondition($value, '=', $is_column);
     }
 
     public function isNot(mixed $value, bool $is_column = false): WhereStatement|Select|Update|Delete
     {
+        if ($value === null && !$is_column) {
+            return $this->addNullCondition(true);
+        }
         return $this->addCondition($value, '!=', $is_column);
     }
 
