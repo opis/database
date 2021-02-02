@@ -56,9 +56,9 @@ class Update extends UpdateStatement
 
         foreach ($columns as $k => $v) {
             if (is_numeric($k)) {
-                $values[$v] = static fn (Expression $expr) => $expr->column($v)->{$sign}->value($value);
+                $values[$v] = Expression::fromColumn($v)->op($sign)->value($value);
             } else {
-                $values[$k] = static fn (Expression $expr) => $expr->column($k)->{$sign}->value($v);
+                $values[$k] = Expression::fromColumn($k)->op($sign)->value($v);
             }
         }
 

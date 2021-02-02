@@ -171,7 +171,7 @@ class Where
     protected function addCondition(mixed $value, string $operator, bool $isColumn = false): WhereStatement|Select|Update|Delete
     {
         if ($isColumn && is_string($value)) {
-            $value = static fn (Expression $expr) => $expr->column($value);
+            $value = Expression::fromColumn($value);
         }
         $this->sql->addWhereCondition($this->column, $value, $operator, $this->separator);
         return $this->statement;
