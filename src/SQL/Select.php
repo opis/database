@@ -31,7 +31,7 @@ class Select extends SelectStatement
 
     public function select(mixed $columns = []): ResultSet
     {
-        parent::select($columns);
+        $this->selectColumns($columns);
         $compiler = $this->connection->getCompiler();
         return $this->connection->query($compiler->select($this->sql), $compiler->getParams());
     }

@@ -18,6 +18,7 @@
 namespace Opis\Database\Test\Schema;
 
 use Opis\Database\Schema\Blueprint;
+use Opis\Database\SQL\Query;
 use Opis\Database\Test\Connection;
 use Opis\Database\Test\Schema;
 use PHPUnit\Framework\TestCase;
@@ -52,6 +53,16 @@ class BaseClass extends TestCase
     public function setUp(): void
     {
         $this->schema = static::$db_schema;
+    }
+
+    private function execTest($test, $result)
+    {
+        $expected = static::$data[$test] ?? null;
+        if ($expected === null) {
+            $this->markTestSkipped();
+        } else {
+            $this->assertEquals($expected, $result);
+        }
     }
 
     public function testCreateTable()
@@ -240,6 +251,24 @@ class BaseClass extends TestCase
         $this->execTest(__FUNCTION__, $this->schema->getResult());
     }
 
+    public function testRenameTable()
+    {
+        $this->schema->renameTable('foo', 'bar');
+        $this->execTest(__FUNCTION__, $this->schema->getResult());
+    }
+
+    public function testTruncateTable()
+    {
+        $this->schema->truncate('foo');
+        $this->execTest(__FUNCTION__, $this->schema->getResult());
+    }
+
+    public function testDropTable()
+    {
+        $this->schema->drop('foo');
+        $this->execTest(__FUNCTION__, $this->schema->getResult());
+    }
+
     public function testAlterTableAddColumn()
     {
         $this->schema->alter('foo', function(Blueprint $table){
@@ -277,13 +306,21 @@ class BaseClass extends TestCase
         $this->execTest(__FUNCTION__, $this->schema->getResult());
     }
 
-    private function execTest($test, $result)
+    public function testCreateView()
     {
-        $expected = static::$data[$test] ?? null;
-        if ($expected === null) {
-            $this->markTestSkipped();
-        } else {
-            $this->assertEquals($expected, $result);
-        }
+        $this->schema->createView('foo', 'src', function (Query $query) {
+            $query
+                ->where('name')->notNull()
+                ->andWhere('money')->gt(0)
+                ->select(['name', 'money']);
+        });
+
+        $this->execTest(__FUNCTION__, $this->schema->getResult());
+    }
+
+    public function testDropView()
+    {
+        $this->schema->dropView('foo');
+        $this->execTest(__FUNCTION__, $this->schema->getResult());
     }
 }

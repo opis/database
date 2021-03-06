@@ -119,3 +119,14 @@ testAlterTableDropColumn: |
   ALTER TABLE `foo` DROP COLUMN `a`
 testAlterTableAddDefaults: |
     ALTER TABLE `foo` ALTER `a` SET DEFAULT 100
+testRenameTable: |
+    RENAME TABLE `foo` TO `bar`
+testTruncateTable: |
+    TRUNCATE TABLE `foo`
+testDropTable: |
+    DROP TABLE `foo`
+testCreateView: |
+    CREATE VIEW `foo` AS SELECT `name`, `money` FROM `src` WHERE `name` IS NOT NULL AND `money` > ?
+testDropView: |
+    DROP VIEW `foo`
+

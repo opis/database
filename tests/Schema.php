@@ -67,6 +67,24 @@ class Schema extends BaseSchema
         $this->result = $this->implode($compiler->truncate($table));
     }
 
+    public function createView(string $view, string|array $table, callable $callback): void
+    {
+        $connection = $this->connection;
+
+        $select = $this->createViewSelect($table, $callback);
+
+        $result = $connection->schemaCompiler()->createView($view, $select->sql, $select->params);
+
+        $this->result = $this->implode($result);
+    }
+
+    public function dropView(string $view): void
+    {
+        $compiler = $this->connection->schemaCompiler();
+
+        $this->result = $this->implode($compiler->dropView($view));
+    }
+
     public function getResult(): string
     {
         return $this->result;
@@ -74,6 +92,10 @@ class Schema extends BaseSchema
 
     protected function implode(array $list, string $delimiter = "\n"): string
     {
+        if (isset($list['sql'])) {
+            // only one command
+            $list = [$list];
+        }
         return implode($delimiter, array_map(static fn(array $v) => $v['sql'], $list));
     }
 }

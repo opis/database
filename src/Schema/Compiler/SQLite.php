@@ -46,6 +46,17 @@ class SQLite extends Compiler
         ];
     }
 
+    public function getViews(string $database): array
+    {
+        $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
+            . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
+
+        return [
+            'sql' => $sql,
+            'params' => ['view'],
+        ];
+    }
+
     public function getColumns(string $database, string $table): array
     {
         return [

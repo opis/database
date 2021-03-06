@@ -75,6 +75,18 @@ class Compiler
         ];
     }
 
+    public function getViews(string $database): array
+    {
+        $sql = 'SELECT ' . $this->wrap('table_name') . ' FROM ' . $this->wrap('information_schema')
+            . '.' . $this->wrap('tables') . ' WHERE table_type = ? AND table_schema = ? ORDER BY '
+            . $this->wrap('table_name') . ' ASC';
+
+        return [
+            'sql' => $sql,
+            'params' => ['VIEW', $database],
+        ];
+    }
+
     public function getColumns(string $database, string $table): array
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
@@ -162,6 +174,21 @@ class Compiler
         return $this;
     }
 
+    public function createView(string $name, string $select, array $params = []): array
+    {
+        return [
+            'sql' => 'CREATE VIEW ' . $this->wrap($name) . ' AS ' . $select,
+            'params' => $params,
+        ];
+    }
+
+    public function dropView(string $view): array
+    {
+        return [
+            'sql' => 'DROP VIEW ' . $this->wrap($view),
+            'params' => [],
+        ];
+    }
 
     protected function wrap(string $name): string
     {

@@ -18,12 +18,12 @@
 namespace Opis\Database;
 
 use RuntimeException;
-use Opis\Database\Schema\Blueprint;
 
 class Schema
 {
     protected Connection $connection;
     protected ?array $tableList = null;
+    protected ?array $viewList = null;
     protected ?string $currentDatabase = null;
     protected array $columns = [];
 
@@ -62,8 +62,7 @@ class Schema
      */
     public function hasTable(string $table, bool $clear = false): bool
     {
-        $list = $this->getTables($clear);
-        return isset($list[strtolower($table)]);
+        return isset($this->getTables($clear)[strtolower($table)]);
     }
 
     /**
@@ -153,7 +152,7 @@ class Schema
      */
     public function create(string $table, callable $callback): void
     {
-        $schema = new Blueprint($table);
+        $schema = new Schema\Blueprint($table);
 
         $callback($schema);
 
@@ -174,7 +173,7 @@ class Schema
      */
     public function alter(string $table, callable $callback): void
     {
-        $schema = new Blueprint($table, true);
+        $schema = new Schema\Blueprint($table, true);
 
         $callback($schema);
 
@@ -230,5 +229,138 @@ class Schema
         $result = $compiler->truncate($table);
 
         $this->connection->command($result['sql'], $result['params']);
+    }
+
+    /**
+     * Check if the specified view exists
+     *
+     * @param string $view
+     * @param bool $clear
+     * @return bool
+     */
+    public function hasView(string $view, bool $clear = false): bool
+    {
+        return isset($this->getViews($clear)[strtolower($view)]);
+    }
+
+    /**
+     * Get a list with all tables that belong to the currently used database
+     *
+     * @param bool $clear
+     * @return string[]
+     */
+    public function getViews(bool $clear = false): array
+    {
+        if ($clear) {
+            $this->viewList = null;
+        }
+
+        if ($this->viewList === null) {
+            $compiler = $this->connection->schemaCompiler();
+
+            $database = $this->getCurrentDatabase();
+
+            $sql = $compiler->getViews($database);
+
+            $results = $this->connection
+                ->query($sql['sql'], $sql['params'])
+                ->fetchNum()
+                ->all();
+
+            $this->viewList = [];
+
+            foreach ($results as $result) {
+                $this->viewList[strtolower($result[0])] = $result[0];
+            }
+        }
+
+        return $this->viewList;
+    }
+
+    /**
+     * Creates a new view
+     *
+     * @param string $view
+     * @param string|array $table
+     * @param callable $callback
+     */
+    public function createView(string $view, string|array $table, callable $callback): void
+    {
+        $connection = $this->connection;
+
+        $select = $this->createViewSelect($table, $callback);
+
+        $result = $connection->schemaCompiler()->createView($view, $select->sql, $select->params);
+
+        $this->connection->command($result['sql'], $result['params']);
+
+        // clear view list
+        $this->viewList = null;
+    }
+
+    /**
+     * Deletes a view
+     *
+     * @param string $view
+     */
+    public function dropView(string $view): void
+    {
+        $compiler = $this->connection->schemaCompiler();
+
+        $result = $compiler->dropView($view);
+
+        $this->connection->command($result['sql'], $result['params']);
+
+        // clear view list
+        $this->viewList = null;
+    }
+
+    protected function createViewSelect(string|array $table, callable $callback): object
+    {
+        $shared = (object)['sql' => null, 'params' => null];
+
+        $callback(new class($this->connection, $table, $shared) extends SQL\Query {
+            private object $shared;
+
+            public function __construct(Connection $connection, array|string $tables, object $shared)
+            {
+                parent::__construct($connection, $tables);
+                $this->shared = $shared;
+            }
+
+            public function select(mixed $columns = []): ResultSet
+            {
+                (new class ($this->connection, $this->tables, $this->sql) extends SQL\Select {
+                    public function addSelectCommand(object $shared, mixed $columns): void
+                    {
+                        $this->selectColumns($columns);
+                        $compiler = $this->connection->getCompiler();
+
+                        $shared->sql = $compiler->select($this->sql);
+                        $shared->params = $compiler->getParams();
+                    }
+                })
+                    ->addSelectCommand($this->shared, $columns);
+
+                // Return a fake result set
+                return new ResultSet(null);
+            }
+
+            public function delete(array|string $tables = []): int
+            {
+                throw new RuntimeException("Cannot use while creating a view");
+            }
+
+            public function into(string $table, ?string $database = null): SQL\Select
+            {
+                throw new RuntimeException("Cannot use while creating a view");
+            }
+        });
+
+        if ($shared->sql === null) {
+            throw new RuntimeException("You must select() something in order to create a view");
+        }
+
+        return $shared;
     }
 }

@@ -46,6 +46,18 @@ class Oracle extends Compiler
         ];
     }
 
+    public function getViews(string $database): array
+    {
+        $sql = 'SELECT ' . $this->wrap('view_name') . ' FROM ' . $this->wrap('all_views')
+            . ' WHERE owner = ? '
+            . ' ORDER BY ' . $this->wrap('view_name') . ' ASC';
+
+        return [
+            'sql' => $sql,
+            'params' => [$database],
+        ];
+    }
+
     public function getColumns(string $database, string $table): array
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')

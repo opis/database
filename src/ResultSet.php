@@ -22,9 +22,9 @@ use PDOStatement;
 
 class ResultSet
 {
-    protected PDOStatement $statement;
+    protected ?PDOStatement $statement;
 
-    public function __construct(PDOStatement $statement)
+    public function __construct(?PDOStatement $statement)
     {
         $this->statement = $statement;
     }
@@ -34,7 +34,9 @@ class ResultSet
      */
     public function __destruct()
     {
-        $this->statement->closeCursor();
+        if ($this->statement) {
+            $this->statement->closeCursor();
+        }
     }
 
     /**

@@ -97,17 +97,7 @@ class SelectStatement extends BaseStatement
 
     public function select(mixed $columns = []): mixed
     {
-        $expr = new ColumnExpression($this->sql);
-
-        if ($columns instanceof Closure) {
-            $columns($expr);
-        } else {
-            if (!is_array($columns)) {
-                $columns = [$columns];
-            }
-            $expr->columns($columns);
-        }
-
+        $this->selectColumns($columns);
         return null;
     }
 
@@ -151,5 +141,19 @@ class SelectStatement extends BaseStatement
     {
         parent::__clone();
         $this->have = new HavingStatement($this->sql);
+    }
+
+    protected function selectColumns(mixed $columns): void
+    {
+        $expr = new ColumnExpression($this->sql);
+
+        if ($columns instanceof Closure) {
+            $columns($expr);
+        } else {
+            if (!is_array($columns)) {
+                $columns = [$columns];
+            }
+            $expr->columns($columns);
+        }
     }
 }

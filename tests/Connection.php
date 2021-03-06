@@ -17,6 +17,7 @@
 
 namespace Opis\Database\Test;
 
+use Opis\Database\ResultSet;
 use Opis\Database\Connection as BaseConnection;
 
 class Connection extends BaseConnection
@@ -33,7 +34,7 @@ class Connection extends BaseConnection
     public function query(string $sql, array $params = []): ResultSet
     {
         $this->result = $this->replaceParams($sql, $params);
-        return new ResultSet();
+        return new ResultSet(null);
     }
 
     public function column(string $sql, array $params = []): mixed
