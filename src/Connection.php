@@ -41,6 +41,7 @@ class Connection
     protected ?string $dsn = null;
     protected ?string $driver = null;
     protected ?Database $database = null;
+    protected ?EntityManager $entityManager = null;
     protected ?Schema $schema = null;
     protected array $compilerOptions = [];
     protected array $schemaCompilerOptions = [];
@@ -248,6 +249,15 @@ class Connection
         }
 
         return $this->database;
+    }
+
+    public function getEntityManager(): EntityManager
+    {
+        if ($this->entityManager === null) {
+            $this->entityManager = new EntityManager($this);
+        }
+
+        return $this->entityManager;
     }
 
     /**

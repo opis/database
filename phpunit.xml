@@ -1,4 +1,4 @@
-<phpunit bootstrap="./vendor/autoload.php">
+<phpunit bootstrap="./tests/bootstrap.php">
     <testsuites>
         <testsuite name="Opis Database SQL Test Suite">
             <directory suffix="Test.php">./tests/SQL</directory>
@@ -6,5 +6,17 @@
         <testsuite name="Opis Database Schema Test Suite">
             <directory suffix="Test.php">./tests/Schema</directory>
         </testsuite>
+        <testsuite name="ORM">
+            <file>tests/ORM/QueryTest.php</file>
+            <file>tests/ORM/RelationsTest.php</file>
+            <file>tests/ORM/LazyLoaderTest.php</file>
+            <file>tests/ORM/CreateTest.php</file>
+            <file>tests/ORM/UpdateTest.php</file>
+            <file>tests/ORM/DeleteTest.php</file>
+            <file>tests/ORM/LinkTest.php</file>
+        </testsuite>
     </testsuites>
+    <extensions>
+        <extension class="Opis\Database\Test\TestListener" />
+    </extensions>
 </phpunit>
