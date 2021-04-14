@@ -117,4 +117,10 @@ interface EntityMapper
      * @return $this
      */
     public function on(string $event, callable $callback): static;
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function readonly(bool $value = true): static;
 }

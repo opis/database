@@ -24,6 +24,7 @@ class EntityMapper implements EntityMapperInterface
     protected string $entityClass;
     protected ?string $entityName = null;
     protected ?string $table = null;
+    protected bool $readonly = false;
     protected ?PrimaryKey $primaryKey = null;
     protected ?ForeignKey $foreignKey = null;
 
@@ -213,6 +214,25 @@ class EntityMapper implements EntityMapperInterface
     public function on(string $event, callable $callback): static
     {
         $this->eventHandlers[$event] = $callback;
+        return $this;
+    }
+
+    /**
+     * Check if marked as readonly
+     *
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->readonly;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function readonly(bool $value = true): static
+    {
+        $this->readonly = $value;
         return $this;
     }
 

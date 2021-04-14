@@ -294,7 +294,7 @@ class EntityQuery extends Query
      */
     protected function isReadOnly(): bool
     {
-        return !empty($this->sql->getJoins());
+        return $this->mapper->isReadOnly() || !empty($this->sql->getJoins());
     }
 
     /**
