@@ -798,7 +798,7 @@ class Compiler
      */
     protected function sqlFunctionMID(array $func)
     {
-        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? $this->param($func['length']) . ')' : ')');
+        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? ', ' . $this->param($func['length']) . ')' : ')');
     }
 
     /**
