@@ -514,7 +514,7 @@ class Compiler
 
     protected function sqlFunctionMID(array $func): string
     {
-        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? $this->param($func['length']) . ')' : ')');
+        return 'MID(' . $this->wrap($func['column']) . ', ' . $this->param($func['start']) . ($func['length'] > 0 ? ', ' . $this->param($func['length']) . ')' : ')');
     }
 
     protected function sqlFunctionLEN(array $func): string
