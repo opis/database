@@ -71,12 +71,12 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @param array $values
+     * @param array ...$values
      * @return InsertStatement
      */
-    public function insert(array $values): InsertStatement
+    public function insert(array ...$values): InsertStatement
     {
-        return (new InsertCommand($this->connection))->insert($values);
+        return (new InsertCommand($this->connection))->insert(...$values);
     }
 
     /**

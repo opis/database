@@ -48,7 +48,20 @@ class InsertTest extends BaseClass
                         $expr->{'LCASE('}->value('foo')->{')'};
                     },
                 ])->into('users')
-            ]
+            ],
+            [
+                'insert multiple rows',
+                'INSERT INTO "users" ("name", "age") VALUES (\'foo\', 18), (\'bar\', 20), (\'baz\', NULL), (NULL, 30), (\'extra\', 26)',
+                fn(Database $db) => $db
+                    ->insert(
+                        ['name' => 'foo', 'age' => 18],
+                        ['age' => 20, 'name' => 'bar'],
+                        ['name' => 'baz'],
+                        ['age' => 30, 'email' => 'mail@example.com'],
+                    )
+                    ->insert(['name' => 'extra', 'age' => 26])
+                    ->into('users'),
+            ],
         ];
     }
 }

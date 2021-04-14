@@ -20,6 +20,7 @@ namespace Opis\Database\SQL;
 class InsertStatement
 {
     protected ?SQLStatement $sql;
+    protected ?array $columns = null;
 
     public function __construct(?SQLStatement $statement = null)
     {
@@ -35,11 +36,37 @@ class InsertStatement
         return $this->sql;
     }
 
-    public function insert(array $values): static
+    public function insert(array ...$values): static
     {
-        foreach ($values as $column => $value) {
-            $this->sql->addColumn($column);
-            $this->sql->addValue($value);
+        if (!$values) {
+            return $this;
+        }
+
+        if ($this->columns === null) {
+            // Generate column order
+            $this->columns = [];
+            foreach (array_keys(reset($values)) as $column) {
+                if (is_string($column)) {
+                    $this->columns[] = $column;
+                    // Also add column to sql
+                    $this->sql->addColumn($column);
+                }
+            }
+        }
+
+        if (!$this->columns) {
+            // No columns
+            return $this;
+        }
+
+        foreach ($values as $row) {
+            $map = [];
+
+            foreach ($this->columns as $column) {
+                $map[] = $row[$column] ?? null;
+            }
+
+            $this->sql->addValues($map);
         }
 
         return $this;

@@ -310,9 +310,9 @@ class SQLStatement
         $this->from = $from;
     }
 
-    public function addValue(mixed $value): void
+    public function addValues(array $values): void
     {
-        $this->values[] = $this->closureToExpression($value);
+        $this->values[] = array_map([$this, 'closureToExpression'], $values);
     }
 
     public function getWheres(): array

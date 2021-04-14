@@ -367,7 +367,7 @@ class Compiler
 
     protected function handleInsertValues(array $values): string
     {
-        return ' VALUES (' . $this->params($values) . ')';
+        return ' VALUES (' . implode('), (', array_map([$this, 'params'], $values)) . ')';
     }
 
     /** @noinspection PhpUnusedParameterInspection */
