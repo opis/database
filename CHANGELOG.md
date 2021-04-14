@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v4.2.1 - 2021-04-14
+
+### Fixed
+
+- Bug in `mid` function
+
 ## v4.2.0 - 2020-05-24
 
 ### Added
