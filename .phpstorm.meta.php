@@ -3,7 +3,8 @@ namespace PHPSTORM_META {
     override(\Opis\Database\EntityManager::create(), type(0));
 }
 namespace Opis\Database\SQL {
-    use Opis\Database\ORM\Internal\{EntityQuery as E, Query as Q};
+    use Opis\Database\ORM\Internal\{EntityQuery as E};
+    use Opis\Database\ORM\Query as Q;
 
     class Where {
         /**

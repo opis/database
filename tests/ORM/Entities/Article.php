@@ -18,7 +18,7 @@
 namespace Opis\Database\Test\ORM\Entities;
 
 use Opis\Database\ORM\Entity;
-use Opis\Database\ORM\Internal\Query;
+use Opis\Database\ORM\Query;
 use Opis\Database\ORM\{
     EntityMapper
 };

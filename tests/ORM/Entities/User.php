@@ -19,7 +19,7 @@ namespace Opis\Database\Test\ORM\Entities;
 
 use Opis\Database\ORM\DataMapper;
 use Opis\Database\ORM\EntityMapper;
-use Opis\Database\ORM\Internal\Query;
+use Opis\Database\ORM\Query;
 use Opis\Database\ORM\Entity;
 use Opis\Database\ORM\MappableEntity;
 

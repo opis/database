@@ -22,9 +22,7 @@ use Opis\Database\{Connection, EntityManager, ResultSet};
 use Opis\Database\SQL\{
     Delete, SQLStatement, Update
 };
-use Opis\Database\ORM\{
-    Traits\AggregateTrait
-};
+use Opis\Database\ORM\{Query, Traits\AggregateTrait};
 
 class EntityQuery extends Query
 {
