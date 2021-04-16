@@ -18,12 +18,12 @@
 namespace Opis\Database\ORM\Relations;
 
 use Opis\Database\EntityManager;
-use Opis\Database\ORM\{Entity, Query};
+use Opis\Database\ORM\{Entity, ForeignKey, Junction, Query};
 use Opis\Database\SQL\{
     Delete, Insert, Join, SQLStatement
 };
 use Opis\Database\ORM\Internal\{
-    DataMapper, EntityMapper, EntityQuery, ForeignKey, Junction, LazyLoader, Proxy, Relation
+    DataMapper, EntityMapper, EntityQuery, LazyLoader, Proxy, Relation
 };
 
 class ShareOneOrMany extends Relation

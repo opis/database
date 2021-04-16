@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\ORM\Internal;
+namespace Opis\Database\ORM;
 
 class Junction
 {

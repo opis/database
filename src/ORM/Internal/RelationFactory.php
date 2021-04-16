@@ -20,6 +20,8 @@ namespace Opis\Database\ORM\Internal;
 use Opis\Database\ORM\Relations\{
     BelongsTo, HasOneOrMany, ShareOneOrMany
 };
+use Opis\Database\ORM\ForeignKey;
+use Opis\Database\ORM\Junction;
 
 class RelationFactory
 {

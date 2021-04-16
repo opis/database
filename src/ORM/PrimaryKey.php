@@ -15,21 +15,22 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Database\ORM\Internal;
+namespace Opis\Database\ORM;
 
 use Stringable;
+use Opis\Database\ORM\Internal\{DataMapper, Proxy};
 
-class ForeignKey implements Stringable
+class PrimaryKey implements Stringable
 {
     /** @var string[] */
     private array $columns;
     private bool $composite;
 
     /**
-     * ForeignKey constructor.
-     * @param string[] $columns
+     * PrimaryKey constructor.
+     * @param string ...$columns
      */
-    public function __construct(array $columns)
+    public function __construct(string ...$columns)
     {
         $this->columns = $columns;
         $this->composite = count($columns) > 1;
@@ -58,57 +59,34 @@ class ForeignKey implements Stringable
      */
     public function getValue(array $columns, bool $map = false): mixed
     {
-        if (!$map && !$this->composite) {
-            return $columns[array_keys($this->columns)[0]] ?? null;
+        if (!$this->composite && !$map) {
+            return $columns[$this->columns[0]] ?? null;
         }
-
         $value = [];
-
-        foreach ($this->columns as $candidate => $column) {
-            $value[$column] = $columns[$candidate] ?? null;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param array $columns
-     * @param bool $map
-     * @return mixed
-     */
-    public function getInverseValue(array $columns, bool $map = false): mixed
-    {
-        if (!$map && !$this->composite) {
-            return $columns[array_values($this->columns)[0]] ?? null;
-        }
-
-        $value = [];
-
-        foreach ($this->columns as $candidate => $column) {
-            $value[$candidate] = $columns[$column] ?? null;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param array $columns
-     * @param bool $map
-     * @return mixed
-     */
-    public function extractValue(array $columns, bool $map = false): mixed
-    {
-        if (!$map && !$this->composite) {
-            return $columns[array_values($this->columns)[0]] ?? null;
-        }
-
-        $value = [];
-
         foreach ($this->columns as $column) {
-            $value[$column] = $columns[$column];
+            $value[$column] = $columns[$column] ?? null;
         }
-
         return $value;
+    }
+
+    /***
+     * @param DataMapper $data
+     * @param bool $map
+     * @return mixed
+     */
+    public function valueFromDataMapper(DataMapper $data, bool $map = false): mixed
+    {
+        return $this->getValue($data->getRawColumns(), $map);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param bool $map
+     * @return mixed
+     */
+    public function valueFromEntity(Entity $entity, bool $map = false): mixed
+    {
+        return $this->getValue(Proxy::instance()->getEntityColumns($entity), $map);
     }
 
     /**

@@ -18,6 +18,7 @@
 namespace Opis\Database\ORM\Internal;
 
 use Opis\Database\EntityManager;
+use Opis\Database\ORM\ForeignKey;
 
 abstract class Relation
 {

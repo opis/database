@@ -18,6 +18,7 @@
 namespace Opis\Database\ORM\Internal;
 
 use Opis\Database\ORM\Entity;
+use Opis\Database\ORM\ForeignKey;
 
 class LazyLoader
 {

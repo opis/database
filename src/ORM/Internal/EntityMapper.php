@@ -18,6 +18,8 @@
 namespace Opis\Database\ORM\Internal;
 
 use Opis\Database\ORM\EntityMapper as EntityMapperInterface;
+use Opis\Database\ORM\ForeignKey;
+use Opis\Database\ORM\PrimaryKey;
 
 class EntityMapper implements EntityMapperInterface
 {
