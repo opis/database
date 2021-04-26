@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\{Expression, Join};
 
 class JoinTest extends BaseClass
@@ -28,7 +28,7 @@ class JoinTest extends BaseClass
             [
                 'default join',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on('users.id', 'profiles.id');
                     })
@@ -37,7 +37,7 @@ class JoinTest extends BaseClass
             [
                 'default join gte',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" >= "profiles"."id"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on('users.id', 'profiles.id', '>=');
                     })
@@ -46,7 +46,7 @@ class JoinTest extends BaseClass
             [
                 'default join and',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND "users"."email" = "profile"."primary_email"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on('users.id', 'profiles.id')
                             ->andOn('users.email', 'profile.primary_email');
@@ -56,7 +56,7 @@ class JoinTest extends BaseClass
             [
                 'default join or',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" OR "users"."email" = "profile"."primary_email"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on('users.id', 'profiles.id')
                             ->orOn('users.email', 'profile.primary_email');
@@ -66,7 +66,7 @@ class JoinTest extends BaseClass
             [
                 'default join group',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = "profiles"."id" AND ("users"."email" = "profiles"."primary_email" OR "users"."email" = "profiles"."secondary_email")',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on('users.id', 'profiles.id')
                             ->andOn(function (Join $join) {
@@ -79,7 +79,7 @@ class JoinTest extends BaseClass
             [
                 'default join alias',
                 'SELECT * FROM "users" INNER JOIN "profiles" AS "p" ON "users"."id" = "p"."id"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join(['profiles' => 'p'], function (Join $join) {
                         $join->on('users.id', 'p.id');
                     })
@@ -88,14 +88,14 @@ class JoinTest extends BaseClass
             [
                 'cross join',
                 'SELECT * FROM "users" CROSS JOIN "profiles"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->crossJoin('profiles')
                     ->select(),
             ],
             [
                 'join expression',
                 'SELECT * FROM "users" INNER JOIN "profiles" ON "users"."id" = LEN("profiles"."name")',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->join('profiles', function (Join $join) {
                         $join->on(function (Expression $expr) {
                             $expr->column('users.id')->{'='}->len('profiles.name');

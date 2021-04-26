@@ -26,7 +26,7 @@ class Schema extends BaseSchema
 
     public function create(string $table, callable $callback): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $schema = new Blueprint($table);
 
@@ -37,7 +37,7 @@ class Schema extends BaseSchema
 
     public function alter(string $table, callable $callback): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $schema = new Blueprint($table, true);
 
@@ -48,21 +48,21 @@ class Schema extends BaseSchema
 
     public function renameTable(string $table, string $name): void
     {
-        $result = $this->connection->schemaCompiler()->renameTable($table, $name);
+        $result = $this->connection->getSchemaCompiler()->renameTable($table, $name);
 
         $this->result = $this->implode($result);
     }
 
     public function drop(string $table): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $this->result = $this->implode($compiler->drop($table));
     }
 
     public function truncate(string $table): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $this->result = $this->implode($compiler->truncate($table));
     }
@@ -73,14 +73,14 @@ class Schema extends BaseSchema
 
         $select = $this->createViewSelect($table, $callback);
 
-        $result = $connection->schemaCompiler()->createView($view, $select->sql, $select->params);
+        $result = $connection->getSchemaCompiler()->createView($view, $select->sql, $select->params);
 
         $this->result = $this->implode($result);
     }
 
     public function dropView(string $view): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $this->result = $this->implode($compiler->dropView($view));
     }

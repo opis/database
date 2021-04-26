@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\Expression;
 
 class InsertTest extends BaseClass
@@ -28,22 +28,22 @@ class InsertTest extends BaseClass
             [
                 'insert single value',
                 'INSERT INTO "users" ("age") VALUES (18)',
-                fn(Database $db) => $db->insert(['age' => 18])->into('users'),
+                fn(DatabaseHandler $db) => $db->insert(['age' => 18])->into('users'),
             ],
             [
                 'insert multiple values',
                 'INSERT INTO "users" ("name", "age") VALUES (\'foo\', 18)',
-                fn(Database $db) => $db->insert(['name' => 'foo', 'age' => 18])->into('users'),
+                fn(DatabaseHandler $db) => $db->insert(['name' => 'foo', 'age' => 18])->into('users'),
             ],
             [
                 'insert boolean',
                 'INSERT INTO "test" ("foo", "bar") VALUES (TRUE, FALSE)',
-                fn(Database $db) => $db->insert(['foo' => true, 'bar' => false])->into('test'),
+                fn(DatabaseHandler $db) => $db->insert(['foo' => true, 'bar' => false])->into('test'),
             ],
             [
                 'insert expressions',
                 'INSERT INTO "users" ("name") VALUES (LCASE( \'foo\' ))',
-                fn(Database $db) => $db->insert([
+                fn(DatabaseHandler $db) => $db->insert([
                     'name' => function (Expression $expr) {
                         $expr->{'LCASE('}->value('foo')->{')'};
                     },
@@ -52,7 +52,7 @@ class InsertTest extends BaseClass
             [
                 'insert multiple rows',
                 'INSERT INTO "users" ("name", "age") VALUES (\'foo\', 18), (\'bar\', 20), (\'baz\', NULL), (NULL, 30), (\'extra\', 26)',
-                fn(Database $db) => $db
+                fn(DatabaseHandler $db) => $db
                     ->insert(
                         ['name' => 'foo', 'age' => 18],
                         ['age' => 20, 'name' => 'bar'],

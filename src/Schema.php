@@ -40,7 +40,7 @@ class Schema
     public function getCurrentDatabase(): string
     {
         if ($this->currentDatabase === null) {
-            $compiler = $this->connection->schemaCompiler();
+            $compiler = $this->connection->getSchemaCompiler();
             $result = $compiler->currentDatabase($this->connection->getDSN());
 
             if (isset($result['result'])) {
@@ -78,7 +78,7 @@ class Schema
         }
 
         if ($this->tableList === null) {
-            $compiler = $this->connection->schemaCompiler();
+            $compiler = $this->connection->getSchemaCompiler();
 
             $database = $this->getCurrentDatabase();
 
@@ -118,7 +118,7 @@ class Schema
         }
 
         if (!isset($this->columns[$table])) {
-            $compiler = $this->connection->schemaCompiler();
+            $compiler = $this->connection->getSchemaCompiler();
 
             $database = $this->getCurrentDatabase();
 
@@ -157,7 +157,7 @@ class Schema
         $callback($schema);
 
         $connection = $this->connection;
-        foreach ($connection->schemaCompiler()->create($schema) as $result) {
+        foreach ($connection->getSchemaCompiler()->create($schema) as $result) {
             $connection->command($result['sql'], $result['params']);
         }
 
@@ -180,7 +180,7 @@ class Schema
         unset($this->columns[strtolower($table)]);
 
         $connection = $this->connection;
-        foreach ($connection->schemaCompiler()->alter($schema) as $result) {
+        foreach ($connection->getSchemaCompiler()->alter($schema) as $result) {
             $connection->command($result['sql'], $result['params']);
         }
     }
@@ -193,7 +193,7 @@ class Schema
      */
     public function renameTable(string $table, string $name): void
     {
-        $result = $this->connection->schemaCompiler()->renameTable($table, $name);
+        $result = $this->connection->getSchemaCompiler()->renameTable($table, $name);
         $this->connection->command($result['sql'], $result['params']);
         $this->tableList = null;
         unset($this->columns[strtolower($table)]);
@@ -206,7 +206,7 @@ class Schema
      */
     public function drop(string $table): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $result = $compiler->drop($table);
 
@@ -224,7 +224,7 @@ class Schema
      */
     public function truncate(string $table): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $result = $compiler->truncate($table);
 
@@ -256,7 +256,7 @@ class Schema
         }
 
         if ($this->viewList === null) {
-            $compiler = $this->connection->schemaCompiler();
+            $compiler = $this->connection->getSchemaCompiler();
 
             $database = $this->getCurrentDatabase();
 
@@ -290,7 +290,7 @@ class Schema
 
         $select = $this->createViewSelect($table, $callback);
 
-        $result = $connection->schemaCompiler()->createView($view, $select->sql, $select->params);
+        $result = $connection->getSchemaCompiler()->createView($view, $select->sql, $select->params);
 
         $this->connection->command($result['sql'], $result['params']);
 
@@ -305,7 +305,7 @@ class Schema
      */
     public function dropView(string $view): void
     {
-        $compiler = $this->connection->schemaCompiler();
+        $compiler = $this->connection->getSchemaCompiler();
 
         $result = $compiler->dropView($view);
 

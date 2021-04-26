@@ -40,7 +40,7 @@ class Connection
     protected ?Schema\Compiler $schemaCompiler = null;
     protected ?string $dsn = null;
     protected ?string $driver = null;
-    protected ?Database $database = null;
+    protected ?DatabaseHandler $databaseHandler = null;
     protected ?EntityManager $entityManager = null;
     protected ?Schema $schema = null;
     protected array $compilerOptions = [];
@@ -238,17 +238,17 @@ class Connection
     }
 
     /**
-     * Returns the database object associated with this connection
+     * Returns the database handler object associated with this connection
      *
-     * @return Database
+     * @return DatabaseHandler
      */
-    public function getDatabase(): Database
+    public function getDatabaseHandler(): DatabaseHandler
     {
-        if ($this->database === null) {
-            $this->database = new Database($this);
+        if ($this->databaseHandler === null) {
+            $this->databaseHandler = new DatabaseHandler($this);
         }
 
-        return $this->database;
+        return $this->databaseHandler;
     }
 
     public function getEntityManager(): EntityManager
@@ -307,7 +307,7 @@ class Connection
      *
      * @return Schema\Compiler
      */
-    public function schemaCompiler(): Schema\Compiler
+    public function getSchemaCompiler(): Schema\Compiler
     {
         if ($this->schemaCompiler === null) {
             $this->schemaCompiler = match ($driver = $this->getDriver()) {

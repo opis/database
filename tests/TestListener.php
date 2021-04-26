@@ -18,7 +18,7 @@
 namespace Opis\Database\Test;
 
 use Opis\Database\Connection;
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\EntityManager;
 use Opis\Database\Schema\Blueprint;
 use PHPUnit\Runner\BeforeTestHook;
@@ -48,8 +48,7 @@ class TestListener implements BeforeTestHook
 
         $connection = new Connection('sqlite:' . $file);
         $connection->initCommand('PRAGMA foreign_keys = ON');
-        $db = new Database($connection);
-        $schema = $db->schema();
+        $schema = $connection->getSchema();
 
         $schema->create('users', function(Blueprint $table) {
             $table->integer('id')->primary();
@@ -135,6 +134,8 @@ class TestListener implements BeforeTestHook
         });
 
         $data = json_decode(file_get_contents(__DIR__ . '/data/entities.json'), true);
+
+        $db = $connection->getDatabaseHandler();
 
         foreach ($data as $table => $records) {
             foreach ($records as $record) {

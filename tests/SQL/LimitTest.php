@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 
 class LimitTest extends BaseClass
 {
@@ -27,12 +27,12 @@ class LimitTest extends BaseClass
             [
                 'limit',
                 'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25',
-                fn(Database $db) => $db->from('users')->orderBy('name')->limit(25)->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->limit(25)->select(),
             ],
             [
                 'offset',
                 'SELECT * FROM "users" ORDER BY "name" ASC LIMIT 25 OFFSET 10',
-                fn(Database $db) => $db->from('users')->orderBy('name')->limit(25)->offset(10)->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->limit(25)->offset(10)->select(),
             ],
             /*
             [

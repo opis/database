@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\{ColumnExpression, Expression, HavingExpression, HavingStatement, Join};
 
 class HavingTest extends BaseClass
@@ -28,7 +28,7 @@ class HavingTest extends BaseClass
             [
                 'having column',
                 'SELECT * FROM "users" GROUP BY "age" HAVING COUNT("friends") > 5',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->groupBy('age')
                     ->having('friends', function (HavingExpression $column) {
                         $column->count()->gt(5);
@@ -38,7 +38,7 @@ class HavingTest extends BaseClass
             [
                 'having expression',
                 'SELECT * FROM "users" GROUP BY "age" HAVING COUNT("friends" * 2) > 5',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->groupBy('age')
                     ->having(function (Expression $expr) {
                         $expr->column('friends')->{'*'}->value(2);
@@ -50,7 +50,7 @@ class HavingTest extends BaseClass
             [
                 'having nested',
                 'SELECT COUNT("orders"."id") AS "total_orders", "customers"."name" AS "name" FROM "customers" LEFT JOIN "orders" ON "customers"."id" = "orders"."cid" GROUP BY LCASE("customers"."name") HAVING COUNT("orders"."id") > 10 AND (SUM("orders"."value") >= 1000 OR MIN(ROUND("orders"."value", 2)) >= 500)',
-                fn(Database $db) => $db->from('customers')
+                fn(DatabaseHandler $db) => $db->from('customers')
                     ->leftJoin('orders', function (Join $join) {
                         $join->on('customers.id', 'orders.cid');
                     })

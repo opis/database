@@ -24,7 +24,7 @@ use Opis\Database\SQL\{
     Update as UpdateCommand
 };
 
-class Database
+class DatabaseHandler
 {
     protected Connection $connection;
 
@@ -45,16 +45,6 @@ class Database
     public function getConnection(): Connection
     {
         return $this->connection;
-    }
-
-    /**
-     * Returns the query log for this database.
-     *
-     * @return array
-     */
-    public function getLog(): array
-    {
-        return $this->connection->getLog();
     }
 
     /**
@@ -89,16 +79,6 @@ class Database
     public function update(string $table): UpdateCommand
     {
         return new UpdateCommand($this->connection, $table);
-    }
-
-    /**
-     * The associated schema instance.
-     *
-     * @return  Schema
-     */
-    public function schema(): Schema
-    {
-        return $this->connection->getSchema();
     }
 
     /**

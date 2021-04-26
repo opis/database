@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\Expression;
 
 class DeleteTest extends BaseClass
@@ -28,19 +28,19 @@ class DeleteTest extends BaseClass
             [
                 'delete all',
                 'DELETE FROM "users"',
-                fn(Database $db) => $db->from("users")->delete(),
+                fn(DatabaseHandler $db) => $db->from("users")->delete(),
             ],
             [
                 'delete where condition',
                 'DELETE FROM "users" WHERE "age" < 18',
-                fn(Database $db) => $db->from("users")
+                fn(DatabaseHandler $db) => $db->from("users")
                     ->where('age')->lt(18)
                     ->delete(),
             ],
             [
                 'delete where expression',
                 'DELETE FROM "users" WHERE LEN("name") < 18',
-                fn(Database $db) => $db->from("users")
+                fn(DatabaseHandler $db) => $db->from("users")
                     ->whereExpression(fn (Expression $expr) => $expr->len("name"))
                     ->lt(18)
                     ->delete()

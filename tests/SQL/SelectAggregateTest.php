@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\Expression;
 
 class SelectAggregateTest extends BaseClass
@@ -28,42 +28,42 @@ class SelectAggregateTest extends BaseClass
             [
                 'count *',
                 'SELECT COUNT(*) FROM "users"',
-                fn(Database $db) => $db->from('users')->count(),
+                fn(DatabaseHandler $db) => $db->from('users')->count(),
             ],
             [
                 'count column',
                 'SELECT COUNT("description") FROM "users"',
-                fn(Database $db) => $db->from('users')->count('description'),
+                fn(DatabaseHandler $db) => $db->from('users')->count('description'),
             ],
             [
                 'count distinct column',
                 'SELECT COUNT(DISTINCT "description") FROM "users"',
-                fn(Database $db) => $db->from('users')->count('description', true),
+                fn(DatabaseHandler $db) => $db->from('users')->count('description', true),
             ],
             [
                 'max value',
                 'SELECT MAX("age") FROM "users"',
-                fn(Database $db) => $db->from('users')->max('age'),
+                fn(DatabaseHandler $db) => $db->from('users')->max('age'),
             ],
             [
                 'min value',
                 'SELECT MIN("age") FROM "users"',
-                fn(Database $db) => $db->from('users')->min('age'),
+                fn(DatabaseHandler $db) => $db->from('users')->min('age'),
             ],
             [
                 'avg value',
                 'SELECT AVG("age") FROM "users"',
-                fn(Database $db) => $db->from('users')->avg('age'),
+                fn(DatabaseHandler $db) => $db->from('users')->avg('age'),
             ],
             [
                 'sum value',
                 'SELECT SUM("age") FROM "users"',
-                fn(Database $db) => $db->from('users')->sum('age'),
+                fn(DatabaseHandler $db) => $db->from('users')->sum('age'),
             ],
             [
                 'expression aggregate',
                 'SELECT SUM("friends" - "enemies") FROM "users"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->sum(fn (Expression $expr) => $expr->column('friends')->{'-'}->column("enemies")),
             ],
         ];

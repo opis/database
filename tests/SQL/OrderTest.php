@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\Expression;
 
 class OrderTest extends BaseClass
@@ -28,42 +28,42 @@ class OrderTest extends BaseClass
             [
                 'order asc',
                 'SELECT * FROM "users" ORDER BY "name" ASC',
-                fn(Database $db) => $db->from('users')->orderBy('name')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->select(),
             ],
             [
                 'order desc',
                 'SELECT * FROM "users" ORDER BY "name" DESC',
-                fn(Database $db) => $db->from('users')->orderBy('name', 'desc')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name', 'desc')->select(),
             ],
             [
                 'order asc multiple',
                 'SELECT * FROM "users" ORDER BY "name", "age" ASC',
-                fn(Database $db) => $db->from('users')->orderBy(['name', 'age'])->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy(['name', 'age'])->select(),
             ],
             [
                 'order desc multiple',
                 'SELECT * FROM "users" ORDER BY "name", "age" DESC',
-                fn(Database $db) => $db->from('users')->orderBy(['name', 'age'], 'desc')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy(['name', 'age'], 'desc')->select(),
             ],
             [
                 'order asc desc',
                 'SELECT * FROM "users" ORDER BY "name" ASC, "age" DESC',
-                fn(Database $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc')->select(),
             ],
             [
                 'order nulls first',
                 'SELECT * FROM "users" ORDER BY "name" ASC, (CASE WHEN "age" IS NULL THEN 0 ELSE 1 END), "age" DESC',
-                fn(Database $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc', 'nulls first')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc', 'nulls first')->select(),
             ],
             [
                 'order mulls last',
                 'SELECT * FROM "users" ORDER BY "name" ASC, (CASE WHEN "age" IS NULL THEN 1 ELSE 0 END), "age" DESC',
-                fn(Database $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc', 'nulls last')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy('name')->orderBy('age', 'desc', 'nulls last')->select(),
             ],
             [
                 'order expression',
                 'SELECT * FROM "users" ORDER BY LEN("name") ASC',
-                fn(Database $db) => $db->from('users')->orderBy(fn (Expression $expr) => $expr->len('name'))->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->orderBy(fn (Expression $expr) => $expr->len('name'))->select(),
             ],
         ];
     }

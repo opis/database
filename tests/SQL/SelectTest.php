@@ -17,7 +17,7 @@
 
 namespace Opis\Database\Test\SQL;
 
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\SQL\{ColumnExpression, Expression};
 
 class SelectTest extends BaseClass
@@ -28,73 +28,73 @@ class SelectTest extends BaseClass
             [
                 'select *',
                 'SELECT * FROM "users"',
-                fn(Database $db) => $db->from('users')->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->select(),
             ],
             [
                 'select distinct *',
                 'SELECT DISTINCT * FROM "users"',
-                fn(Database $db) => $db->from('users')->distinct()->select(),
+                fn(DatabaseHandler $db) => $db->from('users')->distinct()->select(),
             ],
             [
                 'select column',
                 'SELECT "name" FROM "users"',
-                fn(Database $db) => $db->from('users')->select('name'),
+                fn(DatabaseHandler $db) => $db->from('users')->select('name'),
             ],
             [
                 'select single column array',
                 'SELECT "name" FROM "users"',
-                fn(Database $db) => $db->from('users')->select(['name']),
+                fn(DatabaseHandler $db) => $db->from('users')->select(['name']),
             ],
             [
                 'select multiple columns',
                 'SELECT "name", "age" FROM "users"',
-                fn(Database $db) => $db->from('users')->select(['name', 'age']),
+                fn(DatabaseHandler $db) => $db->from('users')->select(['name', 'age']),
             ],
             [
                 'select multiple columns aliased',
                 'SELECT "name" AS "n", "age" AS "a" FROM "users"',
-                fn(Database $db) => $db->from('users')->select(['name' => 'n', 'age' => 'a']),
+                fn(DatabaseHandler $db) => $db->from('users')->select(['name' => 'n', 'age' => 'a']),
             ],
             [
                 'select multiple columns - first aliased',
                 'SELECT "name" AS "n", "age" FROM "users"',
-                fn(Database $db) => $db->from('users')->select(['name' => 'n', 'age']),
+                fn(DatabaseHandler $db) => $db->from('users')->select(['name' => 'n', 'age']),
             ],
             [
                 'select multiple columns - last aliased',
                 'SELECT "name", "age" AS "a" FROM "users"',
-                fn(Database $db) => $db->from('users')->select(['name', 'age' => 'a']),
+                fn(DatabaseHandler $db) => $db->from('users')->select(['name', 'age' => 'a']),
             ],
             [
                 'select from multiple tables',
                 'SELECT * FROM "users", "sites"',
-                fn(Database $db) => $db->from(['users', 'sites'])->select(),
+                fn(DatabaseHandler $db) => $db->from(['users', 'sites'])->select(),
             ],
             [
                 'select from multiple tables aliased',
                 'SELECT * FROM "users" AS "u", "sites" AS "s"',
-                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(),
+                fn(DatabaseHandler $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(),
             ],
             [
                 'select columns from multiple tables aliased',
                 'SELECT "u"."name", "s"."address" FROM "users" AS "u", "sites" AS "s"',
-                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name', 's.address']),
+                fn(DatabaseHandler $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name', 's.address']),
             ],
             [
                 'select aliased columns from multiple tables aliased',
                 'SELECT "u"."name" AS "n", "s"."address" AS "s" FROM "users" AS "u", "sites" AS "s"',
-                fn(Database $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name' => 'n', 's.address' => 's']),
+                fn(DatabaseHandler $db) => $db->from(['users' => 'u', 'sites' => 's'])->select(['u.name' => 'n', 's.address' => 's']),
             ],
             [
                 'select aliased expression',
                 'SELECT LCASE("name") AS "lower_name" FROM "users"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->select(fn (ColumnExpression $expr) => $expr->lcase('name', 'lower_name')),
             ],
             [
                 'select multiple aliased expressions',
                 'SELECT "name", LEN("name") AS "name_length", "age" AS "alias_age" FROM "users"',
-                fn(Database $db) => $db->from('users')
+                fn(DatabaseHandler $db) => $db->from('users')
                     ->select([
                         'name',
                         'name_length' => fn (Expression $expr) => $expr->len('name'),

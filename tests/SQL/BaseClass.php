@@ -18,19 +18,19 @@
 namespace Opis\Database\Test\SQL;
 
 use Closure;
-use Opis\Database\Database;
+use Opis\Database\DatabaseHandler;
 use Opis\Database\Test\Connection;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseClass extends TestCase
 {
-    protected static Database $database;
+    protected static DatabaseHandler $database;
 
-    protected Database $db;
+    protected DatabaseHandler $db;
 
     public static function setUpBeforeClass(): void
     {
-        static::$database = new Database(new Connection(''));
+        static::$database = (new Connection(''))->getDatabaseHandler();
     }
 
     public function setUp(): void
