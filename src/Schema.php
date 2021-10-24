@@ -169,9 +169,10 @@ class Schema
      *
      * @param   string $table Table name
      * @param   callable $callback A callback that will define table's fields and indexes
+     * @param   bool    $check_exists
      * @throws \Exception
      */
-    public function create(string $table, callable $callback)
+    public function create(string $table, callable $callback, bool $check_exists = false)
     {
         $compiler = $this->connection->schemaCompiler();
 
@@ -179,7 +180,7 @@ class Schema
 
         $callback($schema);
 
-        foreach ($compiler->create($schema) as $result) {
+        foreach ($compiler->create($schema, $check_exists) as $result) {
             $this->connection->command($result['sql'], $result['params']);
         }
 
@@ -228,13 +229,14 @@ class Schema
      * Deletes a table
      *
      * @param   string $table Table name
+     * @param   bool    $check_exists
      * @throws \Exception
      */
-    public function drop(string $table)
+    public function drop(string $table, bool $check_exists = false)
     {
         $compiler = $this->connection->schemaCompiler();
 
-        $result = $compiler->drop($table);
+        $result = $compiler->drop($table, $check_exists);
 
         $this->connection->command($result['sql'], $result['params']);
 
