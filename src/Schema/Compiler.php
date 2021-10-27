@@ -641,11 +641,12 @@ class Compiler
 
     /**
      * @param CreateTable $schema
+     * @param bool $check_exists
      * @return array
      */
-    public function create(CreateTable $schema): array
+    public function create(CreateTable $schema, bool $check_exists = false): array
     {
-        $sql = 'CREATE TABLE ' . $this->wrap($schema->getTableName());
+        $sql = 'CREATE TABLE ' . ($check_exists ? 'IF NOT EXISTS' : '') . $this->wrap($schema->getTableName());
         $sql .= "(\n";
         $sql .= $this->handleColumns($schema->getColumns());
         $sql .= $this->handlePrimaryKey($schema);
@@ -697,12 +698,13 @@ class Compiler
 
     /**
      * @param string $table
+     * @param bool $check_exists
      * @return array
      */
-    public function drop(string $table): array
+    public function drop(string $table, bool $check_exists = false): array
     {
         return [
-            'sql' => 'DROP TABLE ' . $this->wrap($table),
+            'sql' => 'DROP TABLE ' . ($check_exists ? 'IF EXISTS' : '') . $this->wrap($table),
             'params' => [],
         ];
     }
