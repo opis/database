@@ -604,6 +604,34 @@ class Connection implements Serializable
     }
 
     /**
+     * @return array
+     */
+    public function __serialize()
+    {
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+            'logQueries' => $this->logQueries,
+            'options' => $this->options,
+            'commands' => $this->commands,
+            'dsn' => $this->dsn,
+        ];
+    }
+
+    /**
+     * @param $data
+     * @return void
+     */
+    public function __unserialize($data)
+    {
+        $object = unserialize($data);
+
+        foreach ($object as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    /**
      * Implementation of Serializable::serialize
      *
      * @return  string
