@@ -22,7 +22,7 @@ use PDOStatement;
 use PDOException;
 use Serializable;
 
-class Connection implements Serializable
+class Connection
 {
     /** @var    string  Username */
     protected $username;
@@ -608,7 +608,7 @@ class Connection implements Serializable
      *
      * @return  string
      */
-    public function serialize()
+    public function __serialize()
     {
         return serialize([
             'username' => $this->username,
@@ -625,7 +625,7 @@ class Connection implements Serializable
      *
      * @param   string $data Serialized data
      */
-    public function unserialize($data)
+    public function __unserialize($data)
     {
         $object = unserialize($data);
 
