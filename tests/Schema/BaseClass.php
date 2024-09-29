@@ -37,7 +37,7 @@ class BaseClass extends TestCase
     /** @var Schema */
     protected $schema;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $name = static::$schema_name;
 
@@ -50,7 +50,7 @@ class BaseClass extends TestCase
         static::$db_schema = new Schema(new Connection($name));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->schema = static::$db_schema;
     }

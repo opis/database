@@ -27,7 +27,7 @@ The full documentation for this library can be found [here][documentation]
 
 ## Requirements
 
-* PHP 7.0.* or higher
+* PHP 7 or higher
 * PDO
 
 ## Installation

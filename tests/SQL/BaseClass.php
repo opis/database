@@ -28,12 +28,12 @@ class BaseClass extends TestCase
     /** @var  Database */
     protected $db;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::$database = new Database(new Connection(''));
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db = static::$database;
     }
