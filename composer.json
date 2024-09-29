@@ -18,11 +18,11 @@
       "test": "vendor/bin/phpunit"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.0 || ^8.0",
         "ext-pdo": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5 || ^7.0",
+        "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0 || ^9.0",
         "symfony/yaml": "^3.4"
     },
     "autoload": {

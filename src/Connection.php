@@ -633,4 +633,26 @@ class Connection implements Serializable
             $this->{$key} = $value;
         }
     }
+
+    public function __serialize()
+    {
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+            'logQueries' => $this->logQueries,
+            'options' => $this->options,
+            'commands' => $this->commands,
+            'dsn' => $this->dsn,
+        ];
+    }
+
+    public function __unserialize(array $data)
+    {
+        $this->username = $data['username'];
+        $this->password = $data['password'];
+        $this->logQueries = $data['logQueries'];
+        $this->options = $data['options'];
+        $this->commands = $data['commands'];
+        $this->dsn = $data['dsn'];
+    }
 }
