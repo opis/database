@@ -86,6 +86,24 @@ class ResultSet
     }
 
     /**
+     * Return a generator that fetches each row at a time, reducing memory load.
+     *
+     * @param   int $fetchStyle (optional) PDO fetch style
+     *
+     * @return  iterable
+     */
+    public function lazy($fetchStyle = 0)
+    {
+        $generator = function() use (&$fetchStyle) {
+            while($row = $this->statement->fetch($fetchStyle)) {
+                yield $row;
+            }
+        };
+
+        return $generator();
+    }
+
+    /**
      * Fetch first result
      *
      * @param   callable $callable (optional) Callback function
