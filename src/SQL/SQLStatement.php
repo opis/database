@@ -34,6 +34,7 @@ class SQLStatement
     protected $intoTable;
     protected $intoDatabase;
     protected $from = [];
+    /** @var array[] Rows of values, each row ordered like the statement's column list */
     protected $values = [];
 
     /**
@@ -411,11 +412,34 @@ class SQLStatement
     }
 
     /**
-     * @param $value
+     * Appends a single value to the last row of values, starting a first row if none exists.
+     *
+     * @param mixed $value
+     * @return void
      */
     public function addValue($value)
     {
-        $this->values[] = $this->closureToExpression($value);
+        if ($this->values === []) {
+            $this->values[] = [];
+        }
+
+        $this->values[count($this->values) - 1][] = $this->closureToExpression($value);
+    }
+
+    /**
+     * Appends a whole row of values, ordered like the statement's column list.
+     *
+     * @param array $values
+     * @return void
+     */
+    public function addValues(array $values)
+    {
+        foreach ($values as &$value) {
+            $value = $this->closureToExpression($value);
+        }
+        unset($value);
+
+        $this->values[] = array_values($values);
     }
 
     /**
@@ -523,9 +547,26 @@ class SQLStatement
     }
 
     /**
+     * A multi-row statement returns every row's values one after another, flattened
+     * into a single list. Use {@see getValueRows()} to get the values grouped by row.
+     *
      * @return array
      */
     public function getValues(): array
+    {
+        if (count($this->values) < 2) {
+            return $this->values === [] ? [] : reset($this->values);
+        }
+
+        return call_user_func_array('array_merge', $this->values);
+    }
+
+    /**
+     * Returns the rows of values to be inserted.
+     *
+     * @return array[] A list of rows, each row ordered like the statement's column list
+     */
+    public function getValueRows(): array
     {
         return $this->values;
     }

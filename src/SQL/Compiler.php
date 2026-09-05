@@ -64,11 +64,14 @@ class Compiler
     public function insert(SQLStatement $insert): string
     {
         $columns = $this->handleColumns($insert->getColumns());
+        $rows = $insert->getValueRows();
 
         $sql = 'INSERT INTO ';
         $sql .= $this->handleTables($insert->getTables());
         $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';
-        $sql .= $this->handleInsertValues($insert->getValues());
+        $sql .= count($rows) > 1
+            ? $this->handleInsertMultipleValues($rows)
+            : $this->handleInsertValues($rows === [] ? [] : reset($rows));
 
         return $sql;
     }
@@ -516,6 +519,24 @@ class Compiler
     protected function handleInsertValues(array $values)
     {
         return ' VALUES (' . $this->params($values) . ')';
+    }
+
+    /**
+     * Handle multiple rows of insert values
+     *
+     * @param   array $rows
+     *
+     * @return  string
+     */
+    protected function handleInsertMultipleValues(array $rows): string
+    {
+        $sql = [];
+
+        foreach ($rows as $row) {
+            $sql[] = '(' . $this->params($row) . ')';
+        }
+
+        return ' VALUES ' . implode(', ', $sql);
     }
 
     /**

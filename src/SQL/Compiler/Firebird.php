@@ -71,4 +71,37 @@ class Firebird extends Compiler
 
         return $sql;
     }
+
+    /**
+     * Compiles an INSERT statement.
+     *
+     * Firebird has no multi-row VALUES clause, so several rows are compiled
+     * into a UNION ALL of single-row selects instead.
+     *
+     * @access  public
+     * @param   SQLStatement $insert
+     * @return  string
+     */
+    public function insert(SQLStatement $insert): string
+    {
+        $rows = $insert->getValueRows();
+
+        if (count($rows) < 2) {
+            return parent::insert($insert);
+        }
+
+        $columns = $this->handleColumns($insert->getColumns());
+
+        $sql = 'INSERT INTO ';
+        $sql .= $this->handleTables($insert->getTables());
+        $sql .= ($columns === '*') ? '' : ' (' . $columns . ')';
+
+        $selects = [];
+
+        foreach ($rows as $row) {
+            $selects[] = 'SELECT ' . $this->params($row) . ' FROM RDB$DATABASE';
+        }
+
+        return $sql . ' ' . implode(' UNION ALL ', $selects);
+    }
 }

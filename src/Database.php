@@ -75,13 +75,14 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @param   array $values An array of values.
+     * @param   array $values A single row, or a list of rows
+     * @param   array ...$rows Additional rows, each given the same way as $values
      *
      * @return  InsertCommand|InsertStatement
      */
-    public function insert(array $values): InsertCommand
+    public function insert(array $values, array ...$rows): InsertCommand
     {
-        return (new InsertCommand($this->connection))->insert($values);
+        return (new InsertCommand($this->connection))->insert($values, ...$rows);
     }
 
     /**

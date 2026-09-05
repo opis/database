@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Added
+
+- Support for inserting multiple rows with a single statement. `Opis\Database\Database::insert`
+  and `Opis\Database\SQL\InsertStatement::insert` now accept a list of rows, besides a single row.
+  See [issue #76](https://github.com/opis/database/issues/76)
+- Additional rows may also be passed as extra arguments to `Opis\Database\Database::insert` and
+  `Opis\Database\SQL\InsertStatement::insert`, instead of a single list of rows in the first argument
+- Added `Opis\Database\SQL\SQLStatement::addValues` method
+- Added `Opis\Database\SQL\SQLStatement::getValueRows` method
+- Added `Opis\Database\SQL\Compiler::handleInsertMultipleValues` method
+- Added `INSERT ALL` fallback for Oracle and `UNION ALL` fallback for Firebird,
+  since neither supports a multi-row `VALUES` clause
+
+### Changed
+
+- Calling `Opis\Database\SQL\InsertStatement::insert` more than once now appends a row
+  instead of duplicating the column list
+
 ## v4.3.0 - 2024-09-29
 
 ### Added

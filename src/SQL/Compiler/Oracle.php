@@ -62,6 +62,37 @@ class Oracle extends Compiler
     }
 
     /**
+     * Compiles an INSERT statement.
+     *
+     * Oracle has no multi-row VALUES clause, so several rows are compiled
+     * into an INSERT ALL statement instead.
+     *
+     * @param   SQLStatement $insert
+     *
+     * @return  string
+     */
+    public function insert(SQLStatement $insert): string
+    {
+        $rows = $insert->getValueRows();
+
+        if (count($rows) < 2) {
+            return parent::insert($insert);
+        }
+
+        $columns = $this->handleColumns($insert->getColumns());
+        $columns = ($columns === '*') ? '' : ' (' . $columns . ')';
+        $table = $this->handleTables($insert->getTables());
+
+        $sql = 'INSERT ALL';
+
+        foreach ($rows as $row) {
+            $sql .= ' INTO ' . $table . $columns . ' VALUES (' . $this->params($row) . ')';
+        }
+
+        return $sql . ' SELECT * FROM dual';
+    }
+
+    /**
      * @param   mixed $value
      *
      * @return  string
